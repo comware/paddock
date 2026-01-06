@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Paddock Design System - from PRD Section 5.4 */
+@theme {
+  /* Primary - Growth Green */
+  --color-primary-50: #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-200: #bbf7d0;
+  --color-primary-300: #86efac;
+  --color-primary-400: #4ade80;
+  --color-primary-500: #22c55e;
+  --color-primary-600: #16a34a;
+  --color-primary-700: #15803d;
+  --color-primary-800: #166534;
+  --color-primary-900: #14532d;
+
+  /* Quality Grades */
+  --color-grade-a: #22c55e;
+  --color-grade-b: #eab308;
+  --color-grade-c: #f97316;
+  --color-grade-f: #ef4444;
+
+  /* Tray Status */
+  --color-status-blackout: #1e293b;
+  --color-status-light: #fef08a;
+  --color-status-harvested: #86efac;
+  --color-status-failed: #fecaca;
+
+  /* Neutral */
+  --color-surface: #ffffff;
+  --color-muted: #64748b;
+}
+
+/* Base styles */
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Light mode */
+:root {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+}
+
+/* Dark mode */
+.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Touch-friendly targets (44px minimum) */
+button,
+a,
+input[type="checkbox"],
+input[type="radio"],
+select {
+  min-height: 44px;
+}
+
+/* Animations */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Safe area for PWA */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
