@@ -133,18 +133,84 @@
       "blackoutDays": 4,
       "preSoak": false,
       "file": "intermediate/broccoli.md",
-      "status": "pending"
+      "status": "complete"
     },
     {
       "id": "kale",
       "name": "Kale",
       "category": "intermediate",
       "difficulty": "intermediate",
-      "daysToHarvest": 12,
+      "daysToHarvest": 10,
       "blackoutDays": 4,
       "preSoak": false,
       "file": "intermediate/kale.md",
-      "status": "pending"
+      "status": "complete"
+    },
+    {
+      "id": "red-cabbage",
+      "name": "Red Cabbage",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "intermediate/red-cabbage.md",
+      "status": "complete"
+    },
+    {
+      "id": "kohlrabi",
+      "name": "Kohlrabi",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "intermediate/kohlrabi.md",
+      "status": "complete"
+    },
+    {
+      "id": "arugula",
+      "name": "Arugula",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 10,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "intermediate/arugula.md",
+      "status": "complete"
+    },
+    {
+      "id": "mustard-yellow",
+      "name": "Mustard (Yellow)",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "intermediate/mustard-yellow.md",
+      "status": "complete"
+    },
+    {
+      "id": "mustard-red",
+      "name": "Mustard (Red)",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "intermediate/mustard-red.md",
+      "status": "complete"
+    },
+    {
+      "id": "cress",
+      "name": "Cress",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "intermediate/cress.md",
+      "status": "complete"
     }
   ]
 }
