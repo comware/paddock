@@ -5,6 +5,7 @@
  */
 
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useGrowingGuide } from '@/lib/guides/useGrowingGuide';
 
 interface GrowingGuidePanelProps {
@@ -83,7 +84,7 @@ export function GrowingGuidePanel({ varietyName }: GrowingGuidePanelProps) {
       {/* Guide Content */}
       <div className="max-h-[400px] overflow-y-auto pr-2 -mr-2">
         <article className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-sm prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-table:text-xs prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1">
-          <ReactMarkdown>{content}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
         </article>
       </div>
     </div>
