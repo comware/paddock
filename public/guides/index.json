@@ -618,6 +618,149 @@
       "preSoak": true,
       "file": "legumes/fenugreek.md",
       "status": "complete"
+    },
+    {
+      "id": "onion",
+      "name": "Onion",
+      "category": "alliums",
+      "difficulty": "advanced",
+      "daysToHarvest": 21,
+      "blackoutDays": 6,
+      "preSoak": true,
+      "file": "alliums/onion.md",
+      "status": "complete"
+    },
+    {
+      "id": "leek",
+      "name": "Leek",
+      "category": "alliums",
+      "difficulty": "advanced",
+      "daysToHarvest": 21,
+      "blackoutDays": 6,
+      "preSoak": true,
+      "file": "alliums/leek.md",
+      "status": "complete"
+    },
+    {
+      "id": "chives",
+      "name": "Chives",
+      "category": "alliums",
+      "difficulty": "advanced",
+      "daysToHarvest": 25,
+      "blackoutDays": 8,
+      "preSoak": true,
+      "file": "alliums/chives.md",
+      "status": "complete"
+    },
+    {
+      "id": "garlic-chives",
+      "name": "Garlic Chives",
+      "category": "alliums",
+      "difficulty": "advanced",
+      "daysToHarvest": 25,
+      "blackoutDays": 8,
+      "preSoak": true,
+      "file": "alliums/garlic-chives.md",
+      "status": "complete"
+    },
+    {
+      "id": "dill",
+      "name": "Dill",
+      "category": "herbs",
+      "difficulty": "intermediate",
+      "daysToHarvest": 17,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "herbs/dill.md",
+      "status": "complete"
+    },
+    {
+      "id": "fennel",
+      "name": "Fennel",
+      "category": "herbs",
+      "difficulty": "intermediate",
+      "daysToHarvest": 17,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "herbs/fennel.md",
+      "status": "complete"
+    },
+    {
+      "id": "parsley",
+      "name": "Parsley",
+      "category": "herbs",
+      "difficulty": "advanced",
+      "daysToHarvest": 23,
+      "blackoutDays": 6,
+      "preSoak": true,
+      "file": "herbs/parsley.md",
+      "status": "complete"
+    },
+    {
+      "id": "chervil",
+      "name": "Chervil",
+      "category": "herbs",
+      "difficulty": "advanced",
+      "daysToHarvest": 17,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "herbs/chervil.md",
+      "status": "complete"
+    },
+    {
+      "id": "lovage",
+      "name": "Lovage",
+      "category": "herbs",
+      "difficulty": "advanced",
+      "daysToHarvest": 21,
+      "blackoutDays": 6,
+      "preSoak": true,
+      "file": "herbs/lovage.md",
+      "status": "complete"
+    },
+    {
+      "id": "borage",
+      "name": "Borage",
+      "category": "herbs",
+      "difficulty": "intermediate",
+      "daysToHarvest": 14,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "herbs/borage.md",
+      "status": "complete"
+    },
+    {
+      "id": "anise",
+      "name": "Anise",
+      "category": "herbs",
+      "difficulty": "intermediate",
+      "daysToHarvest": 17,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "herbs/anise.md",
+      "status": "complete"
+    },
+    {
+      "id": "marjoram",
+      "name": "Marjoram",
+      "category": "herbs",
+      "difficulty": "advanced",
+      "daysToHarvest": 21,
+      "blackoutDays": 6,
+      "preSoak": false,
+      "file": "herbs/marjoram.md",
+      "status": "complete"
+    },
+    {
+      "id": "mint",
+      "name": "Mint",
+      "category": "herbs",
+      "difficulty": "advanced",
+      "daysToHarvest": 25,
+      "blackoutDays": 8,
+      "preSoak": false,
+      "file": "herbs/mint.md",
+      "status": "complete"
     }
   ]
 }
