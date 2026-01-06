@@ -6,7 +6,7 @@
 
 import type { TrayWithComputed } from '../../stores';
 import { useVarieties } from '../../stores';
-import { format, addDays } from 'date-fns';
+import { format, addDays, isAfter, startOfDay } from 'date-fns';
 
 interface TrayCardProps {
   tray: TrayWithComputed;
@@ -60,9 +60,29 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
     ? addDays(tray.dateSown, variety.typicalDaysToHarvest)
     : null;
 
+  // Check if overdue for state change
+  const today = startOfDay(new Date());
+  const isOverdueForLight = tray.status === 'blackout' && isAfter(today, estimatedLightDate);
+  const isReadyToHarvest = tray.status === 'light' && estimatedHarvestDate && isAfter(today, estimatedHarvestDate);
+
+  // Calculate days overdue
+  const daysOverdueForLight = isOverdueForLight
+    ? Math.floor((today.getTime() - estimatedLightDate.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+  const daysOverdueForHarvest = isReadyToHarvest && estimatedHarvestDate
+    ? Math.floor((today.getTime() - estimatedHarvestDate.getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+
+  // Determine if action is needed
+  const needsAction = isOverdueForLight || isReadyToHarvest;
+
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 ${config.bgClass} cursor-pointer hover:shadow-md transition-shadow`}
+      className={`rounded-xl p-4 shadow-sm border-2 ${
+        needsAction
+          ? 'border-orange-400 dark:border-orange-500 ring-2 ring-orange-200 dark:ring-orange-900/50'
+          : 'border-slate-200 dark:border-slate-700'
+      } ${config.bgClass} cursor-pointer hover:shadow-md transition-shadow`}
       onClick={() => onClick?.(tray.id!)}
     >
       {/* Header */}
@@ -75,6 +95,24 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
           {config.label}
         </span>
       </div>
+
+      {/* Overdue Alert Badge */}
+      {isOverdueForLight && (
+        <div className="mb-3 px-3 py-2 rounded-lg bg-orange-500 text-white text-sm font-medium flex items-center gap-2 animate-pulse">
+          <span>⚠️</span>
+          <span>
+            Ready for light! {daysOverdueForLight > 0 && `(${daysOverdueForLight}d overdue)`}
+          </span>
+        </div>
+      )}
+      {isReadyToHarvest && (
+        <div className="mb-3 px-3 py-2 rounded-lg bg-green-600 text-white text-sm font-medium flex items-center gap-2 animate-pulse">
+          <span>🌿</span>
+          <span>
+            Ready to harvest! {daysOverdueForHarvest > 0 && `(${daysOverdueForHarvest}d overdue)`}
+          </span>
+        </div>
+      )}
 
       {/* Variety */}
       <div className="text-lg font-semibold mb-2">{tray.variety}</div>
