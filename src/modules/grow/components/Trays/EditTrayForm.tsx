@@ -67,6 +67,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isStatusChanging, setIsStatusChanging] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<TrayStatus>(tray.status);
+  const [statusChanged, setStatusChanged] = useState(false);
 
   const {
     register,
@@ -113,6 +114,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
       lessonsLearned: tray.lessonsLearned || '',
     });
     setCurrentStatus(tray.status);
+    setStatusChanged(false);
     setActiveTab('details');
   }, [tray, reset]);
 
@@ -157,6 +159,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
     try {
       await setStatus(tray.id!, newStatus);
       setCurrentStatus(newStatus);
+      setStatusChanged(true);
     } catch (error) {
       console.error('Failed to change tray status:', error);
     } finally {
@@ -454,7 +457,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
           </button>
           <button
             type="submit"
-            disabled={isSubmitting || !isDirty}
+            disabled={isSubmitting || (!isDirty && !statusChanged)}
             className="flex-1 px-4 py-2.5 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting ? 'Saving...' : 'Save Changes'}
