@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui';
-import { useTrays, useVarieties, useMediums } from '../../stores';
+import { useTrays, useVarieties, useMediums, useSites } from '../../stores';
 import { useEffect } from 'react';
 
 const traySchema = z.object({
@@ -37,8 +37,10 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   const { addTray, getNextTrayNumber } = useTrays();
   const { varieties, isLoading: varietiesLoading } = useVarieties();
   const { mediums, loadMediums, isLoading: mediumsLoading } = useMediums();
+  const { getActiveSite, getDefaultSite } = useSites();
 
   const nextTrayNumber = getNextTrayNumber();
+  const activeSite = getActiveSite() || getDefaultSite();
 
   const {
     register,
@@ -83,6 +85,7 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
       await addTray({
         trayNumber: nextTrayNumber,
         label: data.label || undefined, // Only set if user provided a custom label
+        siteId: activeSite?.id, // Associate with active site
         variety: data.variety,
         dateSown: new Date(),
         seedWeight: data.seedWeight,

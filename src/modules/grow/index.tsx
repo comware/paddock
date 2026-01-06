@@ -10,7 +10,8 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { SiteSelector } from './components/Sites';
-import { useSites } from './stores';
+import { useSites, useTrays } from './stores';
+import { useTrayMigration } from './hooks';
 
 const growNavItems: ModuleNavItem[] = [
   { name: 'Dashboard', path: '', icon: '📊' },
@@ -25,11 +26,17 @@ const growNavItems: ModuleNavItem[] = [
 
 export default function GrowModule() {
   const { loadSites, sites } = useSites();
+  const { loadTrays } = useTrays();
 
-  // Load sites on module mount
+  // Load sites and trays on module mount
   useEffect(() => {
     loadSites();
-  }, [loadSites]);
+    loadTrays();
+  }, [loadSites, loadTrays]);
+
+  // Run migration for orphan trays (those without a site)
+  // Safe to call every mount - only migrates if orphan trays exist
+  useTrayMigration();
 
   return (
     <>

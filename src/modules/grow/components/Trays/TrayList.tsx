@@ -8,8 +8,9 @@
  * - Quick actions for move to light / harvest
  */
 
-import { useState, useEffect, useMemo } from 'react';
-import { useTrays, useVarieties, type TrayStatus, type TrayWithComputed } from '../../stores';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useTrays, useVarieties, useSites, useMediums, type TrayStatus, type TrayWithComputed } from '../../stores';
 import { TrayCard } from './TrayCard';
 import { NewTrayForm } from './NewTrayForm';
 import { HarvestForm } from './HarvestForm';
@@ -32,20 +33,72 @@ const sortOptions: { value: SortOption; label: string }[] = [
 ];
 
 export function TrayList() {
-  const { trays, isLoading, loadTrays, moveToLight } = useTrays();
+  const { trays, isLoading, loadTrays, moveToLight, getUniqueVarieties, getUniqueMediums } = useTrays();
   const { loadVarieties } = useVarieties();
+  const { sites, loadSites } = useSites();
+  const { mediums, loadMediums } = useMediums();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [statusFilter, setStatusFilter] = useState<TrayStatus | 'all'>('all');
-  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  // Initialize filters from URL params or defaults
+  const statusFilter = (searchParams.get('status') as TrayStatus | 'all') || 'all';
+  const siteFilter = searchParams.get('site') || 'all';
+  const varietyFilter = searchParams.get('variety') || 'all';
+  const mediumFilter = searchParams.get('medium') || 'all';
+  const sortBy = (searchParams.get('sort') as SortOption) || 'newest';
+
   const [isNewTrayOpen, setIsNewTrayOpen] = useState(false);
   const [harvestingTray, setHarvestingTray] = useState<TrayWithComputed | null>(null);
   const [editingTray, setEditingTray] = useState<TrayWithComputed | null>(null);
+
+  // Get unique values for filter dropdowns
+  const uniqueVarieties = getUniqueVarieties();
+  const uniqueMediums = getUniqueMediums();
+
+  // Update URL params helper
+  const updateSearchParams = useCallback((updates: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams);
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === 'all' || value === 'newest') {
+        newParams.delete(key); // Remove default values to keep URL clean
+      } else {
+        newParams.set(key, value);
+      }
+    });
+    setSearchParams(newParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  // Filter setters that update URL
+  const setStatusFilter = useCallback((value: TrayStatus | 'all') => {
+    updateSearchParams({ status: value });
+  }, [updateSearchParams]);
+
+  const setSiteFilter = useCallback((value: string) => {
+    updateSearchParams({ site: value });
+  }, [updateSearchParams]);
+
+  const setVarietyFilter = useCallback((value: string) => {
+    updateSearchParams({ variety: value });
+  }, [updateSearchParams]);
+
+  const setMediumFilter = useCallback((value: string) => {
+    updateSearchParams({ medium: value });
+  }, [updateSearchParams]);
+
+  const setSortBy = useCallback((value: SortOption) => {
+    updateSearchParams({ sort: value });
+  }, [updateSearchParams]);
+
+  const clearAllFilters = useCallback(() => {
+    setSearchParams(new URLSearchParams(), { replace: true });
+  }, [setSearchParams]);
 
   // Load data on mount
   useEffect(() => {
     loadTrays();
     loadVarieties();
-  }, [loadTrays, loadVarieties]);
+    loadSites();
+    loadMediums();
+  }, [loadTrays, loadVarieties, loadSites, loadMediums]);
 
   // Filter and sort trays
   const filteredTrays = useMemo(() => {
@@ -54,6 +107,21 @@ export function TrayList() {
     // Apply status filter
     if (statusFilter !== 'all') {
       result = result.filter((t) => t.status === statusFilter);
+    }
+
+    // Apply site filter
+    if (siteFilter !== 'all') {
+      result = result.filter((t) => t.siteId === siteFilter);
+    }
+
+    // Apply variety filter
+    if (varietyFilter !== 'all') {
+      result = result.filter((t) => t.variety === varietyFilter);
+    }
+
+    // Apply growing medium filter
+    if (mediumFilter !== 'all') {
+      result = result.filter((t) => t.growingMedium === mediumFilter);
     }
 
     // Apply sort
@@ -70,7 +138,7 @@ export function TrayList() {
     }
 
     return result;
-  }, [trays, statusFilter, sortBy]);
+  }, [trays, statusFilter, siteFilter, varietyFilter, mediumFilter, sortBy]);
 
   // Count by status for filter badges
   const statusCounts = useMemo(() => {
@@ -126,42 +194,118 @@ export function TrayList() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4">
-        {/* Status Filter */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {statusFilters.map((filter) => (
-            <button
-              key={filter.value}
-              onClick={() => setStatusFilter(filter.value)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-                statusFilter === filter.value
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-              }`}
+      <div className="space-y-3">
+        {/* Status Filter Row */}
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Status Pills */}
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {statusFilters.map((filter) => (
+              <button
+                key={filter.value}
+                onClick={() => setStatusFilter(filter.value)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  statusFilter === filter.value
+                    ? 'bg-primary-500 text-white'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                }`}
+              >
+                <span>{filter.icon}</span>
+                <span>{filter.label}</span>
+                <span className="ml-1 px-1.5 py-0.5 rounded-full bg-black/10 text-xs">
+                  {statusCounts[filter.value] || 0}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Sort */}
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-sm text-slate-500 dark:text-slate-400">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              <span>{filter.icon}</span>
-              <span>{filter.label}</span>
-              <span className="ml-1 px-1.5 py-0.5 rounded-full bg-black/10 text-xs">
-                {statusCounts[filter.value] || 0}
-              </span>
-            </button>
-          ))}
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* Sort */}
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-sm text-slate-500 dark:text-slate-400">Sort:</span>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortOption)}
-            className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            {sortOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+        {/* Additional Filters Row */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Site Filter */}
+          {sites.length > 1 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 dark:text-slate-400">Site:</span>
+              <select
+                value={siteFilter}
+                onChange={(e) => setSiteFilter(e.target.value)}
+                className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="all">All Sites</option>
+                {sites.map((site) => (
+                  <option key={site.id} value={site.id}>
+                    {site.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Variety Filter */}
+          {uniqueVarieties.length > 1 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 dark:text-slate-400">Variety:</span>
+              <select
+                value={varietyFilter}
+                onChange={(e) => setVarietyFilter(e.target.value)}
+                className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="all">All Varieties</option>
+                {uniqueVarieties.map((variety) => (
+                  <option key={variety} value={variety}>
+                    {variety}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Growing Medium Filter */}
+          {uniqueMediums.length > 1 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 dark:text-slate-400">Medium:</span>
+              <select
+                value={mediumFilter}
+                onChange={(e) => setMediumFilter(e.target.value)}
+                className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="all">All Mediums</option>
+                {uniqueMediums.map((medium) => {
+                  const mediumConfig = mediums.find((m) => m.value === medium);
+                  return (
+                    <option key={medium} value={medium}>
+                      {mediumConfig?.label || medium}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+
+          {/* Clear Filters Button */}
+          {(statusFilter !== 'all' || siteFilter !== 'all' || varietyFilter !== 'all' || mediumFilter !== 'all' || sortBy !== 'newest') && (
+            <button
+              onClick={clearAllFilters}
+              className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              Clear Filters
+            </button>
+          )}
         </div>
       </div>
 

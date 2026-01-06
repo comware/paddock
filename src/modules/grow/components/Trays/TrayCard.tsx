@@ -5,7 +5,7 @@
  */
 
 import type { TrayWithComputed } from '../../stores';
-import { useVarieties } from '../../stores';
+import { useVarieties, useSites } from '../../stores';
 import { format, addDays, isAfter, startOfDay } from 'date-fns';
 
 interface TrayCardProps {
@@ -52,7 +52,12 @@ const gradeConfig = {
 export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardProps) {
   const config = statusConfig[tray.status];
   const { getVariety } = useVarieties();
+  const { sites } = useSites();
   const variety = getVariety(tray.variety);
+
+  // Find site name for this tray
+  const site = tray.siteId ? sites.find((s) => s.id === tray.siteId) : null;
+  const showSiteBadge = sites.length > 1 && site;
 
   // Calculate estimated dates
   const estimatedLightDate = addDays(tray.dateSown, tray.blackoutDays);
@@ -114,8 +119,15 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
         </div>
       )}
 
-      {/* Variety */}
-      <div className="text-lg font-semibold mb-2">{tray.variety}</div>
+      {/* Variety and Site Badge */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-lg font-semibold">{tray.variety}</div>
+        {showSiteBadge && (
+          <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium truncate max-w-[100px]" title={site.name}>
+            {site.name}
+          </span>
+        )}
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-2 text-sm mb-3">

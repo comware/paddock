@@ -25,6 +25,8 @@ interface TrayFilters {
   status: TrayStatus | 'all';
   variety: string | 'all';
   week: number | 'all';
+  siteId: string | 'all';
+  growingMedium: string | 'all';
 }
 
 interface TraySort {
@@ -57,8 +59,13 @@ export interface TraysState {
   setFilters: (filters: Partial<TrayFilters>) => void;
   setSort: (sort: TraySort) => void;
 
+  // Migration
+  migrateOrphanTrays: (defaultSiteId: string) => Promise<number>;
+
   // Computed selectors
   getFilteredTrays: () => TrayWithComputed[];
+  getUniqueVarieties: () => string[];
+  getUniqueMediums: () => string[];
   getActiveTrayCount: () => { blackout: number; light: number };
   getNextTrayNumber: () => number;
   getSuccessRate: () => number;
@@ -131,7 +138,7 @@ export const useTrays = create<TraysState>((set, get) => ({
   trays: [],
   isLoading: true,
   error: null,
-  filters: { status: 'all', variety: 'all', week: 'all' },
+  filters: { status: 'all', variety: 'all', week: 'all', siteId: 'all', growingMedium: 'all' },
   sort: { field: 'dateSown', direction: 'desc' },
 
   // Load trays from database
@@ -296,6 +303,28 @@ export const useTrays = create<TraysState>((set, get) => ({
     set({ sort });
   },
 
+  // Migrate orphan trays (those without siteId) to a default site
+  migrateOrphanTrays: async (defaultSiteId: string) => {
+    const { rawTrays, loadTrays } = get();
+    const orphanTrays = rawTrays.filter((t) => !t.siteId);
+
+    if (orphanTrays.length === 0) {
+      return 0;
+    }
+
+    // Batch update all orphan trays
+    const updates = orphanTrays.map((t) =>
+      growDb.trays.update(t.id!, { siteId: defaultSiteId, updatedAt: new Date() })
+    );
+
+    await Promise.all(updates);
+
+    // Reload trays to reflect changes
+    await loadTrays();
+
+    return orphanTrays.length;
+  },
+
   // Get filtered and sorted trays with computed fields
   getFilteredTrays: () => {
     const { trays, filters, sort } = get();
@@ -310,6 +339,16 @@ export const useTrays = create<TraysState>((set, get) => ({
     // Apply variety filter
     if (filters.variety !== 'all') {
       filtered = filtered.filter((t) => t.variety === filters.variety);
+    }
+
+    // Apply site filter
+    if (filters.siteId !== 'all') {
+      filtered = filtered.filter((t) => t.siteId === filters.siteId);
+    }
+
+    // Apply growing medium filter
+    if (filters.growingMedium !== 'all') {
+      filtered = filtered.filter((t) => t.growingMedium === filters.growingMedium);
     }
 
     // Apply week filter (week of experiment based on sow date)
@@ -382,5 +421,19 @@ export const useTrays = create<TraysState>((set, get) => ({
       // Could be improved with variety-specific days
       return t.daysInPhase >= 7;
     });
+  },
+
+  // Get unique varieties for filter dropdown
+  getUniqueVarieties: () => {
+    const { trays } = get();
+    const varieties = [...new Set(trays.map((t) => t.variety))];
+    return varieties.sort();
+  },
+
+  // Get unique growing mediums for filter dropdown
+  getUniqueMediums: () => {
+    const { trays } = get();
+    const mediums = [...new Set(trays.map((t) => t.growingMedium).filter(Boolean))];
+    return mediums.sort();
   },
 }));
