@@ -7,6 +7,8 @@
 
 export { db, growDb, platformDb } from './schema';
 export type {
+  GrowSite,
+  GrowWeatherHistory,
   GrowTray,
   GrowObservation,
   GrowTimeEntry,

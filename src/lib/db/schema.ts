@@ -13,8 +13,35 @@ import Dexie, { type Table } from 'dexie';
 // GROW MODULE TYPES
 // ============================================
 
+export interface GrowSite {
+  id?: string;
+  name: string;                    // "Home Greenhouse", "Farm Site A"
+  description?: string;
+  latitude: number;                // Geolocation for weather API
+  longitude: number;
+  timezone: string;                // "Australia/Sydney"
+  isDefault: boolean;              // First site created is default
+  isIndoor: boolean;               // Indoor sites don't fetch weather
+  weatherEnabled: boolean;         // Auto-fetch weather data
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface GrowWeatherHistory {
+  id?: string;
+  siteId: string;                  // Foreign key to GrowSite
+  date: Date;                      // Date of weather reading
+  temperature: number;             // Celsius
+  humidity: number;                // Percentage
+  conditions: string;              // "Clear", "Cloudy", etc.
+  source: 'api' | 'manual';        // Where data came from
+  fetchedAt: Date;                 // When API data was fetched
+  createdAt: Date;
+}
+
 export interface GrowTray {
   id?: string;
+  siteId?: string;               // Foreign key to GrowSite (optional for migration)
   trayNumber: number;
   label?: string;                // Custom label (optional, defaults to "Tray #{trayNumber}")
   variety: string;
@@ -38,11 +65,14 @@ export interface GrowTray {
 
 export interface GrowObservation {
   id?: string;
-  date: Date;                   // Unique per day
+  siteId?: string;              // Foreign key to GrowSite (optional for migration)
+  date: Date;                   // Multiple observations per site per day allowed
   week: number;                 // 1-6
   dayOfWeek: number;            // 1-7
   temperature?: number;         // Celsius
   humidity?: number;            // Percentage
+  weatherSource?: 'manual' | 'api';  // Track data source
+  weatherFetchedAt?: Date;      // When API data was fetched
   traysBlackout: number;
   traysLight: number;
   traysHarvestedToday: number;
@@ -143,6 +173,8 @@ export interface PlatformSetting {
 
 class PaddockDB extends Dexie {
   // Grow module tables
+  growSites!: Table<GrowSite>;
+  growWeatherHistory!: Table<GrowWeatherHistory>;
   growTrays!: Table<GrowTray>;
   growObservations!: Table<GrowObservation>;
   growTimeEntries!: Table<GrowTimeEntry>;
@@ -180,6 +212,15 @@ class PaddockDB extends Dexie {
     this.version(3).stores({
       growTrayComments: '++id, trayId, createdAt',
     });
+
+    // Version 4: Add sites, weather history, and site associations
+    this.version(4).stores({
+      growSites: '++id, &name, isDefault',
+      growWeatherHistory: '++id, siteId, date, [siteId+date]',
+      // Update indexes for site filtering
+      growTrays: '++id, trayNumber, variety, dateSown, dateHarvested, siteId, createdAt',
+      growObservations: '++id, date, week, siteId, [siteId+date]',
+    });
   }
 }
 
@@ -190,6 +231,8 @@ export const db = new PaddockDB();
 // ============================================
 
 export const growDb = {
+  sites: db.growSites,
+  weatherHistory: db.growWeatherHistory,
   trays: db.growTrays,
   observations: db.growObservations,
   timeEntries: db.growTimeEntries,

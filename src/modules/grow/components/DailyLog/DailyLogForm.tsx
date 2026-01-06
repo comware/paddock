@@ -3,6 +3,7 @@
  *
  * One entry per day - auto-saves and updates existing entry if present.
  * Auto-populates tray counts from current tray state.
+ * Auto-populates weather from active site's weather API when available.
  */
 
 import { useEffect, useState } from 'react';
@@ -10,7 +11,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { MoodSlider } from './MoodSlider';
-import { useObservations, useTrays } from '../../stores';
+import { useObservations, useTrays, useSites } from '../../stores';
+import { useWeather } from '../../hooks/useWeather';
+import { getWeatherEmoji } from '@/lib/weather';
 
 // ============================================
 // SCHEMA
@@ -38,8 +41,13 @@ type DailyLogFormData = z.infer<typeof dailyLogSchema>;
 export function DailyLogForm() {
   const { getTodaysObservation, saveObservation, loadObservations, isLoading } = useObservations();
   const { trays } = useTrays();
+  const { getActiveSite, loadSites } = useSites();
+  const activeSite = getActiveSite();
+  const { weather, isLoading: weatherLoading } = useWeather(activeSite);
+
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [weatherSource, setWeatherSource] = useState<'manual' | 'api'>('manual');
 
   // Calculate current tray counts from store
   const blackoutCount = trays.filter((t) => t.status === 'blackout').length;
@@ -52,6 +60,7 @@ export function DailyLogForm() {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isDirty },
   } = useForm<DailyLogFormData>({
     resolver: zodResolver(dailyLogSchema),
@@ -69,10 +78,11 @@ export function DailyLogForm() {
     },
   });
 
-  // Load observations on mount
+  // Load data on mount
   useEffect(() => {
     loadObservations();
-  }, [loadObservations]);
+    loadSites();
+  }, [loadObservations, loadSites]);
 
   // Reset form when today's entry loads or tray counts change
   useEffect(() => {
@@ -104,6 +114,39 @@ export function DailyLogForm() {
       });
     }
   }, [todaysEntry?.id, blackoutCount, lightCount, reset]);
+
+  // Auto-populate weather when available (only for new entries or entries without weather)
+  useEffect(() => {
+    if (weather && !todaysEntry?.temperature && !todaysEntry?.humidity) {
+      setValue('temperature', weather.temperature);
+      setValue('humidity', weather.humidity);
+      setWeatherSource('api');
+    }
+  }, [weather, todaysEntry?.temperature, todaysEntry?.humidity, setValue]);
+
+  // Track when existing entry has API weather
+  useEffect(() => {
+    if (todaysEntry?.weatherSource) {
+      setWeatherSource(todaysEntry.weatherSource);
+    }
+  }, [todaysEntry?.weatherSource]);
+
+
+  // Mark as manual when user changes values
+  const handleWeatherFieldChange = () => {
+    if (weatherSource === 'api') {
+      setWeatherSource('manual');
+    }
+  };
+
+  // Apply weather from API
+  const handleApplyWeather = () => {
+    if (weather) {
+      setValue('temperature', weather.temperature, { shouldDirty: true });
+      setValue('humidity', weather.humidity, { shouldDirty: true });
+      setWeatherSource('api');
+    }
+  };
 
   const onSubmit = async (data: DailyLogFormData) => {
     setIsSaving(true);
@@ -166,9 +209,49 @@ export function DailyLogForm() {
 
       {/* Environment Conditions */}
       <div className="card p-6">
-        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">
-          Environment
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-slate-900 dark:text-white">
+            Environment
+          </h3>
+          {/* Weather source indicator and fetch button */}
+          <div className="flex items-center gap-2">
+            {weatherSource === 'api' && (
+              <span className="px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium">
+                via Weather API
+              </span>
+            )}
+            {weather && activeSite?.weatherEnabled && !activeSite?.isIndoor && (
+              <button
+                type="button"
+                onClick={handleApplyWeather}
+                className="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-1"
+              >
+                {getWeatherEmoji(weather.conditions)} Apply {weather.temperature}°C
+              </button>
+            )}
+            {weatherLoading && (
+              <span className="text-xs text-slate-500 dark:text-slate-400">Loading weather...</span>
+            )}
+          </div>
+        </div>
+
+        {/* Show current API weather if available */}
+        {weather && activeSite?.weatherEnabled && !activeSite?.isIndoor && (
+          <div className="mb-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{getWeatherEmoji(weather.conditions)}</span>
+              <div>
+                <div className="text-sm font-medium text-slate-900 dark:text-white">
+                  Current: {weather.temperature}°C, {weather.humidity}% humidity
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400">
+                  {weather.conditions} • {activeSite.name}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -179,6 +262,7 @@ export function DailyLogForm() {
               step="0.1"
               {...register('temperature', {
                 setValueAs: (v: string) => (v === '' ? undefined : parseFloat(v)),
+                onChange: handleWeatherFieldChange,
               })}
               className="input w-full"
               placeholder="e.g. 22.5"
@@ -195,6 +279,7 @@ export function DailyLogForm() {
               type="number"
               {...register('humidity', {
                 setValueAs: (v: string) => (v === '' ? undefined : parseFloat(v)),
+                onChange: handleWeatherFieldChange,
               })}
               className="input w-full"
               placeholder="e.g. 65"

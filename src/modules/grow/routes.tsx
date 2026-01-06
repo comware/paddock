@@ -8,6 +8,7 @@ import { useState } from 'react';
 import type { RouteObject } from 'react-router-dom';
 import { GrowDashboard } from './components/Dashboard';
 import { TrayList } from './components/Trays';
+import { SiteList } from './components/Sites';
 import { DailyLogForm, LogHistory } from './components/DailyLog';
 import { TimeEntryForm, TimeStats } from './components/TimeEntry';
 import { VarietyComparison, TrendCharts } from './components/Analytics';
@@ -149,6 +150,7 @@ export const growRoutes: RouteObject[] = [
   { index: true, element: <GrowDashboard /> },
   { path: 'trays', element: <TrayList /> },
   { path: 'trays/:id', element: <TrayList /> },
+  { path: 'sites', element: <SiteList /> },
   { path: 'daily', element: <DailyLogPage /> },
   { path: 'time', element: <TimeTrackingPage /> },
   { path: 'analytics', element: <AnalyticsPage /> },

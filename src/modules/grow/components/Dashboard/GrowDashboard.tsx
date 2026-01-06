@@ -11,7 +11,9 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTrays, useVarieties } from '../../stores';
+import { useTrays, useVarieties, useSites } from '../../stores';
+import { useWeather } from '../../hooks/useWeather';
+import { getWeatherEmoji } from '@/lib/weather';
 import { NewTrayForm } from '../Trays/NewTrayForm';
 import { HarvestForm } from '../Trays/HarvestForm';
 import { differenceInDays, addDays, isAfter, startOfDay } from 'date-fns';
@@ -20,6 +22,9 @@ export function GrowDashboard() {
   const navigate = useNavigate();
   const { trays, isLoading, loadTrays, getSuccessRate, getAverageYieldRatio, getReadyToHarvest } = useTrays();
   const { loadVarieties, getVariety } = useVarieties();
+  const { sites, getActiveSite, loadSites } = useSites();
+  const activeSite = getActiveSite();
+  const { weather, isLoading: weatherLoading } = useWeather(activeSite);
 
   const [isNewTrayOpen, setIsNewTrayOpen] = useState(false);
   const [harvestingTray, setHarvestingTray] = useState<ReturnType<typeof getReadyToHarvest>[0] | null>(null);
@@ -28,7 +33,8 @@ export function GrowDashboard() {
   useEffect(() => {
     loadTrays();
     loadVarieties();
-  }, [loadTrays, loadVarieties]);
+    loadSites();
+  }, [loadTrays, loadVarieties, loadSites]);
 
   // Calculate experiment day (from first tray)
   const experimentStart = trays.length > 0
@@ -85,8 +91,8 @@ export function GrowDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      {/* Header with Weather */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Grow Dashboard
@@ -97,6 +103,39 @@ export function GrowDashboard() {
               : 'Start your experiment by planting your first tray'}
           </p>
         </div>
+
+        {/* Weather Display */}
+        {activeSite && activeSite.weatherEnabled && !activeSite.isIndoor && (
+          <div className="flex items-center gap-4 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+            {weatherLoading ? (
+              <div className="text-sm text-slate-500 dark:text-slate-400">Loading weather...</div>
+            ) : weather ? (
+              <>
+                <div className="text-3xl">{getWeatherEmoji(weather.conditions)}</div>
+                <div>
+                  <div className="text-xl font-bold text-slate-900 dark:text-white">
+                    {weather.temperature}°C
+                  </div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                    {weather.humidity}% humidity
+                  </div>
+                </div>
+                {sites.length > 1 && (
+                  <div className="border-l border-blue-200 dark:border-blue-700 pl-4">
+                    <div className="text-xs text-slate-500 dark:text-slate-400">Site</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      {activeSite.name}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-sm text-slate-500 dark:text-slate-400">
+                Weather unavailable
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Action Needed Alert */}
