@@ -475,6 +475,61 @@
       "preSoak": false,
       "file": "brassicas/radish-triton.md",
       "status": "complete"
+    },
+    {
+      "id": "lettuce-mix",
+      "name": "Lettuce (Mix)",
+      "category": "lettuce",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "lettuce/lettuce-mix.md",
+      "status": "complete"
+    },
+    {
+      "id": "amaranth-red",
+      "name": "Amaranth (Red)",
+      "category": "lettuce",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "lettuce/amaranth-red.md",
+      "status": "complete"
+    },
+    {
+      "id": "amaranth-green",
+      "name": "Amaranth (Green)",
+      "category": "lettuce",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "lettuce/amaranth-green.md",
+      "status": "complete"
+    },
+    {
+      "id": "sorrel",
+      "name": "Sorrel",
+      "category": "lettuce",
+      "difficulty": "advanced",
+      "daysToHarvest": 18,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "lettuce/sorrel.md",
+      "status": "complete"
+    },
+    {
+      "id": "orach",
+      "name": "Orach (Mountain Spinach)",
+      "category": "lettuce",
+      "difficulty": "intermediate",
+      "daysToHarvest": 14,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "lettuce/orach.md",
+      "status": "complete"
     }
   ]
 }
