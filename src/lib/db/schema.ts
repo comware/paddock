@@ -17,6 +17,7 @@ export interface GrowSite {
   id?: string;
   name: string;                    // "Home Greenhouse", "Farm Site A"
   description?: string;
+  address?: string;                // Human-readable address
   latitude: number;                // Geolocation for weather API
   longitude: number;
   timezone: string;                // "Australia/Sydney"
