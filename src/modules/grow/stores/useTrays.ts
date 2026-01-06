@@ -51,6 +51,7 @@ export interface TraysState {
   moveToBlackout: (id: string) => Promise<void>;
   harvestTray: (id: string, data: HarvestData) => Promise<void>;
   markFailed: (id: string, reason: string) => Promise<void>;
+  setStatus: (id: string, status: TrayStatus) => Promise<void>;
 
   // Filters & Sort
   setFilters: (filters: Partial<TrayFilters>) => void;
@@ -243,6 +244,43 @@ export const useTrays = create<TraysState>((set, get) => ({
       problemsObserved: reason,
       dateHarvested: new Date(),
     };
+    await get().updateTray(id, updates);
+  },
+
+  // Set status to any of the 4 values
+  setStatus: async (id, status) => {
+    const updates: Partial<GrowTray> = {};
+
+    switch (status) {
+      case 'blackout':
+        // Reset to blackout phase - clear all progression data
+        updates.dateToLight = undefined;
+        updates.germinationRate = undefined;
+        updates.dateHarvested = undefined;
+        updates.harvestWeight = undefined;
+        updates.qualityGrade = undefined;
+        break;
+      case 'light':
+        // Move to light phase
+        updates.dateToLight = updates.dateToLight || new Date();
+        updates.dateHarvested = undefined;
+        updates.harvestWeight = undefined;
+        updates.qualityGrade = undefined;
+        break;
+      case 'harvested':
+        // Mark as harvested (ensure dateToLight is set)
+        if (!get().rawTrays.find((t) => t.id === id)?.dateToLight) {
+          updates.dateToLight = new Date();
+        }
+        updates.dateHarvested = new Date();
+        break;
+      case 'failed':
+        // Mark as failed
+        updates.qualityGrade = 'F';
+        updates.dateHarvested = new Date();
+        break;
+    }
+
     await get().updateTray(id, updates);
   },
 
