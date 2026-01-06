@@ -530,6 +530,94 @@
       "preSoak": false,
       "file": "lettuce/orach.md",
       "status": "complete"
+    },
+    {
+      "id": "fava-bean",
+      "name": "Fava Bean",
+      "category": "legumes",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "legumes/fava-bean.md",
+      "status": "complete"
+    },
+    {
+      "id": "lentil",
+      "name": "Lentil",
+      "category": "legumes",
+      "difficulty": "beginner",
+      "daysToHarvest": 11,
+      "blackoutDays": 3,
+      "preSoak": true,
+      "file": "legumes/lentil.md",
+      "status": "complete"
+    },
+    {
+      "id": "mung-bean",
+      "name": "Mung Bean",
+      "category": "legumes",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "legumes/mung-bean.md",
+      "status": "complete"
+    },
+    {
+      "id": "adzuki-bean",
+      "name": "Adzuki Bean",
+      "category": "legumes",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "legumes/adzuki-bean.md",
+      "status": "complete"
+    },
+    {
+      "id": "chickpea",
+      "name": "Chickpea (Garbanzo)",
+      "category": "legumes",
+      "difficulty": "intermediate",
+      "daysToHarvest": 14,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "legumes/chickpea.md",
+      "status": "complete"
+    },
+    {
+      "id": "clover",
+      "name": "Clover",
+      "category": "legumes",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "legumes/clover.md",
+      "status": "complete"
+    },
+    {
+      "id": "alfalfa",
+      "name": "Alfalfa",
+      "category": "legumes",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "legumes/alfalfa.md",
+      "status": "complete"
+    },
+    {
+      "id": "fenugreek",
+      "name": "Fenugreek",
+      "category": "legumes",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "legumes/fenugreek.md",
+      "status": "complete"
     }
   ]
 }
