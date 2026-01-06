@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Paddock Design System - from PRD Section 5.4 */
 @theme {

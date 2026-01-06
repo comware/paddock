@@ -16,6 +16,7 @@ import { useTrays, useVarieties, useMediums, useTrayComments, type TrayWithCompu
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { TrayComments } from './TrayComments';
+import { GrowingGuidePanel } from './GrowingGuidePanel';
 
 const editTraySchema = z.object({
   variety: z.string().min(1, 'Please select a variety'),
@@ -42,6 +43,7 @@ const quickWeights = [50, 80, 100, 120];
 const TABS: Tab[] = [
   { id: 'details', label: 'Details' },
   { id: 'notes', label: 'Notes' },
+  { id: 'guide', label: 'Growing Guide' },
 ];
 
 const STATUS_OPTIONS: { value: TrayStatus; label: string; color: string; activeColor: string }[] = [
@@ -156,7 +158,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={`Edit Tray #${tray.trayNumber}`} size="2xl">
+    <Modal isOpen={isOpen} onClose={handleClose} title={`Edit Tray #${tray.trayNumber}`} size="3xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Status Selector - Always visible at top */}
         <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 space-y-3">
@@ -363,6 +365,11 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
               <TrayComments trayId={tray.id!} />
             </div>
           </div>
+        </TabPanel>
+
+        {/* Growing Guide Tab */}
+        <TabPanel isActive={activeTab === 'guide'}>
+          <GrowingGuidePanel varietyName={watch('variety')} />
         </TabPanel>
 
         {/* Danger Zone - Always visible at bottom */}
