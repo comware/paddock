@@ -19,6 +19,7 @@ import { TrayComments } from './TrayComments';
 import { GrowingGuidePanel } from './GrowingGuidePanel';
 
 const editTraySchema = z.object({
+  label: z.string().optional(),
   variety: z.string().min(1, 'Please select a variety'),
   seedWeight: z.number().min(1, 'Weight must be at least 1g').max(500, 'Weight cannot exceed 500g'),
   growingMedium: z.string().min(1, 'Please select a growing medium'),
@@ -73,6 +74,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   } = useForm<EditTrayFormData>({
     resolver: zodResolver(editTraySchema),
     defaultValues: {
+      label: tray.label || '',
       variety: tray.variety,
       seedWeight: tray.seedWeight,
       growingMedium: tray.growingMedium,
@@ -95,6 +97,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   // Reset form when tray changes
   useEffect(() => {
     reset({
+      label: tray.label || '',
       variety: tray.variety,
       seedWeight: tray.seedWeight,
       growingMedium: tray.growingMedium,
@@ -112,6 +115,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   const onSubmit = async (data: EditTrayFormData) => {
     try {
       await updateTray(tray.id!, {
+        label: data.label || undefined, // Clear label if empty to use default
         variety: data.variety,
         seedWeight: data.seedWeight,
         growingMedium: data.growingMedium,
@@ -158,7 +162,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={`Edit Tray #${tray.trayNumber}`} size="3xl">
+    <Modal isOpen={isOpen} onClose={handleClose} title={`Edit ${tray.label || `Tray #${tray.trayNumber}`}`} size="3xl">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Status Selector - Always visible at top */}
         <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 space-y-3">
@@ -195,6 +199,22 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
         {/* Details Tab */}
         <TabPanel isActive={activeTab === 'details'}>
           <div className="space-y-4">
+            {/* Custom Label */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Custom Label <span className="text-slate-400 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                {...register('label')}
+                placeholder={`Tray #${tray.trayNumber}`}
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-slate-400"
+              />
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Leave blank to use "Tray #{tray.trayNumber}"
+              </p>
+            </div>
+
             {/* Variety */}
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">

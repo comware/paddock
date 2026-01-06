@@ -16,6 +16,7 @@ import { useTrays, useVarieties, useMediums } from '../../stores';
 import { useEffect } from 'react';
 
 const traySchema = z.object({
+  label: z.string().optional(),
   variety: z.string().min(1, 'Please select a variety'),
   seedWeight: z.number().min(1, 'Weight must be at least 1g').max(500, 'Weight cannot exceed 500g'),
   growingMedium: z.string().min(1, 'Please select a growing medium'),
@@ -49,6 +50,7 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   } = useForm<TrayFormData>({
     resolver: zodResolver(traySchema),
     defaultValues: {
+      label: '',
       variety: '',
       seedWeight: 80,
       growingMedium: 'coco_coir',
@@ -80,6 +82,7 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
     try {
       await addTray({
         trayNumber: nextTrayNumber,
+        label: data.label || undefined, // Only set if user provided a custom label
         variety: data.variety,
         dateSown: new Date(),
         seedWeight: data.seedWeight,
@@ -99,6 +102,22 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`New Tray #${nextTrayNumber}`}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Custom Label */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+            Custom Label <span className="text-slate-400 font-normal">(optional)</span>
+          </label>
+          <input
+            type="text"
+            {...register('label')}
+            placeholder={`Tray #${nextTrayNumber}`}
+            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-slate-400"
+          />
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Leave blank to use default numbering
+          </p>
+        </div>
+
         {/* Variety */}
         <div>
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">

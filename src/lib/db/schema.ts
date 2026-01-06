@@ -16,6 +16,7 @@ import Dexie, { type Table } from 'dexie';
 export interface GrowTray {
   id?: string;
   trayNumber: number;
+  label?: string;                // Custom label (optional, defaults to "Tray #{trayNumber}")
   variety: string;
   dateSown: Date;
   seedWeight: number;           // grams

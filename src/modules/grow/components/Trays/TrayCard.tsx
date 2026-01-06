@@ -60,7 +60,7 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-xl">{config.icon}</span>
-          <span className="font-bold">#{tray.trayNumber}</span>
+          <span className="font-bold">{tray.label || `#${tray.trayNumber}`}</span>
         </div>
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.badgeClass}`}>
           {config.label}
