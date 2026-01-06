@@ -1,6 +1,7 @@
 export { useTrays } from './useTrays';
 export type { TrayStatus, TrayWithComputed } from './useTrays';
 export { useVarieties } from './useVarieties';
+export { useMediums } from './useMediums';
 export { useObservations } from './useObservations';
 export { useTimeEntries, TIME_CATEGORIES } from './useTimeEntries';
 export type { TimeCategory, CategoryTotal } from './useTimeEntries';

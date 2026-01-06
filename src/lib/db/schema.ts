@@ -79,6 +79,15 @@ export interface GrowVarietyConfig {
   typicalDaysToHarvest: number;
 }
 
+export interface GrowMediumConfig {
+  id?: string;
+  value: string;              // Internal identifier (e.g., 'coco_coir')
+  label: string;              // Display name (e.g., 'Coco Coir')
+  costRating: 'low' | 'medium' | 'high';
+  bestFor: string;            // Brief description of ideal use
+  notes?: string;             // Additional tips
+}
+
 export interface GrowExperiment {
   id?: string;
   startDate: Date;
@@ -129,6 +138,7 @@ class PaddockDB extends Dexie {
   growObservations!: Table<GrowObservation>;
   growTimeEntries!: Table<GrowTimeEntry>;
   growVarietyConfigs!: Table<GrowVarietyConfig>;
+  growMediumConfigs!: Table<GrowMediumConfig>;
   growExperiments!: Table<GrowExperiment>;
   growDecisions!: Table<GrowDecision>;
 
@@ -150,6 +160,11 @@ class PaddockDB extends Dexie {
       // Platform
       platformSettings: '++id, &key',
     });
+
+    // Version 2: Add growing medium configs table
+    this.version(2).stores({
+      growMediumConfigs: '++id, &value',
+    });
   }
 }
 
@@ -164,6 +179,7 @@ export const growDb = {
   observations: db.growObservations,
   timeEntries: db.growTimeEntries,
   varietyConfigs: db.growVarietyConfigs,
+  mediumConfigs: db.growMediumConfigs,
   experiments: db.growExperiments,
   decisions: db.growDecisions,
 };

@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui';
-import { useTrays, useVarieties } from '../../stores';
+import { useTrays, useVarieties, useMediums } from '../../stores';
 import { useEffect } from 'react';
 
 const traySchema = z.object({
@@ -30,17 +30,12 @@ interface NewTrayFormProps {
   onClose: () => void;
 }
 
-const growingMediums = [
-  { value: 'coco_coir', label: 'Coco Coir' },
-  { value: 'soil', label: 'Soil' },
-  { value: 'hemp_mat', label: 'Hemp Mat' },
-];
-
 const quickWeights = [50, 80, 100, 120];
 
 export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   const { addTray, getNextTrayNumber } = useTrays();
   const { varieties, isLoading: varietiesLoading } = useVarieties();
+  const { mediums, loadMediums, isLoading: mediumsLoading } = useMediums();
 
   const nextTrayNumber = getNextTrayNumber();
 
@@ -64,6 +59,11 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
 
   const selectedVariety = watch('variety');
   const currentWeight = watch('seedWeight');
+
+  // Load mediums on mount
+  useEffect(() => {
+    loadMediums();
+  }, [loadMediums]);
 
   // Update defaults when variety changes
   useEffect(() => {
@@ -160,8 +160,9 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
           <select
             {...register('growingMedium')}
             className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            disabled={mediumsLoading}
           >
-            {growingMediums.map((m) => (
+            {mediums.map((m) => (
               <option key={m.value} value={m.value}>
                 {m.label}
               </option>
