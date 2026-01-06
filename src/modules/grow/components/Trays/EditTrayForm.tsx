@@ -26,7 +26,11 @@ const editTraySchema = z.object({
   preSoaked: z.boolean(),
   blackoutDays: z.number().min(1).max(10),
   dateSown: z.string().min(1, 'Please select a date'),
-  germinationRate: z.number().min(0).max(100).optional(),
+  // Allow NaN (empty input) or valid numbers 0-100, convert NaN to undefined in submit handler
+  germinationRate: z.union([
+    z.number().min(0, 'Must be 0-100%').max(100, 'Must be 0-100%'),
+    z.nan(),
+  ]).optional(),
   problemsObserved: z.string(),
   lessonsLearned: z.string(),
 });
@@ -114,6 +118,11 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
 
   const onSubmit = async (data: EditTrayFormData) => {
     try {
+      // Convert NaN (empty input) to undefined for database storage
+      const germinationRate = typeof data.germinationRate === 'number' && !Number.isNaN(data.germinationRate)
+        ? data.germinationRate
+        : undefined;
+
       await updateTray(tray.id!, {
         label: data.label || undefined, // Clear label if empty to use default
         variety: data.variety,
@@ -122,7 +131,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
         preSoaked: data.preSoaked,
         blackoutDays: data.blackoutDays,
         dateSown: new Date(data.dateSown),
-        germinationRate: data.germinationRate,
+        germinationRate,
         problemsObserved: data.problemsObserved,
         lessonsLearned: data.lessonsLearned,
       });
