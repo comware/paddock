@@ -332,6 +332,149 @@
       "preSoak": true,
       "file": "advanced/spinach.md",
       "status": "complete"
+    },
+    {
+      "id": "cabbage-green",
+      "name": "Green Cabbage",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/cabbage-green.md",
+      "status": "complete"
+    },
+    {
+      "id": "brussels-sprouts",
+      "name": "Brussels Sprouts",
+      "category": "brassicas",
+      "difficulty": "intermediate",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/brussels-sprouts.md",
+      "status": "complete"
+    },
+    {
+      "id": "cauliflower",
+      "name": "Cauliflower",
+      "category": "brassicas",
+      "difficulty": "intermediate",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/cauliflower.md",
+      "status": "complete"
+    },
+    {
+      "id": "turnip",
+      "name": "Turnip",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "brassicas/turnip.md",
+      "status": "complete"
+    },
+    {
+      "id": "bok-choy",
+      "name": "Bok Choy",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/bok-choy.md",
+      "status": "complete"
+    },
+    {
+      "id": "mizuna",
+      "name": "Mizuna",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/mizuna.md",
+      "status": "complete"
+    },
+    {
+      "id": "tatsoi",
+      "name": "Tatsoi",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/tatsoi.md",
+      "status": "complete"
+    },
+    {
+      "id": "komatsuna",
+      "name": "Komatsuna",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/komatsuna.md",
+      "status": "complete"
+    },
+    {
+      "id": "mibuna",
+      "name": "Mibuna",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/mibuna.md",
+      "status": "complete"
+    },
+    {
+      "id": "chinese-cabbage",
+      "name": "Chinese Cabbage (Napa)",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/chinese-cabbage.md",
+      "status": "complete"
+    },
+    {
+      "id": "watercress",
+      "name": "Watercress",
+      "category": "brassicas",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "brassicas/watercress.md",
+      "status": "complete"
+    },
+    {
+      "id": "radish-hong-vit",
+      "name": "Radish (Hong Vit)",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "brassicas/radish-hong-vit.md",
+      "status": "complete"
+    },
+    {
+      "id": "radish-triton",
+      "name": "Radish (Triton/Purple)",
+      "category": "brassicas",
+      "difficulty": "beginner",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "brassicas/radish-triton.md",
+      "status": "complete"
     }
   ]
 }
