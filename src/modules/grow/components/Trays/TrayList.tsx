@@ -13,6 +13,7 @@ import { useTrays, useVarieties, type TrayStatus, type TrayWithComputed } from '
 import { TrayCard } from './TrayCard';
 import { NewTrayForm } from './NewTrayForm';
 import { HarvestForm } from './HarvestForm';
+import { EditTrayForm } from './EditTrayForm';
 
 type SortOption = 'newest' | 'oldest' | 'trayNumber';
 
@@ -38,6 +39,7 @@ export function TrayList() {
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [isNewTrayOpen, setIsNewTrayOpen] = useState(false);
   const [harvestingTray, setHarvestingTray] = useState<TrayWithComputed | null>(null);
+  const [editingTray, setEditingTray] = useState<TrayWithComputed | null>(null);
 
   // Load data on mount
   useEffect(() => {
@@ -95,8 +97,10 @@ export function TrayList() {
   };
 
   const handleTrayClick = (id: string) => {
-    // TODO: Navigate to tray detail view
-    console.log('Navigate to tray:', id);
+    const tray = trays.find((t) => t.id === id);
+    if (tray) {
+      setEditingTray(tray);
+    }
   };
 
   if (isLoading) {
@@ -233,6 +237,13 @@ export function TrayList() {
           isOpen={!!harvestingTray}
           onClose={() => setHarvestingTray(null)}
           tray={harvestingTray}
+        />
+      )}
+      {editingTray && (
+        <EditTrayForm
+          isOpen={!!editingTray}
+          onClose={() => setEditingTray(null)}
+          tray={editingTray}
         />
       )}
     </div>

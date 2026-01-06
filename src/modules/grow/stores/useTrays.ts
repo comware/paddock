@@ -48,6 +48,7 @@ export interface TraysState {
   updateTray: (id: string, updates: Partial<GrowTray>) => Promise<void>;
   deleteTray: (id: string) => Promise<void>;
   moveToLight: (id: string, germinationRate?: number) => Promise<void>;
+  moveToBlackout: (id: string) => Promise<void>;
   harvestTray: (id: string, data: HarvestData) => Promise<void>;
   markFailed: (id: string, reason: string) => Promise<void>;
 
@@ -209,6 +210,15 @@ export const useTrays = create<TraysState>((set, get) => ({
     const updates: Partial<GrowTray> = {
       dateToLight: new Date(),
       germinationRate,
+    };
+    await get().updateTray(id, updates);
+  },
+
+  // Move tray from light back to blackout (status reversal)
+  moveToBlackout: async (id) => {
+    const updates: Partial<GrowTray> = {
+      dateToLight: undefined,
+      germinationRate: undefined,
     };
     await get().updateTray(id, updates);
   },

@@ -12,6 +12,7 @@ export type {
   GrowTimeEntry,
   GrowVarietyConfig,
   GrowMediumConfig,
+  GrowTrayComment,
   GrowExperiment,
   GrowDecision,
   PlatformSetting,

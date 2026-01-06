@@ -88,6 +88,14 @@ export interface GrowMediumConfig {
   notes?: string;             // Additional tips
 }
 
+export interface GrowTrayComment {
+  id?: string;
+  trayId: string;             // Foreign key to GrowTray
+  content: string;            // Comment text
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface GrowExperiment {
   id?: string;
   startDate: Date;
@@ -139,6 +147,7 @@ class PaddockDB extends Dexie {
   growTimeEntries!: Table<GrowTimeEntry>;
   growVarietyConfigs!: Table<GrowVarietyConfig>;
   growMediumConfigs!: Table<GrowMediumConfig>;
+  growTrayComments!: Table<GrowTrayComment>;
   growExperiments!: Table<GrowExperiment>;
   growDecisions!: Table<GrowDecision>;
 
@@ -165,6 +174,11 @@ class PaddockDB extends Dexie {
     this.version(2).stores({
       growMediumConfigs: '++id, &value',
     });
+
+    // Version 3: Add tray comments table
+    this.version(3).stores({
+      growTrayComments: '++id, trayId, createdAt',
+    });
   }
 }
 
@@ -180,6 +194,7 @@ export const growDb = {
   timeEntries: db.growTimeEntries,
   varietyConfigs: db.growVarietyConfigs,
   mediumConfigs: db.growMediumConfigs,
+  trayComments: db.growTrayComments,
   experiments: db.growExperiments,
   decisions: db.growDecisions,
 };
