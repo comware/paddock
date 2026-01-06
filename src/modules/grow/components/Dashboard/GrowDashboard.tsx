@@ -9,17 +9,17 @@
  * - Ready to harvest alerts
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTrays, useVarieties } from '../../stores';
 import { NewTrayForm } from '../Trays/NewTrayForm';
 import { HarvestForm } from '../Trays/HarvestForm';
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, addDays, isAfter, startOfDay } from 'date-fns';
 
 export function GrowDashboard() {
   const navigate = useNavigate();
   const { trays, isLoading, loadTrays, getSuccessRate, getAverageYieldRatio, getReadyToHarvest } = useTrays();
-  const { loadVarieties } = useVarieties();
+  const { loadVarieties, getVariety } = useVarieties();
 
   const [isNewTrayOpen, setIsNewTrayOpen] = useState(false);
   const [harvestingTray, setHarvestingTray] = useState<ReturnType<typeof getReadyToHarvest>[0] | null>(null);
@@ -50,6 +50,31 @@ export function GrowDashboard() {
   const avgYieldRatio = getAverageYieldRatio();
   const readyToHarvest = getReadyToHarvest();
 
+  // Calculate overdue trays
+  const overdueTrays = useMemo(() => {
+    const today = startOfDay(new Date());
+
+    const overdueForLight = trays.filter((tray) => {
+      if (tray.status !== 'blackout') return false;
+      const estimatedLightDate = addDays(tray.dateSown, tray.blackoutDays);
+      return isAfter(today, estimatedLightDate);
+    });
+
+    const overdueForHarvest = trays.filter((tray) => {
+      if (tray.status !== 'light') return false;
+      const variety = getVariety(tray.variety);
+      if (!variety?.typicalDaysToHarvest) return false;
+      const estimatedHarvestDate = addDays(tray.dateSown, variety.typicalDaysToHarvest);
+      return isAfter(today, estimatedHarvestDate);
+    });
+
+    return {
+      forLight: overdueForLight,
+      forHarvest: overdueForHarvest,
+      total: overdueForLight.length + overdueForHarvest.length,
+    };
+  }, [trays, getVariety]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -73,6 +98,46 @@ export function GrowDashboard() {
           </p>
         </div>
       </div>
+
+      {/* Action Needed Alert */}
+      {overdueTrays.total > 0 && (
+        <div
+          className="bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700 rounded-xl p-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+          onClick={() => navigate('/grow/trays')}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">⚠️</span>
+              <div>
+                <h2 className="text-lg font-bold text-orange-800 dark:text-orange-200">
+                  Action Needed
+                </h2>
+                <p className="text-orange-700 dark:text-orange-300">
+                  {overdueTrays.total} tray{overdueTrays.total !== 1 ? 's' : ''} need attention
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              {overdueTrays.forLight.length > 0 && (
+                <div className="text-center px-4 py-2 rounded-lg bg-orange-200 dark:bg-orange-800">
+                  <div className="text-2xl font-bold text-orange-900 dark:text-orange-100">
+                    {overdueTrays.forLight.length}
+                  </div>
+                  <div className="text-xs text-orange-700 dark:text-orange-300">Ready for light</div>
+                </div>
+              )}
+              {overdueTrays.forHarvest.length > 0 && (
+                <div className="text-center px-4 py-2 rounded-lg bg-green-200 dark:bg-green-800">
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100">
+                    {overdueTrays.forHarvest.length}
+                  </div>
+                  <div className="text-xs text-green-700 dark:text-green-300">Ready to harvest</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
