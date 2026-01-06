@@ -1,0 +1,150 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-01-06",
+  "categories": [
+    {
+      "id": "beginner",
+      "name": "Beginner-Friendly",
+      "description": "High germination, fast growth, forgiving - perfect for newcomers",
+      "icon": "🌱"
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermediate Brassicas",
+      "description": "Reliable but need attention to moisture and temperature",
+      "icon": "🥦"
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "description": "Temperature sensitive, slower growth, or mucilaginous seeds",
+      "icon": "🌿"
+    },
+    {
+      "id": "brassicas",
+      "name": "Additional Brassicas",
+      "description": "Fast growing, nutritious, reliable",
+      "icon": "🥬"
+    },
+    {
+      "id": "lettuce",
+      "name": "Lettuce Family",
+      "description": "Mild flavor, popular for salads",
+      "icon": "🥗"
+    },
+    {
+      "id": "legumes",
+      "name": "Legume Family",
+      "description": "High yield, protein-rich, affordable",
+      "icon": "🫛"
+    },
+    {
+      "id": "alliums",
+      "name": "Allium Family",
+      "description": "Slow growing, aromatic, delicate",
+      "icon": "🧅"
+    },
+    {
+      "id": "herbs",
+      "name": "Herbs",
+      "description": "Slow growing, aromatic, flavorful",
+      "icon": "🌿"
+    },
+    {
+      "id": "specialty",
+      "name": "Specialty & Unique",
+      "description": "Unusual, colorful, or niche market varieties",
+      "icon": "✨"
+    }
+  ],
+  "guides": [
+    {
+      "id": "sunflower",
+      "name": "Sunflower",
+      "category": "beginner",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "beginner/sunflower.md",
+      "status": "complete"
+    },
+    {
+      "id": "pea-shoots",
+      "name": "Pea Shoots",
+      "category": "beginner",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "beginner/pea-shoots.md",
+      "status": "complete"
+    },
+    {
+      "id": "radish-china-rose",
+      "name": "Radish (China Rose)",
+      "category": "beginner",
+      "difficulty": "beginner",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "beginner/radish-china-rose.md",
+      "status": "complete"
+    },
+    {
+      "id": "radish-daikon",
+      "name": "Radish (Daikon)",
+      "category": "beginner",
+      "difficulty": "beginner",
+      "daysToHarvest": 8,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "beginner/radish-daikon.md",
+      "status": "complete"
+    },
+    {
+      "id": "buckwheat",
+      "name": "Buckwheat",
+      "category": "beginner",
+      "difficulty": "beginner",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "beginner/buckwheat.md",
+      "status": "complete"
+    },
+    {
+      "id": "wheatgrass",
+      "name": "Wheatgrass",
+      "category": "beginner",
+      "difficulty": "beginner",
+      "daysToHarvest": 9,
+      "blackoutDays": 3,
+      "preSoak": true,
+      "file": "beginner/wheatgrass.md",
+      "status": "complete"
+    },
+    {
+      "id": "broccoli",
+      "name": "Broccoli",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 10,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "intermediate/broccoli.md",
+      "status": "pending"
+    },
+    {
+      "id": "kale",
+      "name": "Kale",
+      "category": "intermediate",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "intermediate/kale.md",
+      "status": "pending"
+    }
+  ]
+}
