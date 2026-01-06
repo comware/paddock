@@ -211,6 +211,127 @@
       "preSoak": false,
       "file": "intermediate/cress.md",
       "status": "complete"
+    },
+    {
+      "id": "cilantro",
+      "name": "Cilantro (Coriander)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 18,
+      "blackoutDays": 5,
+      "preSoak": true,
+      "file": "advanced/cilantro.md",
+      "status": "complete"
+    },
+    {
+      "id": "basil-genovese",
+      "name": "Basil (Genovese)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": false,
+      "file": "advanced/basil-genovese.md",
+      "status": "complete"
+    },
+    {
+      "id": "basil-thai",
+      "name": "Basil (Thai)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": false,
+      "file": "advanced/basil-thai.md",
+      "status": "complete"
+    },
+    {
+      "id": "basil-lemon",
+      "name": "Basil (Lemon)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": false,
+      "file": "advanced/basil-lemon.md",
+      "status": "complete"
+    },
+    {
+      "id": "shiso",
+      "name": "Shiso (Perilla)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 18,
+      "blackoutDays": 5,
+      "preSoak": true,
+      "file": "advanced/shiso.md",
+      "status": "complete"
+    },
+    {
+      "id": "celery",
+      "name": "Celery",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 21,
+      "blackoutDays": 6,
+      "preSoak": true,
+      "file": "advanced/celery.md",
+      "status": "complete"
+    },
+    {
+      "id": "carrot",
+      "name": "Carrot",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 21,
+      "blackoutDays": 6,
+      "preSoak": true,
+      "file": "advanced/carrot.md",
+      "status": "complete"
+    },
+    {
+      "id": "beet-detroit",
+      "name": "Beet (Detroit Dark Red)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": true,
+      "file": "advanced/beet-detroit.md",
+      "status": "complete"
+    },
+    {
+      "id": "beet-bulls-blood",
+      "name": "Beet (Bull's Blood)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": true,
+      "file": "advanced/beet-bulls-blood.md",
+      "status": "complete"
+    },
+    {
+      "id": "chard-rainbow",
+      "name": "Chard (Rainbow/Swiss)",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": true,
+      "file": "advanced/chard-rainbow.md",
+      "status": "complete"
+    },
+    {
+      "id": "spinach",
+      "name": "Spinach",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 5,
+      "preSoak": true,
+      "file": "advanced/spinach.md",
+      "status": "complete"
     }
   ]
 }
