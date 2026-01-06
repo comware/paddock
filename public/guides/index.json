@@ -761,6 +761,138 @@
       "preSoak": false,
       "file": "herbs/mint.md",
       "status": "complete"
+    },
+    {
+      "id": "nasturtium",
+      "name": "Nasturtium",
+      "category": "specialty",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "specialty/nasturtium.md",
+      "status": "complete"
+    },
+    {
+      "id": "purslane",
+      "name": "Purslane",
+      "category": "specialty",
+      "difficulty": "intermediate",
+      "daysToHarvest": 17,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "specialty/purslane.md",
+      "status": "complete"
+    },
+    {
+      "id": "flax",
+      "name": "Flax",
+      "category": "specialty",
+      "difficulty": "advanced",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "specialty/flax.md",
+      "status": "complete"
+    },
+    {
+      "id": "chia",
+      "name": "Chia",
+      "category": "specialty",
+      "difficulty": "advanced",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "specialty/chia.md",
+      "status": "complete"
+    },
+    {
+      "id": "hemp",
+      "name": "Hemp",
+      "category": "specialty",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "specialty/hemp.md",
+      "status": "complete"
+    },
+    {
+      "id": "popcorn-shoots",
+      "name": "Popcorn Shoots",
+      "category": "specialty",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "specialty/popcorn-shoots.md",
+      "status": "complete"
+    },
+    {
+      "id": "corn",
+      "name": "Field Corn",
+      "category": "specialty",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "specialty/corn.md",
+      "status": "complete"
+    },
+    {
+      "id": "quinoa",
+      "name": "Quinoa",
+      "category": "specialty",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": true,
+      "file": "specialty/quinoa.md",
+      "status": "complete"
+    },
+    {
+      "id": "oat",
+      "name": "Oat Grass",
+      "category": "specialty",
+      "difficulty": "beginner",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": true,
+      "file": "specialty/oat.md",
+      "status": "complete"
+    },
+    {
+      "id": "sesame",
+      "name": "Sesame",
+      "category": "specialty",
+      "difficulty": "advanced",
+      "daysToHarvest": 15,
+      "blackoutDays": 4,
+      "preSoak": true,
+      "file": "specialty/sesame.md",
+      "status": "complete"
+    },
+    {
+      "id": "shungiku",
+      "name": "Shungiku (Chrysanthemum)",
+      "category": "specialty",
+      "difficulty": "intermediate",
+      "daysToHarvest": 17,
+      "blackoutDays": 4,
+      "preSoak": false,
+      "file": "specialty/shungiku.md",
+      "status": "complete"
+    },
+    {
+      "id": "amaranth-golden",
+      "name": "Amaranth (Golden)",
+      "category": "specialty",
+      "difficulty": "intermediate",
+      "daysToHarvest": 12,
+      "blackoutDays": 3,
+      "preSoak": false,
+      "file": "specialty/amaranth-golden.md",
+      "status": "complete"
     }
   ]
 }
