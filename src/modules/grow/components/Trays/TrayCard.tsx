@@ -5,7 +5,8 @@
  */
 
 import type { TrayWithComputed } from '../../stores';
-import { format } from 'date-fns';
+import { useVarieties } from '../../stores';
+import { format, addDays } from 'date-fns';
 
 interface TrayCardProps {
   tray: TrayWithComputed;
@@ -50,6 +51,14 @@ const gradeConfig = {
 
 export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardProps) {
   const config = statusConfig[tray.status];
+  const { getVariety } = useVarieties();
+  const variety = getVariety(tray.variety);
+
+  // Calculate estimated dates
+  const estimatedLightDate = addDays(tray.dateSown, tray.blackoutDays);
+  const estimatedHarvestDate = variety?.typicalDaysToHarvest
+    ? addDays(tray.dateSown, variety.typicalDaysToHarvest)
+    : null;
 
   return (
     <div
@@ -85,6 +94,32 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
         {tray.yieldRatio && (
           <div>
             <span className="opacity-70">Yield:</span> {tray.yieldRatio}x
+          </div>
+        )}
+        {/* Estimated/Actual Light Date */}
+        {tray.status === 'blackout' && (
+          <div>
+            <span className="opacity-70">Est. Light:</span>{' '}
+            {format(estimatedLightDate, 'MMM d')}
+          </div>
+        )}
+        {tray.status === 'light' && tray.dateToLight && (
+          <div>
+            <span className="opacity-70">Light:</span>{' '}
+            {format(tray.dateToLight, 'MMM d')}
+          </div>
+        )}
+        {/* Estimated/Actual Harvest Date */}
+        {(tray.status === 'blackout' || tray.status === 'light') && estimatedHarvestDate && (
+          <div>
+            <span className="opacity-70">Est. Harvest:</span>{' '}
+            {format(estimatedHarvestDate, 'MMM d')}
+          </div>
+        )}
+        {tray.status === 'harvested' && tray.dateHarvested && (
+          <div>
+            <span className="opacity-70">Harvested:</span>{' '}
+            {format(tray.dateHarvested, 'MMM d')}
           </div>
         )}
       </div>
