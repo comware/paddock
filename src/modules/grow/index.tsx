@@ -16,6 +16,7 @@ const growNavItems: ModuleNavItem[] = [
   { name: 'Time', path: '/time', icon: '⏱️' },
   { name: 'Analytics', path: '/analytics', icon: '📈' },
   { name: 'Decision', path: '/decision', icon: '🎯' },
+  { name: 'Guides', path: '/guides', icon: '📚' },
 ];
 
 export default function GrowModule() {

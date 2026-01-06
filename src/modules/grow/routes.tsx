@@ -12,6 +12,7 @@ import { DailyLogForm, LogHistory } from './components/DailyLog';
 import { TimeEntryForm, TimeStats } from './components/TimeEntry';
 import { VarietyComparison, TrendCharts } from './components/Analytics';
 import { Scorecard } from './components/Decision';
+import { GuideLibrary } from './components/Guides';
 
 // ============================================
 // DAILY LOG PAGE
@@ -152,4 +153,5 @@ export const growRoutes: RouteObject[] = [
   { path: 'time', element: <TimeTrackingPage /> },
   { path: 'analytics', element: <AnalyticsPage /> },
   { path: 'decision', element: <DecisionPage /> },
+  { path: 'guides', element: <GuideLibrary /> },
 ];
