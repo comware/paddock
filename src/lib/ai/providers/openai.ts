@@ -92,7 +92,7 @@ export class OpenAIProvider implements ILLMProvider {
       body: JSON.stringify({
         model: request.model,
         messages,
-        max_tokens: request.maxTokens || 4096,
+        max_completion_tokens: request.maxTokens || 4096,
         temperature: request.temperature ?? 0.7,
       }),
     });
@@ -157,7 +157,7 @@ export class OpenAIProvider implements ILLMProvider {
         body: JSON.stringify({
           model: request.model,
           messages,
-          max_tokens: request.maxTokens || 4096,
+          max_completion_tokens: request.maxTokens || 4096,
           temperature: request.temperature ?? 0.7,
           stream: true,
         }),
