@@ -20,3 +20,4 @@ export {
   getModelById,
 } from './types';
 export { useAIStore, useAvailableModels } from './store';
+export { AIError, parseApiError, type AIErrorType, type AIErrorDetails } from './errors';

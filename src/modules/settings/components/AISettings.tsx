@@ -6,7 +6,8 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { aiService, type LLMProvider, getModelsForProvider } from '@/lib/ai';
+import { aiService, type LLMProvider, getModelsForProvider, parseApiError, type AIErrorType } from '@/lib/ai';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 interface ProviderConfig {
   id: LLMProvider;
@@ -44,7 +45,7 @@ const PROVIDERS: ProviderConfig[] = [
   },
 ];
 
-export function AISettings() {
+function AISettingsContent() {
   const [apiKeys, setApiKeys] = useState<Record<LLMProvider, string>>({
     openai: '',
     anthropic: '',
@@ -56,7 +57,7 @@ export function AISettings() {
     gemini: null,
   });
   const [validationStatus, setValidationStatus] = useState<
-    Record<LLMProvider, 'idle' | 'validating' | 'valid' | 'invalid'>
+    Record<LLMProvider, 'idle' | 'validating' | 'valid' | AIErrorType>
   >({
     openai: 'idle',
     anthropic: 'idle',
@@ -113,13 +114,20 @@ export function AISettings() {
           setValidationStatus((prev) => ({ ...prev, [provider]: 'idle' }));
         }, 2000);
       } else {
-        setValidationStatus((prev) => ({ ...prev, [provider]: 'invalid' }));
+        // Validation returned false - this is an auth error
+        setValidationStatus((prev) => ({ ...prev, [provider]: 'auth' }));
         // Delete the invalid key
         await aiService.deleteApiKey(provider);
       }
     } catch (error) {
       console.error('Failed to save API key:', error);
-      setValidationStatus((prev) => ({ ...prev, [provider]: 'invalid' }));
+      // Parse the error to get a specific error type
+      const aiError = parseApiError(error, provider);
+      setValidationStatus((prev) => ({ ...prev, [provider]: aiError.type }));
+      // Delete key if it was an auth error
+      if (aiError.type === 'auth') {
+        await aiService.deleteApiKey(provider);
+      }
     }
   }, [apiKeys]);
 
@@ -186,13 +194,38 @@ interface ProviderCardProps {
   provider: ProviderConfig;
   maskedKey: string | null;
   apiKey: string;
-  validationStatus: 'idle' | 'validating' | 'valid' | 'invalid';
+  validationStatus: 'idle' | 'validating' | 'valid' | AIErrorType;
   isEditing: boolean;
   onEdit: () => void;
   onCancel: () => void;
   onKeyChange: (value: string) => void;
   onSave: () => void;
   onDelete: () => void;
+}
+
+/**
+ * Get user-friendly error message based on error type
+ */
+function getValidationErrorMessage(errorType: AIErrorType, providerName: string): string {
+  switch (errorType) {
+    case 'auth':
+      return 'Invalid API key. Please verify your key is correct and has not expired.';
+    case 'network':
+      return 'Unable to connect. Please check your internet connection and try again.';
+    case 'rate_limit':
+      return 'Rate limit exceeded. Please wait a moment before trying again.';
+    case 'provider_error':
+      return `${providerName} is experiencing issues. Please try again later.`;
+    default:
+      return 'Something went wrong. Please try again.';
+  }
+}
+
+/**
+ * Check if status represents an error state
+ */
+function isErrorStatus(status: string): status is AIErrorType {
+  return !['idle', 'validating', 'valid'].includes(status);
 }
 
 function ProviderCard({
@@ -209,6 +242,7 @@ function ProviderCard({
 }: ProviderCardProps) {
   const models = getModelsForProvider(provider.id);
   const isConfigured = !!maskedKey;
+  const hasError = isErrorStatus(validationStatus);
 
   return (
     <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
@@ -242,9 +276,9 @@ function ProviderCard({
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
               autoFocus
             />
-            {validationStatus === 'invalid' && (
+            {hasError && (
               <p className="text-sm text-red-500 mt-1">
-                Invalid API key. Please check and try again.
+                {getValidationErrorMessage(validationStatus as AIErrorType, provider.name)}
               </p>
             )}
           </div>
@@ -329,5 +363,16 @@ function ProviderCard({
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * AISettings wrapped with ErrorBoundary for graceful error handling
+ */
+export function AISettings() {
+  return (
+    <ErrorBoundary section="AI Settings">
+      <AISettingsContent />
+    </ErrorBoundary>
   );
 }
