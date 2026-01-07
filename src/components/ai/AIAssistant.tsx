@@ -37,7 +37,8 @@ export function AIAssistant() {
     clearMessages,
     startNewConversation,
     loadConversation,
-    editLastUserMessage,
+    editMessageAtIndex,
+    deleteMessageAndAfter,
   } = useAIStore();
 
   const {
@@ -49,8 +50,9 @@ export function AIAssistant() {
   const { models, isLoading: modelsLoading } = useAvailableModels();
   const [input, setInput] = useState('');
   const [view, setView] = useState<View>('chat');
-  const [editingMessage, setEditingMessage] = useState<string | null>(null);
+  const [editingMessageIndex, setEditingMessageIndex] = useState<number | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteConfirmMessageIndex, setDeleteConfirmMessageIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -89,14 +91,14 @@ export function AIAssistant() {
       const message = input;
       setInput('');
 
-      if (editingMessage !== null) {
-        await editLastUserMessage(message);
-        setEditingMessage(null);
+      if (editingMessageIndex !== null) {
+        await editMessageAtIndex(editingMessageIndex, message);
+        setEditingMessageIndex(null);
       } else {
         await sendMessage(message);
       }
     },
-    [input, isStreaming, sendMessage, editLastUserMessage, editingMessage]
+    [input, isStreaming, sendMessage, editMessageAtIndex, editingMessageIndex]
   );
 
   const handleKeyDown = useCallback(
@@ -106,25 +108,36 @@ export function AIAssistant() {
         handleSubmit(e as unknown as FormEvent);
       }
       if (e.key === 'Escape') {
-        if (editingMessage !== null) {
-          setEditingMessage(null);
+        if (editingMessageIndex !== null) {
+          setEditingMessageIndex(null);
           setInput('');
         } else if (isExpanded) {
           setIsExpanded(false);
         }
       }
     },
-    [handleSubmit, editingMessage, isExpanded]
+    [handleSubmit, editingMessageIndex, isExpanded]
   );
 
-  const handleEditLastMessage = useCallback(() => {
-    const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user');
-    if (lastUserMessage) {
-      setEditingMessage(lastUserMessage.content);
-      setInput(lastUserMessage.content);
+  const handleEditMessage = useCallback((index: number) => {
+    const message = messages[index];
+    if (message && message.role === 'user') {
+      setEditingMessageIndex(index);
+      setInput(message.content);
       inputRef.current?.focus();
     }
   }, [messages]);
+
+  const handleDeleteMessage = useCallback((index: number) => {
+    setDeleteConfirmMessageIndex(index);
+  }, []);
+
+  const handleConfirmDeleteMessage = useCallback(async () => {
+    if (deleteConfirmMessageIndex !== null) {
+      await deleteMessageAndAfter(deleteConfirmMessageIndex);
+      setDeleteConfirmMessageIndex(null);
+    }
+  }, [deleteConfirmMessageIndex, deleteMessageAndAfter]);
 
   const handleNewConversation = useCallback(() => {
     startNewConversation();
@@ -325,18 +338,23 @@ export function AIAssistant() {
                   <MessageBubble
                     key={index}
                     message={message}
-                    isLastUserMessage={
-                      message.role === 'user' &&
-                      index === messages.length - 1 - [...messages].slice(index + 1).findIndex((m) => m.role === 'user') - 1
-                    }
                     onEdit={
                       message.role === 'user' && !isStreaming
-                        ? handleEditLastMessage
+                        ? () => handleEditMessage(index)
                         : undefined
                     }
+                    onDelete={!isStreaming ? () => handleDeleteMessage(index) : undefined}
                     isExpanded={isExpanded}
                   />
                 ))}
+
+                {isStreaming && !streamingContent && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-100 dark:bg-slate-700 rounded-xl px-4 py-3">
+                      <BouncingDots />
+                    </div>
+                  </div>
+                )}
 
                 {streamingContent && (
                   <MessageBubble
@@ -360,7 +378,7 @@ export function AIAssistant() {
 
               {/* Input area */}
               <form onSubmit={handleSubmit} className="p-3 border-t border-slate-200 dark:border-slate-700">
-                {editingMessage !== null && (
+                {editingMessageIndex !== null && (
                   <div className="flex items-center gap-2 mb-2 text-xs text-amber-600 dark:text-amber-400">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -378,7 +396,7 @@ export function AIAssistant() {
                     disabled={noModels || isStreaming}
                     rows={1}
                     className={`flex-1 px-3 py-2 rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 resize-none focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                      editingMessage !== null
+                      editingMessageIndex !== null
                         ? 'border-amber-400 focus:ring-amber-500'
                         : 'border-slate-300 dark:border-slate-600 focus:ring-primary-500'
                     }`}
@@ -389,7 +407,7 @@ export function AIAssistant() {
                     className="px-4 py-2 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isStreaming ? (
-                      <span className="animate-spin">⟳</span>
+                      <BouncingDots />
                     ) : (
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -403,7 +421,7 @@ export function AIAssistant() {
         </div>
       )}
 
-      {/* Delete confirmation dialog */}
+      {/* Delete conversation confirmation dialog */}
       <ConfirmDialog
         isOpen={deleteConfirmId !== null}
         onClose={() => setDeleteConfirmId(null)}
@@ -413,19 +431,43 @@ export function AIAssistant() {
         confirmLabel="Delete"
         variant="danger"
       />
+
+      {/* Delete message confirmation dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirmMessageIndex !== null}
+        onClose={() => setDeleteConfirmMessageIndex(null)}
+        onConfirm={handleConfirmDeleteMessage}
+        title="Delete Message"
+        message="This will delete this message and all messages after it. Continue?"
+        confirmLabel="Delete"
+        variant="danger"
+      />
     </>
+  );
+}
+
+/**
+ * BouncingDots - Loading indicator with animated dots
+ */
+function BouncingDots() {
+  return (
+    <span className="inline-flex items-center gap-0.5">
+      <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+      <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+      <span className="w-1.5 h-1.5 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+    </span>
   );
 }
 
 interface MessageBubbleProps {
   message: ChatMessage;
   isStreaming?: boolean;
-  isLastUserMessage?: boolean;
   onEdit?: () => void;
+  onDelete?: () => void;
   isExpanded?: boolean;
 }
 
-function MessageBubble({ message, isStreaming, isLastUserMessage, onEdit, isExpanded }: MessageBubbleProps) {
+function MessageBubble({ message, isStreaming, onEdit, onDelete, isExpanded }: MessageBubbleProps) {
   const isUser = message.role === 'user';
   const [showActions, setShowActions] = useState(false);
 
@@ -457,17 +499,32 @@ function MessageBubble({ message, isStreaming, isLastUserMessage, onEdit, isExpa
           )}
         </div>
 
-        {/* Edit button for user messages */}
-        {isUser && onEdit && showActions && isLastUserMessage && (
-          <button
-            onClick={onEdit}
-            className="absolute -left-8 top-1/2 -translate-y-1/2 p-1 rounded bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 opacity-0 group-hover:opacity-100 transition-opacity"
-            title="Edit message"
-          >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-          </button>
+        {/* Action buttons for messages */}
+        {showActions && (onEdit || onDelete) && (
+          <div className={`absolute ${isUser ? '-left-16' : '-right-16'} top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity`}>
+            {isUser && onEdit && (
+              <button
+                onClick={onEdit}
+                className="p-1 rounded bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500"
+                title="Edit message (regenerates response)"
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={onDelete}
+                className="p-1 rounded bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white"
+                title="Delete message and all after"
+              >
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>
