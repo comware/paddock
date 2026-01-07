@@ -60,7 +60,7 @@ export const SUPPORTED_MODELS: LLMModel[] = [
     supportsStreaming: true,
     supportsVision: true,
   },
-  // Google Gemini 3 (latest) and 2.5
+  // Google Gemini 3 (latest)
   {
     id: 'gemini-3-pro-preview',
     name: 'Gemini 3 Pro',
@@ -72,22 +72,6 @@ export const SUPPORTED_MODELS: LLMModel[] = [
   {
     id: 'gemini-3-flash-preview',
     name: 'Gemini 3 Flash',
-    provider: 'gemini',
-    contextWindow: 1048576,
-    supportsStreaming: true,
-    supportsVision: true,
-  },
-  {
-    id: 'gemini-2.5-pro',
-    name: 'Gemini 2.5 Pro',
-    provider: 'gemini',
-    contextWindow: 1048576,
-    supportsStreaming: true,
-    supportsVision: true,
-  },
-  {
-    id: 'gemini-2.5-flash',
-    name: 'Gemini 2.5 Flash',
     provider: 'gemini',
     contextWindow: 1048576,
     supportsStreaming: true,
