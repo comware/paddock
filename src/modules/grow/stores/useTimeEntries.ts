@@ -47,18 +47,24 @@ export interface TimeEntriesState {
 
   // Actions
   loadEntries: () => Promise<void>;
-  getTodaysEntry: () => GrowTimeEntry | null;
+  getTodaysEntry: (siteId?: string) => GrowTimeEntry | null;
   saveTimeEntry: (data: Partial<GrowTimeEntry>) => Promise<string>;
-  addTimeToCategory: (category: TimeCategory, minutes: number) => Promise<void>;
+  addTimeToCategory: (category: TimeCategory, minutes: number, siteId?: string) => Promise<void>;
   updateEntry: (id: string, updates: Partial<GrowTimeEntry>) => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
+  migrateOrphanEntries: (defaultSiteId: string) => Promise<number>;
 
-  // Selectors
+  // Site-scoped selectors
+  getEntriesForSite: (siteId: string) => GrowTimeEntry[];
+  getTodaysEntryForSite: (siteId: string) => GrowTimeEntry | null;
+  getThisWeeksTotalForSite: (siteId: string) => number;
+
+  // Global selectors
   getTodaysTotal: () => number;
   getThisWeeksTotal: () => number;
   getWeeklyTarget: () => number;
-  getCategoryTotals: (period?: 'today' | 'week' | 'all') => CategoryTotal[];
-  getDailyTotals: (days?: number) => { date: string; minutes: number }[];
+  getCategoryTotals: (period?: 'today' | 'week' | 'all', siteId?: string) => CategoryTotal[];
+  getDailyTotals: (days?: number, siteId?: string) => { date: string; minutes: number }[];
 }
 
 // Weekly target in minutes (8-10 hours = 480-600 minutes)
@@ -101,18 +107,25 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     }
   },
 
-  // Get today's entry (one per day)
-  getTodaysEntry: () => {
+  // Get today's entry (optionally filtered by site)
+  getTodaysEntry: (siteId?: string) => {
     const { entries } = get();
     const today = startOfDay(new Date());
-    return entries.find((e) => isSameDay(new Date(e.date), today)) || null;
+    return entries.find((e) =>
+      isSameDay(new Date(e.date), today) &&
+      (siteId ? e.siteId === siteId : true)
+    ) || null;
   },
 
   // Save or update today's time entry
   saveTimeEntry: async (data) => {
     const { entries } = get();
     const today = startOfDay(new Date());
-    const existing = entries.find((e) => isSameDay(new Date(e.date), today));
+    // Find existing entry for same day AND same site (if site provided)
+    const existing = entries.find((e) =>
+      isSameDay(new Date(e.date), today) &&
+      (data.siteId ? e.siteId === data.siteId : !e.siteId)
+    );
 
     const now = new Date();
 
@@ -123,6 +136,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     } else {
       // Create new entry
       const entry: Omit<GrowTimeEntry, 'id'> = {
+        siteId: data.siteId,
         date: today,
         week: getISOWeek(today),
         wateringChecking: data.wateringChecking || 0,
@@ -151,9 +165,9 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     }
   },
 
-  // Quick add time to a category for today
-  addTimeToCategory: async (category, minutes) => {
-    const todaysEntry = get().getTodaysEntry();
+  // Quick add time to a category for today (optionally for a specific site)
+  addTimeToCategory: async (category, minutes, siteId?) => {
+    const todaysEntry = get().getTodaysEntry(siteId);
 
     if (todaysEntry) {
       const currentValue = (todaysEntry[category] as number) || 0;
@@ -162,6 +176,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
       });
     } else {
       await get().saveTimeEntry({
+        siteId,
         [category]: minutes,
       });
     }
@@ -197,6 +212,63 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     }
   },
 
+  // Migrate orphan entries to a default site
+  migrateOrphanEntries: async (defaultSiteId) => {
+    const { entries } = get();
+    const orphans = entries.filter((e) => !e.siteId);
+
+    if (orphans.length === 0) return 0;
+
+    try {
+      // Update each orphan entry with the default site
+      await Promise.all(
+        orphans.map((entry) =>
+          growDb.timeEntries.update(entry.id!, { siteId: defaultSiteId })
+        )
+      );
+
+      // Update local state
+      set((state) => ({
+        entries: state.entries.map((e) =>
+          !e.siteId ? { ...e, siteId: defaultSiteId } : e
+        ),
+      }));
+
+      return orphans.length;
+    } catch (error) {
+      set({ error: (error as Error).message });
+      throw error;
+    }
+  },
+
+  // Site-scoped selectors
+  getEntriesForSite: (siteId) => {
+    const { entries } = get();
+    return entries.filter((e) => e.siteId === siteId);
+  },
+
+  getTodaysEntryForSite: (siteId) => {
+    const { entries } = get();
+    const today = startOfDay(new Date());
+    return entries.find((e) =>
+      e.siteId === siteId && isSameDay(new Date(e.date), today)
+    ) || null;
+  },
+
+  getThisWeeksTotalForSite: (siteId) => {
+    const { entries } = get();
+    const now = new Date();
+    const weekStart = startOfWeek(now, { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
+
+    return entries
+      .filter((e) =>
+        e.siteId === siteId &&
+        isWithinInterval(new Date(e.date), { start: weekStart, end: weekEnd })
+      )
+      .reduce((sum, e) => sum + getEntryTotal(e), 0);
+  },
+
   // Get today's total minutes
   getTodaysTotal: () => {
     const todaysEntry = get().getTodaysEntry();
@@ -220,19 +292,20 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
   // Get weekly target
   getWeeklyTarget: () => WEEKLY_TARGET_MINUTES,
 
-  // Get category breakdown
-  getCategoryTotals: (period = 'week') => {
+  // Get category breakdown (optionally filtered by site)
+  getCategoryTotals: (period = 'week', siteId?) => {
     const { entries } = get();
-    let filtered = entries;
+    // First filter by site if provided
+    let filtered = siteId ? entries.filter((e) => e.siteId === siteId) : entries;
 
     if (period === 'today') {
-      const todaysEntry = get().getTodaysEntry();
+      const todaysEntry = get().getTodaysEntry(siteId);
       filtered = todaysEntry ? [todaysEntry] : [];
     } else if (period === 'week') {
       const now = new Date();
       const weekStart = startOfWeek(now, { weekStartsOn: 1 });
       const weekEnd = endOfWeek(now, { weekStartsOn: 1 });
-      filtered = entries.filter((e) =>
+      filtered = filtered.filter((e) =>
         isWithinInterval(new Date(e.date), { start: weekStart, end: weekEnd })
       );
     }
@@ -271,9 +344,11 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     })).filter((c) => c.minutes > 0);
   },
 
-  // Get daily totals for charting
-  getDailyTotals: (days = 7) => {
+  // Get daily totals for charting (optionally filtered by site)
+  getDailyTotals: (days = 7, siteId?) => {
     const { entries } = get();
+    // Filter by site if provided
+    const filtered = siteId ? entries.filter((e) => e.siteId === siteId) : entries;
     const totals = new Map<string, number>();
 
     // Initialize last N days with 0
@@ -285,7 +360,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     }
 
     // Sum up entries
-    for (const entry of entries) {
+    for (const entry of filtered) {
       const key = format(startOfDay(new Date(entry.date)), 'yyyy-MM-dd');
       if (totals.has(key)) {
         totals.set(key, (totals.get(key) || 0) + getEntryTotal(entry));

@@ -14,6 +14,7 @@ import { z } from 'zod';
 import { Modal } from '@/components/ui';
 import { useTrays, useVarieties, useMediums, useSites } from '../../stores';
 import { useEffect } from 'react';
+import { useSiteContext } from '../Sites/SiteDetailLayout';
 
 const traySchema = z.object({
   label: z.string().optional(),
@@ -37,10 +38,14 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   const { addTray, getNextTrayNumber } = useTrays();
   const { varieties, isLoading: varietiesLoading } = useVarieties();
   const { mediums, loadMediums, isLoading: mediumsLoading } = useMediums();
-  const { getActiveSite, getDefaultSite } = useSites();
+  const { getActiveSite, getDefaultSite, ensureDefaultSite } = useSites();
+
+  // Use site from context if available (inside SiteDetailLayout)
+  const { site: contextSite } = useSiteContext();
 
   const nextTrayNumber = getNextTrayNumber();
-  const activeSite = getActiveSite() || getDefaultSite();
+  // Prefer context site, then active site, then default site
+  const activeSite = contextSite || getActiveSite() || getDefaultSite();
 
   const {
     register,
@@ -82,10 +87,13 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
 
   const onSubmit = async (data: TrayFormData) => {
     try {
+      // Ensure we have a site to assign the tray to
+      const site = activeSite || await ensureDefaultSite();
+
       await addTray({
         trayNumber: nextTrayNumber,
         label: data.label || undefined, // Only set if user provided a custom label
-        siteId: activeSite?.id, // Associate with active site
+        siteId: site.id, // Associate with site (guaranteed to exist)
         variety: data.variety,
         dateSown: new Date(),
         seedWeight: data.seedWeight,

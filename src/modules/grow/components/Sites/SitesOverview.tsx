@@ -1,0 +1,310 @@
+/**
+ * SitesOverview - Landing page for site-centric navigation
+ *
+ * Shows all sites as cards with:
+ * - Weather preview
+ * - Active tray counts
+ * - "Needs attention" indicators
+ * - Click to drill down to site detail
+ */
+
+import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSites, useTrays } from '../../stores';
+import { useWeather } from '../../hooks/useWeather';
+import { getWeatherEmoji } from '@/lib/weather';
+import { NewSiteForm } from './NewSiteForm';
+import type { GrowSite } from '@/lib/db';
+import type { TrayWithComputed } from '../../stores';
+import { addDays, isAfter, startOfDay } from 'date-fns';
+
+interface SiteMetrics {
+  activeBlackout: number;
+  activeLight: number;
+  readyForLight: number;
+  readyToHarvest: number;
+  needsAttention: number;
+}
+
+function computeSiteMetrics(trays: TrayWithComputed[], siteId: string): SiteMetrics {
+  const siteTrays = trays.filter((t) => t.siteId === siteId);
+  const today = startOfDay(new Date());
+
+  const activeBlackout = siteTrays.filter((t) => t.status === 'blackout').length;
+  const activeLight = siteTrays.filter((t) => t.status === 'light').length;
+
+  // Calculate ready for light (blackout phase complete)
+  const readyForLight = siteTrays.filter((t) => {
+    if (t.status !== 'blackout') return false;
+    const lightDate = addDays(new Date(t.dateSown), t.blackoutDays);
+    return isAfter(today, lightDate);
+  }).length;
+
+  // Calculate ready to harvest (7+ days in light)
+  const readyToHarvest = siteTrays.filter((t) => {
+    if (t.status !== 'light') return false;
+    return t.daysInPhase >= 7;
+  }).length;
+
+  return {
+    activeBlackout,
+    activeLight,
+    readyForLight,
+    readyToHarvest,
+    needsAttention: readyForLight + readyToHarvest,
+  };
+}
+
+// Enhanced Site Card for Overview
+interface SiteOverviewCardProps {
+  site: GrowSite;
+  metrics: SiteMetrics;
+  onClick: () => void;
+}
+
+function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
+  const { weather, isLoading: weatherLoading } = useWeather(site);
+  const totalActive = metrics.activeBlackout + metrics.activeLight;
+
+  return (
+    <div
+      onClick={onClick}
+      className={`rounded-xl p-5 shadow-sm border-2 cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] ${
+        metrics.needsAttention > 0
+          ? 'border-orange-300 dark:border-orange-600 bg-orange-50 dark:bg-orange-900/10'
+          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
+      }`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{site.isIndoor ? '🏠' : '📍'}</span>
+          <div>
+            <h3 className="font-bold text-slate-900 dark:text-white">{site.name}</h3>
+            {site.isDefault && (
+              <span className="text-xs text-primary-600 dark:text-primary-400">Default</span>
+            )}
+          </div>
+        </div>
+
+        {/* Weather Badge */}
+        {!site.isIndoor && site.weatherEnabled && (
+          <div className="text-right">
+            {weatherLoading ? (
+              <div className="text-xs text-slate-400">...</div>
+            ) : weather ? (
+              <div className="flex items-center gap-1">
+                <span className="text-xl">{getWeatherEmoji(weather.conditions)}</span>
+                <div>
+                  <div className="text-sm font-bold text-slate-900 dark:text-white">
+                    {weather.temperature}°C
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    {weather.humidity}%
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+        {site.isIndoor && (
+          <span className="text-xs text-slate-500 dark:text-slate-400">Indoor</span>
+        )}
+      </div>
+
+      {/* Tray Stats */}
+      <div className="flex items-center gap-4 mb-3 text-sm">
+        <div className="flex items-center gap-1">
+          <span>🌱</span>
+          <span className="font-medium text-slate-700 dark:text-slate-300">
+            {totalActive} active
+          </span>
+        </div>
+        {metrics.activeBlackout > 0 && (
+          <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+            <span>🌑</span>
+            <span>{metrics.activeBlackout}</span>
+          </div>
+        )}
+        {metrics.activeLight > 0 && (
+          <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
+            <span>💡</span>
+            <span>{metrics.activeLight}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Attention Badge */}
+      {metrics.needsAttention > 0 ? (
+        <div className="px-3 py-2 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-medium flex items-center gap-2">
+          <span>⚠️</span>
+          <span>
+            {metrics.needsAttention} need{metrics.needsAttention > 1 ? '' : 's'} attention
+          </span>
+          {metrics.readyForLight > 0 && (
+            <span className="text-xs opacity-75">({metrics.readyForLight} → light)</span>
+          )}
+          {metrics.readyToHarvest > 0 && (
+            <span className="text-xs opacity-75">({metrics.readyToHarvest} → harvest)</span>
+          )}
+        </div>
+      ) : totalActive > 0 ? (
+        <div className="px-3 py-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm font-medium flex items-center gap-2">
+          <span>✅</span>
+          <span>All good</span>
+        </div>
+      ) : (
+        <div className="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-sm flex items-center gap-2">
+          <span>📭</span>
+          <span>No active trays</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function SitesOverview() {
+  const navigate = useNavigate();
+  const { sites, isLoading: sitesLoading, loadSites } = useSites();
+  const { trays, isLoading: traysLoading, loadTrays } = useTrays();
+  const [isNewSiteOpen, setIsNewSiteOpen] = useState(false);
+
+  useEffect(() => {
+    loadSites();
+    loadTrays();
+  }, [loadSites, loadTrays]);
+
+  // Compute metrics for all sites
+  const siteMetrics = useMemo(() => {
+    const metrics = new Map<string, SiteMetrics>();
+    for (const site of sites) {
+      if (site.id) {
+        metrics.set(site.id, computeSiteMetrics(trays, site.id));
+      }
+    }
+    return metrics;
+  }, [sites, trays]);
+
+  // Note: Removed auto-redirect for single site - users should always be able to
+  // access the Sites Overview to add more sites or see global actions
+
+  const isLoading = sitesLoading || traysLoading;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-slate-500 dark:text-slate-400">Loading...</div>
+      </div>
+    );
+  }
+
+  // Calculate total needs attention across all sites
+  const totalNeedsAttention = Array.from(siteMetrics.values()).reduce(
+    (sum, m) => sum + m.needsAttention,
+    0
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Your Sites</h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            {sites.length} site{sites.length !== 1 ? 's' : ''}
+            {totalNeedsAttention > 0 && (
+              <span className="ml-2 text-orange-600 dark:text-orange-400">
+                • {totalNeedsAttention} need attention
+              </span>
+            )}
+          </p>
+        </div>
+        <button
+          onClick={() => setIsNewSiteOpen(true)}
+          className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
+        >
+          <span>+</span>
+          <span>Add Site</span>
+        </button>
+      </div>
+
+      {/* Empty State */}
+      {sites.length === 0 ? (
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
+          <div className="text-5xl mb-4">📍</div>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+            Welcome to Paddock Grow
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+            Start by adding your first growing site. Each site tracks its own trays, observations, and weather data.
+          </p>
+          <button
+            onClick={() => setIsNewSiteOpen(true)}
+            className="px-6 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+          >
+            Add Your First Site
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Sites Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sites.map((site) => (
+              <SiteOverviewCard
+                key={site.id}
+                site={site}
+                metrics={siteMetrics.get(site.id!) || {
+                  activeBlackout: 0,
+                  activeLight: 0,
+                  readyForLight: 0,
+                  readyToHarvest: 0,
+                  needsAttention: 0,
+                }}
+                onClick={() => navigate(`/grow/site/${site.id}`)}
+              />
+            ))}
+          </div>
+
+          {/* Global Actions */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button
+              onClick={() => navigate('/grow/analytics')}
+              className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
+            >
+              <span className="text-2xl mb-2 block">📊</span>
+              <span className="font-medium text-slate-900 dark:text-white">Cross-Site Analytics</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare all sites</span>
+            </button>
+            <button
+              onClick={() => navigate('/grow/decision')}
+              className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
+            >
+              <span className="text-2xl mb-2 block">🎯</span>
+              <span className="font-medium text-slate-900 dark:text-white">Week 6 Decision</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block">Evaluate progress</span>
+            </button>
+            <button
+              onClick={() => navigate('/grow/guides')}
+              className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
+            >
+              <span className="text-2xl mb-2 block">📚</span>
+              <span className="font-medium text-slate-900 dark:text-white">Growing Guides</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block">Reference material</span>
+            </button>
+            <button
+              onClick={() => navigate('/grow/sites/manage')}
+              className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
+            >
+              <span className="text-2xl mb-2 block">⚙️</span>
+              <span className="font-medium text-slate-900 dark:text-white">Manage Sites</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block">Edit & configure</span>
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* New Site Form */}
+      <NewSiteForm isOpen={isNewSiteOpen} onClose={() => setIsNewSiteOpen(false)} />
+    </div>
+  );
+}

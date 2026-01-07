@@ -7,17 +7,20 @@
 
 import { useEffect, useState } from 'react';
 import { useTimeEntries, TIME_CATEGORIES, type TimeCategory } from '../../stores';
+import { useSiteContext } from '../Sites/SiteDetailLayout';
 
 const QUICK_INCREMENTS = [5, 15, 30];
 
 export function TimeEntryForm() {
   const {
     loadEntries,
-    getTodaysEntry,
+    getTodaysEntryForSite,
     addTimeToCategory,
-    getTodaysTotal,
     isLoading,
   } = useTimeEntries();
+
+  // Use site from context if available (inside SiteDetailLayout)
+  const { siteId } = useSiteContext();
 
   const [activeCategory, setActiveCategory] = useState<TimeCategory | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -26,14 +29,20 @@ export function TimeEntryForm() {
     loadEntries();
   }, [loadEntries]);
 
-  const todaysEntry = getTodaysEntry();
-  const todaysTotal = getTodaysTotal();
+  // Get today's entry for this site
+  const todaysEntry = siteId ? getTodaysEntryForSite(siteId) : null;
+
+  // Calculate today's total from entry
+  const todaysTotal = todaysEntry
+    ? TIME_CATEGORIES.reduce((sum, cat) => sum + ((todaysEntry[cat.value] as number) || 0), 0)
+    : 0;
 
   const handleQuickAdd = async (category: TimeCategory, minutes: number) => {
+    if (!siteId) return;
     setIsAdding(true);
     setActiveCategory(category);
     try {
-      await addTimeToCategory(category, minutes);
+      await addTimeToCategory(category, minutes, siteId);
     } finally {
       setIsAdding(false);
       setActiveCategory(null);
@@ -56,6 +65,21 @@ export function TimeEntryForm() {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+      </div>
+    );
+  }
+
+  // No site selected - show prompt to select one
+  if (!siteId) {
+    return (
+      <div className="card p-8 text-center">
+        <div className="text-4xl mb-4">📍</div>
+        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+          No Site Selected
+        </h3>
+        <p className="text-slate-600 dark:text-slate-400">
+          Please select a site to log time for.
+        </p>
       </div>
     );
   }
@@ -150,7 +174,7 @@ export function TimeEntryForm() {
 
       {/* Custom Entry Option */}
       <div className="card p-4">
-        <CustomTimeEntry onAdd={addTimeToCategory} />
+        <CustomTimeEntry siteId={siteId} onAdd={addTimeToCategory} />
       </div>
     </div>
   );
@@ -161,19 +185,20 @@ export function TimeEntryForm() {
 // ============================================
 
 interface CustomTimeEntryProps {
-  onAdd: (category: TimeCategory, minutes: number) => Promise<void>;
+  siteId: string;
+  onAdd: (category: TimeCategory, minutes: number, siteId?: string) => Promise<void>;
 }
 
-function CustomTimeEntry({ onAdd }: CustomTimeEntryProps) {
+function CustomTimeEntry({ siteId, onAdd }: CustomTimeEntryProps) {
   const [category, setCategory] = useState<TimeCategory>('other');
   const [minutes, setMinutes] = useState<number>(15);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAdd = async () => {
-    if (minutes <= 0) return;
+    if (minutes <= 0 || !siteId) return;
     setIsAdding(true);
     try {
-      await onAdd(category, minutes);
+      await onAdd(category, minutes, siteId);
       setMinutes(15); // Reset
     } finally {
       setIsAdding(false);

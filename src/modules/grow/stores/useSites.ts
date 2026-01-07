@@ -34,7 +34,9 @@ export const useSites = create<SitesState>((set, get) => ({
 
   loadSites: async () => {
     try {
-      const sites = await growDb.sites.toArray();
+      const rawSites = await growDb.sites.toArray();
+      // Normalize IDs to strings (Dexie auto-increment returns numbers)
+      const sites = rawSites.map((s) => ({ ...s, id: String(s.id) }));
       const defaultSite = sites.find((s) => s.isDefault);
       const storedActiveSiteId = localStorage.getItem(ACTIVE_SITE_KEY);
 

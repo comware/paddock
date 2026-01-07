@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal, Tabs, TabPanel, type Tab } from '@/components/ui';
-import { useTrays, useVarieties, useMediums, useTrayComments, type TrayWithComputed, type TrayStatus } from '../../stores';
+import { useTrays, useVarieties, useMediums, useSites, useTrayComments, type TrayWithComputed, type TrayStatus } from '../../stores';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { TrayComments } from './TrayComments';
@@ -20,6 +20,7 @@ import { GrowingGuidePanel } from './GrowingGuidePanel';
 
 const editTraySchema = z.object({
   label: z.string().optional(),
+  siteId: z.string().optional(),
   variety: z.string().min(1, 'Please select a variety'),
   seedWeight: z.number().min(1, 'Weight must be at least 1g').max(500, 'Weight cannot exceed 500g'),
   growingMedium: z.string().min(1, 'Please select a growing medium'),
@@ -62,7 +63,9 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   const { updateTray, deleteTray, setStatus } = useTrays();
   const { varieties, isLoading: varietiesLoading } = useVarieties();
   const { mediums, loadMediums, isLoading: mediumsLoading } = useMediums();
+  const { sites, getDefaultSite } = useSites();
   const { clearComments } = useTrayComments();
+  const defaultSite = getDefaultSite();
   const [activeTab, setActiveTab] = useState<string>('details');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isStatusChanging, setIsStatusChanging] = useState(false);
@@ -80,6 +83,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
     resolver: zodResolver(editTraySchema),
     defaultValues: {
       label: tray.label || '',
+      siteId: tray.siteId || defaultSite?.id || '',
       variety: tray.variety,
       seedWeight: tray.seedWeight,
       growingMedium: tray.growingMedium,
@@ -103,6 +107,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
   useEffect(() => {
     reset({
       label: tray.label || '',
+      siteId: tray.siteId || defaultSite?.id || '',
       variety: tray.variety,
       seedWeight: tray.seedWeight,
       growingMedium: tray.growingMedium,
@@ -116,7 +121,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
     setCurrentStatus(tray.status);
     setStatusChanged(false);
     setActiveTab('details');
-  }, [tray, reset]);
+  }, [tray, reset, defaultSite]);
 
   const onSubmit = async (data: EditTrayFormData) => {
     try {
@@ -127,6 +132,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
 
       await updateTray(tray.id!, {
         label: data.label || undefined, // Clear label if empty to use default
+        siteId: data.siteId || undefined,
         variety: data.variety,
         seedWeight: data.seedWeight,
         growingMedium: data.growingMedium,
@@ -226,6 +232,25 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
                 Leave blank to use "Tray #{tray.trayNumber}"
               </p>
             </div>
+
+            {/* Site */}
+            {sites.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  Site
+                </label>
+                <select
+                  {...register('siteId')}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  {sites.map((site) => (
+                    <option key={site.id} value={site.id}>
+                      {site.name}{site.isDefault ? ' (Default)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Variety */}
             <div>

@@ -1,12 +1,12 @@
 /**
- * useTrayMigration - One-time migration hook for orphan trays
+ * useObservationMigration - One-time migration hook for orphan observations
  *
- * Assigns trays without a siteId to the default site.
- * Safe to call multiple times - only runs if orphan trays exist.
+ * Assigns observations without a siteId to the default site.
+ * Safe to call multiple times - only runs if orphan observations exist.
  */
 
 import { useEffect, useState } from 'react';
-import { useTrays, useSites } from '../stores';
+import { useObservations, useSites } from '../stores';
 
 interface MigrationStatus {
   isRunning: boolean;
@@ -15,8 +15,8 @@ interface MigrationStatus {
   error: string | null;
 }
 
-export function useTrayMigration(): MigrationStatus {
-  const { trays, isLoading: traysLoading, migrateOrphanTrays } = useTrays();
+export function useObservationMigration(): MigrationStatus {
+  const { observations, isLoading: observationsLoading, migrateOrphanObservations } = useObservations();
   const { sites, isLoading: sitesLoading, ensureDefaultSite } = useSites();
   const [status, setStatus] = useState<MigrationStatus>({
     isRunning: false,
@@ -27,14 +27,14 @@ export function useTrayMigration(): MigrationStatus {
 
   useEffect(() => {
     // Wait for both stores to load
-    if (traysLoading || sitesLoading) return;
+    if (observationsLoading || sitesLoading) return;
 
     // Already running
     if (status.isRunning) return;
 
     // Check if migration is needed (always check, not just once)
-    const orphanTrays = trays.filter((t) => !t.siteId);
-    if (orphanTrays.length === 0) {
+    const orphanObservations = observations.filter((o) => !o.siteId);
+    if (orphanObservations.length === 0) {
       if (!status.isComplete) {
         setStatus((s) => ({ ...s, isComplete: true }));
       }
@@ -52,8 +52,8 @@ export function useTrayMigration(): MigrationStatus {
           throw new Error('Failed to get default site');
         }
 
-        // Migrate orphan trays
-        const count = await migrateOrphanTrays(defaultSite.id);
+        // Migrate orphan observations
+        const count = await migrateOrphanObservations(defaultSite.id);
 
         setStatus({
           isRunning: false,
@@ -63,7 +63,7 @@ export function useTrayMigration(): MigrationStatus {
         });
 
         if (count > 0) {
-          console.log(`Migrated ${count} trays to default site: ${defaultSite.name}`);
+          console.log(`Migrated ${count} observations to default site: ${defaultSite.name}`);
         }
       } catch (error) {
         setStatus({
@@ -76,7 +76,7 @@ export function useTrayMigration(): MigrationStatus {
     };
 
     runMigration();
-  }, [traysLoading, sitesLoading, trays, sites, status.isRunning, ensureDefaultSite, migrateOrphanTrays]);
+  }, [observationsLoading, sitesLoading, observations, sites, status.isRunning, ensureDefaultSite, migrateOrphanObservations]);
 
   return status;
 }

@@ -1,9 +1,12 @@
 /**
  * DailyLogForm - Main daily observation entry form
  *
- * One entry per day - auto-saves and updates existing entry if present.
+ * One entry per day per site - auto-saves and updates existing entry if present.
  * Auto-populates tray counts from current tray state.
- * Auto-populates weather from active site's weather API when available.
+ * Auto-populates weather from site's weather API when available.
+ *
+ * When rendered inside SiteDetailLayout, uses site context.
+ * Otherwise falls back to active site for backwards compatibility.
  */
 
 import { useEffect, useState } from 'react';
@@ -14,6 +17,7 @@ import { MoodSlider } from './MoodSlider';
 import { useObservations, useTrays, useSites } from '../../stores';
 import { useWeather } from '../../hooks/useWeather';
 import { getWeatherEmoji } from '@/lib/weather';
+import { useSiteContext } from '../Sites/SiteDetailLayout';
 
 // ============================================
 // SCHEMA
@@ -39,21 +43,28 @@ type DailyLogFormData = z.infer<typeof dailyLogSchema>;
 // ============================================
 
 export function DailyLogForm() {
-  const { getTodaysObservation, saveObservation, loadObservations, isLoading } = useObservations();
+  const { getTodaysObservationForSite, saveObservation, loadObservations, isLoading } = useObservations();
   const { trays } = useTrays();
   const { getActiveSite, loadSites } = useSites();
-  const activeSite = getActiveSite();
+
+  // Use site from context if available (inside SiteDetailLayout), fall back to active site
+  const siteContext = useSiteContext();
+  const activeSite = siteContext.site || getActiveSite();
+  const siteId = siteContext.siteId || activeSite?.id;
+
   const { weather, isLoading: weatherLoading } = useWeather(activeSite);
 
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [weatherSource, setWeatherSource] = useState<'manual' | 'api'>('manual');
 
-  // Calculate current tray counts from store
-  const blackoutCount = trays.filter((t) => t.status === 'blackout').length;
-  const lightCount = trays.filter((t) => t.status === 'light').length;
+  // Calculate current tray counts from store (filtered by site if available)
+  const siteTrays = siteId ? trays.filter((t) => t.siteId === siteId) : trays;
+  const blackoutCount = siteTrays.filter((t) => t.status === 'blackout').length;
+  const lightCount = siteTrays.filter((t) => t.status === 'light').length;
 
-  const todaysEntry = getTodaysObservation();
+  // Get today's observation for this site
+  const todaysEntry = siteId ? getTodaysObservationForSite(siteId) : null;
 
   const {
     register,
@@ -149,9 +160,13 @@ export function DailyLogForm() {
   };
 
   const onSubmit = async (data: DailyLogFormData) => {
+    if (!siteId) {
+      console.error('No site selected');
+      return;
+    }
     setIsSaving(true);
     try {
-      await saveObservation(data);
+      await saveObservation({ ...data, siteId });
       setLastSaved(new Date());
     } catch (error) {
       console.error('Failed to save observation:', error);
@@ -164,6 +179,21 @@ export function DailyLogForm() {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+      </div>
+    );
+  }
+
+  // No site selected - show prompt to select one
+  if (!siteId) {
+    return (
+      <div className="card p-8 text-center">
+        <div className="text-4xl mb-4">📍</div>
+        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+          No Site Selected
+        </h3>
+        <p className="text-slate-600 dark:text-slate-400">
+          Please select a site to log observations for.
+        </p>
       </div>
     );
   }

@@ -15,6 +15,7 @@ import { TrayCard } from './TrayCard';
 import { NewTrayForm } from './NewTrayForm';
 import { HarvestForm } from './HarvestForm';
 import { EditTrayForm } from './EditTrayForm';
+import { useSiteContext } from '../Sites/SiteDetailLayout';
 
 type SortOption = 'newest' | 'oldest' | 'trayNumber';
 
@@ -39,9 +40,14 @@ export function TrayList() {
   const { mediums, loadMediums } = useMediums();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // Check if we're inside a site context (SiteDetailLayout)
+  const { siteId: contextSiteId } = useSiteContext();
+
   // Initialize filters from URL params or defaults
   const statusFilter = (searchParams.get('status') as TrayStatus | 'all') || 'all';
-  const siteFilter = searchParams.get('site') || 'all';
+  // Use context siteId if available, otherwise allow URL param filtering
+  const siteFilter = contextSiteId || searchParams.get('site') || 'all';
+  const isInSiteContext = !!contextSiteId;
   const varietyFilter = searchParams.get('variety') || 'all';
   const mediumFilter = searchParams.get('medium') || 'all';
   const sortBy = (searchParams.get('sort') as SortOption) || 'newest';
@@ -140,14 +146,22 @@ export function TrayList() {
     return result;
   }, [trays, statusFilter, siteFilter, varietyFilter, mediumFilter, sortBy]);
 
-  // Count by status for filter badges
+  // Get site-scoped trays for counts when in site context
+  const scopedTrays = useMemo(() => {
+    if (isInSiteContext && contextSiteId) {
+      return trays.filter((t) => t.siteId === contextSiteId);
+    }
+    return trays;
+  }, [trays, isInSiteContext, contextSiteId]);
+
+  // Count by status for filter badges (scoped to site when in context)
   const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: trays.length };
-    for (const tray of trays) {
+    const counts: Record<string, number> = { all: scopedTrays.length };
+    for (const tray of scopedTrays) {
       counts[tray.status] = (counts[tray.status] || 0) + 1;
     }
     return counts;
-  }, [trays]);
+  }, [scopedTrays]);
 
   const handleMoveToLight = async (id: string) => {
     try {
@@ -237,8 +251,8 @@ export function TrayList() {
 
         {/* Additional Filters Row */}
         <div className="flex flex-wrap items-center gap-3">
-          {/* Site Filter */}
-          {sites.length > 1 && (
+          {/* Site Filter - only show when NOT in site context and multiple sites exist */}
+          {!isInSiteContext && sites.length > 1 && (
             <div className="flex items-center gap-2">
               <span className="text-sm text-slate-500 dark:text-slate-400">Site:</span>
               <select
@@ -297,8 +311,8 @@ export function TrayList() {
             </div>
           )}
 
-          {/* Clear Filters Button */}
-          {(statusFilter !== 'all' || siteFilter !== 'all' || varietyFilter !== 'all' || mediumFilter !== 'all' || sortBy !== 'newest') && (
+          {/* Clear Filters Button - don't consider site filter when in site context */}
+          {(statusFilter !== 'all' || (!isInSiteContext && siteFilter !== 'all') || varietyFilter !== 'all' || mediumFilter !== 'all' || sortBy !== 'newest') && (
             <button
               onClick={clearAllFilters}
               className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
@@ -345,7 +359,7 @@ export function TrayList() {
       )}
 
       {/* Summary Stats */}
-      {trays.length > 0 && (
+      {scopedTrays.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">
           <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -367,7 +381,7 @@ export function TrayList() {
           </div>
           <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-slate-900 dark:text-white">
-              {trays.length}
+              {scopedTrays.length}
             </div>
             <div className="text-sm text-slate-500 dark:text-slate-400">Total Trays</div>
           </div>
