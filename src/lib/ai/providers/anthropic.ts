@@ -46,26 +46,16 @@ export class AnthropicProvider implements ILLMProvider {
     const apiKey = await this.loadApiKey();
     if (!apiKey) return false;
 
-    try {
-      // Use a minimal request to validate the key
-      const response = await fetch(`${ANTHROPIC_API_BASE}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': ANTHROPIC_VERSION,
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5-20251101',
-          max_tokens: 1,
-          messages: [{ role: 'user', content: 'Hi' }],
-        }),
-      });
-      // 200 or 400 (bad request but valid key) means key is valid
-      return response.ok || response.status === 400;
-    } catch {
+    // Basic format validation - Anthropic keys start with sk-ant-
+    if (!apiKey.startsWith('sk-ant-')) {
       return false;
     }
+
+    // Note: Browser-based validation is not possible due to CORS restrictions.
+    // The Anthropic API does not allow cross-origin requests from browsers.
+    // We accept keys that pass format validation; actual validation happens on first use.
+    // This is a known limitation of client-side-only applications.
+    return true;
   }
 
   getModels(): LLMModel[] {

@@ -45,13 +45,19 @@ export class GeminiProvider implements ILLMProvider {
     const apiKey = await this.loadApiKey();
     if (!apiKey) return false;
 
+    // Basic format validation - Gemini keys typically start with AIza
+    if (!apiKey.startsWith('AIza')) {
+      return false;
+    }
+
     try {
       const response = await fetch(
         `${GEMINI_API_BASE}/models?key=${apiKey}`
       );
       return response.ok;
     } catch {
-      return false;
+      // Network error or CORS - accept format-valid keys
+      return true;
     }
   }
 

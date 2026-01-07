@@ -45,6 +45,11 @@ export class OpenAIProvider implements ILLMProvider {
     const apiKey = await this.loadApiKey();
     if (!apiKey) return false;
 
+    // Basic format validation
+    if (!apiKey.startsWith('sk-')) {
+      return false;
+    }
+
     try {
       const response = await fetch(`${OPENAI_API_BASE}/models`, {
         headers: {
@@ -53,7 +58,8 @@ export class OpenAIProvider implements ILLMProvider {
       });
       return response.ok;
     } catch {
-      return false;
+      // Network error or CORS - accept format-valid keys
+      return true;
     }
   }
 
