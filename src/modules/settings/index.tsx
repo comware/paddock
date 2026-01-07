@@ -4,7 +4,7 @@
  * Handles data export/import, preferences, experiment config, and variety management.
  */
 
-import { DataExport, Preferences, ExperimentConfig, VarietyManager } from './components';
+import { AISettings, DataExport, Preferences, ExperimentConfig, VarietyManager } from './components';
 
 export default function SettingsModule() {
   return (
@@ -16,6 +16,9 @@ export default function SettingsModule() {
       <div className="space-y-6">
         {/* Preferences */}
         <Preferences />
+
+        {/* AI Assistant */}
+        <AISettings />
 
         {/* Experiment Configuration */}
         <ExperimentConfig />

@@ -15,6 +15,7 @@ import { TopNav } from './TopNav';
 import { BottomNav } from './BottomNav';
 import { InstallPrompt } from '@/components/pwa';
 import { KeyboardShortcutsHelp } from '@/components/ui';
+import { AIAssistant } from '@/components/ai';
 import { useKeyboardShortcuts } from '@/hooks';
 
 export function AppShell() {
@@ -28,6 +29,7 @@ export function AppShell() {
       </main>
       <BottomNav />
       <InstallPrompt />
+      <AIAssistant />
       <KeyboardShortcutsHelp
         isOpen={showHelp}
         onClose={() => setShowHelp(false)}
