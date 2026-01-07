@@ -18,7 +18,7 @@ import { useTrayMigration } from './hooks';
 // - These are global/cross-site views
 const growNavItems: ModuleNavItem[] = [
   { name: 'Sites', path: '', icon: '📍' },              // Sites overview (landing)
-  { name: 'Planner', path: '/calendar', icon: '📅' },   // Planting calendar
+  { name: 'Calendar', path: '/calendar', icon: '📅' },   // Planting calendar
   { name: 'Analytics', path: '/analytics', icon: '📊' }, // Cross-site analytics
   { name: 'Decision', path: '/decision', icon: '🎯' },   // Week 6 decision
   { name: 'Guides', path: '/guides', icon: '📚' },       // Reference material
