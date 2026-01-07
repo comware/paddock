@@ -16,8 +16,9 @@ import {
 } from '../types';
 import { platformDb } from '@/lib/db';
 
-const ANTHROPIC_API_BASE = 'https://api.anthropic.com/v1';
-const ANTHROPIC_VERSION = '2024-01-01';
+// Use proxy in development to bypass CORS, direct API in production with backend
+const ANTHROPIC_API_BASE = '/api/anthropic/v1';
+const ANTHROPIC_VERSION = '2023-06-01';
 
 export class AnthropicProvider implements ILLMProvider {
   name = 'anthropic' as const;

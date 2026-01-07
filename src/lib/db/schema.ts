@@ -174,6 +174,28 @@ export interface GrowPlannedPlanting {
 }
 
 // ============================================
+// AI MODULE TYPES
+// ============================================
+
+export interface AIConversation {
+  id?: string;
+  title: string;                  // Auto-generated from first message or user-set
+  model: string;                  // Model ID used for this conversation
+  messageCount: number;           // Number of messages in conversation
+  lastMessageAt: Date;            // When last message was sent
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AIMessage {
+  id?: string;
+  conversationId: string;         // Foreign key to AIConversation
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  createdAt: Date;
+}
+
+// ============================================
 // PLATFORM TYPES
 // ============================================
 
@@ -200,6 +222,10 @@ class PaddockDB extends Dexie {
   growExperiments!: Table<GrowExperiment>;
   growDecisions!: Table<GrowDecision>;
   growPlannedPlantings!: Table<GrowPlannedPlanting>;
+
+  // AI module tables
+  aiConversations!: Table<AIConversation>;
+  aiMessages!: Table<AIMessage>;
 
   // Platform tables
   platformSettings!: Table<PlatformSetting>;
@@ -248,6 +274,12 @@ class PaddockDB extends Dexie {
     this.version(6).stores({
       growPlannedPlantings: '++id, siteId, variety, plannedSowDate, status, [siteId+plannedSowDate]',
     });
+
+    // Version 7: Add AI conversations and messages tables
+    this.version(7).stores({
+      aiConversations: '++id, title, model, lastMessageAt, createdAt',
+      aiMessages: '++id, conversationId, role, createdAt',
+    });
   }
 }
 
@@ -273,4 +305,9 @@ export const growDb = {
 
 export const platformDb = {
   settings: db.platformSettings,
+};
+
+export const aiDb = {
+  conversations: db.aiConversations,
+  messages: db.aiMessages,
 };

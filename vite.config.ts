@@ -6,6 +6,50 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      // Proxy Anthropic API requests to bypass CORS
+      '/api/anthropic': {
+        target: 'https://api.anthropic.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/anthropic/, ''),
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Forward the API key from the custom header
+            const apiKey = req.headers['x-api-key'];
+            if (apiKey) {
+              const key = Array.isArray(apiKey) ? apiKey[0] : apiKey;
+              proxyReq.setHeader('x-api-key', key);
+            }
+            // Set required Anthropic headers
+            proxyReq.setHeader('anthropic-version', '2023-06-01');
+            proxyReq.setHeader('anthropic-dangerous-direct-browser-access', 'true');
+          });
+        },
+      },
+      // Proxy OpenAI API requests to bypass CORS
+      '/api/openai': {
+        target: 'https://api.openai.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/openai/, ''),
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Forward the Authorization header
+            const auth = req.headers['authorization'];
+            if (auth) {
+              proxyReq.setHeader('Authorization', auth);
+            }
+          });
+        },
+      },
+      // Proxy Gemini API requests to bypass CORS
+      '/api/gemini': {
+        target: 'https://generativelanguage.googleapis.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/gemini/, ''),
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),

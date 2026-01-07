@@ -20,4 +20,5 @@ export {
   getModelById,
 } from './types';
 export { useAIStore, useAvailableModels } from './store';
+export { useConversationsStore, generateConversationTitle } from './conversations';
 export { AIError, parseApiError, type AIErrorType, type AIErrorDetails } from './errors';

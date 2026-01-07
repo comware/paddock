@@ -2,13 +2,14 @@
  * AI Chat Store - State management for AI assistant
  *
  * Manages chat state including messages, model selection,
- * and streaming state.
+ * and streaming state. Now with conversation persistence support.
  */
 
 import { useState, useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { aiService, type ChatMessage, type LLMModel } from './index';
+import { useConversationsStore } from './conversations';
 
 interface AIStore {
   // UI State
@@ -21,6 +22,7 @@ interface AIStore {
   setSelectedModel: (modelId: string) => void;
 
   // Current conversation
+  currentConversationId: string | null;
   messages: ChatMessage[];
   isStreaming: boolean;
   streamingContent: string;
@@ -30,6 +32,11 @@ interface AIStore {
   sendMessage: (content: string) => Promise<void>;
   clearMessages: () => void;
   cancelStream: () => void;
+
+  // Conversation management
+  startNewConversation: () => Promise<void>;
+  loadConversation: (id: string) => Promise<void>;
+  editLastUserMessage: (newContent: string) => Promise<void>;
 
   // Internal
   _abortController: AbortController | null;
@@ -65,6 +72,7 @@ export const useAIStore = create<AIStore>()(
       setSelectedModel: (modelId) => set({ selectedModel: modelId }),
 
       // Current conversation
+      currentConversationId: null,
       messages: [],
       isStreaming: false,
       streamingContent: '',
@@ -84,6 +92,15 @@ export const useAIStore = create<AIStore>()(
           return;
         }
 
+        const conversationsStore = useConversationsStore.getState();
+
+        // Create a new conversation if none exists
+        let conversationId = state.currentConversationId;
+        if (!conversationId) {
+          conversationId = await conversationsStore.createConversation(undefined, modelId);
+          set({ currentConversationId: conversationId });
+        }
+
         // Add user message
         const userMessage: ChatMessage = {
           role: 'user',
@@ -100,6 +117,9 @@ export const useAIStore = create<AIStore>()(
           _abortController: new AbortController(),
         });
 
+        // Persist user message to IndexedDB
+        await conversationsStore.addMessage(conversationId, userMessage);
+
         try {
           await aiService.chatStream(
             {
@@ -114,12 +134,19 @@ export const useAIStore = create<AIStore>()(
                   streamingContent: state.streamingContent + token,
                 }));
               },
-              onComplete: (response) => {
+              onComplete: async (response) => {
                 const assistantMessage: ChatMessage = {
                   role: 'assistant',
                   content: response.content,
                   timestamp: new Date(),
                 };
+
+                // Persist assistant message to IndexedDB
+                const currentId = get().currentConversationId;
+                if (currentId) {
+                  await conversationsStore.addMessage(currentId, assistantMessage);
+                }
+
                 set((state) => ({
                   messages: [...state.messages, assistantMessage],
                   isStreaming: false,
@@ -153,6 +180,7 @@ export const useAIStore = create<AIStore>()(
           state._abortController.abort();
         }
         set({
+          currentConversationId: null,
           messages: [],
           isStreaming: false,
           streamingContent: '',
@@ -172,12 +200,73 @@ export const useAIStore = create<AIStore>()(
           _abortController: null,
         });
       },
+
+      // Conversation management
+      startNewConversation: async () => {
+        const state = get();
+        if (state._abortController) {
+          state._abortController.abort();
+        }
+        set({
+          currentConversationId: null,
+          messages: [],
+          isStreaming: false,
+          streamingContent: '',
+          error: null,
+          _abortController: null,
+        });
+      },
+
+      loadConversation: async (id: string) => {
+        const state = get();
+        if (state._abortController) {
+          state._abortController.abort();
+        }
+
+        set({
+          currentConversationId: id,
+          isStreaming: false,
+          streamingContent: '',
+          error: null,
+          _abortController: null,
+        });
+
+        // Load messages from IndexedDB
+        const conversationsStore = useConversationsStore.getState();
+        const messages = await conversationsStore.getMessages(id);
+        set({ messages });
+      },
+
+      editLastUserMessage: async (newContent: string) => {
+        const state = get();
+        if (state.isStreaming) return;
+
+        // Find the last user message
+        const lastUserIndex = [...state.messages]
+          .reverse()
+          .findIndex((m) => m.role === 'user');
+
+        if (lastUserIndex === -1) return;
+
+        const actualIndex = state.messages.length - 1 - lastUserIndex;
+
+        // Remove all messages from the last user message onwards
+        const messagesUpToEdit = state.messages.slice(0, actualIndex);
+
+        // Update local state
+        set({ messages: messagesUpToEdit });
+
+        // Now send the edited message as a new message
+        // This will re-generate the AI response
+        await get().sendMessage(newContent);
+      },
     }),
     {
       name: 'paddock-ai-chat',
       partialize: (state) => ({
         selectedModel: state.selectedModel,
-        messages: state.messages,
+        currentConversationId: state.currentConversationId,
+        // Don't persist messages - they're in IndexedDB now
       }),
     }
   )

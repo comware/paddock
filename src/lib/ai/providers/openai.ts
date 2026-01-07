@@ -16,7 +16,8 @@ import {
 } from '../types';
 import { platformDb } from '@/lib/db';
 
-const OPENAI_API_BASE = 'https://api.openai.com/v1';
+// Use proxy in development to bypass CORS, direct API in production with backend
+const OPENAI_API_BASE = '/api/openai/v1';
 
 export class OpenAIProvider implements ILLMProvider {
   name = 'openai' as const;

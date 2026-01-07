@@ -16,7 +16,8 @@ import {
 } from '../types';
 import { platformDb } from '@/lib/db';
 
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
+// Use proxy in development to bypass CORS, direct API in production with backend
+const GEMINI_API_BASE = '/api/gemini/v1beta';
 
 export class GeminiProvider implements ILLMProvider {
   name = 'gemini' as const;
