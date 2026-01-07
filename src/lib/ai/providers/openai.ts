@@ -1,7 +1,8 @@
 /**
- * OpenAI Provider - GPT-4o and beyond
+ * OpenAI Provider - GPT-5.2 models
  *
- * Uses the OpenAI Chat Completions API for modern GPT models.
+ * Uses the OpenAI Chat Completions API for latest GPT models.
+ * Supports: GPT-5.2 Thinking, GPT-5.2 Instant, GPT-5.2 Pro
  */
 
 import {

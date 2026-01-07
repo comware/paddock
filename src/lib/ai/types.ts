@@ -2,7 +2,7 @@
  * AI Types - Common types for LLM providers
  *
  * Defines the abstraction layer for multi-LLM support.
- * Supports modern models: GPT-4o+, Claude 4.5+, Gemini 3+
+ * Supports modern models: GPT-5.2, Claude 4.5+, Gemini 3
  */
 
 export type LLMProvider = 'openai' | 'anthropic' | 'gemini';
@@ -18,20 +18,28 @@ export interface LLMModel {
 
 // Modern models with real API model IDs
 export const SUPPORTED_MODELS: LLMModel[] = [
-  // OpenAI GPT-4o and beyond
+  // OpenAI GPT-5.2 (latest)
   {
-    id: 'gpt-4o',
-    name: 'GPT-4o',
+    id: 'gpt-5.2',
+    name: 'GPT-5.2 Thinking',
     provider: 'openai',
-    contextWindow: 128000,
+    contextWindow: 400000,
     supportsStreaming: true,
     supportsVision: true,
   },
   {
-    id: 'gpt-4o-mini',
-    name: 'GPT-4o Mini',
+    id: 'gpt-5.2-chat-latest',
+    name: 'GPT-5.2 Instant',
     provider: 'openai',
-    contextWindow: 128000,
+    contextWindow: 400000,
+    supportsStreaming: true,
+    supportsVision: true,
+  },
+  {
+    id: 'gpt-5.2-pro',
+    name: 'GPT-5.2 Pro',
+    provider: 'openai',
+    contextWindow: 400000,
     supportsStreaming: true,
     supportsVision: true,
   },
