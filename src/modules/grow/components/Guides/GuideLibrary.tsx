@@ -3,6 +3,7 @@
  *
  * Displays all microherbs with key metrics in a searchable,
  * sortable table. Click any row to view the full guide.
+ * Includes Getting Started section for novice growers.
  */
 
 import { useState, useEffect, useMemo } from 'react';
@@ -12,6 +13,52 @@ import type { GuideIndex, GuideMetadata } from '@/lib/guides/types';
 
 type SortField = 'name' | 'difficulty' | 'daysToHarvest' | 'blackoutDays' | 'category';
 type SortDirection = 'asc' | 'desc';
+
+// Getting Started guide cards
+const gettingStartedGuides = [
+  {
+    id: 'concepts',
+    title: 'Core Concepts',
+    description: 'Pre-soak, blackout, light phase, and essential terminology',
+    icon: '📖',
+    file: 'getting-started/concepts.md',
+  },
+  {
+    id: 'equipment',
+    title: 'Equipment Guide',
+    description: 'What to buy, from budget basics to pro upgrades',
+    icon: '🛒',
+    file: 'getting-started/equipment.md',
+  },
+  {
+    id: 'first-tray',
+    title: 'Your First Tray',
+    description: 'Step-by-step guide to growing your first microgreens',
+    icon: '🌱',
+    file: 'getting-started/first-tray.md',
+  },
+  {
+    id: 'tray-setup',
+    title: 'Tray Setup',
+    description: 'Dimensions, seeding density, and planting depth',
+    icon: '📐',
+    file: 'getting-started/tray-setup.md',
+  },
+  {
+    id: 'watering',
+    title: 'Watering Guide',
+    description: 'When, how much, and which method to use',
+    icon: '💧',
+    file: 'getting-started/watering.md',
+  },
+  {
+    id: 'troubleshooting',
+    title: 'Troubleshooting',
+    description: 'Common problems and how to fix them',
+    icon: '🔧',
+    file: 'getting-started/troubleshooting.md',
+  },
+];
 
 // Cache for guide index
 let cachedIndex: GuideIndex | null = null;
@@ -29,8 +76,9 @@ export function GuideLibrary() {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  // Selected guide for detail view
+  // Selected guide for detail view (variety or getting-started)
   const [selectedGuide, setSelectedGuide] = useState<GuideMetadata | null>(null);
+  const [selectedGettingStarted, setSelectedGettingStarted] = useState<typeof gettingStartedGuides[0] | null>(null);
   const [guideContent, setGuideContent] = useState<string | null>(null);
   const [loadingContent, setLoadingContent] = useState(false);
 
@@ -60,17 +108,18 @@ export function GuideLibrary() {
     loadGuides();
   }, []);
 
-  // Load guide content when selected
+  // Load guide content when selected (variety or getting-started)
   useEffect(() => {
     async function loadContent() {
-      if (!selectedGuide) {
+      const guide = selectedGuide || selectedGettingStarted;
+      if (!guide) {
         setGuideContent(null);
         return;
       }
 
       setLoadingContent(true);
       try {
-        const res = await fetch(`/guides/${selectedGuide.file}`);
+        const res = await fetch(`/guides/${guide.file}`);
         if (!res.ok) throw new Error('Failed to load guide');
         const content = await res.text();
         setGuideContent(content);
@@ -81,7 +130,14 @@ export function GuideLibrary() {
       }
     }
     loadContent();
-  }, [selectedGuide]);
+  }, [selectedGuide, selectedGettingStarted]);
+
+  // Close modal handler
+  const closeModal = () => {
+    setSelectedGuide(null);
+    setSelectedGettingStarted(null);
+    setGuideContent(null);
+  };
 
   // Filter and sort guides
   const filteredGuides = useMemo(() => {
@@ -174,7 +230,7 @@ export function GuideLibrary() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -182,6 +238,39 @@ export function GuideLibrary() {
           <p className="text-sm text-slate-500 dark:text-slate-400">{guides.length} varieties with detailed growing instructions</p>
         </div>
       </div>
+
+      {/* Getting Started Section */}
+      <section>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+          Getting Started
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+          New to microgreens? Start here with our beginner guides.
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {gettingStartedGuides.map((guide) => (
+            <button
+              key={guide.id}
+              onClick={() => setSelectedGettingStarted(guide)}
+              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 text-left hover:border-primary-500 hover:shadow-md transition-all group"
+            >
+              <div className="text-2xl mb-2">{guide.icon}</div>
+              <h3 className="font-medium text-sm text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                {guide.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                {guide.description}
+              </p>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Variety Guides Section */}
+      <section>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+          Variety Guides
+        </h2>
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
@@ -306,12 +395,13 @@ export function GuideLibrary() {
           </table>
         </div>
       </div>
+      </section>
 
-      {/* Guide Detail Modal */}
-      {selectedGuide && (
+      {/* Guide Detail Modal - handles both variety and getting-started guides */}
+      {(selectedGuide || selectedGettingStarted) && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-          onClick={() => setSelectedGuide(null)}
+          onClick={closeModal}
         >
           <div
             className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
@@ -320,26 +410,40 @@ export function GuideLibrary() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedGuide.name}</h2>
-                <div className="flex gap-2 mt-1">
-                  <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(selectedGuide.difficulty)}`}>
-                    {selectedGuide.difficulty}
-                  </span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                    {selectedGuide.daysToHarvest} days
-                  </span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                    {selectedGuide.blackoutDays}d blackout
-                  </span>
-                  {selectedGuide.preSoak && (
-                    <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-                      Pre-soak
-                    </span>
-                  )}
-                </div>
+                {selectedGettingStarted ? (
+                  <>
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>{selectedGettingStarted.icon}</span>
+                      {selectedGettingStarted.title}
+                    </h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      {selectedGettingStarted.description}
+                    </p>
+                  </>
+                ) : selectedGuide && (
+                  <>
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedGuide.name}</h2>
+                    <div className="flex gap-2 mt-1">
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(selectedGuide.difficulty)}`}>
+                        {selectedGuide.difficulty}
+                      </span>
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                        {selectedGuide.daysToHarvest} days
+                      </span>
+                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                        {selectedGuide.blackoutDays}d blackout
+                      </span>
+                      {selectedGuide.preSoak && (
+                        <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                          Pre-soak
+                        </span>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
               <button
-                onClick={() => setSelectedGuide(null)}
+                onClick={closeModal}
                 className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
