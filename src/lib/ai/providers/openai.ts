@@ -93,7 +93,7 @@ export class OpenAIProvider implements ILLMProvider {
         model: request.model,
         messages,
         max_completion_tokens: request.maxTokens || 4096,
-        temperature: request.temperature ?? 0.7,
+        // GPT-5.2 models only support temperature=1
       }),
     });
 
@@ -158,7 +158,7 @@ export class OpenAIProvider implements ILLMProvider {
           model: request.model,
           messages,
           max_completion_tokens: request.maxTokens || 4096,
-          temperature: request.temperature ?? 0.7,
+          // GPT-5.2 models only support temperature=1
           stream: true,
         }),
       });
