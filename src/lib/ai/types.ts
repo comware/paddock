@@ -37,7 +37,7 @@ export const SUPPORTED_MODELS: LLMModel[] = [
   },
   // Anthropic Claude 4.5 and beyond
   {
-    id: 'claude-opus-4-5-20251101',
+    id: 'claude-opus-4-5',
     name: 'Claude Opus 4.5',
     provider: 'anthropic',
     contextWindow: 200000,
@@ -45,7 +45,7 @@ export const SUPPORTED_MODELS: LLMModel[] = [
     supportsVision: true,
   },
   {
-    id: 'claude-sonnet-4-5-20251101',
+    id: 'claude-sonnet-4-5',
     name: 'Claude Sonnet 4.5',
     provider: 'anthropic',
     contextWindow: 200000,
