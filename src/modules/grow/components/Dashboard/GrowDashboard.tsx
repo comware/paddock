@@ -16,6 +16,7 @@ import { useWeather } from '../../hooks/useWeather';
 import { getWeatherEmoji } from '@/lib/weather';
 import { NewTrayForm } from '../Trays/NewTrayForm';
 import { HarvestForm } from '../Trays/HarvestForm';
+import { UpcomingHarvests } from './UpcomingHarvests';
 import { differenceInDays, addDays, isAfter, startOfDay } from 'date-fns';
 
 export function GrowDashboard() {
@@ -209,6 +210,9 @@ export function GrowDashboard() {
           icon="📋"
         />
       </div>
+
+      {/* Upcoming Harvests Widget */}
+      <UpcomingHarvests daysAhead={7} maxPerGroup={3} />
 
       {/* Active Trays */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">

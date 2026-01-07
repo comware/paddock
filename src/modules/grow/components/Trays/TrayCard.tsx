@@ -1,12 +1,13 @@
 /**
  * TrayCard - Individual tray display component
  *
- * Shows tray info with status indicator and quick actions.
+ * Shows tray info with status indicator, harvest countdown, and quick actions.
  */
 
 import type { TrayWithComputed } from '../../stores';
 import { useVarieties, useSites } from '../../stores';
 import { format, addDays, isAfter, startOfDay } from 'date-fns';
+import { getHarvestForecast, getHarvestBadgeClasses } from '../../utils';
 
 interface TrayCardProps {
   tray: TrayWithComputed;
@@ -57,7 +58,6 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
 
   // Find site name for this tray
   const site = tray.siteId ? sites.find((s) => s.id === tray.siteId) : null;
-  const showSiteBadge = sites.length > 1 && site;
 
   // Calculate estimated dates
   const estimatedLightDate = addDays(tray.dateSown, tray.blackoutDays);
@@ -81,6 +81,10 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
   // Determine if action is needed
   const needsAction = isOverdueForLight || isReadyToHarvest;
 
+  // Calculate harvest forecast for countdown badge
+  const harvestForecast = getHarvestForecast(tray, variety);
+  const showHarvestBadge = (tray.status === 'blackout' || tray.status === 'light') && harvestForecast.expectedDate;
+
   return (
     <div
       className={`rounded-xl p-4 shadow-sm border-2 ${
@@ -96,9 +100,20 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
           <span className="text-xl">{config.icon}</span>
           <span className="font-bold">{tray.label || `#${tray.trayNumber}`}</span>
         </div>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.badgeClass}`}>
-          {config.label}
-        </span>
+        <div className="flex items-center gap-2">
+          {/* Harvest Countdown Badge */}
+          {showHarvestBadge && (
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${getHarvestBadgeClasses(harvestForecast.status)}`}
+              title={`Expected harvest: ${format(harvestForecast.expectedDate!, 'MMM d, yyyy')}`}
+            >
+              🌿 {harvestForecast.label}
+            </span>
+          )}
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.badgeClass}`}>
+            {config.label}
+          </span>
+        </div>
       </div>
 
       {/* Overdue Alert Badge */}
@@ -122,7 +137,7 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
       {/* Variety and Site Badge */}
       <div className="flex items-center justify-between mb-2">
         <div className="text-lg font-semibold">{tray.variety}</div>
-        {showSiteBadge && (
+        {site && (
           <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium truncate max-w-[100px]" title={site.name}>
             {site.name}
           </span>
