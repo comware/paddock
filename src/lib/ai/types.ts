@@ -18,18 +18,18 @@ export interface LLMModel {
 
 // Only modern models - no legacy support
 export const SUPPORTED_MODELS: LLMModel[] = [
-  // OpenAI GPT-5 and beyond (using Responses API)
+  // OpenAI GPT-5.2 and beyond (using Responses API)
   {
-    id: 'gpt-5',
-    name: 'GPT-5',
+    id: 'gpt-5.2',
+    name: 'GPT-5.2',
     provider: 'openai',
     contextWindow: 256000,
     supportsStreaming: true,
     supportsVision: true,
   },
   {
-    id: 'gpt-5-mini',
-    name: 'GPT-5 Mini',
+    id: 'gpt-5.2-pro',
+    name: 'GPT-5.2 Pro',
     provider: 'openai',
     contextWindow: 128000,
     supportsStreaming: true,
