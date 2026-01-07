@@ -96,9 +96,14 @@ export function useTheme(): UseThemeReturn {
     setResolvedTheme(resolved);
   }, [theme, isLoading]);
 
-  // Persist theme changes to database
+  // Persist theme changes to database and apply immediately
   const setTheme = useCallback(async (newTheme: Theme) => {
+    // Apply theme immediately (don't wait for effect)
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const resolved = applyTheme(newTheme, prefersDark);
+
     setThemeState(newTheme);
+    setResolvedTheme(resolved);
 
     try {
       const existing = await platformDb.settings
