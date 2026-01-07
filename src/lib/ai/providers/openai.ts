@@ -1,8 +1,7 @@
 /**
- * OpenAI Provider - GPT-5 and beyond
+ * OpenAI Provider - GPT-4o and beyond
  *
- * Uses the OpenAI Responses API for GPT-5+ models.
- * Does NOT support legacy models (GPT-4, GPT-3.5).
+ * Uses the OpenAI Chat Completions API for modern GPT models.
  */
 
 import {
@@ -16,7 +15,7 @@ import {
 } from '../types';
 import { platformDb } from '@/lib/db';
 
-// Use proxy in development to bypass CORS, direct API in production with backend
+// Use proxy in development to bypass CORS
 const OPENAI_API_BASE = '/api/openai/v1';
 
 export class OpenAIProvider implements ILLMProvider {
@@ -82,8 +81,8 @@ export class OpenAIProvider implements ILLMProvider {
         ]
       : request.messages.map((m) => ({ role: m.role, content: m.content }));
 
-    // Use the Responses API for GPT-5+ models
-    const response = await fetch(`${OPENAI_API_BASE}/responses`, {
+    // Use the Chat Completions API
+    const response = await fetch(`${OPENAI_API_BASE}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,9 +90,9 @@ export class OpenAIProvider implements ILLMProvider {
       },
       body: JSON.stringify({
         model: request.model,
-        input: messages,
-        max_output_tokens: request.maxTokens || 4096,
-        // Note: temperature not supported in Responses API
+        messages,
+        max_tokens: request.maxTokens || 4096,
+        temperature: request.temperature ?? 0.7,
       }),
     });
 
@@ -106,21 +105,26 @@ export class OpenAIProvider implements ILLMProvider {
 
     const data = await response.json();
 
-    // Extract text from the response output
-    const outputText =
-      data.output?.find((item: { type: string }) => item.type === 'message')
-        ?.content?.[0]?.text || '';
+    const content = data.choices?.[0]?.message?.content || '';
+    const finishReason = data.choices?.[0]?.finish_reason;
 
     return {
-      content: outputText,
+      content,
       model: request.model,
       usage: data.usage
         ? {
-            inputTokens: data.usage.input_tokens,
-            outputTokens: data.usage.output_tokens,
+            inputTokens: data.usage.prompt_tokens,
+            outputTokens: data.usage.completion_tokens,
           }
         : undefined,
-      finishReason: 'stop',
+      finishReason:
+        finishReason === 'stop'
+          ? 'stop'
+          : finishReason === 'length'
+            ? 'length'
+            : finishReason === 'content_filter'
+              ? 'content_filter'
+              : 'stop',
     };
   }
 
@@ -143,7 +147,7 @@ export class OpenAIProvider implements ILLMProvider {
       : request.messages.map((m) => ({ role: m.role, content: m.content }));
 
     try {
-      const response = await fetch(`${OPENAI_API_BASE}/responses`, {
+      const response = await fetch(`${OPENAI_API_BASE}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,9 +155,9 @@ export class OpenAIProvider implements ILLMProvider {
         },
         body: JSON.stringify({
           model: request.model,
-          input: messages,
-          max_output_tokens: request.maxTokens || 4096,
-          // Note: temperature not supported in Responses API
+          messages,
+          max_tokens: request.maxTokens || 4096,
+          temperature: request.temperature ?? 0.7,
           stream: true,
         }),
       });
@@ -187,10 +191,7 @@ export class OpenAIProvider implements ILLMProvider {
 
             try {
               const parsed = JSON.parse(data);
-              const delta =
-                parsed.delta?.content?.[0]?.text ||
-                parsed.choices?.[0]?.delta?.content ||
-                '';
+              const delta = parsed.choices?.[0]?.delta?.content || '';
               if (delta) {
                 fullContent += delta;
                 callbacks.onToken(delta);

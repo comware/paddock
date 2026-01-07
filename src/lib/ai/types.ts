@@ -2,7 +2,7 @@
  * AI Types - Common types for LLM providers
  *
  * Defines the abstraction layer for multi-LLM support.
- * Only supports modern models: GPT-5+, Claude 4.5+, Gemini 3.0+
+ * Supports modern models: GPT-4o+, Claude 3.5+, Gemini 1.5+
  */
 
 export type LLMProvider = 'openai' | 'anthropic' | 'gemini';
@@ -16,26 +16,26 @@ export interface LLMModel {
   supportsVision: boolean;
 }
 
-// Only modern models - no legacy support
+// Modern models with real API model IDs
 export const SUPPORTED_MODELS: LLMModel[] = [
-  // OpenAI GPT-5.2 and beyond (using Responses API)
+  // OpenAI GPT-4o and beyond
   {
-    id: 'gpt-5.2',
-    name: 'GPT-5.2',
-    provider: 'openai',
-    contextWindow: 256000,
-    supportsStreaming: true,
-    supportsVision: true,
-  },
-  {
-    id: 'gpt-5.2-pro',
-    name: 'GPT-5.2 Pro',
+    id: 'gpt-4o',
+    name: 'GPT-4o',
     provider: 'openai',
     contextWindow: 128000,
     supportsStreaming: true,
     supportsVision: true,
   },
-  // Anthropic Claude 4.5 and beyond (latest models)
+  {
+    id: 'gpt-4o-mini',
+    name: 'GPT-4o Mini',
+    provider: 'openai',
+    contextWindow: 128000,
+    supportsStreaming: true,
+    supportsVision: true,
+  },
+  // Anthropic Claude 3.5/4 (latest models)
   {
     id: 'claude-opus-4-5-20251101',
     name: 'Claude Opus 4.5',
@@ -60,18 +60,26 @@ export const SUPPORTED_MODELS: LLMModel[] = [
     supportsStreaming: true,
     supportsVision: true,
   },
-  // Google Gemini 3.0 and beyond
+  // Google Gemini 2.0 (latest) and 1.5
   {
-    id: 'gemini-3.0-pro',
-    name: 'Gemini 3.0 Pro',
+    id: 'gemini-2.0-flash',
+    name: 'Gemini 2.0 Flash',
+    provider: 'gemini',
+    contextWindow: 1000000,
+    supportsStreaming: true,
+    supportsVision: true,
+  },
+  {
+    id: 'gemini-1.5-pro',
+    name: 'Gemini 1.5 Pro',
     provider: 'gemini',
     contextWindow: 2000000,
     supportsStreaming: true,
     supportsVision: true,
   },
   {
-    id: 'gemini-3.0-flash',
-    name: 'Gemini 3.0 Flash',
+    id: 'gemini-1.5-flash',
+    name: 'Gemini 1.5 Flash',
     provider: 'gemini',
     contextWindow: 1000000,
     supportsStreaming: true,

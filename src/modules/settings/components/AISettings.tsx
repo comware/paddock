@@ -2,7 +2,7 @@
  * AISettings - API key management for LLM providers
  *
  * Allows users to configure API keys for OpenAI, Anthropic, and Gemini.
- * Supports GPT-5+, Claude 4.5+, and Gemini 3.0+ models.
+ * Supports GPT-4o+, Claude 4.5+, and Gemini 1.5/2.0+ models.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -23,7 +23,7 @@ const PROVIDERS: ProviderConfig[] = [
     id: 'openai',
     name: 'OpenAI',
     icon: '🤖',
-    description: 'GPT-5, GPT-5 Mini',
+    description: 'GPT-4o, GPT-4o Mini',
     keyPlaceholder: 'sk-...',
     docsUrl: 'https://platform.openai.com/api-keys',
   },
@@ -39,7 +39,7 @@ const PROVIDERS: ProviderConfig[] = [
     id: 'gemini',
     name: 'Google Gemini',
     icon: '✨',
-    description: 'Gemini 3.0 Pro, Gemini 3.0 Flash',
+    description: 'Gemini 2.0 Flash, Gemini 1.5 Pro/Flash',
     keyPlaceholder: 'AIza...',
     docsUrl: 'https://aistudio.google.com/apikey',
   },

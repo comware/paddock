@@ -51,6 +51,7 @@ export function AIAssistant() {
   const [view, setView] = useState<View>('chat');
   const [editingMessage, setEditingMessage] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -104,12 +105,16 @@ export function AIAssistant() {
         e.preventDefault();
         handleSubmit(e as unknown as FormEvent);
       }
-      if (e.key === 'Escape' && editingMessage !== null) {
-        setEditingMessage(null);
-        setInput('');
+      if (e.key === 'Escape') {
+        if (editingMessage !== null) {
+          setEditingMessage(null);
+          setInput('');
+        } else if (isExpanded) {
+          setIsExpanded(false);
+        }
       }
     },
-    [handleSubmit, editingMessage]
+    [handleSubmit, editingMessage, isExpanded]
   );
 
   const handleEditLastMessage = useCallback(() => {
@@ -176,7 +181,13 @@ export function AIAssistant() {
 
       {/* Chat panel */}
       {isOpen && (
-        <div className="fixed bottom-36 sm:bottom-24 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden">
+        <div
+          className={`fixed z-50 bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden transition-all duration-300 ${
+            isExpanded
+              ? 'inset-4 sm:inset-8 rounded-2xl'
+              : 'bottom-36 sm:bottom-24 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] rounded-xl'
+          }`}
+        >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
             <div className="flex items-center gap-2">
@@ -220,6 +231,22 @@ export function AIAssistant() {
                   </svg>
                 </button>
               )}
+              {/* Expand/collapse button */}
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
+                title={isExpanded ? 'Collapse' : 'Expand'}
+              >
+                {isExpanded ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                  </svg>
+                )}
+              </button>
               <button
                 onClick={() => setOpen(false)}
                 className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
@@ -238,6 +265,7 @@ export function AIAssistant() {
               onSelect={handleSelectConversation}
               onDelete={handleDeleteClick}
               onNewConversation={handleNewConversation}
+              isExpanded={isExpanded}
             />
           ) : (
             <>
@@ -279,7 +307,11 @@ export function AIAssistant() {
               )}
 
               {/* Messages area */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[200px] max-h-[40vh]">
+              <div
+                className={`flex-1 overflow-y-auto p-4 space-y-4 ${
+                  isExpanded ? 'min-h-0' : 'min-h-[200px] max-h-[40vh]'
+                }`}
+              >
                 {messages.length === 0 && !streamingContent && (
                   <div className="text-center py-8">
                     <span className="text-4xl mb-2 block">🌱</span>
@@ -302,6 +334,7 @@ export function AIAssistant() {
                         ? handleEditLastMessage
                         : undefined
                     }
+                    isExpanded={isExpanded}
                   />
                 ))}
 
@@ -312,6 +345,7 @@ export function AIAssistant() {
                       content: streamingContent,
                     }}
                     isStreaming
+                    isExpanded={isExpanded}
                   />
                 )}
 
@@ -388,9 +422,10 @@ interface MessageBubbleProps {
   isStreaming?: boolean;
   isLastUserMessage?: boolean;
   onEdit?: () => void;
+  isExpanded?: boolean;
 }
 
-function MessageBubble({ message, isStreaming, isLastUserMessage, onEdit }: MessageBubbleProps) {
+function MessageBubble({ message, isStreaming, isLastUserMessage, onEdit, isExpanded }: MessageBubbleProps) {
   const isUser = message.role === 'user';
   const [showActions, setShowActions] = useState(false);
 
@@ -400,9 +435,11 @@ function MessageBubble({ message, isStreaming, isLastUserMessage, onEdit }: Mess
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="relative">
+      <div className={`relative ${isExpanded ? 'max-w-3xl' : ''}`}>
         <div
-          className={`max-w-[85%] rounded-xl px-3 py-2 ${
+          className={`rounded-xl px-3 py-2 ${
+            isExpanded ? 'max-w-none' : 'max-w-[85%]'
+          } ${
             isUser
               ? 'bg-primary-500 text-white'
               : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white'
@@ -443,6 +480,7 @@ interface ConversationHistoryProps {
   onSelect: (id: string) => void;
   onDelete: (id: string, e: React.MouseEvent) => void;
   onNewConversation: () => void;
+  isExpanded?: boolean;
 }
 
 function ConversationHistory({
@@ -451,6 +489,7 @@ function ConversationHistory({
   onSelect,
   onDelete,
   onNewConversation,
+  isExpanded,
 }: ConversationHistoryProps) {
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -493,7 +532,11 @@ function ConversationHistory({
   }
 
   return (
-    <div className="flex-1 overflow-y-auto min-h-[200px] max-h-[50vh]">
+    <div
+      className={`flex-1 overflow-y-auto ${
+        isExpanded ? 'min-h-0' : 'min-h-[200px] max-h-[50vh]'
+      }`}
+    >
       {conversations.map((conv) => (
         <div
           key={conv.id}
