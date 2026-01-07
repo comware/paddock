@@ -2,82 +2,16 @@
  * Preferences - User preferences settings
  *
  * Dark mode toggle and other app preferences.
+ * Uses the global useTheme hook for theme management.
  */
 
-import { useEffect, useState } from 'react';
-import { platformDb } from '@/lib/db';
-
-type Theme = 'light' | 'dark' | 'system';
+import { useTheme, type Theme } from '@/hooks';
 
 export function Preferences() {
-  const [theme, setTheme] = useState<Theme>('system');
-  const [isLoading, setIsLoading] = useState(true);
+  const { theme, setTheme, isLoading } = useTheme();
 
-  // Load saved theme preference
-  useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const setting = await platformDb.settings
-          .where('key')
-          .equals('theme')
-          .first();
-        if (setting?.value) {
-          setTheme(setting.value as Theme);
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadTheme();
-  }, []);
-
-  // Apply theme changes
-  useEffect(() => {
-    if (isLoading) return;
-
-    const root = document.documentElement;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    if (theme === 'dark' || (theme === 'system' && prefersDark)) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-
-    // Listen for system preference changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (theme === 'system') {
-        if (e.matches) {
-          root.classList.add('dark');
-        } else {
-          root.classList.remove('dark');
-        }
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme, isLoading]);
-
-  const handleThemeChange = async (newTheme: Theme) => {
+  const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);
-
-    // Save to database
-    try {
-      const existing = await platformDb.settings
-        .where('key')
-        .equals('theme')
-        .first();
-
-      if (existing) {
-        await platformDb.settings.update(existing.id!, { value: newTheme });
-      } else {
-        await platformDb.settings.add({ key: 'theme', value: newTheme });
-      }
-    } catch (error) {
-      console.error('Failed to save theme preference:', error);
-    }
   };
 
   if (isLoading) {

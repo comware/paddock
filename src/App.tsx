@@ -9,9 +9,14 @@ import { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { seedDatabase } from '@/lib/db';
+import { useTheme } from '@/hooks';
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
+
+  // Initialize theme on app startup - this applies the saved preference
+  // before any UI renders, preventing flash of wrong theme
+  const { isLoading: isThemeLoading } = useTheme();
 
   useEffect(() => {
     // Initialize database on app start
@@ -22,7 +27,8 @@ export default function App() {
     init();
   }, []);
 
-  if (!isReady) {
+  // Wait for both database and theme to be ready
+  if (!isReady || isThemeLoading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
