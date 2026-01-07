@@ -1,8 +1,8 @@
 /**
- * Gemini Provider - Gemini 1.5 and 2.0 models
+ * Gemini Provider - Gemini 3 and 2.5 models
  *
- * Uses the Google Gemini API for modern Gemini models.
- * Supports: Gemini 2.0 Flash, Gemini 1.5 Pro, Gemini 1.5 Flash
+ * Uses the Google Gemini API for latest Gemini models.
+ * Supports: Gemini 3 Pro/Flash, Gemini 2.5 Pro/Flash
  */
 
 import {
