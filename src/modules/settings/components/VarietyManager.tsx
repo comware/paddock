@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { growDb, type GrowVarietyConfig } from '@/lib/db';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 const varietySchema = z.object({
   name: z.string().min(1, 'Name is required').max(50),
@@ -26,6 +27,7 @@ export function VarietyManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const {
     register,
@@ -82,15 +84,21 @@ export function VarietyManager() {
     setMessage(null);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this variety?')) return;
+  const handleDeleteClick = (id: string) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirmId) return;
 
     try {
-      await growDb.varietyConfigs.delete(id);
+      await growDb.varietyConfigs.delete(deleteConfirmId);
       setMessage({ type: 'success', text: 'Variety deleted' });
       loadVarieties();
     } catch (error) {
       setMessage({ type: 'error', text: (error as Error).message });
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -305,7 +313,7 @@ export function VarietyManager() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleDelete(variety.id!)}
+                  onClick={() => handleDeleteClick(variety.id!)}
                   className="px-2 py-1 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                 >
                   Delete
@@ -315,6 +323,17 @@ export function VarietyManager() {
           ))
         )}
       </div>
+
+      {/* Delete confirmation dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Variety"
+        message="Are you sure you want to delete this variety? This will not affect existing trays using this variety."
+        confirmLabel="Delete"
+        variant="danger"
+      />
     </section>
   );
 }

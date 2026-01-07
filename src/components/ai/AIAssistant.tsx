@@ -16,6 +16,7 @@ import {
   type ChatMessage,
 } from '@/lib/ai';
 import type { AIConversation } from '@/lib/db/schema';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 type View = 'chat' | 'history';
 
@@ -49,6 +50,7 @@ export function AIAssistant() {
   const [input, setInput] = useState('');
   const [view, setView] = useState<View>('chat');
   const [editingMessage, setEditingMessage] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -132,18 +134,20 @@ export function AIAssistant() {
     [loadConversation]
   );
 
-  const handleDeleteConversation = useCallback(
-    async (id: string, e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (confirm('Delete this conversation?')) {
-        await deleteConversation(id);
-        if (currentConversationId === id) {
-          startNewConversation();
-        }
+  const handleDeleteClick = useCallback((id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDeleteConfirmId(id);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (deleteConfirmId) {
+      await deleteConversation(deleteConfirmId);
+      if (currentConversationId === deleteConfirmId) {
+        startNewConversation();
       }
-    },
-    [deleteConversation, currentConversationId, startNewConversation]
-  );
+      setDeleteConfirmId(null);
+    }
+  }, [deleteConfirmId, deleteConversation, currentConversationId, startNewConversation]);
 
   const noModels = !modelsLoading && models.length === 0;
 
@@ -232,7 +236,7 @@ export function AIAssistant() {
               conversations={conversations}
               currentId={currentConversationId}
               onSelect={handleSelectConversation}
-              onDelete={handleDeleteConversation}
+              onDelete={handleDeleteClick}
               onNewConversation={handleNewConversation}
             />
           ) : (
@@ -364,6 +368,17 @@ export function AIAssistant() {
           )}
         </div>
       )}
+
+      {/* Delete confirmation dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Conversation"
+        message="Are you sure you want to delete this conversation? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+      />
     </>
   );
 }
