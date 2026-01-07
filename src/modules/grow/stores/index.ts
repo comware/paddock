@@ -9,3 +9,5 @@ export type { TimeCategory, CategoryTotal } from './useTimeEntries';
 export { useExperiment } from './useExperiment';
 export type { VarietyStats, ExperimentMetrics, CriterionStatus } from './useExperiment';
 export { useSites } from './useSites';
+export { usePlannedPlantings } from './usePlannedPlantings';
+export type { PlannedPlantingStatus, PlannedPlantingWithComputed } from './usePlannedPlantings';

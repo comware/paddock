@@ -1,19 +1,24 @@
 /**
  * Grow Module Routes
  *
- * Defines the routing structure for the Grow module.
+ * Site-centric routing structure:
+ * - /grow → Sites overview (landing)
+ * - /grow/site/:siteId → Site detail with nested routes
+ * - /grow/analytics → Cross-site analytics
+ * - /grow/decision → Week 6 decision
+ * - /grow/guides → Reference material
  */
 
 import { useState } from 'react';
 import type { RouteObject } from 'react-router-dom';
-import { GrowDashboard } from './components/Dashboard';
 import { TrayList } from './components/Trays';
-import { SiteList } from './components/Sites';
+import { SiteList, SitesOverview, SiteDetailLayout, SiteDashboard } from './components/Sites';
 import { DailyLogForm, LogHistory } from './components/DailyLog';
 import { TimeEntryForm, TimeStats } from './components/TimeEntry';
 import { VarietyComparison, TrendCharts } from './components/Analytics';
 import { Scorecard } from './components/Decision';
 import { GuideLibrary } from './components/Guides';
+import { PlantingCalendar } from './components/Calendar';
 
 // ============================================
 // DAILY LOG PAGE
@@ -147,13 +152,36 @@ function DecisionPage() {
 }
 
 export const growRoutes: RouteObject[] = [
-  { index: true, element: <GrowDashboard /> },
-  { path: 'trays', element: <TrayList /> },
-  { path: 'trays/:id', element: <TrayList /> },
-  { path: 'sites', element: <SiteList /> },
-  { path: 'daily', element: <DailyLogPage /> },
-  { path: 'time', element: <TimeTrackingPage /> },
+  // Sites overview as landing page
+  { index: true, element: <SitesOverview /> },
+
+  // Site detail with nested routes
+  {
+    path: 'site/:siteId',
+    element: <SiteDetailLayout />,
+    children: [
+      { index: true, element: <SiteDashboard /> },
+      { path: 'trays', element: <TrayList /> },
+      { path: 'trays/:id', element: <TrayList /> },
+      { path: 'daily', element: <DailyLogPage /> },
+      { path: 'time', element: <TimeTrackingPage /> },
+      { path: 'analytics', element: <AnalyticsPage /> },
+    ],
+  },
+
+  // Site management page
+  { path: 'sites/manage', element: <SiteList /> },
+
+  // Global views (cross-site)
+  { path: 'calendar', element: <PlantingCalendar /> },
   { path: 'analytics', element: <AnalyticsPage /> },
   { path: 'decision', element: <DecisionPage /> },
   { path: 'guides', element: <GuideLibrary /> },
+
+  // Legacy routes - redirect to site-centric equivalents
+  // These can be removed after migration period
+  { path: 'trays', element: <TrayList /> },
+  { path: 'daily', element: <DailyLogPage /> },
+  { path: 'time', element: <TimeTrackingPage /> },
+  { path: 'sites', element: <SiteList /> },
 ];

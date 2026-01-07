@@ -256,11 +256,16 @@ export function GrowDashboard() {
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <QuickActionButton
             icon="🌱"
             label="New Tray"
             onClick={() => setIsNewTrayOpen(true)}
+          />
+          <QuickActionButton
+            icon="📅"
+            label="Calendar"
+            onClick={() => navigate('/grow/calendar')}
           />
           <QuickActionButton
             icon="📝"

@@ -88,6 +88,7 @@ export interface GrowObservation {
 
 export interface GrowTimeEntry {
   id?: string;
+  siteId?: string;              // Foreign key to GrowSite (optional for migration)
   date: Date;
   week: number;
   wateringChecking: number;     // minutes
@@ -158,6 +159,20 @@ export interface GrowDecision {
   updatedAt: Date;
 }
 
+export interface GrowPlannedPlanting {
+  id?: string;
+  siteId?: string;              // Foreign key to GrowSite (optional)
+  variety: string;              // Variety to plant
+  plannedSowDate: Date;         // When to sow
+  targetHarvestDate: Date;      // Expected harvest date
+  quantity: number;             // Number of trays to plant
+  notes?: string;               // Optional notes
+  status: 'planned' | 'converted' | 'cancelled';
+  convertedTrayId?: string;     // If converted to actual tray
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // ============================================
 // PLATFORM TYPES
 // ============================================
@@ -184,6 +199,7 @@ class PaddockDB extends Dexie {
   growTrayComments!: Table<GrowTrayComment>;
   growExperiments!: Table<GrowExperiment>;
   growDecisions!: Table<GrowDecision>;
+  growPlannedPlantings!: Table<GrowPlannedPlanting>;
 
   // Platform tables
   platformSettings!: Table<PlatformSetting>;
@@ -222,6 +238,16 @@ class PaddockDB extends Dexie {
       growTrays: '++id, trayNumber, variety, dateSown, dateHarvested, siteId, createdAt',
       growObservations: '++id, date, week, siteId, [siteId+date]',
     });
+
+    // Version 5: Add siteId to time entries for site-centric architecture
+    this.version(5).stores({
+      growTimeEntries: '++id, date, week, siteId, [siteId+date]',
+    });
+
+    // Version 6: Add planned plantings table for planting calendar
+    this.version(6).stores({
+      growPlannedPlantings: '++id, siteId, variety, plannedSowDate, status, [siteId+plannedSowDate]',
+    });
   }
 }
 
@@ -242,6 +268,7 @@ export const growDb = {
   trayComments: db.growTrayComments,
   experiments: db.growExperiments,
   decisions: db.growDecisions,
+  plannedPlantings: db.growPlannedPlantings,
 };
 
 export const platformDb = {

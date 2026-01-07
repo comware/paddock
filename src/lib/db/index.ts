@@ -17,6 +17,7 @@ export type {
   GrowTrayComment,
   GrowExperiment,
   GrowDecision,
+  GrowPlannedPlanting,
   PlatformSetting,
 } from './schema';
 
