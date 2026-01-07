@@ -92,7 +92,7 @@ export class OpenAIProvider implements ILLMProvider {
         model: request.model,
         input: messages,
         max_output_tokens: request.maxTokens || 4096,
-        temperature: request.temperature ?? 0.7,
+        // Note: temperature not supported in Responses API
       }),
     });
 
@@ -152,7 +152,7 @@ export class OpenAIProvider implements ILLMProvider {
           model: request.model,
           input: messages,
           max_output_tokens: request.maxTokens || 4096,
-          temperature: request.temperature ?? 0.7,
+          // Note: temperature not supported in Responses API
           stream: true,
         }),
       });
