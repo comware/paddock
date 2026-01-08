@@ -36,7 +36,7 @@ const quickWeights = [50, 80, 100, 120];
 
 export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   const { addTray, getNextTrayNumber } = useTrays();
-  const { varieties, isLoading: varietiesLoading } = useVarieties();
+  const { varieties, loadVarieties, isLoading: varietiesLoading } = useVarieties();
   const { mediums, loadMediums, isLoading: mediumsLoading } = useMediums();
   const { getActiveSite, getDefaultSite, ensureDefaultSite } = useSites();
 
@@ -69,10 +69,11 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
   const selectedVariety = watch('variety');
   const currentWeight = watch('seedWeight');
 
-  // Load mediums on mount
+  // Load varieties and mediums on mount
   useEffect(() => {
+    loadVarieties();
     loadMediums();
-  }, [loadMediums]);
+  }, [loadVarieties, loadMediums]);
 
   // Update defaults when variety changes
   useEffect(() => {

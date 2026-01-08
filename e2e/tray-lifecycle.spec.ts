@@ -14,8 +14,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Tray Lifecycle', () => {
   test.beforeEach(async ({ page }) => {
-    // Start at the app root
+    // Skip the welcome modal by setting localStorage
     await page.goto('/');
+    await page.evaluate(() => {
+      localStorage.setItem('paddock_onboarding_complete', 'true');
+    });
+
+    // Reload to apply the localStorage change
+    await page.reload();
   });
 
   test('should complete full tray lifecycle: add → light → harvest', async ({
@@ -24,65 +30,43 @@ test.describe('Tray Lifecycle', () => {
     // Wait for app to initialize (IndexedDB setup)
     await page.waitForLoadState('networkidle');
 
-    // Navigate to Grow module
-    await page.click('text=Grow');
+    // App should automatically redirect to /grow
     await expect(page).toHaveURL(/\/grow/);
 
     // ============================================
     // STEP 1: Ensure we have a site to work with
     // ============================================
 
-    // Check if we have any sites; if not, the app should show a setup prompt
-    // For now, we'll check if we can access the trays page directly
-    // The app may auto-create a default site on first use
+    // Check if we're showing the "Add First Site" onboarding screen
+    const addFirstSiteButton = page.getByRole('button', { name: 'Add Your First Site' });
 
-    // Look for a site card or "Get Started" / "Create Site" button
-    const siteCard = page.locator('[data-testid="site-card"]').first();
-    const createSiteButton = page.getByRole('button', { name: /create|add|new/i });
-    const getStartedButton = page.getByRole('button', { name: /get started/i });
+    if (await addFirstSiteButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+      // First time setup - need to create a site
+      await addFirstSiteButton.click();
 
-    // Try to click on an existing site, or create one if needed
-    if (await siteCard.isVisible()) {
-      await siteCard.click();
-    } else if (await getStartedButton.isVisible()) {
-      await getStartedButton.click();
-      // Fill in site details if a form appears
-      const siteNameInput = page.getByLabel(/name/i);
-      if (await siteNameInput.isVisible()) {
-        await siteNameInput.fill('Test Greenhouse');
-        await page.getByRole('button', { name: /save|create/i }).click();
-      }
-    } else if (await createSiteButton.isVisible()) {
-      await createSiteButton.click();
-      const siteNameInput = page.getByLabel(/name/i);
-      if (await siteNameInput.isVisible()) {
-        await siteNameInput.fill('Test Greenhouse');
-        await page.getByRole('button', { name: /save|create/i }).click();
-      }
+      // Fill in site details - use placeholder since label is in a separate div
+      const siteNameInput = page.getByPlaceholder(/home greenhouse|farm site/i);
+      await expect(siteNameInput).toBeVisible();
+      await siteNameInput.fill('Test Greenhouse');
+
+      // Submit the form - target the dialog's submit button specifically
+      await page.getByRole('dialog').getByRole('button', { name: 'Add Site', exact: true }).click();
+
+      // Wait for site creation
+      await page.waitForTimeout(500);
     }
 
-    // Wait for navigation to site detail page
+    // ============================================
+    // STEP 2: Enter the site to view/manage trays
+    // ============================================
+
+    // Click on the site card to enter site detail view
+    const siteCard = page.getByRole('heading', { name: 'Test Greenhouse' });
+    await expect(siteCard).toBeVisible({ timeout: 5000 });
+    await siteCard.click();
+
+    // Wait for site detail page to load
     await page.waitForTimeout(500);
-
-    // ============================================
-    // STEP 2: Navigate to Trays page
-    // ============================================
-
-    // Look for trays navigation (could be tab, button, or link)
-    const traysNav = page.getByRole('link', { name: /trays/i }).or(
-      page.getByRole('button', { name: /trays/i })
-    ).or(
-      page.locator('[href*="trays"]')
-    );
-
-    if (await traysNav.first().isVisible()) {
-      await traysNav.first().click();
-    }
-
-    // Wait for trays page to load
-    await page.waitForURL(/trays|\/grow/, { timeout: 5000 }).catch(() => {
-      // URL might not change if already on trays page
-    });
 
     // ============================================
     // STEP 3: Add a new tray
@@ -102,60 +86,31 @@ test.describe('Tray Lifecycle', () => {
     await page.waitForTimeout(300);
 
     // Fill in tray details
-    // Variety selection
-    const varietyInput = page.getByLabel(/variety/i).or(
-      page.locator('select[name="variety"]')
-    ).or(
-      page.getByPlaceholder(/variety/i)
-    );
+    // Wait for variety dropdown to be enabled (loads async from IndexedDB)
+    const varietySelect = page.getByRole('combobox').first();
+    await expect(varietySelect).toBeEnabled({ timeout: 10000 });
 
-    if (await varietyInput.isVisible()) {
-      // Check if it's a select or input
-      const tagName = await varietyInput.evaluate((el) => el.tagName.toLowerCase());
-      if (tagName === 'select') {
-        await varietyInput.selectOption({ index: 1 }); // Select first option
-      } else {
-        await varietyInput.fill('Sunflower');
-      }
-    }
+    // Select Sunflower variety
+    await varietySelect.selectOption({ label: 'Sunflower' });
 
-    // Seed weight
-    const seedWeightInput = page.getByLabel(/seed.*weight/i).or(
-      page.locator('input[name="seedWeight"]')
-    );
-    if (await seedWeightInput.isVisible()) {
-      await seedWeightInput.clear();
-      await seedWeightInput.fill('50');
-    }
+    // Seed weight is already pre-filled (80g), but let's use the 50g preset
+    await page.getByRole('button', { name: '50g' }).click();
 
-    // Growing medium (optional)
-    const mediumInput = page.getByLabel(/medium/i).or(
-      page.locator('select[name="growingMedium"]')
-    );
-    if (await mediumInput.isVisible()) {
-      const tagName = await mediumInput.evaluate((el) => el.tagName.toLowerCase());
-      if (tagName === 'select') {
-        await mediumInput.selectOption({ index: 1 });
-      } else {
-        await mediumInput.fill('Coco Coir');
-      }
-    }
+    // Growing medium is already set to Coco Coir (default)
 
     // Submit the form
-    const submitButton = page.getByRole('button', { name: /save|add|create|submit/i });
-    await submitButton.click();
+    await page.getByRole('button', { name: 'Save Tray' }).click();
 
-    // Wait for form to close and tray to appear
+    // Wait for form to close
+    await page.waitForTimeout(500);
+
+    // Navigate to Trays tab to see the tray card
+    await page.getByRole('link', { name: '🌱 Trays' }).click();
     await page.waitForTimeout(500);
 
     // Verify tray was created - look for it in the list
-    const trayCard = page.locator('[data-testid="tray-card"]').or(
-      page.locator('.tray-card')
-    ).or(
-      page.locator('text=Sunflower')
-    );
-
-    await expect(trayCard.first()).toBeVisible({ timeout: 5000 });
+    const trayCard = page.locator('text=Sunflower').first();
+    await expect(trayCard).toBeVisible({ timeout: 5000 });
 
     // Verify it's in blackout status
     const blackoutIndicator = page.locator('text=/blackout/i').or(
@@ -167,16 +122,8 @@ test.describe('Tray Lifecycle', () => {
     // STEP 4: Move tray to light
     // ============================================
 
-    // Click on the tray to select it or access its actions
-    await trayCard.first().click();
-    await page.waitForTimeout(300);
-
-    // Find the "Move to Light" action
-    const moveToLightButton = page.getByRole('button', { name: /light|move.*light/i }).or(
-      page.getByRole('menuitem', { name: /light/i })
-    ).or(
-      page.locator('[data-action="move-to-light"]')
-    );
+    // Find and click the "Move to Light" button on the tray card (don't click the card itself)
+    const moveToLightButton = page.getByRole('button', { name: '💡 Move to Light' });
 
     if (await moveToLightButton.isVisible()) {
       await moveToLightButton.click();
@@ -200,18 +147,14 @@ test.describe('Tray Lifecycle', () => {
     // STEP 5: Harvest the tray
     // ============================================
 
-    // Re-click tray if needed
-    await trayCard.first().click();
-    await page.waitForTimeout(300);
+    // Find the "Harvest" button on the tray card (should appear after moving to light)
+    // First wait for the tray to update
+    await page.waitForTimeout(500);
 
-    // Find the "Harvest" action
-    const harvestButton = page.getByRole('button', { name: /harvest/i }).or(
-      page.getByRole('menuitem', { name: /harvest/i })
-    ).or(
-      page.locator('[data-action="harvest"]')
-    );
+    // Look for the harvest button (🌿 Harvest icon)
+    const harvestButton = page.getByRole('button', { name: /🌿.*harvest/i });
 
-    if (await harvestButton.isVisible()) {
+    if (await harvestButton.isVisible({ timeout: 3000 }).catch(() => false)) {
       await harvestButton.click();
       await page.waitForTimeout(300);
 
@@ -241,8 +184,8 @@ test.describe('Tray Lifecycle', () => {
         await sellableCheckbox.check();
       }
 
-      // Submit harvest form
-      const harvestSubmit = page.getByRole('button', { name: /save|harvest|confirm|submit/i });
+      // Submit harvest form - target the dialog's submit button
+      const harvestSubmit = page.getByRole('dialog').getByRole('button', { name: /save|record|confirm/i });
       await harvestSubmit.click();
 
       await page.waitForTimeout(500);

@@ -326,22 +326,30 @@ export function TrayList() {
       {/* Tray Grid */}
       {filteredTrays.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-4xl mb-4">🌱</div>
-          <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+          <div className="text-6xl mb-4">🌱</div>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             {statusFilter === 'all' ? 'No trays yet' : `No ${statusFilter} trays`}
           </h3>
-          <p className="text-slate-500 dark:text-slate-400 mb-4">
+          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
             {statusFilter === 'all'
-              ? 'Start tracking your first tray of microgreens'
+              ? 'Start tracking your first tray of microgreens. Not sure where to start? Browse our growing guides for variety-specific instructions.'
               : 'Try selecting a different filter'}
           </p>
           {statusFilter === 'all' && (
-            <button
-              onClick={() => setIsNewTrayOpen(true)}
-              className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-            >
-              Add First Tray
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={() => setIsNewTrayOpen(true)}
+                className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+              >
+                Add First Tray
+              </button>
+              <a
+                href="/grow/guides"
+                className="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                Browse Growing Guides
+              </a>
+            </div>
           )}
         </div>
       ) : (
