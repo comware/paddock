@@ -1,138 +1,123 @@
-/**
- * useGrowingGuide - Hook for loading variety-specific growing guides
- *
- * Handles fetching guide content with fuzzy matching for variety names.
- */
+import { useState, useEffect } from 'react';
+import type { GuideIndex, GuideMetadata } from './types';
 
-import { useState, useEffect, useCallback } from 'react';
-import type { GuideIndex, GuideMetadata, UseGrowingGuideResult } from './types';
+interface UseGrowingGuideResult {
+  content: string | null;
+  metadata: GuideMetadata | null;
+  isLoading: boolean;
+  error: string | null;
+}
 
-// Module-level cache for guide index (shared across all hook instances)
+// Cache for guide index and content
 let guideIndexCache: GuideIndex | null = null;
-let guideIndexPromise: Promise<GuideIndex> | null = null;
+const contentCache = new Map<string, string>();
 
-// Cache for loaded guide content
-const guideContentCache = new Map<string, string>();
-
-// Alias table for variety name mismatches
+// Alias mapping for varieties with different names
 const VARIETY_ALIASES: Record<string, string> = {
-  'pak choi': 'bok choy',
-  'pac choi': 'bok choy',
-  'chinese cabbage': 'bok choy',
-  'daikon': 'radish (daikon)',
-  'china rose': 'radish (china rose)',
+  'Pak Choi': 'Bok Choy',
+  'Pak choi': 'Bok Choy',
+  'pak choi': 'Bok Choy',
+  'Mustard': 'Mustard (Red)',
+  'mustard': 'Mustard (Red)',
 };
 
 /**
  * Normalize a variety name for matching
  */
 function normalizeVarietyName(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[()]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return name.toLowerCase().trim().replace(/[()]/g, '');
 }
 
 /**
- * Find the best matching guide for a variety name
+ * Find a guide matching the variety name using fuzzy matching
  */
-function findGuideMatch(
+function findMatchingGuide(
   varietyName: string,
   guides: GuideMetadata[]
 ): GuideMetadata | null {
-  const normalizedInput = normalizeVarietyName(varietyName);
+  if (!varietyName) return null;
 
   // Check aliases first
-  const aliasKey = Object.keys(VARIETY_ALIASES).find(
-    (alias) => normalizedInput.includes(alias) || alias.includes(normalizedInput)
-  );
-  const searchName = aliasKey ? VARIETY_ALIASES[aliasKey] : normalizedInput;
+  const aliasedName = VARIETY_ALIASES[varietyName] || varietyName;
+  
+  // 1. Try exact match
+  let match = guides.find(g => g.name === aliasedName);
+  if (match) return match;
 
-  // 1. Exact match (normalized)
-  const exactMatch = guides.find(
-    (g) => normalizeVarietyName(g.name) === searchName
-  );
-  if (exactMatch) return exactMatch;
+  // 2. Try case-insensitive exact match
+  const lowerName = aliasedName.toLowerCase();
+  match = guides.find(g => g.name.toLowerCase() === lowerName);
+  if (match) return match;
 
-  // 2. Input is contained in guide name (e.g., "Basil" matches "Basil (Genovese)")
-  const containedMatch = guides.find((g) =>
-    normalizeVarietyName(g.name).includes(searchName)
+  // 3. Try partial match (variety name is start of guide name)
+  match = guides.find(g => 
+    g.name.toLowerCase().startsWith(lowerName)
   );
-  if (containedMatch) return containedMatch;
+  if (match) return match;
 
-  // 3. Guide name is contained in input (e.g., "Mustard Red" matches "Mustard")
-  const reverseMatch = guides.find((g) =>
-    searchName.includes(normalizeVarietyName(g.name).split(' ')[0])
+  // 4. Try normalized match (remove parentheses and compare)
+  const normalizedSearch = normalizeVarietyName(aliasedName);
+  match = guides.find(g => 
+    normalizeVarietyName(g.name) === normalizedSearch
   );
-  if (reverseMatch) return reverseMatch;
+  if (match) return match;
 
-  // 4. First word match (e.g., "Radish" matches any radish variant)
-  const inputFirstWord = searchName.split(' ')[0];
-  const firstWordMatch = guides.find(
-    (g) => normalizeVarietyName(g.name).split(' ')[0] === inputFirstWord
+  // 5. Try contains match
+  match = guides.find(g => 
+    g.name.toLowerCase().includes(lowerName) ||
+    lowerName.includes(g.name.toLowerCase())
   );
-  if (firstWordMatch) return firstWordMatch;
+  if (match) return match;
 
   return null;
 }
 
 /**
- * Fetch and cache the guide index
+ * Load the guide index from the public directory
  */
-async function fetchGuideIndex(): Promise<GuideIndex> {
-  if (guideIndexCache) return guideIndexCache;
+async function loadGuideIndex(): Promise<GuideIndex> {
+  if (guideIndexCache) {
+    return guideIndexCache;
+  }
 
-  if (guideIndexPromise) return guideIndexPromise;
+  const response = await fetch('/guides/index.json');
+  if (!response.ok) {
+    throw new Error('Failed to load guide index');
+  }
 
-  guideIndexPromise = fetch('/guides/index.json')
-    .then((res) => {
-      if (!res.ok) throw new Error('Failed to load guide index');
-      return res.json();
-    })
-    .then((data: GuideIndex) => {
-      guideIndexCache = data;
-      return data;
-    })
-    .catch((error) => {
-      guideIndexPromise = null;
-      throw error;
-    });
-
-  return guideIndexPromise;
+  const data = await response.json();
+  guideIndexCache = data;
+  return data;
 }
 
 /**
- * Fetch and cache guide content
+ * Load guide content from the public directory
  */
-async function fetchGuideContent(filePath: string): Promise<string> {
-  if (guideContentCache.has(filePath)) {
-    return guideContentCache.get(filePath)!;
+async function loadGuideContent(filePath: string): Promise<string> {
+  if (contentCache.has(filePath)) {
+    return contentCache.get(filePath)!;
   }
 
-  const res = await fetch(`/guides/${filePath}`);
-  if (!res.ok) throw new Error(`Failed to load guide: ${filePath}`);
+  const response = await fetch(`/guides/${filePath}`);
+  if (!response.ok) {
+    throw new Error(`Failed to load guide: ${filePath}`);
+  }
 
-  const content = await res.text();
-  guideContentCache.set(filePath, content);
+  const content = await response.text();
+  contentCache.set(filePath, content);
   return content;
 }
 
 /**
- * Hook for loading growing guide content
- *
- * @param varietyName - The variety name to find a guide for
- * @returns Guide content, metadata, loading state, and error
+ * Hook to load growing guide for a variety
  */
-export function useGrowingGuide(
-  varietyName: string | null
-): UseGrowingGuideResult {
+export function useGrowingGuide(varietyName: string | null): UseGrowingGuideResult {
   const [content, setContent] = useState<string | null>(null);
   const [metadata, setMetadata] = useState<GuideMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadGuide = useCallback(async () => {
+  useEffect(() => {
     if (!varietyName) {
       setContent(null);
       setMetadata(null);
@@ -140,52 +125,54 @@ export function useGrowingGuide(
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    let isCancelled = false;
 
-    try {
-      const index = await fetchGuideIndex();
-      const guide = findGuideMatch(varietyName, index.guides);
+    async function loadGuide(name: string) {
+      setIsLoading(true);
+      setError(null);
 
-      if (!guide) {
-        setContent(null);
-        setMetadata(null);
-        setError(`No growing guide found for "${varietyName}"`);
-        return;
+      try {
+        // Load guide index
+        const index = await loadGuideIndex();
+
+        // Find matching guide
+        const guide = findMatchingGuide(name, index.guides);
+
+        if (!guide) {
+          setError(`No growing guide found for "${name}"`);
+          setContent(null);
+          setMetadata(null);
+          setIsLoading(false);
+          return;
+        }
+
+        // Load guide content
+        const guideContent = await loadGuideContent(guide.file);
+
+        if (!isCancelled) {
+          setMetadata(guide);
+          setContent(guideContent);
+          setError(null);
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setError(err instanceof Error ? err.message : 'Failed to load guide');
+          setContent(null);
+          setMetadata(null);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
-
-      const guideContent = await fetchGuideContent(guide.file);
-      setContent(guideContent);
-      setMetadata(guide);
-    } catch (err) {
-      setError((err as Error).message);
-      setContent(null);
-      setMetadata(null);
-    } finally {
-      setIsLoading(false);
     }
+
+    loadGuide(varietyName);
+
+    return () => {
+      isCancelled = true;
+    };
   }, [varietyName]);
 
-  useEffect(() => {
-    loadGuide();
-  }, [loadGuide]);
-
   return { content, metadata, isLoading, error };
-}
-
-/**
- * Get all available guides (useful for browse/search)
- */
-export async function getAllGuides(): Promise<GuideMetadata[]> {
-  const index = await fetchGuideIndex();
-  return index.guides;
-}
-
-/**
- * Clear all cached data (useful for testing)
- */
-export function clearGuideCache(): void {
-  guideIndexCache = null;
-  guideIndexPromise = null;
-  guideContentCache.clear();
 }

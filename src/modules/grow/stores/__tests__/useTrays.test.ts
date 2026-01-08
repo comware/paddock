@@ -8,7 +8,7 @@
  * - Store selectors (success rate, average yield, etc.)
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createMockTray, daysAgo, mockTrays } from '@/test/mocks/db';
 
 // We need to test the helper functions directly

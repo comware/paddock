@@ -169,7 +169,7 @@ export function GuideLibrary() {
       if (sortField === 'name') {
         comparison = a.name.localeCompare(b.name);
       } else if (sortField === 'difficulty') {
-        const order = { beginner: 1, intermediate: 2, advanced: 3 };
+        const order: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
         comparison = order[a.difficulty] - order[b.difficulty];
       } else if (sortField === 'daysToHarvest') {
         comparison = a.daysToHarvest - b.daysToHarvest;
