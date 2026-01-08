@@ -203,14 +203,6 @@ test.describe('Tray Lifecycle', () => {
     await page.goto('/grow');
     await page.waitForLoadState('networkidle');
 
-    // Check for dashboard stats/counts
-    const blackoutCount = page.locator('[data-testid="blackout-count"]').or(
-      page.locator('text=/blackout.*\\d+|\\d+.*blackout/i')
-    );
-    const lightCount = page.locator('[data-testid="light-count"]').or(
-      page.locator('text=/light.*\\d+|\\d+.*light/i')
-    );
-
     // At minimum, verify the page loads without errors
     await expect(page.locator('body')).not.toContainText('Error');
     await expect(page.locator('body')).not.toContainText('Something went wrong');

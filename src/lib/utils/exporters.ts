@@ -280,6 +280,7 @@ function escapeCSV(value: string): string {
 }
 
 function stripIds<T extends { id?: string }>(obj: T): Omit<T, 'id'> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id: _, ...rest } = obj;
   return rest as Omit<T, 'id'>;
 }

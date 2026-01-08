@@ -9,6 +9,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { useTrays, useTimeEntries, useExperiment } from '../../stores';
+import type { ExperimentMetrics, CriterionStatus } from '../../stores/useExperiment';
+import type { GrowExperiment } from '@/lib/db';
 import { FitQuestionnaire } from './FitQuestionnaire';
 
 type DecisionChoice = 'hell_yes' | 'extend' | 'pivot' | 'stop';
@@ -353,9 +355,9 @@ function ReflectionField({ label, value, onChange }: ReflectionFieldProps) {
 // ============================================
 
 function generateMarkdownExport(
-  _experiment: any,
-  metrics: any,
-  criteria: any[],
+  _experiment: GrowExperiment | null,
+  metrics: ExperimentMetrics,
+  criteria: CriterionStatus[],
   fitScore: number | null,
   decision: DecisionChoice | undefined,
   reflections: Record<string, string>

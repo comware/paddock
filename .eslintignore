@@ -1,0 +1,18 @@
+# Build outputs
+dist/
+dev-dist/
+build/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Test results
+test-results/
+playwright-report/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.generated.*
