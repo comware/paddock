@@ -10,13 +10,16 @@
  * - Responsive padding and max-width constraints
  */
 
+import { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { TopNav } from './TopNav';
 import { BottomNav } from './BottomNav';
 import { InstallPrompt } from '@/components/pwa';
 import { KeyboardShortcutsHelp } from '@/components/ui';
-import { AIAssistant } from '@/components/ai';
 import { useKeyboardShortcuts } from '@/hooks';
+
+// Lazy load AI assistant - it's a floating widget that can wait
+const AIAssistant = lazy(() => import('@/components/ai/AIAssistant').then(m => ({ default: m.AIAssistant })));
 
 export function AppShell() {
   const { showHelp, setShowHelp, shortcuts } = useKeyboardShortcuts();
@@ -29,7 +32,9 @@ export function AppShell() {
       </main>
       <BottomNav />
       <InstallPrompt />
-      <AIAssistant />
+      <Suspense fallback={null}>
+        <AIAssistant />
+      </Suspense>
       <KeyboardShortcutsHelp
         isOpen={showHelp}
         onClose={() => setShowHelp(false)}

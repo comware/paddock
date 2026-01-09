@@ -106,4 +106,26 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split React and React-DOM into their own chunk
+          'vendor-react': ['react', 'react-dom'],
+          // Split router into its own chunk
+          'vendor-router': ['react-router-dom'],
+          // Split date utilities (tree-shakable but can be lazy loaded)
+          'vendor-date': ['date-fns'],
+          // Split markdown rendering (only needed in specific views)
+          'vendor-markdown': ['react-markdown', 'remark-gfm'],
+          // Split form handling
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          // Split database layer
+          'vendor-db': ['dexie'],
+          // Split state management
+          'vendor-state': ['zustand'],
+        },
+      },
+    },
+  },
 })
