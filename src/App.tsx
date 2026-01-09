@@ -10,7 +10,6 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { seedDatabase } from '@/lib/db';
 import { useTheme } from '@/hooks';
-import { WelcomeModal } from '@/components/onboarding';
 
 export default function App() {
   const [isReady, setIsReady] = useState(false);
@@ -42,10 +41,5 @@ export default function App() {
     );
   }
 
-  return (
-    <>
-      <WelcomeModal />
-      <RouterProvider router={router} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }

@@ -8,7 +8,8 @@
 import { useState, useEffect } from 'react';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { aiService, type ChatMessage, type LLMModel } from './index';
+import { aiService } from './service';
+import type { ChatMessage, LLMModel } from './types';
 import { useConversationsStore } from './conversations';
 
 interface AIStore {

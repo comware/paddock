@@ -6,9 +6,10 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Outlet, type RouteObject } from 'react-router-dom';
 import { AppShell } from '@/components/Shell';
 import { ComingSoon, ModuleLoader } from '@/components/shared';
+import { WelcomeModal } from '@/components/onboarding';
 import { growRoutes } from '@/modules/grow/routes';
 
 // Lazy-loaded modules and pages
@@ -16,63 +17,79 @@ const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const GrowModule = lazy(() => import('@/modules/grow'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
 
+// Root layout wrapper that provides router context for components like WelcomeModal
+function RootLayout() {
+  return (
+    <>
+      <WelcomeModal />
+      <Outlet />
+    </>
+  );
+}
+
 const routes: RouteObject[] = [
-  // Landing page - standalone (outside AppShell)
+  // Root wrapper - provides router context for WelcomeModal
   {
-    path: '/',
-    element: (
-      <Suspense fallback={<ModuleLoader />}>
-        <LandingPage />
-      </Suspense>
-    ),
-  },
-
-  // Main app routes with AppShell layout
-  {
-    path: '/',
-    element: <AppShell />,
+    element: <RootLayout />,
     children: [
-      // Grow module
+      // Landing page - standalone (outside AppShell)
       {
-        path: 'grow',
+        path: '/',
         element: (
           <Suspense fallback={<ModuleLoader />}>
-            <GrowModule />
+            <LandingPage />
           </Suspense>
         ),
-        children: growRoutes,
       },
 
-      // Future modules (placeholders)
+      // Main app routes with AppShell layout
       {
-        path: 'sales/*',
-        element: <ComingSoon module="Sales" />,
-      },
-      {
-        path: 'markets/*',
-        element: <ComingSoon module="Markets" />,
-      },
-      {
-        path: 'crm/*',
-        element: <ComingSoon module="CRM" />,
-      },
-      {
-        path: 'finance/*',
-        element: <ComingSoon module="Finance" />,
-      },
-      {
-        path: 'planner/*',
-        element: <ComingSoon module="Planner" />,
-      },
+        path: '/',
+        element: <AppShell />,
+        children: [
+          // Grow module
+          {
+            path: 'grow',
+            element: (
+              <Suspense fallback={<ModuleLoader />}>
+                <GrowModule />
+              </Suspense>
+            ),
+            children: growRoutes,
+          },
 
-      // Platform settings
-      {
-        path: 'settings/*',
-        element: (
-          <Suspense fallback={<ModuleLoader />}>
-            <SettingsModule />
-          </Suspense>
-        ),
+          // Future modules (placeholders)
+          {
+            path: 'sales/*',
+            element: <ComingSoon module="Sales" />,
+          },
+          {
+            path: 'markets/*',
+            element: <ComingSoon module="Markets" />,
+          },
+          {
+            path: 'crm/*',
+            element: <ComingSoon module="CRM" />,
+          },
+          {
+            path: 'finance/*',
+            element: <ComingSoon module="Finance" />,
+          },
+          {
+            path: 'planner/*',
+            element: <ComingSoon module="Planner" />,
+          },
+
+          // Platform settings
+          {
+            path: 'settings/*',
+            element: (
+              <Suspense fallback={<ModuleLoader />}>
+                <SettingsModule />
+              </Suspense>
+            ),
+          },
+        ],
       },
     ],
   },
