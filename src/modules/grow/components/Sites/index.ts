@@ -10,5 +10,6 @@ export { EditSiteForm } from './EditSiteForm';
 
 // Site-centric navigation components
 export { SitesOverview } from './SitesOverview';
-export { SiteDetailLayout, useSiteContext } from './SiteDetailLayout';
+export { SiteDetailLayout } from './SiteDetailLayout';
+export { useSiteContext } from './SiteContext';
 export { SiteDashboard } from './SiteDashboard';

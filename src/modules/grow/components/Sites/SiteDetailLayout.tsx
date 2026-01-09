@@ -8,32 +8,13 @@
  * - Outlet for nested routes
  */
 
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Outlet, useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useSites } from '../../stores';
 import { useWeather } from '../../hooks/useWeather';
 import { getWeatherEmoji } from '@/lib/weather';
 import type { GrowSite } from '@/lib/db';
-
-// ============================================
-// SITE CONTEXT
-// ============================================
-
-interface SiteContextValue {
-  site: GrowSite | null;
-  siteId: string;
-  isLoading: boolean;
-}
-
-const SiteContext = createContext<SiteContextValue>({
-  site: null,
-  siteId: '',
-  isLoading: true,
-});
-
-export function useSiteContext() {
-  return useContext(SiteContext);
-}
+import { SiteContext, type SiteContextValue } from './SiteContext';
 
 // ============================================
 // SUB-NAVIGATION

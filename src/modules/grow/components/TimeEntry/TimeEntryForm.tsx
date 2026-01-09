@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTimeEntries, TIME_CATEGORIES, type TimeCategory } from '../../stores';
-import { useSiteContext } from '../Sites/SiteDetailLayout';
+import { useSiteContext } from '../Sites/SiteContext';
 
 const QUICK_INCREMENTS = [5, 15, 30];
 

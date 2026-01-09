@@ -14,7 +14,7 @@ import { z } from 'zod';
 import { Modal } from '@/components/ui';
 import { useTrays, useVarieties, useMediums, useSites } from '../../stores';
 import { useEffect } from 'react';
-import { useSiteContext } from '../Sites/SiteDetailLayout';
+import { useSiteContext } from '../Sites/SiteContext';
 
 const traySchema = z.object({
   label: z.string().optional(),

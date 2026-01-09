@@ -17,7 +17,7 @@ import { MoodSlider } from './MoodSlider';
 import { useObservations, useTrays, useSites } from '../../stores';
 import { useWeather } from '../../hooks/useWeather';
 import { getWeatherEmoji } from '@/lib/weather';
-import { useSiteContext } from '../Sites/SiteDetailLayout';
+import { useSiteContext } from '../Sites/SiteContext';
 
 // ============================================
 // SCHEMA

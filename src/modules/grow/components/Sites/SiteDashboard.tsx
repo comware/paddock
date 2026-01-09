@@ -10,7 +10,7 @@
 
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSiteContext } from './SiteDetailLayout';
+import { useSiteContext } from './SiteContext';
 import { useTrays, useTimeEntries, useObservations, type TrayWithComputed } from '../../stores';
 import { NewTrayForm } from '../Trays/NewTrayForm';
 import { HarvestForm } from '../Trays/HarvestForm';

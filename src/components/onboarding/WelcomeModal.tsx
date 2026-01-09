@@ -5,7 +5,7 @@
  * Uses localStorage to track completion and prevent showing again.
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const STORAGE_KEY = 'paddock_onboarding_complete';
@@ -47,16 +47,12 @@ const steps: Step[] = [
 ];
 
 export function WelcomeModal() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    // Check if user has completed onboarding
+  // Initialize state from localStorage directly - no effect needed
+  const [isOpen, setIsOpen] = useState(() => {
     const hasCompleted = localStorage.getItem(STORAGE_KEY);
-    if (!hasCompleted) {
-      setIsOpen(true);
-    }
-  }, []);
+    return !hasCompleted;
+  });
+  const [currentStep, setCurrentStep] = useState(0);
 
   const handleClose = () => {
     setIsOpen(false);

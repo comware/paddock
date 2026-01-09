@@ -15,7 +15,7 @@ import { TrayCard } from './TrayCard';
 import { NewTrayForm } from './NewTrayForm';
 import { HarvestForm } from './HarvestForm';
 import { EditTrayForm } from './EditTrayForm';
-import { useSiteContext } from '../Sites/SiteDetailLayout';
+import { useSiteContext } from '../Sites/SiteContext';
 
 type SortOption = 'newest' | 'oldest' | 'trayNumber';
 

@@ -2,42 +2,36 @@
  * Paddock Platform Routes
  *
  * Root routing configuration with lazy-loaded modules.
+ * Landing page at / introduces the platform to new users.
  */
 
 import { lazy, Suspense } from 'react';
-import {
-  createBrowserRouter,
-  Navigate,
-  type RouteObject,
-} from 'react-router-dom';
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { AppShell } from '@/components/Shell';
-import { ComingSoon } from '@/components/shared/ComingSoon';
+import { ComingSoon, ModuleLoader } from '@/components/shared';
 import { growRoutes } from '@/modules/grow/routes';
 
-// Lazy-loaded modules
+// Lazy-loaded modules and pages
+const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const GrowModule = lazy(() => import('@/modules/grow'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
 
-// Loading fallback
-function ModuleLoader() {
-  return (
-    <div className="flex-1 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl animate-pulse">🌱</div>
-        <p className="text-slate-500 dark:text-slate-400 mt-2">Loading...</p>
-      </div>
-    </div>
-  );
-}
-
 const routes: RouteObject[] = [
+  // Landing page - standalone (outside AppShell)
+  {
+    path: '/',
+    element: (
+      <Suspense fallback={<ModuleLoader />}>
+        <LandingPage />
+      </Suspense>
+    ),
+  },
+
+  // Main app routes with AppShell layout
   {
     path: '/',
     element: <AppShell />,
     children: [
-      // Default redirect to Grow module
-      { index: true, element: <Navigate to="/grow" replace /> },
-
       // Grow module
       {
         path: 'grow',

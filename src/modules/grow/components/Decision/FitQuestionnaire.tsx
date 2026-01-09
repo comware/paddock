@@ -5,7 +5,7 @@
  * growing is a good fit for the user's lifestyle.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useExperiment } from '../../stores';
 
 interface FitQuestion {
@@ -65,38 +65,41 @@ const FIT_QUESTIONS: FitQuestion[] = [
 
 export function FitQuestionnaire() {
   const { decision, loadDecision, saveDecision } = useExperiment();
+  const lastSyncedDecisionId = useRef<string | null>(null);
 
-  const [scores, setScores] = useState<FitScores>({
-    enjoyedRoutine: 5,
-    satisfiedGrowing: 5,
-    comfortableFailures: 5,
-    maintainedConsistency: 5,
-    familySupportive: 5,
-    willingToScale: 5,
-  });
+  // Compute scores from decision, using local edits when dirty
+  const derivedScores = useMemo((): FitScores => ({
+    enjoyedRoutine: decision?.enjoyedRoutine ?? 5,
+    satisfiedGrowing: decision?.satisfiedGrowing ?? 5,
+    comfortableFailures: decision?.comfortableFailures ?? 5,
+    maintainedConsistency: decision?.maintainedConsistency ?? 5,
+    familySupportive: decision?.familySupportive ?? 5,
+    willingToScale: decision?.willingToScale ?? 5,
+  }), [decision]);
 
+  // Track local edits separately
+  const [localEdits, setLocalEdits] = useState<Partial<FitScores>>({});
   const [isDirty, setIsDirty] = useState(false);
+
+  // Reset local edits when decision ID changes (new data loaded)
+  const currentDecisionId = decision?.id ?? null;
+  if (currentDecisionId !== lastSyncedDecisionId.current) {
+    lastSyncedDecisionId.current = currentDecisionId;
+    if (Object.keys(localEdits).length > 0) {
+      setLocalEdits({});
+      setIsDirty(false);
+    }
+  }
+
+  // Merge derived scores with local edits
+  const scores: FitScores = { ...derivedScores, ...localEdits };
 
   useEffect(() => {
     loadDecision();
   }, [loadDecision]);
 
-  // Sync scores when decision loads
-  useEffect(() => {
-    if (decision) {
-      setScores({
-        enjoyedRoutine: decision.enjoyedRoutine ?? 5,
-        satisfiedGrowing: decision.satisfiedGrowing ?? 5,
-        comfortableFailures: decision.comfortableFailures ?? 5,
-        maintainedConsistency: decision.maintainedConsistency ?? 5,
-        familySupportive: decision.familySupportive ?? 5,
-        willingToScale: decision.willingToScale ?? 5,
-      });
-    }
-  }, [decision]);
-
   const handleScoreChange = (id: keyof FitScores, value: number) => {
-    setScores((prev) => ({ ...prev, [id]: value }));
+    setLocalEdits((prev) => ({ ...prev, [id]: value }));
     setIsDirty(true);
   };
 
