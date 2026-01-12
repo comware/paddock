@@ -11,8 +11,9 @@ import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 
 // Navigation items for the propagation module
 const propagationNavItems: ModuleNavItem[] = [
-  { name: 'Dashboard', path: '', icon: '📊' },       // Dashboard (landing)
-  { name: 'Batches', path: '/batches', icon: '📋' }, // Batch list
+  { name: 'Dashboard', path: '', icon: '📊' },              // Dashboard (landing)
+  { name: 'Batches', path: '/batches', icon: '📋' },        // Batch list
+  { name: 'Mother Plants', path: '/mother-plants', icon: '🌱' }, // Mother plant registry
 ];
 
 export default function PropagationModule() {

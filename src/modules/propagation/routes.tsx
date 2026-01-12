@@ -7,8 +7,10 @@
  * - /propagation/batches/:id → Batch detail
  * - /propagation/stations → Station list
  * - /propagation/stations/:id → Station detail
+ * - /propagation/mother-plants → Mother plant registry
+ * - /propagation/mother-plants/:id → Mother plant detail
  *
- * Note: New batch/station creation is handled via modals,
+ * Note: New batch/station/mother plant creation is handled via modals,
  * not separate routes.
  */
 
@@ -16,6 +18,7 @@ import type { RouteObject } from 'react-router-dom';
 import { PropDashboard } from './components/Dashboard';
 import { BatchList, BatchDetail } from './components/Batches';
 import { StationList, StationDetail } from './components/Stations';
+import { MotherPlantList, MotherPlantDetail } from './components/MotherPlants';
 
 export const propagationRoutes: RouteObject[] = [
   // Dashboard as landing page
@@ -28,4 +31,8 @@ export const propagationRoutes: RouteObject[] = [
   // Station routes
   { path: 'stations', element: <StationList /> },
   { path: 'stations/:id', element: <StationDetail /> },
+
+  // Mother plant routes
+  { path: 'mother-plants', element: <MotherPlantList /> },
+  { path: 'mother-plants/:id', element: <MotherPlantDetail /> },
 ];

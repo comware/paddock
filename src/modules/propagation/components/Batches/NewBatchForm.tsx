@@ -189,6 +189,12 @@ interface NewBatchFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (batchId: string) => void;
+  /** Pre-fill mother plant ID (from "Take Cutting" action) */
+  prefillMotherPlantId?: string;
+  /** Pre-fill species (from "Take Cutting" action) */
+  prefillSpecies?: string;
+  /** Pre-fill variety (from "Take Cutting" action) */
+  prefillVariety?: string;
 }
 
 // ============================================
@@ -201,7 +207,14 @@ const QUICK_QUANTITIES = [5, 10, 20, 50, 100];
 // COMPONENT
 // ============================================
 
-export function NewBatchForm({ isOpen, onClose, onSuccess }: NewBatchFormProps) {
+export function NewBatchForm({
+  isOpen,
+  onClose,
+  onSuccess,
+  prefillMotherPlantId,
+  prefillSpecies,
+  prefillVariety,
+}: NewBatchFormProps) {
   const { addBatch, getUniqueSpecies, getNextBatchNumber } = useBatches();
   const { sites, loadSites, getActiveSite, getDefaultSite } = useSites();
 
@@ -283,6 +296,22 @@ export function NewBatchForm({ isOpen, onClose, onSuccess }: NewBatchFormProps) 
       loadData();
     }
   }, [isOpen, loadSites]);
+
+  // Apply prefill values when form opens (from "Take Cutting" action)
+  useEffect(() => {
+    if (isOpen && (prefillMotherPlantId || prefillSpecies)) {
+      if (prefillSpecies) {
+        setValue('species', prefillSpecies);
+        setSpeciesSearch(prefillSpecies);
+      }
+      if (prefillVariety) {
+        setValue('variety', prefillVariety);
+      }
+      if (prefillMotherPlantId) {
+        setValue('motherPlantId', prefillMotherPlantId);
+      }
+    }
+  }, [isOpen, prefillMotherPlantId, prefillSpecies, prefillVariety, setValue]);
 
   // Update defaults when species changes (from species config)
   useEffect(() => {
