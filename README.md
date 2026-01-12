@@ -6,6 +6,7 @@ Paddock is a Progressive Web App (PWA) that helps hobbyist microgreens growers t
 
 ## ✨ Features
 
+### 🥬 Grow Module
 - **🗂️ Growing Sites Management** - Organize multiple growing locations
 - **📋 Tray Tracking** - Monitor individual growing trays from seed to harvest
 - **📊 Analytics Dashboard** - Visualize growth patterns and variety performance
@@ -15,9 +16,24 @@ Paddock is a Progressive Web App (PWA) that helps hobbyist microgreens growers t
 - **🤖 AI Growing Assistant** - Get personalized advice from Claude, GPT-4, or Gemini
 - **📚 Growing Guide Library** - Access and edit markdown guides
 - **🎯 Decision Scorecards** - Evaluate varieties with weighted criteria
+
+### 🌿 Propagation Module
+- **📦 Batch Tracking** - Track propagation batches from cutting to graduation
+- **🏭 Station Management** - Manage propagation stations with capacity and environment tracking
+- **🌳 Mother Plants** - Track mother plants, health checks, and cutting history
+- **🔄 Stage Transitions** - Move batches through propagation stages (cutting, rooting, hardening)
+- **🌱 Propagule Tracking** - Track individual propagules within batches
+- **💰 Cost Tracking** - Log material, labor, and overhead costs per batch
+- **📈 Analytics Dashboard** - Success rates, cost analysis, and performance metrics
+- **🎓 Graduation Workflow** - Graduate rooted propagules to grow module or external sale
+- **📤 Export/Import** - Export and import propagation data
+- **⚙️ Species Configuration** - Configure species-specific propagation parameters
+
+### 🌐 Platform Features
 - **🌙 Dark Mode** - Easy on the eyes during late-night checks
 - **📱 Offline-First** - Works without internet, installs as mobile app
 - **🔒 Privacy-First** - All data stored locally on your device
+- **📱 Mobile Optimized** - Touch-friendly interface with responsive design
 
 ## 🚀 Quick Start
 
@@ -72,7 +88,10 @@ vercel --prod
 paddock/
 ├── src/
 │   ├── components/        # Shared UI components
-│   ├── modules/          # Feature modules (grow, settings)
+│   ├── modules/
+│   │   ├── grow/         # Grow module (trays, sites, calendar)
+│   │   ├── propagation/  # Propagation module (batches, stations, mother plants)
+│   │   └── settings/     # Application settings
 │   ├── lib/              # Core libraries (db, ai, monitoring)
 │   ├── hooks/            # Custom React hooks
 │   └── routes/           # Application routing
