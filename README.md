@@ -1,5 +1,7 @@
 # 🌱 Paddock
 
+![CI](https://github.com/comware/paddock/actions/workflows/ci.yml/badge.svg)
+
 **Local-first small farm management platform for microgreens growing experiments**
 
 Paddock is a Progressive Web App (PWA) that helps hobbyist microgreens growers track experiments, manage growing sites, log daily activities, and make data-driven decisions about what to grow next.
