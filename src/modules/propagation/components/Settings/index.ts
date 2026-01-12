@@ -7,3 +7,4 @@
 export { SettingsPage } from './SettingsPage';
 export { SpeciesConfigList } from './SpeciesConfigList';
 export { SpeciesConfigForm } from './SpeciesConfigForm';
+export { DataManagement } from './DataManagement';

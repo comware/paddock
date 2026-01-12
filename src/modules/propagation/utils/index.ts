@@ -133,3 +133,24 @@ export type {
   CostByCategory,
   SpeciesCostRanking,
 } from './analyticsCalculations';
+
+// Export/Import utilities - backup, restore, CSV export
+export {
+  // JSON export
+  exportPropagationAsJSON,
+  downloadPropagationJSONBackup,
+  // JSON import
+  importPropagationFromJSON,
+  // CSV export
+  exportBatchesAsCSV,
+  downloadBatchesCSV,
+  // Data management
+  clearAllPropagationData,
+  getPropagationStats,
+  getPropagationRawData,
+} from './exporters';
+export type {
+  PropagationBackup,
+  ImportResult,
+  ImportOptions,
+} from './exporters';
