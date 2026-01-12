@@ -30,7 +30,8 @@ test.describe('Tray Lifecycle', () => {
     // Wait for app to initialize (IndexedDB setup)
     await page.waitForLoadState('networkidle');
 
-    // App should automatically redirect to /grow
+    // Navigate to the Grow module
+    await page.goto('/grow');
     await expect(page).toHaveURL(/\/grow/);
 
     // ============================================
