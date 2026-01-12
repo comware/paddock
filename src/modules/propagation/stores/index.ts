@@ -47,3 +47,6 @@ export type {
   EnrichedBatchCost,
   SupplyUsageSummary,
 } from './useBatchCosts';
+
+export { useAnalytics } from './useAnalytics';
+export type { AnalyticsState } from './useAnalytics';

@@ -90,3 +90,46 @@ export {
   CATEGORY_SORT_ORDER,
   sortBreakdownByCategory,
 } from './costCalculations';
+
+// Analytics calculations - aggregated analytics for dashboards
+export {
+  // Time period filtering
+  getTimePeriodCutoff,
+  filterBatchesByPeriod,
+  filterGraduationsByPeriod,
+  filterTransitionsByPeriod,
+  // Success rate calculations
+  calculateSuccessRate,
+  calculateSuccessRateByDimension,
+  calculateSuccessRateBySpecies,
+  calculateSuccessRateByMethod,
+  calculateSuccessRateByStation,
+  calculateSuccessRateByMotherPlant,
+  calculateSuccessRateBySeason,
+  // Failure analysis
+  getFailuresByStage,
+  getFailureReasonDistribution,
+  getMostProblematicStage,
+  // Outcome analytics
+  getOutcomeDistribution,
+  getOutcomesByMonth,
+  getTotalGraduated,
+  // Cost analytics
+  getAverageCostPerPropagule,
+  getCostBySupplyCategory,
+  getMostExpensiveSpecies,
+  // Display helpers
+  getFailureReasonDisplayName,
+  getOutcomeDisplayName,
+  getMethodDisplayName,
+  getTimePeriodDisplayName,
+} from './analyticsCalculations';
+export type {
+  TimePeriod,
+  SuccessRateResult,
+  FailureByStage,
+  OutcomeDistribution,
+  MonthlyOutcome,
+  CostByCategory,
+  SpeciesCostRanking,
+} from './analyticsCalculations';
