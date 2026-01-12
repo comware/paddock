@@ -265,6 +265,21 @@ export function NewBatchForm({
   const currentQuantity = watch('quantityStarted');
   const selectedStationId = watch('stationId');
 
+  // Get species config for selected species (for hints)
+  const selectedSpeciesConfig = useMemo(() => {
+    if (!selectedSpecies) return null;
+    return speciesConfigs.find(
+      (c) => c.species.toLowerCase() === selectedSpecies.toLowerCase()
+    );
+  }, [selectedSpecies, speciesConfigs]);
+
+  // Check if current month is in best propagation months
+  const isInSeason = useMemo(() => {
+    if (!selectedSpeciesConfig?.bestPropagationMonths?.length) return true;
+    const currentMonth = new Date().getMonth() + 1;
+    return selectedSpeciesConfig.bestPropagationMonths.includes(currentMonth);
+  }, [selectedSpeciesConfig]);
+
   // Load supporting data on mount
   useEffect(() => {
     async function loadData() {
@@ -466,6 +481,37 @@ export function NewBatchForm({
             )}
             {errors.species && (
               <p className="mt-1 text-sm text-red-500">{errors.species.message}</p>
+            )}
+
+            {/* Species Config Hint */}
+            {selectedSpeciesConfig && (
+              <div className="mt-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-blue-700 dark:text-blue-300 font-medium">
+                    {selectedSpeciesConfig.species} defaults:
+                  </span>
+                  {selectedSpeciesConfig.preferredMethod && (
+                    <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs">
+                      {PROPAGATION_METHODS.find(m => m.value === selectedSpeciesConfig.preferredMethod)?.label || selectedSpeciesConfig.preferredMethod}
+                    </span>
+                  )}
+                  {selectedSpeciesConfig.typicalRootingDays && (
+                    <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs">
+                      ~{selectedSpeciesConfig.typicalRootingDays}d rooting
+                    </span>
+                  )}
+                  {!isInSeason && (
+                    <span className="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-xs">
+                      Not optimal season
+                    </span>
+                  )}
+                  {isInSeason && selectedSpeciesConfig.bestPropagationMonths?.length && (
+                    <span className="px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 text-xs">
+                      In season
+                    </span>
+                  )}
+                </div>
+              </div>
             )}
           </div>
 

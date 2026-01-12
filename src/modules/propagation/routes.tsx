@@ -12,6 +12,7 @@
  * - /propagation/supplies → Supplies inventory list
  * - /propagation/supplies/:id → Supply detail
  * - /propagation/analytics → Analytics dashboard
+ * - /propagation/settings → Species configurations
  *
  * Note: New batch/station/mother plant/supply creation is handled via modals,
  * not separate routes.
@@ -24,6 +25,7 @@ import { StationList, StationDetail } from './components/Stations';
 import { MotherPlantList, MotherPlantDetail } from './components/MotherPlants';
 import { SupplyList, SupplyDetail } from './components/Supplies';
 import { AnalyticsDashboard } from './components/Analytics';
+import { SettingsPage } from './components/Settings';
 
 export const propagationRoutes: RouteObject[] = [
   // Dashboard as landing page
@@ -47,4 +49,7 @@ export const propagationRoutes: RouteObject[] = [
 
   // Analytics route
   { path: 'analytics', element: <AnalyticsDashboard /> },
+
+  // Settings route
+  { path: 'settings', element: <SettingsPage /> },
 ];
