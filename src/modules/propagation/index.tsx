@@ -14,6 +14,7 @@ const propagationNavItems: ModuleNavItem[] = [
   { name: 'Dashboard', path: '', icon: '📊' },              // Dashboard (landing)
   { name: 'Batches', path: '/batches', icon: '📋' },        // Batch list
   { name: 'Mother Plants', path: '/mother-plants', icon: '🌱' }, // Mother plant registry
+  { name: 'Analytics', path: '/analytics', icon: '📈' },    // Analytics dashboard
 ];
 
 export default function PropagationModule() {
