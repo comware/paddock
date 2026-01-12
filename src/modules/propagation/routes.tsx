@@ -5,6 +5,7 @@
  * - /propagation → Dashboard (landing)
  * - /propagation/batches → Batch list
  * - /propagation/batches/:id → Batch detail
+ * - /propagation/propagules/:id → Propagule detail (individual tracking)
  * - /propagation/stations → Station list
  * - /propagation/stations/:id → Station detail
  * - /propagation/mother-plants → Mother plant registry
@@ -21,6 +22,7 @@
 import type { RouteObject } from 'react-router-dom';
 import { PropDashboard } from './components/Dashboard';
 import { BatchList, BatchDetail } from './components/Batches';
+import { PropaguleDetail } from './components/Propagules';
 import { StationList, StationDetail } from './components/Stations';
 import { MotherPlantList, MotherPlantDetail } from './components/MotherPlants';
 import { SupplyList, SupplyDetail } from './components/Supplies';
@@ -34,6 +36,9 @@ export const propagationRoutes: RouteObject[] = [
   // Batch routes
   { path: 'batches', element: <BatchList /> },
   { path: 'batches/:id', element: <BatchDetail /> },
+
+  // Propagule routes (individual tracking)
+  { path: 'propagules/:id', element: <PropaguleDetail /> },
 
   // Station routes
   { path: 'stations', element: <StationList /> },

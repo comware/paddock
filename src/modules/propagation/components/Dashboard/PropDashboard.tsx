@@ -15,6 +15,7 @@ import { useBatches } from '../../stores';
 import { MetricsCards } from './MetricsCards';
 import { StageDistribution } from './StageDistribution';
 import { NeedingAttention } from './NeedingAttention';
+import { ReadyToGraduate } from './ReadyToGraduate';
 import { RecentActivity } from './RecentActivity';
 import { StationOverview } from './StationOverview';
 
@@ -26,6 +27,7 @@ export function PropDashboard() {
     loadBatches,
     getActiveBatches,
     getOverdueBatches,
+    getBatchesByStage,
     getStageCounts,
     getSuccessRate,
     getAverageSurvivalRate,
@@ -39,6 +41,7 @@ export function PropDashboard() {
   // Calculate metrics
   const activeBatches = useMemo(() => getActiveBatches(), [batches]);
   const overdueBatches = useMemo(() => getOverdueBatches(), [batches]);
+  const readyBatches = useMemo(() => getBatchesByStage('ready'), [batches]);
   const stageCounts = useMemo(() => getStageCounts(), [batches]);
   const successRate = getSuccessRate();
   const avgSurvivalRate = getAverageSurvivalRate();
@@ -146,6 +149,9 @@ export function PropDashboard() {
         <StageDistribution stageCounts={stageCounts} />
         <NeedingAttention overdueBatches={overdueBatches} maxItems={5} />
       </div>
+
+      {/* Ready to Graduate Section */}
+      <ReadyToGraduate readyBatches={readyBatches} maxItems={5} />
 
       {/* Station Overview */}
       <StationOverview maxItems={6} />
