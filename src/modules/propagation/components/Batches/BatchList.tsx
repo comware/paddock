@@ -177,11 +177,11 @@ export function BatchList() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Propagation Batches</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">Propagation Batches</h1>
         <button
           onClick={() => setIsNewBatchOpen(true)}
-          className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
+          className="min-h-[44px] px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 active:bg-primary-700 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto"
         >
           <span className="text-lg">+</span>
           New Batch

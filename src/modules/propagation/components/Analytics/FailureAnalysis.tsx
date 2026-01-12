@@ -51,8 +51,8 @@ export function FailureAnalysis({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Failure Analysis
         </h2>
@@ -63,9 +63,9 @@ export function FailureAnalysis({
 
       {/* Most Problematic Stage Alert */}
       {mostProblematicStage && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">⚠️</span>
+        <div className="mb-6 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="flex items-start sm:items-center gap-3">
+            <span className="text-xl sm:text-2xl shrink-0">⚠️</span>
             <div>
               <div className="font-medium text-red-800 dark:text-red-200">
                 Watch Out: {STAGE_DISPLAY_NAMES[mostProblematicStage]} Stage
@@ -78,7 +78,7 @@ export function FailureAnalysis({
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Failures by Stage */}
         <div>
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">

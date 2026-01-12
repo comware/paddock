@@ -56,7 +56,7 @@ function StageFilterTabs({
   ];
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-thin">
       {stages.map((stage) => {
         const count = stage === 'all'
           ? Object.values(stageCounts).reduce((a, b) => a + b, 0)
@@ -76,7 +76,7 @@ function StageFilterTabs({
           <button
             key={stage}
             onClick={() => onStageChange(stage)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`min-h-[44px] px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               isSelected
                 ? 'bg-primary-500 text-white'
                 : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
@@ -102,14 +102,14 @@ function SortDropdown({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <label className="text-sm text-slate-500 dark:text-slate-400">Sort:</label>
+      <label className="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline">Sort:</label>
       <select
         value={`${sort.field}-${sort.direction}`}
         onChange={(e) => {
           const [field, direction] = e.target.value.split('-') as [PropaguleSort['field'], PropaguleSort['direction']];
           onSortChange({ field, direction });
         }}
-        className="px-3 py-1.5 rounded-lg text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+        className="min-h-[44px] px-3 py-2 rounded-lg text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
       >
         <option value="propaguleNumber-asc">Number (A-Z)</option>
         <option value="propaguleNumber-desc">Number (Z-A)</option>
@@ -269,8 +269,8 @@ export function PropaguleList({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">{title}</h2>
         <div className="text-sm text-slate-500 dark:text-slate-400">
           {displayPropagules.length} propagule{displayPropagules.length !== 1 ? 's' : ''}
         </div>
@@ -284,7 +284,7 @@ export function PropaguleList({
             stageCounts={stageCounts}
             onStageChange={handleStageChange}
           />
-          <div className="flex justify-end">
+          <div className="flex justify-start sm:justify-end">
             <SortDropdown sort={sort} onSortChange={handleSortChange} />
           </div>
         </div>

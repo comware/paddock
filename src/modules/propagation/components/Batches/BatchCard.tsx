@@ -186,7 +186,7 @@ export function BatchCard({
                 e.stopPropagation();
                 onAdvanceStage(batch.id!);
               }}
-              className="flex-1 px-3 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+              className="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 active:bg-primary-700 transition-colors"
             >
               Advance Stage
             </button>
@@ -197,7 +197,7 @@ export function BatchCard({
                 e.stopPropagation();
                 onRecordFailure(batch.id!);
               }}
-              className="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              className="min-h-[44px] px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500 transition-colors"
             >
               Record Failure
             </button>
@@ -213,7 +213,7 @@ export function BatchCard({
               e.stopPropagation();
               onViewDetails(batch.id!);
             }}
-            className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+            className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500 transition-colors"
           >
             View Details
           </button>

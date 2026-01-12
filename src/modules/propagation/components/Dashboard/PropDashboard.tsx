@@ -110,11 +110,11 @@ export function PropDashboard() {
       />
 
       {/* Quick Actions */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           <QuickActionButton
             icon="+"
             label="New Batch"
@@ -205,16 +205,16 @@ function QuickActionButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center justify-center gap-2 p-4 rounded-lg font-medium transition-colors ${
+      className={`flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 min-h-[56px] sm:min-h-[44px] p-3 sm:p-4 rounded-lg font-medium transition-colors text-sm sm:text-base ${
         disabled
           ? 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed'
           : primary
-          ? 'bg-primary-500 text-white hover:bg-primary-600'
-          : 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/30'
+          ? 'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700'
+          : 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 active:bg-primary-200 dark:active:bg-primary-900/40'
       }`}
     >
-      <span className="text-xl">{icon}</span>
-      {label}
+      <span className="text-lg sm:text-xl">{icon}</span>
+      <span className="text-center leading-tight">{label}</span>
     </button>
   );
 }

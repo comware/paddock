@@ -349,16 +349,16 @@ export function BatchDetail() {
       </Link>
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
+        <div className="flex flex-col gap-4">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                 {batch.batchNumber}
               </h1>
               {stageColors && (
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${stageColors.bg} ${stageColors.text}`}
+                  className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${stageColors.bg} ${stageColors.text}`}
                 >
                   {getStageDisplayName(batch.stage)}
                 </span>
@@ -374,18 +374,18 @@ export function BatchDetail() {
                 </span>
               )}
             </div>
-            <div className="text-lg text-slate-600 dark:text-slate-300">
+            <div className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
               {batch.species}
               {batch.variety && <span className="text-slate-400"> - {batch.variety}</span>}
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2">
+          {/* Action Buttons - grid on mobile for touch targets */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
             {canGraduate && (
               <button
                 onClick={handleOpenGraduationModal}
-                className="px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors"
+                className="min-h-[44px] px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 active:bg-green-700 transition-colors text-sm sm:text-base"
               >
                 Graduate
               </button>
@@ -393,7 +393,7 @@ export function BatchDetail() {
             {canAdvance && (
               <button
                 onClick={handleOpenAdvanceModal}
-                className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+                className="min-h-[44px] px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 active:bg-primary-700 transition-colors text-sm sm:text-base"
               >
                 Advance Stage
               </button>
@@ -401,7 +401,7 @@ export function BatchDetail() {
             {canRecordFailure && (
               <button
                 onClick={handleOpenFailureModal}
-                className="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 transition-colors"
+                className="min-h-[44px] px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 active:bg-red-300 transition-colors text-sm sm:text-base"
               >
                 Record Failure
               </button>
@@ -409,7 +409,7 @@ export function BatchDetail() {
             {canExplode && (
               <button
                 onClick={handleOpenExplodeModal}
-                className="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50 transition-colors"
+                className="min-h-[44px] px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50 active:bg-purple-300 transition-colors text-sm sm:text-base col-span-2 sm:col-span-1"
               >
                 Explode to Individuals
               </button>
@@ -417,7 +417,7 @@ export function BatchDetail() {
             {!batch.isExploded && (
               <button
                 onClick={() => navigate(`/propagation/batches/${id}/edit`)}
-                className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors"
+                className="min-h-[44px] px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 active:bg-slate-300 transition-colors text-sm sm:text-base"
               >
                 Edit Batch
               </button>

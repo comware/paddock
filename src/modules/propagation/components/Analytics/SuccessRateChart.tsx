@@ -60,7 +60,7 @@ export function SuccessRateChart({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
       {/* Header with view mode selector */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -71,7 +71,7 @@ export function SuccessRateChart({
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
-              className={`px-3 py-1 text-sm rounded-lg font-medium transition-colors ${
+              className={`min-h-[44px] px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
                 viewMode === mode
                   ? 'bg-primary-500 text-white'
                   : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'

@@ -110,18 +110,18 @@ export function AnalyticsDashboard() {
 
       {/* Filters Bar */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
           {/* Time Period Filter */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Period:
             </label>
-            <div className="flex gap-1">
+            <div className="flex flex-wrap gap-1">
               {timePeriods.map((period) => (
                 <button
                   key={period}
                   onClick={() => analytics.setTimePeriod(period)}
-                  className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-colors ${
+                  className={`min-h-[44px] px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
                     analytics.timePeriod === period
                       ? 'bg-primary-500 text-white'
                       : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
@@ -134,7 +134,7 @@ export function AnalyticsDashboard() {
           </div>
 
           {/* Species Filter */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
             <label
               htmlFor="species-filter"
               className="text-sm font-medium text-slate-700 dark:text-slate-300"
@@ -145,7 +145,7 @@ export function AnalyticsDashboard() {
               id="species-filter"
               value={speciesFilter}
               onChange={(e) => setSpeciesFilter(e.target.value)}
-              className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              className="min-h-[44px] px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
             >
               <option value="all">All Species</option>
               {filterOptions.species.map((species) => (
@@ -157,7 +157,7 @@ export function AnalyticsDashboard() {
           </div>
 
           {/* Method Filter */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
             <label
               htmlFor="method-filter"
               className="text-sm font-medium text-slate-700 dark:text-slate-300"
@@ -168,7 +168,7 @@ export function AnalyticsDashboard() {
               id="method-filter"
               value={methodFilter}
               onChange={(e) => setMethodFilter(e.target.value)}
-              className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+              className="min-h-[44px] px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
             >
               <option value="all">All Methods</option>
               {filterOptions.methods.map((method) => (
