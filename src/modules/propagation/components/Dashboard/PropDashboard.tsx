@@ -111,28 +111,32 @@ export function PropDashboard() {
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <QuickActionButton
-            icon="➕"
+            icon="+"
             label="New Batch"
             onClick={() => navigate('/propagation/batches/new')}
             primary
           />
           <QuickActionButton
-            icon="📋"
+            icon="*"
             label="View Batches"
             onClick={() => navigate('/propagation/batches')}
           />
           <QuickActionButton
-            icon="🏠"
+            icon="#"
             label="Stations"
             onClick={() => navigate('/propagation/stations')}
           />
           <QuickActionButton
-            icon="🌿"
+            icon="$"
+            label="Supplies"
+            onClick={() => navigate('/propagation/supplies')}
+          />
+          <QuickActionButton
+            icon="@"
             label="Mother Plants"
             onClick={() => navigate('/propagation/mother-plants')}
-            disabled
           />
         </div>
       </div>

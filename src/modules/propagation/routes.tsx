@@ -9,8 +9,10 @@
  * - /propagation/stations/:id → Station detail
  * - /propagation/mother-plants → Mother plant registry
  * - /propagation/mother-plants/:id → Mother plant detail
+ * - /propagation/supplies → Supplies inventory list
+ * - /propagation/supplies/:id → Supply detail
  *
- * Note: New batch/station/mother plant creation is handled via modals,
+ * Note: New batch/station/mother plant/supply creation is handled via modals,
  * not separate routes.
  */
 
@@ -19,6 +21,7 @@ import { PropDashboard } from './components/Dashboard';
 import { BatchList, BatchDetail } from './components/Batches';
 import { StationList, StationDetail } from './components/Stations';
 import { MotherPlantList, MotherPlantDetail } from './components/MotherPlants';
+import { SupplyList, SupplyDetail } from './components/Supplies';
 
 export const propagationRoutes: RouteObject[] = [
   // Dashboard as landing page
@@ -35,4 +38,8 @@ export const propagationRoutes: RouteObject[] = [
   // Mother plant routes
   { path: 'mother-plants', element: <MotherPlantList /> },
   { path: 'mother-plants/:id', element: <MotherPlantDetail /> },
+
+  // Supplies routes
+  { path: 'supplies', element: <SupplyList /> },
+  { path: 'supplies/:id', element: <SupplyDetail /> },
 ];
