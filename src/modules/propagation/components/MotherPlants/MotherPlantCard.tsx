@@ -38,21 +38,22 @@ const STATUS_COLORS: Record<MotherPlantStatus, { bg: string; text: string }> = {
 
 /**
  * Get health indicator color based on score.
+ * Includes dark mode variants for visibility in both themes.
  */
 function getHealthColor(score?: number): { bg: string; text: string; indicator: string } {
   if (!score) {
-    return { bg: 'bg-slate-100', text: 'text-slate-500', indicator: 'bg-slate-300' };
+    return { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-500 dark:text-slate-400', indicator: 'bg-slate-300 dark:bg-slate-500' };
   }
   if (score >= 4) {
-    return { bg: 'bg-green-50', text: 'text-green-700', indicator: 'bg-green-500' };
+    return { bg: 'bg-green-50 dark:bg-green-900/20', text: 'text-green-700 dark:text-green-400', indicator: 'bg-green-500' };
   }
   if (score >= 3) {
-    return { bg: 'bg-yellow-50', text: 'text-yellow-700', indicator: 'bg-yellow-500' };
+    return { bg: 'bg-yellow-50 dark:bg-yellow-900/20', text: 'text-yellow-700 dark:text-yellow-400', indicator: 'bg-yellow-500' };
   }
   if (score >= 2) {
-    return { bg: 'bg-orange-50', text: 'text-orange-700', indicator: 'bg-orange-500' };
+    return { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-400', indicator: 'bg-orange-500' };
   }
-  return { bg: 'bg-red-50', text: 'text-red-700', indicator: 'bg-red-500' };
+  return { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-400', indicator: 'bg-red-500' };
 }
 
 /**

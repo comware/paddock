@@ -28,16 +28,17 @@ export const STAGE_DISPLAY_NAMES: Record<PropagationStage, string> = {
 
 /**
  * Colors for each stage (Tailwind color classes).
+ * Includes dark mode variants for visibility in both themes.
  */
 export const STAGE_COLORS: Record<PropagationStage, { bg: string; text: string; border: string }> = {
-  taken: { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-200' },
-  rooting: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-200' },
-  rooted: { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-200' },
-  potted_up: { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-200' },
-  hardening: { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-200' },
-  ready: { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-200' },
-  graduated: { bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-200' },
-  failed: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-200' },
+  taken: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-800 dark:text-blue-200', border: 'border-blue-200 dark:border-blue-800' },
+  rooting: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-800 dark:text-yellow-200', border: 'border-yellow-200 dark:border-yellow-800' },
+  rooted: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-200', border: 'border-green-200 dark:border-green-800' },
+  potted_up: { bg: 'bg-teal-100 dark:bg-teal-900/30', text: 'text-teal-800 dark:text-teal-200', border: 'border-teal-200 dark:border-teal-800' },
+  hardening: { bg: 'bg-orange-100 dark:bg-orange-900/30', text: 'text-orange-800 dark:text-orange-200', border: 'border-orange-200 dark:border-orange-800' },
+  ready: { bg: 'bg-purple-100 dark:bg-purple-900/30', text: 'text-purple-800 dark:text-purple-200', border: 'border-purple-200 dark:border-purple-800' },
+  graduated: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-800 dark:text-emerald-200', border: 'border-emerald-200 dark:border-emerald-800' },
+  failed: { bg: 'bg-red-100 dark:bg-red-900/30', text: 'text-red-800 dark:text-red-200', border: 'border-red-200 dark:border-red-800' },
 };
 
 /**
