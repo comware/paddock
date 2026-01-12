@@ -12,3 +12,5 @@ export { BatchDetail } from './BatchDetail';
 export { StageTimeline } from './StageTimeline';
 export { StageTransitionModal } from './StageTransitionModal';
 export type { StageTransitionModalProps, TransitionMode } from './StageTransitionModal';
+export { ExplodeBatchModal } from './ExplodeBatchModal';
+export type { ExplodeBatchModalProps } from './ExplodeBatchModal';
