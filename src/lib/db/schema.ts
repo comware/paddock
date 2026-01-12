@@ -9,6 +9,20 @@
 
 import Dexie, { type Table } from 'dexie';
 
+// Import propagation types
+import type {
+  PropMotherPlant,
+  PropStation,
+  PropStationLog,
+  PropBatch,
+  PropPropagule,
+  PropStageTransition,
+  PropGraduation,
+  PropSupply,
+  PropBatchCost,
+  PropSpeciesConfig,
+} from '@/modules/propagation/types';
+
 // ============================================
 // GROW MODULE TYPES
 // ============================================
@@ -230,6 +244,18 @@ class PaddockDB extends Dexie {
   // Platform tables
   platformSettings!: Table<PlatformSetting>;
 
+  // Propagation module tables
+  propMotherPlants!: Table<PropMotherPlant>;
+  propStations!: Table<PropStation>;
+  propStationLogs!: Table<PropStationLog>;
+  propBatches!: Table<PropBatch>;
+  propPropagules!: Table<PropPropagule>;
+  propStageTransitions!: Table<PropStageTransition>;
+  propGraduations!: Table<PropGraduation>;
+  propSupplies!: Table<PropSupply>;
+  propBatchCosts!: Table<PropBatchCost>;
+  propSpeciesConfigs!: Table<PropSpeciesConfig>;
+
   constructor() {
     super('Paddock');
 
@@ -280,6 +306,47 @@ class PaddockDB extends Dexie {
       aiConversations: '++id, title, model, lastMessageAt, createdAt',
       aiMessages: '++id, conversationId, role, createdAt',
     });
+
+    // Version 8: Add propagation module tables
+    // Index design rationale:
+    // - Compound indexes for common query patterns (e.g., dashboard: batches by stage for site)
+    // - Single field indexes for filtering and sorting
+    // - Unique constraint on species name for propSpeciesConfigs
+    this.version(8).stores({
+      // Mother plants - indexed by site, species, status for filtering
+      propMotherPlants: '++id, siteId, species, variety, status, [siteId+status], [siteId+species]',
+
+      // Stations - indexed by site, type, active status for filtering
+      propStations: '++id, siteId, name, type, isActive, [siteId+isActive]',
+
+      // Station environmental logs - indexed by station and date for time-series queries
+      propStationLogs: '++id, stationId, date, [stationId+date]',
+
+      // Batches - heavily indexed for various query patterns
+      // [siteId+stage]: Dashboard view - batches by stage for current site
+      // [stationId+stage]: Station view - batches in specific station
+      // [species+stage]: Analytics - success rate by species
+      // [motherPlantId+stage]: Mother plant detail - batches from this plant
+      propBatches: '++id, batchNumber, siteId, stationId, species, variety, stage, dateTaken, motherPlantId, isExploded, [siteId+stage], [stationId+stage], [species+stage], [motherPlantId+stage]',
+
+      // Individual propagules - indexed by batch, site, stage
+      propPropagules: '++id, batchId, propaguleNumber, siteId, stationId, species, stage, [batchId+stage], [siteId+stage]',
+
+      // Stage transitions - audit log indexed by target and date for history timeline
+      propStageTransitions: '++id, batchId, propaguleId, toStage, transitionDate, [batchId+transitionDate], [propaguleId+transitionDate]',
+
+      // Graduations - indexed by outcome and date for analytics
+      propGraduations: '++id, batchId, propaguleId, outcome, graduationDate, [outcome+graduationDate], [batchId+outcome]',
+
+      // Supplies inventory - indexed by category for filtering
+      propSupplies: '++id, name, category, [category+name]',
+
+      // Batch costs - indexed by batch and supply for cost calculation
+      propBatchCosts: '++id, batchId, supplyId, [batchId+supplyId]',
+
+      // Species configurations - unique by species name for lookup
+      propSpeciesConfigs: '++id, &species',
+    });
   }
 }
 
@@ -311,3 +378,30 @@ export const aiDb = {
   conversations: db.aiConversations,
   messages: db.aiMessages,
 };
+
+export const propDb = {
+  motherPlants: db.propMotherPlants,
+  stations: db.propStations,
+  stationLogs: db.propStationLogs,
+  batches: db.propBatches,
+  propagules: db.propPropagules,
+  stageTransitions: db.propStageTransitions,
+  graduations: db.propGraduations,
+  supplies: db.propSupplies,
+  batchCosts: db.propBatchCosts,
+  speciesConfigs: db.propSpeciesConfigs,
+};
+
+// Re-export propagation types for convenience
+export type {
+  PropMotherPlant,
+  PropStation,
+  PropStationLog,
+  PropBatch,
+  PropPropagule,
+  PropStageTransition,
+  PropGraduation,
+  PropSupply,
+  PropBatchCost,
+  PropSpeciesConfig,
+} from '@/modules/propagation/types';
