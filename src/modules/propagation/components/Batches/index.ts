@@ -4,4 +4,7 @@
  * Re-exports all batch-related components for the propagation module.
  */
 
+export { BatchList } from './BatchList';
+export { BatchCard } from './BatchCard';
+export { BatchFilters } from './BatchFilters';
 export { NewBatchForm } from './NewBatchForm';

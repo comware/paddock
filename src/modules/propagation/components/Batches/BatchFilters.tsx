@@ -7,7 +7,7 @@
 
 import { useCallback } from 'react';
 import type { PropagationStage, PropagationMethod, BatchFilters as BatchFiltersType, BatchSort } from '../../types';
-import { STAGE_DISPLAY_NAMES, STAGE_COLORS, STAGE_ORDER } from '../../utils';
+import { STAGE_COLORS } from '../../utils';
 
 interface BatchFiltersProps {
   filters: BatchFiltersType;

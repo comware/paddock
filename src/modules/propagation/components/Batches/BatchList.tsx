@@ -17,8 +17,9 @@ import { useBatches } from '../../stores';
 import type { PropBatchWithComputed, PropagationStage, BatchFilters as BatchFiltersType, BatchSort, FailureReason } from '../../types';
 import { BatchCard } from './BatchCard';
 import { BatchFilters } from './BatchFilters';
+import { NewBatchForm } from './NewBatchForm';
 import { Modal } from '@/components/ui/Modal';
-import { getStageDisplayName, getValidNextStages, isActiveStage } from '../../utils';
+import { getStageDisplayName, getValidNextStages } from '../../utils';
 
 /**
  * Failure reason options for the failure modal.
@@ -57,6 +58,7 @@ export function BatchList() {
   } = useBatches();
 
   // Modal state
+  const [isNewBatchOpen, setIsNewBatchOpen] = useState(false);
   const [advancingBatch, setAdvancingBatch] = useState<PropBatchWithComputed | null>(null);
   const [failingBatch, setFailingBatch] = useState<PropBatchWithComputed | null>(null);
   const [selectedNextStage, setSelectedNextStage] = useState<PropagationStage | ''>('');
@@ -65,7 +67,8 @@ export function BatchList() {
   const [failureNotes, setFailureNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Initialize filters from URL params on mount
+  // Initialize filters from URL params on mount (intentionally runs once)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const stageParam = searchParams.get('stage');
     const speciesParam = searchParams.get('species');
@@ -240,7 +243,7 @@ export function BatchList() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Propagation Batches</h1>
         <button
-          onClick={() => navigate('/propagation/batches/new')}
+          onClick={() => setIsNewBatchOpen(true)}
           className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
         >
           <span className="text-lg">+</span>
@@ -278,7 +281,7 @@ export function BatchList() {
           </p>
           {batches.length === 0 && (
             <button
-              onClick={() => navigate('/propagation/batches/new')}
+              onClick={() => setIsNewBatchOpen(true)}
               className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
             >
               Create First Batch
@@ -465,6 +468,12 @@ export function BatchList() {
           </div>
         )}
       </Modal>
+
+      {/* New Batch Form Modal */}
+      <NewBatchForm
+        isOpen={isNewBatchOpen}
+        onClose={() => setIsNewBatchOpen(false)}
+      />
     </div>
   );
 }

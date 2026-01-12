@@ -5,7 +5,7 @@
  * Follows the TrayCard pattern from the grow module.
  */
 
-import type { PropBatchWithComputed, PropagationStage } from '../../types';
+import type { PropBatchWithComputed } from '../../types';
 import {
   getStageDisplayName,
   getStageColors,
