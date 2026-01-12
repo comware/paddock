@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { useBatches } from '../../stores/useBatches';
 import { useStageTransitions } from '../../stores/useStageTransitions';
 import { useBatchCosts } from '../../stores/useBatchCosts';
+import { useGraduations } from '../../stores/useGraduations';
 import type { FailureReason } from '../../types';
 import {
   getStageDisplayName,
@@ -28,7 +29,10 @@ import {
 } from '../../utils';
 import { StageTimeline } from './StageTimeline';
 import { StageTransitionModal, type TransitionMode } from './StageTransitionModal';
+import { ExplodeBatchModal } from './ExplodeBatchModal';
 import { CostBreakdown, CostSummary } from '../Costs';
+import { GraduationForm, GraduationHistory } from '../Graduation';
+import { usePropagules } from '../../stores/usePropagules';
 
 // ============================================
 // CONSTANTS
@@ -209,17 +213,25 @@ export function BatchDetail() {
     getTransitionsWithDuration,
   } = useStageTransitions();
   const { loadCosts } = useBatchCosts();
+  const { loadGraduations } = useGraduations();
+
+  // Propagules store for exploded batch display
+  const { getPropagulesByBatch, loadPropagules } = usePropagules();
 
   // Modal state
   const [transitionModalOpen, setTransitionModalOpen] = useState(false);
   const [transitionMode, setTransitionMode] = useState<TransitionMode>('advance');
+  const [explodeModalOpen, setExplodeModalOpen] = useState(false);
+  const [graduationModalOpen, setGraduationModalOpen] = useState(false);
 
   // Load data
   useEffect(() => {
     loadBatches();
     loadTransitions();
     loadCosts();
-  }, [loadBatches, loadTransitions, loadCosts]);
+    loadPropagules();
+    loadGraduations();
+  }, [loadBatches, loadTransitions, loadCosts, loadPropagules, loadGraduations]);
 
   // Get batch data
   const batch = useMemo(() => {
@@ -233,10 +245,23 @@ export function BatchDetail() {
     return getTransitionsWithDuration(id);
   }, [id, getTransitionsWithDuration]);
 
+  // Get propagules for this batch (if exploded)
+  const batchPropagules = useMemo(() => {
+    if (!id) return [];
+    return getPropagulesByBatch(id);
+  }, [id, getPropagulesByBatch]);
+
   // Computed values
   const validNextStages = batch ? getValidNextStages(batch.stage) : [];
   const canAdvance = validNextStages.length > 0 && batch?.stage !== 'failed';
   const canRecordFailure = batch ? isActiveStage(batch.stage) : false;
+  const canExplode = batch
+    ? !batch.isExploded && isActiveStage(batch.stage) && batch.quantitySurviving > 0
+    : false;
+  // Can graduate from 'ready' stage (or 'graduated' for partial graduations)
+  const canGraduate = batch
+    ? (batch.stage === 'ready' || batch.stage === 'graduated') && batch.quantitySurviving > 0
+    : false;
   const stageColors = batch ? getStageColors(batch.stage) : null;
 
   // Modal handlers
@@ -252,6 +277,34 @@ export function BatchDetail() {
 
   const handleModalClose = () => {
     setTransitionModalOpen(false);
+  };
+
+  const handleOpenExplodeModal = () => {
+    setExplodeModalOpen(true);
+  };
+
+  const handleExplodeModalClose = () => {
+    setExplodeModalOpen(false);
+  };
+
+  const handleExplodeSuccess = () => {
+    // Reload data to show the updated batch and propagules
+    loadBatches();
+    loadPropagules();
+  };
+
+  const handleOpenGraduationModal = () => {
+    setGraduationModalOpen(true);
+  };
+
+  const handleGraduationModalClose = () => {
+    setGraduationModalOpen(false);
+  };
+
+  const handleGraduationSuccess = () => {
+    // Reload data to show updated batch quantities and graduation history
+    loadBatches();
+    loadGraduations();
   };
 
   // Loading state
@@ -315,6 +368,11 @@ export function BatchDetail() {
                   Overdue
                 </span>
               )}
+              {batch.isExploded && (
+                <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                  Exploded
+                </span>
+              )}
             </div>
             <div className="text-lg text-slate-600 dark:text-slate-300">
               {batch.species}
@@ -324,6 +382,14 @@ export function BatchDetail() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-2">
+            {canGraduate && (
+              <button
+                onClick={handleOpenGraduationModal}
+                className="px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition-colors"
+              >
+                Graduate
+              </button>
+            )}
             {canAdvance && (
               <button
                 onClick={handleOpenAdvanceModal}
@@ -340,12 +406,22 @@ export function BatchDetail() {
                 Record Failure
               </button>
             )}
-            <button
-              onClick={() => navigate(`/propagation/batches/${id}/edit`)}
-              className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors"
-            >
-              Edit Batch
-            </button>
+            {canExplode && (
+              <button
+                onClick={handleOpenExplodeModal}
+                className="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50 transition-colors"
+              >
+                Explode to Individuals
+              </button>
+            )}
+            {!batch.isExploded && (
+              <button
+                onClick={() => navigate(`/propagation/batches/${id}/edit`)}
+                className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors"
+              >
+                Edit Batch
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -424,6 +500,75 @@ export function BatchDetail() {
             <SectionHeader title="Cost Breakdown" icon="$" />
             <CostBreakdown batchId={id!} />
           </div>
+
+          {/* Graduation History */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <SectionHeader title="Graduation History" />
+              {canGraduate && (
+                <button
+                  onClick={handleOpenGraduationModal}
+                  className="px-3 py-1.5 rounded-lg bg-green-100 text-green-700 text-sm font-medium hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 transition-colors"
+                >
+                  + Graduate
+                </button>
+              )}
+            </div>
+            <GraduationHistory batchId={id!} />
+          </div>
+
+          {/* Individual Propagules (if exploded) */}
+          {batch.isExploded && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+              <SectionHeader title="Individual Propagules" icon="*" />
+              {batchPropagules.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                  No propagules found for this batch.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                    {batchPropagules.length} individual propagule{batchPropagules.length !== 1 ? 's' : ''} created from this batch
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {batchPropagules.map((propagule) => {
+                      const propStageColors = getStageColors(propagule.stage);
+                      return (
+                        <div
+                          key={propagule.id}
+                          className="p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 transition-colors"
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-mono text-sm font-medium text-slate-900 dark:text-white">
+                              {propagule.propaguleNumber}
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-xs font-medium ${propStageColors.bg} ${propStageColors.text}`}
+                            >
+                              {getStageDisplayName(propagule.stage)}
+                            </span>
+                          </div>
+                          {propagule.label && (
+                            <div className="text-xs text-slate-500 dark:text-slate-400">
+                              {propagule.label}
+                            </div>
+                          )}
+                          {propagule.healthScore !== undefined && (
+                            <div className="flex items-center gap-1 mt-2">
+                              <span className="text-xs text-slate-500 dark:text-slate-400">Health:</span>
+                              <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                {propagule.healthScore}/5
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right Column - Timeline and Links */}
@@ -543,6 +688,26 @@ export function BatchDetail() {
           isOpen={transitionModalOpen}
           onClose={handleModalClose}
           mode={transitionMode}
+        />
+      )}
+
+      {/* Explode Batch Modal */}
+      {id && (
+        <ExplodeBatchModal
+          batchId={id}
+          isOpen={explodeModalOpen}
+          onClose={handleExplodeModalClose}
+          onSuccess={handleExplodeSuccess}
+        />
+      )}
+
+      {/* Graduation Modal */}
+      {id && (
+        <GraduationForm
+          batchId={id}
+          isOpen={graduationModalOpen}
+          onClose={handleGraduationModalClose}
+          onSuccess={handleGraduationSuccess}
         />
       )}
     </div>
