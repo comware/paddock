@@ -5,6 +5,7 @@
  * - All batch metadata (species, method, dates, quantities)
  * - Stage timeline visualization
  * - Transition history
+ * - Cost breakdown and summary
  * - Action buttons (Advance Stage, Record Failure, Edit)
  * - Related entity links (mother plant, station)
  *
@@ -16,6 +17,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useBatches } from '../../stores/useBatches';
 import { useStageTransitions } from '../../stores/useStageTransitions';
+import { useBatchCosts } from '../../stores/useBatchCosts';
 import type { FailureReason } from '../../types';
 import {
   getStageDisplayName,
@@ -26,6 +28,7 @@ import {
 } from '../../utils';
 import { StageTimeline } from './StageTimeline';
 import { StageTransitionModal, type TransitionMode } from './StageTransitionModal';
+import { CostBreakdown, CostSummary } from '../Costs';
 
 // ============================================
 // CONSTANTS
@@ -205,6 +208,7 @@ export function BatchDetail() {
     loadTransitions,
     getTransitionsWithDuration,
   } = useStageTransitions();
+  const { loadCosts } = useBatchCosts();
 
   // Modal state
   const [transitionModalOpen, setTransitionModalOpen] = useState(false);
@@ -214,7 +218,8 @@ export function BatchDetail() {
   useEffect(() => {
     loadBatches();
     loadTransitions();
-  }, [loadBatches, loadTransitions]);
+    loadCosts();
+  }, [loadBatches, loadTransitions, loadCosts]);
 
   // Get batch data
   const batch = useMemo(() => {
@@ -413,6 +418,12 @@ export function BatchDetail() {
             <SectionHeader title="Transition History" icon="?" />
             <TransitionHistory batchId={id!} />
           </div>
+
+          {/* Cost Breakdown */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+            <SectionHeader title="Cost Breakdown" icon="$" />
+            <CostBreakdown batchId={id!} />
+          </div>
         </div>
 
         {/* Right Column - Timeline and Links */}
@@ -465,15 +476,8 @@ export function BatchDetail() {
                 </Link>
               )}
 
-              {/* Cost Summary Placeholder */}
-              <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
-                <div className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                  Cost Summary
-                </div>
-                <div className="text-xs text-slate-400 dark:text-slate-500">
-                  Coming in v2
-                </div>
-              </div>
+              {/* Cost Summary */}
+              <CostSummary batchId={id!} compact />
 
               {/* Photo Gallery Placeholder */}
               <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">

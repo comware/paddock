@@ -1,7 +1,7 @@
 /**
  * BatchCard - Individual batch display component
  *
- * Shows batch info with stage badge, survival count, and quick actions.
+ * Shows batch info with stage badge, survival count, cost indicator, and quick actions.
  * Follows the TrayCard pattern from the grow module.
  */
 
@@ -14,6 +14,7 @@ import {
   isActiveStage,
 } from '../../utils';
 import { format } from 'date-fns';
+import { CostBadge } from '../Costs';
 
 interface BatchCardProps {
   batch: PropBatchWithComputed;
@@ -166,14 +167,15 @@ export function BatchCard({
         </div>
       </div>
 
-      {/* Station Name */}
-      {batch.stationName && (
-        <div className="mb-3">
+      {/* Station Name and Cost Badge */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        {batch.stationName && (
           <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium">
             {batch.stationName}
           </span>
-        </div>
-      )}
+        )}
+        <CostBadge batchId={batch.id!} />
+      </div>
 
       {/* Quick Actions */}
       {(canAdvance || canRecordFailure) && (
