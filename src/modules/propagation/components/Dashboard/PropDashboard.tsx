@@ -16,6 +16,7 @@ import { MetricsCards } from './MetricsCards';
 import { StageDistribution } from './StageDistribution';
 import { NeedingAttention } from './NeedingAttention';
 import { RecentActivity } from './RecentActivity';
+import { StationOverview } from './StationOverview';
 
 export function PropDashboard() {
   const navigate = useNavigate();
@@ -126,7 +127,6 @@ export function PropDashboard() {
             icon="🏠"
             label="Stations"
             onClick={() => navigate('/propagation/stations')}
-            disabled
           />
           <QuickActionButton
             icon="🌿"
@@ -142,6 +142,9 @@ export function PropDashboard() {
         <StageDistribution stageCounts={stageCounts} />
         <NeedingAttention overdueBatches={overdueBatches} maxItems={5} />
       </div>
+
+      {/* Station Overview */}
+      <StationOverview maxItems={6} />
 
       {/* Recent Activity */}
       <RecentActivity maxItems={10} />
