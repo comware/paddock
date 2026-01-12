@@ -6,3 +6,10 @@
 
 export { useBatches } from './useBatches';
 export type { BatchesState, BatchStatus } from './useBatches';
+
+export { useStageTransitions } from './useStageTransitions';
+export type {
+  StageTransitionsState,
+  TransitionWithDuration,
+  FailureByReason,
+} from './useStageTransitions';
