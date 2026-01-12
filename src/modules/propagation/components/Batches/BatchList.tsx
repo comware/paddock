@@ -14,26 +14,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useBatches } from '../../stores';
-import type { PropBatchWithComputed, PropagationStage, BatchFilters as BatchFiltersType, BatchSort, FailureReason } from '../../types';
+import type { BatchFilters as BatchFiltersType, BatchSort } from '../../types';
 import { BatchCard } from './BatchCard';
 import { BatchFilters } from './BatchFilters';
 import { NewBatchForm } from './NewBatchForm';
-import { Modal } from '@/components/ui/Modal';
-import { getStageDisplayName, getValidNextStages } from '../../utils';
-
-/**
- * Failure reason options for the failure modal.
- */
-const FAILURE_REASONS: { value: FailureReason; label: string }[] = [
-  { value: 'rot', label: 'Rot (fungal/bacterial)' },
-  { value: 'dried_out', label: 'Dried Out' },
-  { value: 'disease', label: 'Disease' },
-  { value: 'pest', label: 'Pest Damage' },
-  { value: 'no_roots', label: 'Failed to Root' },
-  { value: 'transplant_shock', label: 'Transplant Shock' },
-  { value: 'environmental', label: 'Environmental Issues' },
-  { value: 'unknown', label: 'Unknown' },
-];
+import { StageTransitionModal, type TransitionMode } from './StageTransitionModal';
 
 export function BatchList() {
   const navigate = useNavigate();
@@ -53,19 +38,13 @@ export function BatchList() {
     getUniqueSpecies,
     getUniqueStations,
     getStageCounts,
-    advanceStage,
-    markFailed,
   } = useBatches();
 
   // Modal state
   const [isNewBatchOpen, setIsNewBatchOpen] = useState(false);
-  const [advancingBatch, setAdvancingBatch] = useState<PropBatchWithComputed | null>(null);
-  const [failingBatch, setFailingBatch] = useState<PropBatchWithComputed | null>(null);
-  const [selectedNextStage, setSelectedNextStage] = useState<PropagationStage | ''>('');
-  const [advanceQuantity, setAdvanceQuantity] = useState<number>(0);
-  const [failureReason, setFailureReason] = useState<FailureReason>('unknown');
-  const [failureNotes, setFailureNotes] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [transitionModalOpen, setTransitionModalOpen] = useState(false);
+  const [transitionBatchId, setTransitionBatchId] = useState<string | null>(null);
+  const [transitionMode, setTransitionMode] = useState<TransitionMode>('advance');
 
   // Initialize filters from URL params on mount (intentionally runs once)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,33 +124,18 @@ export function BatchList() {
   }, [resetFilters, setSearchParams]);
 
   // Handle advance stage modal open
-  const handleAdvanceStageClick = useCallback(
-    (batchId: string) => {
-      const batch = batches.find((b) => b.id === batchId);
-      if (batch) {
-        setAdvancingBatch(batch);
-        const nextStages = getValidNextStages(batch.stage);
-        // Pre-select the first valid non-failed stage
-        const defaultNext = nextStages.find((s) => s !== 'failed') || '';
-        setSelectedNextStage(defaultNext);
-        setAdvanceQuantity(batch.quantitySurviving);
-      }
-    },
-    [batches]
-  );
+  const handleAdvanceStageClick = useCallback((batchId: string) => {
+    setTransitionBatchId(batchId);
+    setTransitionMode('advance');
+    setTransitionModalOpen(true);
+  }, []);
 
   // Handle record failure modal open
-  const handleRecordFailureClick = useCallback(
-    (batchId: string) => {
-      const batch = batches.find((b) => b.id === batchId);
-      if (batch) {
-        setFailingBatch(batch);
-        setFailureReason('unknown');
-        setFailureNotes('');
-      }
-    },
-    [batches]
-  );
+  const handleRecordFailureClick = useCallback((batchId: string) => {
+    setTransitionBatchId(batchId);
+    setTransitionMode('fail');
+    setTransitionModalOpen(true);
+  }, []);
 
   // Handle view details
   const handleViewDetails = useCallback(
@@ -189,38 +153,11 @@ export function BatchList() {
     [navigate]
   );
 
-  // Submit advance stage
-  const handleAdvanceStageSubmit = useCallback(async () => {
-    if (!advancingBatch || !selectedNextStage) return;
-
-    setIsSubmitting(true);
-    try {
-      await advanceStage(advancingBatch.id!, selectedNextStage as PropagationStage, advanceQuantity);
-      setAdvancingBatch(null);
-      setSelectedNextStage('');
-    } catch (error) {
-      console.error('Failed to advance stage:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [advancingBatch, selectedNextStage, advanceQuantity, advanceStage]);
-
-  // Submit record failure
-  const handleRecordFailureSubmit = useCallback(async () => {
-    if (!failingBatch) return;
-
-    setIsSubmitting(true);
-    try {
-      await markFailed(failingBatch.id!, failureReason, failureNotes || undefined);
-      setFailingBatch(null);
-      setFailureReason('unknown');
-      setFailureNotes('');
-    } catch (error) {
-      console.error('Failed to record failure:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [failingBatch, failureReason, failureNotes, markFailed]);
+  // Handle transition modal close
+  const handleTransitionModalClose = useCallback(() => {
+    setTransitionModalOpen(false);
+    setTransitionBatchId(null);
+  }, []);
 
   // Get filtered batches and stats
   const filteredBatches = getFilteredBatches();
@@ -333,141 +270,15 @@ export function BatchList() {
         </div>
       )}
 
-      {/* Advance Stage Modal */}
-      <Modal
-        isOpen={!!advancingBatch}
-        onClose={() => setAdvancingBatch(null)}
-        title="Advance Stage"
-        size="md"
-      >
-        {advancingBatch && (
-          <div className="space-y-4">
-            <p className="text-slate-600 dark:text-slate-400">
-              Advance batch <strong>{advancingBatch.batchNumber}</strong> ({advancingBatch.species})
-              from <strong>{getStageDisplayName(advancingBatch.stage)}</strong>.
-            </p>
-
-            {/* Next Stage Selection */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Next Stage
-              </label>
-              <select
-                value={selectedNextStage}
-                onChange={(e) => setSelectedNextStage(e.target.value as PropagationStage)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="">Select next stage...</option>
-                {getValidNextStages(advancingBatch.stage)
-                  .filter((s) => s !== 'failed')
-                  .map((stage) => (
-                    <option key={stage} value={stage}>
-                      {getStageDisplayName(stage)}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            {/* Quantity Update */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Surviving Quantity (currently {advancingBatch.quantitySurviving}/{advancingBatch.quantityStarted})
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={advancingBatch.quantityStarted}
-                value={advanceQuantity}
-                onChange={(e) => setAdvanceQuantity(parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={() => setAdvancingBatch(null)}
-                className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAdvanceStageSubmit}
-                disabled={!selectedNextStage || isSubmitting}
-                className="flex-1 px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Advancing...' : 'Advance Stage'}
-              </button>
-            </div>
-          </div>
-        )}
-      </Modal>
-
-      {/* Record Failure Modal */}
-      <Modal
-        isOpen={!!failingBatch}
-        onClose={() => setFailingBatch(null)}
-        title="Record Failure"
-        size="md"
-      >
-        {failingBatch && (
-          <div className="space-y-4">
-            <p className="text-slate-600 dark:text-slate-400">
-              Record failure for batch <strong>{failingBatch.batchNumber}</strong> ({failingBatch.species}).
-              This will mark all {failingBatch.quantitySurviving} remaining propagules as failed.
-            </p>
-
-            {/* Failure Reason */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Reason for Failure
-              </label>
-              <select
-                value={failureReason}
-                onChange={(e) => setFailureReason(e.target.value as FailureReason)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                {FAILURE_REASONS.map((reason) => (
-                  <option key={reason.value} value={reason.value}>
-                    {reason.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Notes */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Notes (optional)
-              </label>
-              <textarea
-                value={failureNotes}
-                onChange={(e) => setFailureNotes(e.target.value)}
-                rows={3}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                placeholder="Any additional details about what happened..."
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={() => setFailingBatch(null)}
-                className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleRecordFailureSubmit}
-                disabled={isSubmitting}
-                className="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Recording...' : 'Record Failure'}
-              </button>
-            </div>
-          </div>
-        )}
-      </Modal>
+      {/* Stage Transition Modal */}
+      {transitionBatchId && (
+        <StageTransitionModal
+          batchId={transitionBatchId}
+          isOpen={transitionModalOpen}
+          onClose={handleTransitionModalClose}
+          mode={transitionMode}
+        />
+      )}
 
       {/* New Batch Form Modal */}
       <NewBatchForm

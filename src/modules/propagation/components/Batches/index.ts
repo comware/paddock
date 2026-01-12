@@ -10,3 +10,5 @@ export { BatchFilters } from './BatchFilters';
 export { NewBatchForm } from './NewBatchForm';
 export { BatchDetail } from './BatchDetail';
 export { StageTimeline } from './StageTimeline';
+export { StageTransitionModal } from './StageTransitionModal';
+export type { StageTransitionModalProps, TransitionMode } from './StageTransitionModal';

@@ -16,7 +16,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useBatches } from '../../stores/useBatches';
 import { useStageTransitions } from '../../stores/useStageTransitions';
-import type { PropagationStage, FailureReason } from '../../types';
+import type { FailureReason } from '../../types';
 import {
   getStageDisplayName,
   getStageColors,
@@ -25,7 +25,7 @@ import {
   isActiveStage,
 } from '../../utils';
 import { StageTimeline } from './StageTimeline';
-import { Modal } from '@/components/ui/Modal';
+import { StageTransitionModal, type TransitionMode } from './StageTransitionModal';
 
 // ============================================
 // CONSTANTS
@@ -63,19 +63,6 @@ const FAILURE_REASON_NAMES: Record<FailureReason, string> = {
   unknown: 'Unknown',
 };
 
-/**
- * All failure reasons for the modal.
- */
-const FAILURE_REASONS: FailureReason[] = [
-  'rot',
-  'dried_out',
-  'disease',
-  'pest',
-  'no_roots',
-  'transplant_shock',
-  'environmental',
-  'unknown',
-];
 
 // ============================================
 // SUB-COMPONENTS
@@ -114,255 +101,6 @@ function SectionHeader({ title, icon }: { title: string; icon?: string }) {
       {icon && <span>{icon}</span>}
       {title}
     </h3>
-  );
-}
-
-/**
- * Stage Advance Modal Content.
- * Separated to reset state when modal opens via key prop.
- */
-function StageAdvanceModalContent({
-  currentStage,
-  validNextStages,
-  currentQuantity,
-  onAdvance,
-  onClose,
-}: {
-  currentStage: PropagationStage;
-  validNextStages: PropagationStage[];
-  currentQuantity: number;
-  onAdvance: (toStage: PropagationStage, quantity: number, notes?: string) => void;
-  onClose: () => void;
-}) {
-  const [selectedStage, setSelectedStage] = useState<PropagationStage | ''>(
-    validNextStages.filter((s) => s !== 'failed')[0] || ''
-  );
-  const [quantity, setQuantity] = useState(currentQuantity);
-  const [notes, setNotes] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedStage) {
-      onAdvance(selectedStage, quantity, notes || undefined);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Current Stage
-        </label>
-        <div className="text-slate-900 dark:text-white font-medium">
-          {getStageDisplayName(currentStage)}
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Advance To
-        </label>
-        <select
-          value={selectedStage}
-          onChange={(e) => setSelectedStage(e.target.value as PropagationStage)}
-          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-          required
-        >
-          {validNextStages
-            .filter((s) => s !== 'failed')
-            .map((stage) => (
-              <option key={stage} value={stage}>
-                {getStageDisplayName(stage)}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Quantity Surviving
-        </label>
-        <input
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value, 10) || 0)}
-            min={0}
-            max={currentQuantity}
-            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-          />
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Enter the number of surviving propagules (max: {currentQuantity})
-          </p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Notes (optional)
-          </label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={2}
-            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-            placeholder="Any observations about this transition..."
-          />
-        </div>
-
-        <div className="flex gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={!selectedStage}
-            className="flex-1 px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:opacity-50"
-          >
-            Advance Stage
-          </button>
-        </div>
-      </form>
-  );
-}
-
-/**
- * Stage Advance Modal wrapper.
- * Uses key prop to reset content state when modal opens.
- */
-function StageAdvanceModal({
-  isOpen,
-  onClose,
-  currentStage,
-  validNextStages,
-  currentQuantity,
-  onAdvance,
-  modalKey,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  currentStage: PropagationStage;
-  validNextStages: PropagationStage[];
-  currentQuantity: number;
-  onAdvance: (toStage: PropagationStage, quantity: number, notes?: string) => void;
-  modalKey: number;
-}) {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Advance Stage" size="md">
-      <StageAdvanceModalContent
-        key={modalKey}
-        currentStage={currentStage}
-        validNextStages={validNextStages}
-        currentQuantity={currentQuantity}
-        onAdvance={onAdvance}
-        onClose={onClose}
-      />
-    </Modal>
-  );
-}
-
-/**
- * Failure Recording Modal Content.
- * Separated to reset state when modal opens via key prop.
- */
-function RecordFailureModalContent({
-  onRecordFailure,
-  onClose,
-}: {
-  onRecordFailure: (reason: FailureReason, notes?: string) => void;
-  onClose: () => void;
-}) {
-  const [reason, setReason] = useState<FailureReason>('unknown');
-  const [notes, setNotes] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onRecordFailure(reason, notes || undefined);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-        <p className="text-sm text-red-800 dark:text-red-200">
-          This will mark the entire batch as failed. This action cannot be undone.
-        </p>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Failure Reason
-        </label>
-        <select
-          value={reason}
-          onChange={(e) => setReason(e.target.value as FailureReason)}
-          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-          required
-        >
-          {FAILURE_REASONS.map((r) => (
-            <option key={r} value={r}>
-              {FAILURE_REASON_NAMES[r]}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Notes (optional)
-        </label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={3}
-          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-          placeholder="Additional details about the failure..."
-        />
-      </div>
-
-      <div className="flex gap-3 pt-2">
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600"
-        >
-          Record Failure
-        </button>
-      </div>
-    </form>
-  );
-}
-
-/**
- * Failure Recording Modal wrapper.
- * Uses key prop to reset content state when modal opens.
- */
-function RecordFailureModal({
-  isOpen,
-  onClose,
-  onRecordFailure,
-  modalKey,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onRecordFailure: (reason: FailureReason, notes?: string) => void;
-  modalKey: number;
-}) {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Record Failure" size="md">
-      <RecordFailureModalContent
-        key={modalKey}
-        onRecordFailure={onRecordFailure}
-        onClose={onClose}
-      />
-    </Modal>
   );
 }
 
@@ -461,21 +199,16 @@ export function BatchDetail() {
   const {
     getBatchById,
     loadBatches,
-    advanceStage,
-    markFailed,
     isLoading,
   } = useBatches();
   const {
     loadTransitions,
     getTransitionsWithDuration,
-    addTransition,
   } = useStageTransitions();
 
-  // Modal state - use counter for key to reset form state on open
-  const [showAdvanceModal, setShowAdvanceModal] = useState(false);
-  const [showFailureModal, setShowFailureModal] = useState(false);
-  const [advanceModalKey, setAdvanceModalKey] = useState(0);
-  const [failureModalKey, setFailureModalKey] = useState(0);
+  // Modal state
+  const [transitionModalOpen, setTransitionModalOpen] = useState(false);
+  const [transitionMode, setTransitionMode] = useState<TransitionMode>('advance');
 
   // Load data
   useEffect(() => {
@@ -501,46 +234,19 @@ export function BatchDetail() {
   const canRecordFailure = batch ? isActiveStage(batch.stage) : false;
   const stageColors = batch ? getStageColors(batch.stage) : null;
 
-  // Handlers
-  const handleAdvanceStage = async (
-    toStage: PropagationStage,
-    quantity: number,
-    notes?: string
-  ) => {
-    if (!id || !batch) return;
-
-    try {
-      await advanceStage(id, toStage, quantity);
-      await addTransition({
-        batchId: id,
-        toStage,
-        quantityAfter: quantity,
-        notes,
-      });
-      setShowAdvanceModal(false);
-    } catch (error) {
-      console.error('Failed to advance stage:', error);
-      // TODO: Show error toast
-    }
+  // Modal handlers
+  const handleOpenAdvanceModal = () => {
+    setTransitionMode('advance');
+    setTransitionModalOpen(true);
   };
 
-  const handleRecordFailure = async (reason: FailureReason, notes?: string) => {
-    if (!id || !batch) return;
+  const handleOpenFailureModal = () => {
+    setTransitionMode('fail');
+    setTransitionModalOpen(true);
+  };
 
-    try {
-      await markFailed(id, reason, notes);
-      await addTransition({
-        batchId: id,
-        toStage: 'failed',
-        quantityAfter: 0,
-        failureReason: reason,
-        notes,
-      });
-      setShowFailureModal(false);
-    } catch (error) {
-      console.error('Failed to record failure:', error);
-      // TODO: Show error toast
-    }
+  const handleModalClose = () => {
+    setTransitionModalOpen(false);
   };
 
   // Loading state
@@ -615,10 +321,7 @@ export function BatchDetail() {
           <div className="flex flex-wrap gap-2">
             {canAdvance && (
               <button
-                onClick={() => {
-                  setAdvanceModalKey((k) => k + 1);
-                  setShowAdvanceModal(true);
-                }}
+                onClick={handleOpenAdvanceModal}
                 className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
               >
                 Advance Stage
@@ -626,10 +329,7 @@ export function BatchDetail() {
             )}
             {canRecordFailure && (
               <button
-                onClick={() => {
-                  setFailureModalKey((k) => k + 1);
-                  setShowFailureModal(true);
-                }}
+                onClick={handleOpenFailureModal}
                 className="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 transition-colors"
               >
                 Record Failure
@@ -832,23 +532,15 @@ export function BatchDetail() {
         </div>
       </div>
 
-      {/* Modals */}
-      <StageAdvanceModal
-        isOpen={showAdvanceModal}
-        onClose={() => setShowAdvanceModal(false)}
-        currentStage={batch.stage}
-        validNextStages={validNextStages}
-        currentQuantity={batch.quantitySurviving}
-        onAdvance={handleAdvanceStage}
-        modalKey={advanceModalKey}
-      />
-
-      <RecordFailureModal
-        isOpen={showFailureModal}
-        onClose={() => setShowFailureModal(false)}
-        onRecordFailure={handleRecordFailure}
-        modalKey={failureModalKey}
-      />
+      {/* Stage Transition Modal */}
+      {id && (
+        <StageTransitionModal
+          batchId={id}
+          isOpen={transitionModalOpen}
+          onClose={handleModalClose}
+          mode={transitionMode}
+        />
+      )}
     </div>
   );
 }
