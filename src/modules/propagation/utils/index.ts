@@ -68,3 +68,25 @@ export {
   getProductivityColor,
 } from './motherPlantMetrics';
 export type { ExtendedMotherPlantMetrics, MotherPlantSummary } from './motherPlantMetrics';
+
+// Cost calculations - batch cost analysis and formatting
+export {
+  // Basic calculations
+  getTotalBatchCost,
+  getCostPerPropaguleStarted,
+  getCostPerPropaguleSurviving,
+  getCostPerPropaguleGraduated,
+  // Batch analysis
+  getBatchCostBreakdown,
+  // Aggregate analytics
+  getTotalCostAcrossBatches,
+  getCostsBySupply,
+  getTotalSpentOnSupplies,
+  getTotalManualCosts,
+  // Display helpers
+  formatCost,
+  formatCostPerUnit,
+  getCategoryDisplayName,
+  CATEGORY_SORT_ORDER,
+  sortBreakdownByCategory,
+} from './costCalculations';
