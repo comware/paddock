@@ -11,10 +11,12 @@ import { AppShell } from '@/components/Shell';
 import { ComingSoon, ModuleLoader } from '@/components/shared';
 import { WelcomeModal } from '@/components/onboarding';
 import { growRoutes } from '@/modules/grow/routes';
+import { propagationRoutes } from '@/modules/propagation/routes';
 
 // Lazy-loaded modules and pages
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const GrowModule = lazy(() => import('@/modules/grow'));
+const PropagationModule = lazy(() => import('@/modules/propagation'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
 
 // Root layout wrapper that provides router context for components like WelcomeModal
@@ -56,6 +58,17 @@ const routes: RouteObject[] = [
               </Suspense>
             ),
             children: growRoutes,
+          },
+
+          // Propagation module
+          {
+            path: 'propagation',
+            element: (
+              <Suspense fallback={<ModuleLoader />}>
+                <PropagationModule />
+              </Suspense>
+            ),
+            children: propagationRoutes,
           },
 
           // Future modules (placeholders)

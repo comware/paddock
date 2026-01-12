@@ -16,6 +16,7 @@ interface Module {
 
 const modules: Module[] = [
   { name: 'Grow', path: '/grow', icon: '🌱', enabled: true },
+  { name: 'Propagation', path: '/propagation', icon: '🪴', enabled: true },
   { name: 'Sales', path: '/sales', icon: '💰', enabled: false },
   { name: 'Markets', path: '/markets', icon: '🏪', enabled: false },
   { name: 'CRM', path: '/crm', icon: '👥', enabled: false },
