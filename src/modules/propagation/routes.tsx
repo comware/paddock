@@ -9,22 +9,9 @@
  */
 
 import type { RouteObject } from 'react-router-dom';
+import { PropDashboard } from './components/Dashboard';
 
 // Placeholder components for routes that aren't built yet
-function PropagationDashboard() {
-  return (
-    <div className="text-center py-12">
-      <div className="text-6xl mb-4">🌱</div>
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-        Propagation Dashboard
-      </h2>
-      <p className="text-slate-600 dark:text-slate-400">
-        Track and manage your propagation batches from this central hub.
-      </p>
-    </div>
-  );
-}
-
 function BatchList() {
   return (
     <div className="text-center py-12">
@@ -69,7 +56,7 @@ function NewBatchForm() {
 
 export const propagationRoutes: RouteObject[] = [
   // Dashboard as landing page
-  { index: true, element: <PropagationDashboard /> },
+  { index: true, element: <PropDashboard /> },
 
   // Batch routes - order matters: /new must come before /:id
   { path: 'batches', element: <BatchList /> },
