@@ -50,3 +50,30 @@ export type {
 
 export { useAnalytics } from './useAnalytics';
 export type { AnalyticsState } from './useAnalytics';
+
+export { useSpeciesConfigs } from './useSpeciesConfigs';
+export type {
+  SpeciesConfigsState,
+  CreateSpeciesConfigInput,
+  UpdateSpeciesConfigInput,
+  PropSpeciesConfigWithDefaults,
+} from './useSpeciesConfigs';
+
+export { usePropagules } from './usePropagules';
+export type {
+  PropagulesState,
+  PropaguleFilters,
+  PropaguleSort,
+  CreatePropaguleFromBatchInput,
+  UpdatePropaguleInput,
+  MeasurementInput,
+} from './usePropagules';
+
+export { useGraduations } from './useGraduations';
+export type {
+  GraduationsState,
+  EnrichedGraduation,
+  GraduationFilters,
+  GraduationSummary,
+  RecordGraduationInput,
+} from './useGraduations';
