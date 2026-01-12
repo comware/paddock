@@ -45,3 +45,26 @@ export {
   getYearsWithBatches,
   getBatchCountForYear,
 } from './batchNumbering';
+
+// Mother plant metrics - productivity calculations
+export {
+  // Core metrics
+  getBatchesByMotherPlant,
+  getTotalBatchesTaken,
+  getTotalPropagulesStarted,
+  getTotalPropagulesGraduated,
+  getSuccessRate,
+  getPropaguleSuccessRate,
+  // Comprehensive metrics
+  getMotherPlantMetrics,
+  getExtendedMotherPlantMetrics,
+  // Bulk/comparison metrics
+  getMotherPlantSummaries,
+  rankMotherPlantsByProductivity,
+  // Display helpers
+  formatSeason,
+  formatSuccessRate,
+  getProductivityLevel,
+  getProductivityColor,
+} from './motherPlantMetrics';
+export type { ExtendedMotherPlantMetrics, MotherPlantSummary } from './motherPlantMetrics';
