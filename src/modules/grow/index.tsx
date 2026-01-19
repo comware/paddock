@@ -4,11 +4,14 @@
  * Microgreens experiment tracking module.
  * Handles tray management, daily logging, time tracking,
  * analytics, and Week 6 decision support.
+ *
+ * Wrapped in ErrorBoundary for module isolation.
  */
 
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useSites, useTrays } from './stores';
 import { useTrayMigration } from './hooks';
 
@@ -24,7 +27,7 @@ const growNavItems: ModuleNavItem[] = [
   { name: 'Guides', path: '/guides', icon: '📚' },       // Reference material
 ];
 
-export default function GrowModule() {
+function GrowModuleContent() {
   const { loadSites } = useSites();
   const { loadTrays } = useTrays();
 
@@ -47,5 +50,17 @@ export default function GrowModule() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function GrowModule() {
+  return (
+    <ErrorBoundary
+      section="Grow Module"
+      module="grow"
+      showModuleNav
+    >
+      <GrowModuleContent />
+    </ErrorBoundary>
   );
 }

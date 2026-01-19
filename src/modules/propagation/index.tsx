@@ -4,10 +4,13 @@
  * Propagation batch tracking module.
  * Handles batch creation, monitoring, and management
  * for plant propagation activities.
+ *
+ * Wrapped in ErrorBoundary for module isolation.
  */
 
 import { Outlet } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Navigation items for the propagation module
 const propagationNavItems: ModuleNavItem[] = [
@@ -18,7 +21,7 @@ const propagationNavItems: ModuleNavItem[] = [
   { name: 'Settings', path: '/settings', icon: '⚙️' },      // Species configurations
 ];
 
-export default function PropagationModule() {
+function PropagationModuleContent() {
   return (
     <>
       <ModuleNav items={propagationNavItems} basePath="/propagation" />
@@ -28,5 +31,17 @@ export default function PropagationModule() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function PropagationModule() {
+  return (
+    <ErrorBoundary
+      section="Propagation Module"
+      module="propagation"
+      showModuleNav
+    >
+      <PropagationModuleContent />
+    </ErrorBoundary>
   );
 }

@@ -1,0 +1,54 @@
+/**
+ * Planner Module - Entry Point
+ *
+ * Crop calendar module for scheduling and tracking farming activities.
+ * Integrates events from Grow (trays) and Propagation (batches) modules.
+ *
+ * Wrapped in ErrorBoundary for module isolation.
+ */
+
+import { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { usePlannerStore } from './stores/usePlannerStore';
+
+// Navigation items for the planner module
+const plannerNavItems: ModuleNavItem[] = [
+  { name: 'Calendar', path: '', icon: '📅' },           // Calendar (landing)
+  // Future nav items:
+  // { name: 'Events', path: '/events', icon: '📋' },   // Event list
+  // { name: 'Upcoming', path: '/upcoming', icon: '⏰' }, // Upcoming events
+];
+
+function PlannerModuleContent() {
+  const { loadEvents } = usePlannerStore();
+
+  // Load events on module mount
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
+
+  return (
+    <>
+      <ModuleNav items={plannerNavItems} basePath="/planner" />
+      <div className="flex-1 p-4 md:p-6">
+        <div className="max-w-7xl mx-auto">
+          <Outlet />
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default function PlannerModule() {
+  return (
+    <ErrorBoundary
+      section="Planner Module"
+      module="planner"
+      showModuleNav
+    >
+      <PlannerModuleContent />
+    </ErrorBoundary>
+  );
+}

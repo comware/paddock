@@ -5,7 +5,7 @@
  * Exports the Dexie instance and all table references.
  */
 
-export { db, growDb, platformDb, propDb } from './schema';
+export { db, growDb, platformDb, propDb, plannerDb } from './schema';
 export type {
   GrowSite,
   GrowWeatherHistory,
@@ -19,6 +19,9 @@ export type {
   GrowDecision,
   GrowPlannedPlanting,
   PlatformSetting,
+  PlannerEvent,
+  PlannerEventType,
+  PlannerEventStatus,
 } from './schema';
 
 export { seedDatabase, resetSeedData } from './seed';
