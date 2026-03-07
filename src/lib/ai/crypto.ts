@@ -2,42 +2,147 @@
  * Crypto Utility - AES-GCM encryption for API keys at rest
  *
  * Uses Web Crypto API to encrypt API keys before storing in IndexedDB.
- * The encryption key is stored in localStorage as raw key material.
- * This provides defense-in-depth: keys in IndexedDB are not plaintext
- * even if someone reads the DB directly.
+ * The CryptoKey is stored as a non-extractable key in a dedicated IDB store.
+ * Non-extractable keys cannot have their raw material read via exportKey(),
+ * which means even XSS cannot exfiltrate the key bytes -- they can only
+ * use the key through the Web Crypto API while the page is open.
  */
 
-const CRYPTO_KEY_STORAGE = 'paddock_crypto_key';
+const CRYPTO_KEY_DB_NAME = 'paddock_crypto_keys';
+const CRYPTO_KEY_DB_VERSION = 1;
+const CRYPTO_KEY_STORE = 'keys';
+const CRYPTO_KEY_ID = 'master';
+
+// Legacy localStorage key (for migration only)
+const LEGACY_CRYPTO_KEY_STORAGE = 'paddock_crypto_key';
+
 const ALGORITHM = 'AES-GCM';
 const KEY_LENGTH = 256;
 const IV_LENGTH = 12; // 96 bits recommended for AES-GCM
 
-/**
- * Get or create the CryptoKey used for encrypting API keys.
- * Raw key material is persisted in localStorage.
- */
-async function getCryptoKey(): Promise<CryptoKey> {
-  const stored = localStorage.getItem(CRYPTO_KEY_STORAGE);
+// In-memory cache to avoid repeated IDB reads within a session
+let cachedKey: CryptoKey | null = null;
 
-  if (stored) {
+/**
+ * Open (or create) the dedicated IDB database for CryptoKey storage.
+ */
+function openCryptoKeyDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(CRYPTO_KEY_DB_NAME, CRYPTO_KEY_DB_VERSION);
+
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(CRYPTO_KEY_STORE)) {
+        db.createObjectStore(CRYPTO_KEY_STORE);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+/**
+ * Read CryptoKey from dedicated IDB store.
+ */
+async function readKeyFromIdb(): Promise<CryptoKey | null> {
+  const db = await openCryptoKeyDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(CRYPTO_KEY_STORE, 'readonly');
+    const store = tx.objectStore(CRYPTO_KEY_STORE);
+    const request = store.get(CRYPTO_KEY_ID);
+
+    request.onsuccess = () => {
+      db.close();
+      resolve(request.result ?? null);
+    };
+    request.onerror = () => {
+      db.close();
+      reject(request.error);
+    };
+  });
+}
+
+/**
+ * Write CryptoKey to dedicated IDB store.
+ */
+async function writeKeyToIdb(key: CryptoKey): Promise<void> {
+  const db = await openCryptoKeyDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(CRYPTO_KEY_STORE, 'readwrite');
+    const store = tx.objectStore(CRYPTO_KEY_STORE);
+    const request = store.put(key, CRYPTO_KEY_ID);
+
+    request.onsuccess = () => {
+      db.close();
+      resolve();
+    };
+    request.onerror = () => {
+      db.close();
+      reject(request.error);
+    };
+  });
+}
+
+/**
+ * Migrate a legacy localStorage key into IDB as a non-extractable key.
+ * After successful migration the localStorage entry is removed.
+ */
+async function migrateLegacyKey(): Promise<CryptoKey | null> {
+  const stored = localStorage.getItem(LEGACY_CRYPTO_KEY_STORAGE);
+  if (!stored) return null;
+
+  try {
     const rawKey = Uint8Array.from(atob(stored), (c) => c.charCodeAt(0));
-    return crypto.subtle.importKey('raw', rawKey, ALGORITHM, true, [
+    // Import the raw material as a NEW non-extractable key
+    const key = await crypto.subtle.importKey('raw', rawKey, ALGORITHM, false, [
       'encrypt',
       'decrypt',
     ]);
+
+    // Persist to IDB and remove legacy storage
+    await writeKeyToIdb(key);
+    localStorage.removeItem(LEGACY_CRYPTO_KEY_STORAGE);
+
+    return key;
+  } catch {
+    // If migration fails (corrupted data, etc.) just remove the bad entry
+    localStorage.removeItem(LEGACY_CRYPTO_KEY_STORAGE);
+    return null;
+  }
+}
+
+/**
+ * Get or create the CryptoKey used for encrypting API keys.
+ * The key is non-extractable and stored in a dedicated IDB database.
+ */
+async function getCryptoKey(): Promise<CryptoKey> {
+  // 1. Return cached key if available
+  if (cachedKey) return cachedKey;
+
+  // 2. Try to load from IDB
+  const idbKey = await readKeyFromIdb();
+  if (idbKey) {
+    cachedKey = idbKey;
+    return idbKey;
   }
 
-  // Generate a new key
+  // 3. Attempt migration from legacy localStorage
+  const migratedKey = await migrateLegacyKey();
+  if (migratedKey) {
+    cachedKey = migratedKey;
+    return migratedKey;
+  }
+
+  // 4. Generate a brand-new non-extractable key
   const key = await crypto.subtle.generateKey(
     { name: ALGORITHM, length: KEY_LENGTH },
-    true,
+    false, // non-extractable
     ['encrypt', 'decrypt']
   );
 
-  // Export and store raw key material
-  const rawKey = await crypto.subtle.exportKey('raw', key);
-  const b64 = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
-  localStorage.setItem(CRYPTO_KEY_STORAGE, b64);
+  await writeKeyToIdb(key);
+  cachedKey = key;
 
   return key;
 }

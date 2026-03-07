@@ -233,8 +233,14 @@ export async function exportDataForRecovery(): Promise<string> {
       speciesConfigs: await propDb.speciesConfigs.toArray().catch(() => []),
     };
 
+    const allSettings = await platformDb.settings.toArray().catch(() => []);
+    // Redact API key values so they are never exposed in recovery exports
     exportData.platform = {
-      settings: await platformDb.settings.toArray().catch(() => []),
+      settings: allSettings.map((s) =>
+        /api_key/i.test(String(s.key))
+          ? { ...s, value: '[REDACTED]' }
+          : s
+      ),
     };
   } catch (error) {
     exportData.exportError = (error as Error).message;
