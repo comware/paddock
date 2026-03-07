@@ -1,0 +1,111 @@
+id: sprint-2026-03-07-code-health-ii
+created: 2026-03-07
+status: completed
+dispatched_at: "2026-03-07T05:05:34Z"
+completed_at: "2026-03-07T05:21:54Z"
+source: sprint-workshop
+
+name: "Code Health II — Split Next Tier Components"
+description: |
+  Split the next tier of large components identified in the quick review (57/100).
+  5 components from 550-631 LOC to under 300 LOC each. Addresses goal-9.
+
+advances_goals:
+  - project: paddock
+    goal: goal-9
+    before: 0
+    after: 100
+    contribution: "Addresses all 3 success criteria for goal-9"
+
+estimated_hours: 2
+
+exit_criteria:
+  - "SpeciesConfigForm.tsx under 300 LOC"
+  - "AIAssistant.tsx under 300 LOC"
+  - "PropagationGuideLibrary.tsx under 300 LOC"
+  - "MotherPlantForm.tsx under 300 LOC"
+  - "PropaguleUpdateForm.tsx under 300 LOC"
+  - "All 906+ tests still pass"
+
+handoffs:
+  - id: "ch2-001-split-components"
+    title: "Split 5 Large Components into Sub-Components"
+    priority: P0
+    estimate_hours: 1.5
+    description: |
+      Split these 5 components into smaller sub-components under 300 LOC each:
+
+      1. AIAssistant.tsx (631 LOC) — src/components/ai/AIAssistant.tsx
+         Extract: message list, input area, settings panel, conversation history
+      2. SpeciesConfigForm.tsx (559 LOC) — src/modules/propagation/components/Settings/SpeciesConfigForm.tsx
+         Extract: stage config sections, timing fields, media config
+      3. PropagationGuideLibrary.tsx (552 LOC) — src/modules/propagation/components/Guides/PropagationGuideLibrary.tsx
+         Extract: guide cards, filter bar, guide detail view
+      4. MotherPlantForm.tsx (550 LOC) — src/modules/propagation/components/MotherPlants/MotherPlantForm.tsx
+         Extract: health assessment section, cutting history, form sections
+      5. PropaguleUpdateForm.tsx (560 LOC) — src/modules/propagation/components/Propagules/PropaguleUpdateForm.tsx
+         Extract: measurement fields, stage transition section, notes section
+
+      For each component:
+      - Read the full file to understand structure
+      - Identify logical sections that can be extracted
+      - Create sub-component files in the same directory
+      - Import and compose in the parent component
+      - Ensure the parent file stays under 300 LOC
+      - Use the existing shared FormFields.tsx patterns where applicable
+
+      IMPORTANT: Do NOT change any behavior. Pure refactoring only.
+    acceptance_criteria:
+      - "AIAssistant.tsx under 300 LOC (verified via: wc -l src/components/ai/AIAssistant.tsx | awk '{print $1}' shows < 300)"
+      - "SpeciesConfigForm.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Settings/SpeciesConfigForm.tsx | awk '{print $1}' shows < 300)"
+      - "PropagationGuideLibrary.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Guides/PropagationGuideLibrary.tsx | awk '{print $1}' shows < 300)"
+      - "MotherPlantForm.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/MotherPlants/MotherPlantForm.tsx | awk '{print $1}' shows < 300)"
+      - "PropaguleUpdateForm.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Propagules/PropaguleUpdateForm.tsx | awk '{print $1}' shows < 300)"
+      - "Build succeeds (verified via: pnpm run build exits 0)"
+      - "All tests pass (verified via: pnpm vitest run exits 0)"
+    blocked_by: []
+
+  - id: "ch2-999-commit-verify"
+    title: "Commit and Verify CI"
+    priority: P0
+    estimate_hours: 0.25
+    description: |
+      Final sprint handoff - commit, verify, update goals.
+
+      1. Run pnpm vitest run — verify all tests pass
+      2. Run pnpm run build — verify build passes
+      3. git add relevant files (new sub-components + modified parents)
+      4. git commit -m "refactor(code-health): split 5 large components under 300 LOC"
+      5. DO NOT run git push — the autopilot harness handles remote sync
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean for src/ files)"
+      - "Build passes (verified via: pnpm run build exits 0)"
+      - "Tests pass (verified via: pnpm vitest run exits 0)"
+    blocked_by: ["ch2-001-split-components"]
+
+retro:
+  conducted_at: "2026-03-07T05:21:54Z"
+  duration: "16m"
+  completion_rate: 100
+  estimation_variance: -87
+  acceptance_verification:
+    total_criteria: 10
+    passed: 10
+    failed: 0
+    manual: 0
+    verdict: "PASS"
+    failures: []
+    criteria_quality_pct: 100
+  successes:
+    - "All 5 components split cleanly under 300 LOC (230, 274, 224, 241, 212)"
+    - "16 new sub-component files created with clear separation"
+    - "Sprint completed in 16 min vs 2h estimated (87% faster)"
+    - "Zero test regressions — all 906 tests pass"
+    - "Goal-9 fully completed with all 3 success criteria met"
+  challenges: []
+  action_items:
+    - "Reduce estimates for mechanical refactoring to 0.25h per component"
+    - "Consider batching similar refactoring into larger sprints"
+  recommendations:
+    - "goal-10 involves infrastructure testing — likely closer to estimates"
+    - "Add actual_effort tracking to handoffs for precise velocity data"

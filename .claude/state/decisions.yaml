@@ -1,0 +1,221 @@
+decisions:
+  - timestamp: "2026-03-07T03:26:27Z"
+    iteration: 1
+    next_recommendation: "Plan a sprint for Production Stability (P1, 80%)"
+    next_phase: "D"
+    confidence: "medium"
+    confidence_reasoning: "First action of session; no quality/risk data exists; strategy notes say review+risk but decision tree says sprint-workshop"
+    action_taken: "proceeded"
+    action_detail: "Updated goal-1 progress to 95% based on codebase analysis (906 tests, 9 E2E, build passing). Sprint-workshop unnecessary — goal nearly complete."
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Focus rotated from stale Dogfooding to goal-1. Assessed goal-1: 906 tests, 26 test files, 9 E2E specs, build passing. Updated progress 80% → 95%. Remaining 5% requires real usage validation."
+
+  - timestamp: "2026-03-07T03:39:14Z"
+    iteration: 2
+    next_recommendation: "Plan a sprint for Production Stability (P1, 95%)"
+    next_phase: "D"
+    confidence: "medium"
+    confidence_reasoning: "Overrode sprint-workshop recommendation to run /project:review per user strategy notes. Goal-1 remaining 5% not achievable via code sprint."
+    action_taken: "flagged"
+    action_detail: "/project:review (standard mode, 7 dimensions, 7 agents)"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Ran full standard codebase review. Score: 62/100 (Grade D). Key findings: Code Health 26/100 (40 files >500 LOC, 13% duplication), Security 87/100 (1 HIGH: Gemini API key in URL), Test Coverage 62/100 (0.12 test ratio), Dependencies 71/100 (8 CVEs via vite-plugin-pwa), Documentation 69/100 (41 undocumented exports), Deployability 80/100 (no build in CI), Performance 62/100 (1.8MB bundle). Report: .generated/review/codebase-review.md"
+
+  - timestamp: "2026-03-07T03:42:02Z"
+    iteration: 3
+    next_recommendation: "Plan a sprint to close out goal-1 informed by Grade D review"
+    next_phase: "D"
+    confidence: "medium"
+    confidence_reasoning: "Ran /project:remediate instead of sprint-workshop — converting review findings into goals is the prerequisite step before planning sprints."
+    action_taken: "flagged"
+    action_detail: "/project:remediate — created 3 goals from review findings (goal-5 P1 Security+CI, goal-6 P2 Performance, goal-7 P2 Code Health)"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Created 3 remediation goals: goal-5 (Security & CI Hardening, P1), goal-6 (Performance Bundle Splitting, P2), goal-7 (Code Health, P2). Updated focus to goal-5. Projected overall score improvement: 62 → ~72."
+
+  - timestamp: "2026-03-07T03:44:54Z"
+    iteration: 4
+    next_recommendation: "Plan a sprint for Security & CI Hardening (goal-5)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear, concrete success criteria from review. Mechanical fixes with well-defined scope."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop — created sprint-2026-03-07-security-ci with 4 handoffs (~2h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-security-ci"
+    work_summary: "Created sprint for goal-5 with 3 implementation handoffs: fix Gemini API key (P0), add CI build step (P0), encrypt API keys at rest (P1), plus commit-verify. Sprint YAML and dispatch prompt ready."
+
+  - timestamp: "2026-03-07T03:48:52Z"
+    iteration: 5
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-security-ci"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Maintenance intercepted — ran /project:risk per schedule (iteration 5 >= 5). Sprint dispatch deferred to iteration 6."
+    action_taken: "proceeded"
+    action_detail: "/project:risk — computed risk score 35/100 (Grade C, Elevated). 7 dimensions scored. 3 data gaps (tech_debt, supply_chain, lifecycle_readiness)."
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Risk assessment: 35/100 (C). Goal Health 70 (2 orphaned goals), Sprint Execution 5 (2 completed sprints, no failures), Code Quality 43 (62/100 review + 1 HIGH finding), Tech Debt/Supply Chain/Lifecycle at 40 (no data). History written to risk-history.yaml."
+
+  - timestamp: "2026-03-07T03:56:51Z"
+    iteration: 6
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-security-ci"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with clear mechanical fixes, well-defined acceptance criteria from verified review findings. Preflight passed (906 tests, build green)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-security-ci — sequential execution, 4 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-security-ci"
+    work_summary: "MILESTONE: goal-5 completed. Sprint dispatched and executed: Gemini API key moved to x-goog-api-key header (3 fetch calls), CI build step added, API keys encrypted via AES-GCM 256-bit Web Crypto API. New file: src/lib/ai/crypto.ts. Modified: gemini.ts, openai.ts, anthropic.ts, service.ts, ci.yml. Commit f2038f6. 906 tests pass, build clean. Retro saved."
+
+  - timestamp: "2026-03-07T04:00:25Z"
+    iteration: 7
+    next_recommendation: "Plan a sprint for Performance — Bundle Splitting (goal-6)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear success criteria from review. Root cause identified: static imports in routes.tsx defeat lazy() code splitting. Mechanical fix."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-6 — created sprint-2026-03-07-perf-bundle with 3 handoffs (~1.5h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-perf-bundle"
+    work_summary: "Created sprint for goal-6 with 2 implementation handoffs: lazy-load route children to break 1.8MB bundle (P0), isolate react-big-calendar in vendor chunk (P1), plus commit-verify. Analyzed codebase: found static import chain routes.tsx → module/routes.tsx → components as root cause."
+
+  - timestamp: "2026-03-07T04:09:49Z"
+    iteration: 8
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-perf-bundle"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with mechanical fixes, well-defined acceptance criteria. Preflight passed (906 tests, build green)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-perf-bundle — sequential execution, 3 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-perf-bundle"
+    work_summary: "MILESTONE: goal-6 completed. Main chunk 1,855 KB → 411 KB (78% reduction). Route modules moved inside lazy boundaries using useRoutes(). react-big-calendar isolated to vendor-calendar chunk (183 KB). Commit 275771c. 906 tests pass, build clean. Retro saved."
+
+  - timestamp: "2026-03-07T04:09:49Z"
+    iteration: 9
+    next_recommendation: "Plan a sprint for Code Health (goal-7)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear success criteria from review. Mechanical refactoring with well-defined scope (5 files over 700 LOC)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-7 — created sprint-2026-03-07-code-health with 3 handoffs (~2h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-code-health"
+    work_summary: "Created sprint for goal-7 with 2 implementation handoffs: split 5 large components (NewBatchForm 779, StageTransitionModal 755, MotherPlantDetail 718, BatchDetail 715, PropaguleDetail 694 LOC) into sub-components under 300 LOC each, plus extract shared form patterns. Commit-verify handoff included."
+
+  - timestamp: "2026-03-07T04:37:55Z"
+    iteration: 10
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-code-health"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with mechanical refactoring fixes, well-defined acceptance criteria. Preflight passed (906 tests, build green)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-code-health — sequential execution, 3 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-code-health"
+    work_summary: "MILESTONE: goal-7 completed. 5 components split from 694-779 LOC to 273-300 LOC each. 13 new sub-component files created. Shared FormFields.tsx with 8 reusable components. 2 form components refactored to use shared fields. Commit 49c9282. 906 tests pass, build clean. Retro saved (100% completion, -85% estimation variance)."
+
+  - timestamp: "2026-03-07T04:37:55Z"
+    iteration: 11
+    next_recommendation: "Maintenance: risk assessment (due at iteration 10, last at 5)"
+    next_phase: "maintenance"
+    confidence: "high"
+    confidence_reasoning: "Periodic maintenance — risk assessment due per schedule (iteration 11, last at 5)."
+    action_taken: "proceeded"
+    action_detail: "/project:risk — computed risk score 28/100 (Grade B, Moderate). Improved from 35/100 (C)."
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Risk assessment: 28/100 (B), improved from 35/100 (C). Goal Health dropped 70→40 (3 remediation goals completed). Sprint Execution 5→0 (perfect record). Code Quality stable at 43. 3 data gaps remain (tech_debt, supply_chain, lifecycle_readiness)."
+
+  - timestamp: "2026-03-07T04:42:00Z"
+    iteration: 12
+    next_recommendation: "Plan a sprint for Production Stability (goal-1, 95%)"
+    next_phase: "D"
+    confidence: "medium"
+    confidence_reasoning: "goal-1 remaining 5% is 'zero data loss in 30-day use' — requires real usage, not code sprint. Redirecting to quality review to measure remediation impact (3 goals completed since 62/100 score)."
+    action_taken: "flagged"
+    action_detail: "Overrode sprint-workshop for goal-1 (blocked on real usage). Rotating focus, then running quality review to update score post-remediation."
+    result: "success"
+    quality_health: "57/100 Grade F (quick)"
+    sprint_id: null
+    work_summary: "Downtime cascade initiated. Ran /project:review --quick: 57/100 (F). Comparable dimensions improved (Security +1, Tests +3, Deps +8). Code Health dropped to 10 (stricter rubric on next-tier hotspots). Previous HIGH finding (Gemini API key) confirmed fixed. 2 new MEDIUM security findings (crypto key in localStorage, recovery export includes keys). Report: .generated/review/codebase-review.md"
+
+  - timestamp: "2026-03-07T04:52:36Z"
+    iteration: 13
+    next_recommendation: "Cascade synthesis: convert review findings into goals"
+    next_phase: "cascade"
+    confidence: "high"
+    confidence_reasoning: "Mechanical conversion of review findings to project goals. Well-defined process with clear inputs."
+    action_taken: "proceeded"
+    action_detail: "/project:remediate — created 3 goals from 2 findings + 4 recommendations (goal-8 P2 Security II, goal-9 P3 Code Health II, goal-10 P3 Infra Tests & Deps)"
+    result: "success"
+    quality_health: "57/100 Grade F (quick)"
+    sprint_id: null
+    work_summary: "Created 3 remediation goals: goal-8 (Security Hardening II, P2), goal-9 (Code Health II, P3), goal-10 (Infrastructure Testing & Deps, P3). Updated focus to goal-8. Projected overall improvement: 57 → ~74."
+
+  - timestamp: "2026-03-07T04:55:44Z"
+    iteration: 14
+    next_recommendation: "Plan a sprint for goal-8 (Security Hardening II)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear, concrete success criteria from verified review findings. Mechanical security fixes with well-defined scope and file locations."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-8 — created sprint-2026-03-07-security-hardening-ii with 4 handoffs (~1h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-security-hardening-ii"
+    work_summary: "Created sprint for goal-8 with 3 implementation handoffs: fix crypto key to non-extractable (P0), filter API keys from recovery export (P0), add CSP meta tag (P1), plus commit-verify. Files: sprint YAML + dispatch prompt."
+
+  - timestamp: "2026-03-07T05:01:39Z"
+    iteration: 15
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-security-hardening-ii"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with mechanical fixes, well-defined acceptance criteria. Preflight passed (906 tests, build green)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-security-hardening-ii — sequential execution, 4 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-security-hardening-ii"
+    work_summary: "MILESTONE: goal-8 completed. CryptoKey now non-extractable with dedicated IDB store, legacy localStorage keys auto-migrated. Recovery export redacts api_key entries with [REDACTED]. CSP meta tag added to index.html. Commit 9c49d0b. 906 tests pass, build clean. Retro saved (100% completion, -85% estimation variance)."
+
+  - timestamp: "2026-03-07T05:05:34Z"
+    iteration: 16
+    next_recommendation: "Plan a sprint for goal-9 (Code Health II)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear success criteria from review. Mechanical refactoring with well-defined scope (5 files, 550-631 LOC each). Previous code-health sprint executed at 100%."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-9 — created sprint-2026-03-07-code-health-ii with 2 handoffs (~2h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-code-health-ii"
+    work_summary: "Created sprint for goal-9 with 1 implementation handoff: split 5 components (AIAssistant 631, SpeciesConfigForm 559, PropagationGuideLibrary 552, MotherPlantForm 550, PropaguleUpdateForm 560 LOC) to under 300 LOC each, plus commit-verify."
+
+  - timestamp: "2026-03-07T05:21:54Z"
+    iteration: 17
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-code-health-ii"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with mechanical refactoring, well-defined acceptance criteria. Preflight passed (906 tests, build green). Previous code-health sprint executed at 100%."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-code-health-ii — sequential execution, 2 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-code-health-ii"
+    work_summary: "MILESTONE: goal-9 completed. 5 components split: AIAssistant 631→230, SpeciesConfigForm 559→274, PropagationGuideLibrary 552→224, MotherPlantForm 550→241, PropaguleUpdateForm 560→212. 16 new sub-component files created. 906 tests pass, build clean. Commit d7cf486. Retro saved (100% completion, -87% estimation variance)."
