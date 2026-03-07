@@ -10,9 +10,6 @@ import { createBrowserRouter, Outlet, type RouteObject } from 'react-router-dom'
 import { AppShell } from '@/components/Shell';
 import { ComingSoon, ModuleLoader } from '@/components/shared';
 import { WelcomeModal } from '@/components/onboarding';
-import { growRoutes } from '@/modules/grow/routes';
-import { propagationRoutes } from '@/modules/propagation/routes';
-import { plannerRoutes } from '@/modules/planner/routes';
 
 // Lazy-loaded modules and pages
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
@@ -51,26 +48,24 @@ const routes: RouteObject[] = [
         path: '/',
         element: <AppShell />,
         children: [
-          // Grow module
+          // Grow module — wildcard delegates sub-routing to module
           {
-            path: 'grow',
+            path: 'grow/*',
             element: (
               <Suspense fallback={<ModuleLoader />}>
                 <GrowModule />
               </Suspense>
             ),
-            children: growRoutes,
           },
 
-          // Propagation module
+          // Propagation module — wildcard delegates sub-routing to module
           {
-            path: 'propagation',
+            path: 'propagation/*',
             element: (
               <Suspense fallback={<ModuleLoader />}>
                 <PropagationModule />
               </Suspense>
             ),
-            children: propagationRoutes,
           },
 
           // Future modules (placeholders)
@@ -90,15 +85,14 @@ const routes: RouteObject[] = [
             path: 'finance/*',
             element: <ComingSoon module="Finance" />,
           },
-          // Planner module
+          // Planner module — wildcard delegates sub-routing to module
           {
-            path: 'planner',
+            path: 'planner/*',
             element: (
               <Suspense fallback={<ModuleLoader />}>
                 <PlannerModule />
               </Suspense>
             ),
-            children: plannerRoutes,
           },
 
           // Platform settings

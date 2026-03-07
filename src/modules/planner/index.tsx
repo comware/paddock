@@ -8,10 +8,11 @@
  */
 
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { usePlannerStore } from './stores/usePlannerStore';
+import { plannerRoutes } from './routes';
 
 // Navigation items for the planner module
 const plannerNavItems: ModuleNavItem[] = [
@@ -29,12 +30,15 @@ function PlannerModuleContent() {
     loadEvents();
   }, [loadEvents]);
 
+  // Render child routes internally — keeps route definitions inside the lazy boundary
+  const routeElement = useRoutes(plannerRoutes);
+
   return (
     <>
       <ModuleNav items={plannerNavItems} basePath="/planner" />
       <div className="flex-1 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
-          <Outlet />
+          {routeElement}
         </div>
       </div>
     </>

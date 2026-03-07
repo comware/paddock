@@ -9,11 +9,12 @@
  */
 
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useSites, useTrays } from './stores';
 import { useTrayMigration } from './hooks';
+import { growRoutes } from './routes';
 
 // Site-centric navigation:
 // - Sites overview is the landing page (index route)
@@ -41,12 +42,15 @@ function GrowModuleContent() {
   // Safe to call every mount - only migrates if orphan trays exist
   useTrayMigration();
 
+  // Render child routes internally — keeps route definitions inside the lazy boundary
+  const routeElement = useRoutes(growRoutes);
+
   return (
     <>
       <ModuleNav items={growNavItems} basePath="/grow" />
       <div className="flex-1 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
-          <Outlet />
+          {routeElement}
         </div>
       </div>
     </>
