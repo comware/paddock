@@ -15,6 +15,7 @@ import {
   API_KEY_STORAGE_KEYS,
 } from '../types';
 import { platformDb } from '@/lib/db';
+import { decrypt, isEncrypted } from '../crypto';
 
 // Use proxy in development to bypass CORS, direct API in production with backend
 const GEMINI_API_BASE = '/api/gemini/v1beta';
@@ -31,7 +32,15 @@ export class GeminiProvider implements ILLMProvider {
         .where('key')
         .equals(API_KEY_STORAGE_KEYS.gemini)
         .first();
-      this.apiKey = (setting?.value as string) || null;
+      const storedValue = (setting?.value as string) || null;
+      if (!storedValue) return null;
+
+      // Decrypt if encrypted, otherwise use as-is (migration for existing plaintext keys)
+      try {
+        this.apiKey = isEncrypted(storedValue) ? await decrypt(storedValue) : storedValue;
+      } catch {
+        this.apiKey = storedValue;
+      }
       return this.apiKey;
     } catch {
       return null;
@@ -53,7 +62,8 @@ export class GeminiProvider implements ILLMProvider {
 
     try {
       const response = await fetch(
-        `${GEMINI_API_BASE}/models?key=${apiKey}`
+        `${GEMINI_API_BASE}/models`,
+        { headers: { 'x-goog-api-key': apiKey } }
       );
       return response.ok;
     } catch {
@@ -98,11 +108,12 @@ export class GeminiProvider implements ILLMProvider {
 
     const modelName = `models/${request.model}`;
     const response = await fetch(
-      `${GEMINI_API_BASE}/${modelName}:generateContent?key=${apiKey}`,
+      `${GEMINI_API_BASE}/${modelName}:generateContent`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
         },
         body: JSON.stringify({
           contents,
@@ -165,11 +176,12 @@ export class GeminiProvider implements ILLMProvider {
     try {
       const modelName = `models/${request.model}`;
       const response = await fetch(
-        `${GEMINI_API_BASE}/${modelName}:streamGenerateContent?key=${apiKey}&alt=sse`,
+        `${GEMINI_API_BASE}/${modelName}:streamGenerateContent?alt=sse`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey,
           },
           body: JSON.stringify({
             contents,

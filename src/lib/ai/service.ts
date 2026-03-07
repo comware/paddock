@@ -20,6 +20,7 @@ import { openaiProvider } from './providers/openai';
 import { anthropicProvider } from './providers/anthropic';
 import { geminiProvider } from './providers/gemini';
 import { platformDb } from '@/lib/db';
+import { encrypt, decrypt, isEncrypted } from './crypto';
 
 class AIService {
   private providers: Map<LLMProvider, ILLMProvider> = new Map();
@@ -83,6 +84,7 @@ class AIService {
    */
   async saveApiKey(provider: LLMProvider, apiKey: string): Promise<void> {
     const key = API_KEY_STORAGE_KEYS[provider];
+    const encryptedValue = await encrypt(apiKey);
 
     const existing = await platformDb.settings
       .where('key')
@@ -90,9 +92,9 @@ class AIService {
       .first();
 
     if (existing) {
-      await platformDb.settings.update(existing.id!, { value: apiKey });
+      await platformDb.settings.update(existing.id!, { value: encryptedValue });
     } else {
-      await platformDb.settings.add({ key, value: apiKey });
+      await platformDb.settings.add({ key, value: encryptedValue });
     }
 
     // Clear cached key in provider
@@ -113,8 +115,16 @@ class AIService {
       .equals(key)
       .first();
 
-    const value = setting?.value as string;
-    if (!value) return null;
+    const storedValue = setting?.value as string;
+    if (!storedValue) return null;
+
+    // Decrypt if encrypted, otherwise use as-is (migration for existing plaintext keys)
+    let value: string;
+    try {
+      value = isEncrypted(storedValue) ? await decrypt(storedValue) : storedValue;
+    } catch {
+      value = storedValue;
+    }
 
     // Mask all but last 4 characters
     if (value.length <= 8) {

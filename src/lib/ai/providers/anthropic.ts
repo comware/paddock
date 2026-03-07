@@ -15,6 +15,7 @@ import {
   API_KEY_STORAGE_KEYS,
 } from '../types';
 import { platformDb } from '@/lib/db';
+import { decrypt, isEncrypted } from '../crypto';
 
 // Use proxy in development to bypass CORS, direct API in production with backend
 const ANTHROPIC_API_BASE = '/api/anthropic/v1';
@@ -32,7 +33,15 @@ export class AnthropicProvider implements ILLMProvider {
         .where('key')
         .equals(API_KEY_STORAGE_KEYS.anthropic)
         .first();
-      this.apiKey = (setting?.value as string) || null;
+      const storedValue = (setting?.value as string) || null;
+      if (!storedValue) return null;
+
+      // Decrypt if encrypted, otherwise use as-is (migration for existing plaintext keys)
+      try {
+        this.apiKey = isEncrypted(storedValue) ? await decrypt(storedValue) : storedValue;
+      } catch {
+        this.apiKey = storedValue;
+      }
       return this.apiKey;
     } catch {
       return null;
