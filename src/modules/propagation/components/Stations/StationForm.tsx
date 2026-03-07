@@ -19,6 +19,14 @@ import { Modal } from '@/components/ui';
 import { useStations, DEFAULT_ENVIRONMENTAL_TARGETS } from '../../stores/useStations';
 import { useSites } from '@/modules/grow/stores';
 import type { StationType, PropStation } from '../../types';
+import {
+  RequiredTextField,
+  NumericRangeField,
+  TextareaField,
+  FormError,
+  FormActions,
+  FormSectionHeader,
+} from '../shared/FormFields';
 
 // ============================================
 // STATION TYPE OPTIONS
@@ -87,7 +95,7 @@ const stationSchema = z.object({
     'mist_system',
     'other',
   ] as const, {
-    required_error: 'Please select a station type',
+    message: 'Please select a station type',
   }),
   capacity: z.number().min(1, 'Capacity must be at least 1').max(10000, 'Maximum 10,000'),
   isIndoor: z.boolean(),
@@ -298,25 +306,14 @@ export function StationForm({ isOpen, onClose, onSuccess, editStation }: Station
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Section: Basic Info */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-            Station Information
-          </h3>
+          <FormSectionHeader title="Station Information" />
 
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Name *
-            </label>
-            <input
-              type="text"
-              {...register('name')}
-              placeholder="e.g., Main Propagator, South Bench"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
-            )}
-          </div>
+          <RequiredTextField
+            label="Name"
+            registration={register('name')}
+            error={errors.name}
+            placeholder="e.g., Main Propagator, South Bench"
+          />
 
           {/* Type Selector */}
           <div>
@@ -400,21 +397,12 @@ export function StationForm({ isOpen, onClose, onSuccess, editStation }: Station
             />
           </div>
 
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Description <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <textarea
-              {...register('description')}
-              rows={2}
-              placeholder="Location details, equipment notes..."
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-            />
-            {errors.description && (
-              <p className="mt-1 text-sm text-red-500">{errors.description.message}</p>
-            )}
-          </div>
+          <TextareaField
+            label="Description"
+            registration={register('description')}
+            error={errors.description}
+            placeholder="Location details, equipment notes..."
+          />
         </div>
 
         {/* Section: Environmental Targets (collapsible) */}
@@ -430,98 +418,26 @@ export function StationForm({ isOpen, onClose, onSuccess, editStation }: Station
 
             {/* Temperature Range */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Min Temp (C)
-                </label>
-                <input
-                  type="number"
-                  {...register('targetTempMin', { valueAsNumber: true })}
-                  min={-40}
-                  max={60}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.targetTempMin && (
-                  <p className="mt-1 text-sm text-red-500">{errors.targetTempMin.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Max Temp (C)
-                </label>
-                <input
-                  type="number"
-                  {...register('targetTempMax', { valueAsNumber: true })}
-                  min={-40}
-                  max={60}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.targetTempMax && (
-                  <p className="mt-1 text-sm text-red-500">{errors.targetTempMax.message}</p>
-                )}
-              </div>
+              <NumericRangeField label="Min Temp (C)" registration={register('targetTempMin', { valueAsNumber: true })} error={errors.targetTempMin} min={-40} max={60} />
+              <NumericRangeField label="Max Temp (C)" registration={register('targetTempMax', { valueAsNumber: true })} error={errors.targetTempMax} min={-40} max={60} />
             </div>
 
             {/* Humidity Range */}
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Min Humidity (%)
-                </label>
-                <input
-                  type="number"
-                  {...register('targetHumidityMin', { valueAsNumber: true })}
-                  min={0}
-                  max={100}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.targetHumidityMin && (
-                  <p className="mt-1 text-sm text-red-500">{errors.targetHumidityMin.message}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Max Humidity (%)
-                </label>
-                <input
-                  type="number"
-                  {...register('targetHumidityMax', { valueAsNumber: true })}
-                  min={0}
-                  max={100}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                {errors.targetHumidityMax && (
-                  <p className="mt-1 text-sm text-red-500">{errors.targetHumidityMax.message}</p>
-                )}
-              </div>
+              <NumericRangeField label="Min Humidity (%)" registration={register('targetHumidityMin', { valueAsNumber: true })} error={errors.targetHumidityMin} min={0} max={100} />
+              <NumericRangeField label="Max Humidity (%)" registration={register('targetHumidityMax', { valueAsNumber: true })} error={errors.targetHumidityMax} min={0} max={100} />
             </div>
           </div>
         </details>
 
-        {/* Error Display */}
-        {submitError && (
-          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-            <p className="text-sm text-red-700 dark:text-red-300">{submitError}</p>
-          </div>
-        )}
+        <FormError message={submitError} />
 
-        {/* Actions */}
-        <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isSubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Station'}
-          </button>
-        </div>
+        <FormActions
+          onCancel={handleClose}
+          isSubmitting={isSubmitting}
+          submitLabel={isEditMode ? 'Save Changes' : 'Create Station'}
+          submittingLabel="Saving..."
+        />
       </form>
     </Modal>
   );

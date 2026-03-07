@@ -17,6 +17,16 @@ import { z } from 'zod';
 import { Modal } from '@/components/ui';
 import { useSupplies } from '../../stores/useSupplies';
 import type { PropSupply, SupplyCategory } from '../../types';
+import {
+  RequiredTextField,
+  OptionalTextField,
+  NumericRangeField,
+  TextareaField,
+  SelectField,
+  FormError,
+  FormActions,
+  FormSectionHeader,
+} from '../shared/FormFields';
 
 // ============================================
 // CATEGORY OPTIONS
@@ -100,7 +110,7 @@ const supplySchema = z.object({
     'misting',
     'other',
   ] as const, {
-    required_error: 'Please select a category',
+    message: 'Please select a category',
   }),
   unit: z.string().min(1, 'Unit is required'),
   quantityPurchased: z.number().min(0.01, 'Quantity must be greater than 0'),
@@ -410,18 +420,7 @@ export function SupplyForm({
             )}
           </div>
 
-          {/* Supplier */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Supplier <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <input
-              type="text"
-              {...registerPurchase('supplier')}
-              placeholder="e.g., Amazon, Local Nursery"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-          </div>
+          <OptionalTextField label="Supplier" registration={registerPurchase('supplier')} placeholder="e.g., Amazon, Local Nursery" />
 
           {/* Cost Calculation Preview */}
           {newCostPerUnit !== null && purchaseQuantity > 0 && (
@@ -446,30 +445,8 @@ export function SupplyForm({
             </div>
           )}
 
-          {/* Error Display */}
-          {submitError && (
-            <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-              <p className="text-sm text-red-700 dark:text-red-300">{submitError}</p>
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isPurchaseSubmitting}
-              className="flex-1 px-4 py-2.5 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isPurchaseSubmitting ? 'Recording...' : 'Record Purchase'}
-            </button>
-          </div>
+          <FormError message={submitError} />
+          <FormActions onCancel={handleClose} isSubmitting={isPurchaseSubmitting} submitLabel="Record Purchase" submittingLabel="Recording..." />
         </form>
       </Modal>
     );
@@ -486,25 +463,8 @@ export function SupplyForm({
       <form onSubmit={handleSubmitSupply(onSubmitSupply)} className="space-y-5">
         {/* Section: Basic Info */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-            Supply Information
-          </h3>
-
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Name *
-            </label>
-            <input
-              type="text"
-              {...registerSupply('name')}
-              placeholder="e.g., Clonex Rooting Gel, Perlite 20L"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-            {supplyErrors.name && (
-              <p className="mt-1 text-sm text-red-500">{supplyErrors.name.message}</p>
-            )}
-          </div>
+          <FormSectionHeader title="Supply Information" />
+          <RequiredTextField label="Name" registration={registerSupply('name')} error={supplyErrors.name} placeholder="e.g., Clonex Rooting Gel, Perlite 20L" />
 
           {/* Category Selector */}
           <div>
@@ -534,29 +494,12 @@ export function SupplyForm({
             )}
           </div>
 
-          {/* Unit */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Unit of Measure *
-            </label>
-            <select
-              {...registerSupply('unit')}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              {UNIT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SelectField label="Unit of Measure" registration={registerSupply('unit')} options={UNIT_OPTIONS} required />
         </div>
 
         {/* Section: Purchase Details */}
         <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-            {isEditMode ? 'Purchase History' : 'Initial Purchase'}
-          </h3>
+          <FormSectionHeader title={isEditMode ? 'Purchase History' : 'Initial Purchase'} />
 
           <div className="grid grid-cols-2 gap-4">
             {/* Quantity */}
@@ -605,84 +548,19 @@ export function SupplyForm({
             </div>
           )}
 
-          {/* Supplier */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Supplier <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <input
-              type="text"
-              {...registerSupply('supplier')}
-              placeholder="e.g., Amazon, Local Nursery"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-          </div>
+          <OptionalTextField label="Supplier" registration={registerSupply('supplier')} placeholder="e.g., Amazon, Local Nursery" />
         </div>
 
         {/* Section: Inventory Settings */}
         <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-            Inventory Settings
-          </h3>
+          <FormSectionHeader title="Inventory Settings" />
+          <NumericRangeField label="Reorder Point" registration={registerSupply('lowStockThreshold', { valueAsNumber: true })} error={supplyErrors.lowStockThreshold} step="0.01" placeholder="Alert when below this quantity" hint="You'll see a low stock alert when inventory falls below this level" />
 
-          {/* Low Stock Threshold */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Reorder Point <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              {...registerSupply('lowStockThreshold', { valueAsNumber: true })}
-              placeholder="Alert when below this quantity"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              You'll see a low stock alert when inventory falls below this level
-            </p>
-          </div>
-
-          {/* Notes */}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Notes <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <textarea
-              {...registerSupply('notes')}
-              rows={2}
-              placeholder="Storage location, usage notes..."
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-            />
-            {supplyErrors.notes && (
-              <p className="mt-1 text-sm text-red-500">{supplyErrors.notes.message}</p>
-            )}
-          </div>
+          <TextareaField label="Notes" registration={registerSupply('notes')} error={supplyErrors.notes} placeholder="Storage location, usage notes..." />
         </div>
 
-        {/* Error Display */}
-        {submitError && (
-          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-            <p className="text-sm text-red-700 dark:text-red-300">{submitError}</p>
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isSupplySubmitting}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isSupplySubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Add Supply'}
-          </button>
-        </div>
+        <FormError message={submitError} />
+        <FormActions onCancel={handleClose} isSubmitting={isSupplySubmitting} submitLabel={isEditMode ? 'Save Changes' : 'Add Supply'} submittingLabel="Saving..." />
       </form>
     </Modal>
   );
