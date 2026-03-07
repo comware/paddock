@@ -4,7 +4,7 @@
  * Manages batch state in memory with Dexie persistence.
  * Provides computed fields for status, survival rate, days in stage, etc.
  *
- * Following patterns from useTrays.ts in the grow module.
+ * Helpers and types extracted to useBatches.helpers.ts
  */
 
 import { create } from 'zustand';
@@ -19,33 +19,17 @@ import type {
   BatchSort,
 } from '../types';
 import { VALID_STAGE_TRANSITIONS } from '../types';
-import {
-  calculateDaysInStage,
-  calculateDaysSinceTaken,
-  calculateSurvivalRate,
-  isOverdue,
-  isActiveStage,
-  isValidTransition,
-} from '../utils/stageHelpers';
+import { isActiveStage, isValidTransition } from '../utils/stageHelpers';
 import { generateNextBatchNumber } from '../utils/batchNumbering';
+import {
+  enrichBatch,
+  getStageDateField,
+  DEFAULT_FILTERS,
+  DEFAULT_SORT,
+} from './useBatches.helpers';
 
-// ============================================
-// TYPES
-// ============================================
-
-/**
- * Batch status derived from stage for UI display.
- */
-export type BatchStatus = 'active' | 'graduated' | 'failed';
-
-/**
- * Get batch status from stage.
- */
-function getBatchStatus(stage: PropagationStage): BatchStatus {
-  if (stage === 'graduated') return 'graduated';
-  if (stage === 'failed') return 'failed';
-  return 'active';
-}
+// Re-export types for consumers
+export type { BatchStatus } from './useBatches.helpers';
 
 export interface BatchesState {
   // Raw data from DB
@@ -88,78 +72,6 @@ export interface BatchesState {
 }
 
 // ============================================
-// HELPER FUNCTIONS
-// ============================================
-
-/**
- * Enrich a batch with computed fields.
- */
-function enrichBatch(batch: PropBatch): PropBatchWithComputed {
-  const daysInStage = calculateDaysInStage(batch);
-  const daysSinceTaken = calculateDaysSinceTaken(batch.dateTaken);
-  const survivalRate = calculateSurvivalRate(batch.quantitySurviving, batch.quantityStarted);
-
-  return {
-    ...batch,
-    daysInStage,
-    daysSinceTaken,
-    survivalRate,
-    totalCost: 0, // Will be computed when batch costs are loaded
-    costPerStarted: 0,
-    costPerSurviving: 0,
-    isOverdue: isOverdue(batch),
-    // Denormalized fields will be populated when related data is available
-    motherPlantLabel: undefined,
-    stationName: undefined,
-  };
-}
-
-/**
- * Get the date field name for a stage.
- */
-function getStageDateField(
-  stage: PropagationStage
-): keyof Pick<
-  PropBatch,
-  'dateRooted' | 'datePottedUp' | 'dateHardeningStarted' | 'dateReady' | 'dateGraduated'
-> | null {
-  switch (stage) {
-    case 'rooted':
-      return 'dateRooted';
-    case 'potted_up':
-      return 'datePottedUp';
-    case 'hardening':
-      return 'dateHardeningStarted';
-    case 'ready':
-      return 'dateReady';
-    case 'graduated':
-      return 'dateGraduated';
-    default:
-      return null;
-  }
-}
-
-/**
- * Default filter values.
- */
-const DEFAULT_FILTERS: BatchFilters = {
-  stage: 'all',
-  species: 'all',
-  method: 'all',
-  stationId: 'all',
-  motherPlantId: 'all',
-  siteId: 'all',
-};
-
-/**
- * Default sort values.
- */
-const DEFAULT_SORT: BatchSort = {
-  field: 'dateTaken',
-  direction: 'desc',
-};
-
-// ============================================
 // STORE
 // ============================================
 
@@ -171,7 +83,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
   filters: { ...DEFAULT_FILTERS },
   sort: { ...DEFAULT_SORT },
 
-  // Load batches from database
   loadBatches: async () => {
     try {
       set({ isLoading: true, error: null });
@@ -183,20 +94,17 @@ export const useBatches = create<BatchesState>((set, get) => ({
     }
   },
 
-  // Add new batch
   addBatch: async (input: CreateBatchInput) => {
     const { rawBatches } = get();
     const now = new Date();
-
-    // Generate batch number
     const batchNumber = generateNextBatchNumber(rawBatches);
 
     const batch: Omit<PropBatch, 'id'> = {
       ...input,
       batchNumber,
-      stage: 'taken', // Always start in 'taken' stage
+      stage: 'taken',
       daysInStage: 0,
-      quantitySurviving: input.quantityStarted, // Start with all surviving
+      quantitySurviving: input.quantityStarted,
       isExploded: false,
       photoUrls: input.photoUrls || [],
       createdAt: now,
@@ -217,7 +125,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
     }
   },
 
-  // Update batch
   updateBatch: async (id, updates) => {
     const updatedData = { ...updates, updatedAt: new Date() };
 
@@ -238,7 +145,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
     }
   },
 
-  // Delete batch
   deleteBatch: async (id) => {
     try {
       await propDb.batches.delete(id);
@@ -255,7 +161,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
     }
   },
 
-  // Advance stage with validation
   advanceStage: async (id, toStage, quantityAfter) => {
     const { rawBatches, updateBatch } = get();
     const batch = rawBatches.find((b) => b.id === id);
@@ -264,7 +169,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
       throw new Error(`Batch not found: ${id}`);
     }
 
-    // Validate transition
     if (!isValidTransition(batch.stage, toStage)) {
       const validTargets = VALID_STAGE_TRANSITIONS[batch.stage];
       throw new Error(
@@ -273,18 +177,12 @@ export const useBatches = create<BatchesState>((set, get) => ({
       );
     }
 
-    // Build updates
-    const updates: Partial<PropBatch> = {
-      stage: toStage,
-    };
-
-    // Set the appropriate date field for the new stage
+    const updates: Partial<PropBatch> = { stage: toStage };
     const dateField = getStageDateField(toStage);
     if (dateField) {
       (updates as Record<string, unknown>)[dateField] = new Date();
     }
 
-    // Update quantity if provided
     if (quantityAfter !== undefined) {
       if (quantityAfter < 0) {
         throw new Error('Quantity cannot be negative');
@@ -298,7 +196,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
     await updateBatch(id, updates);
   },
 
-  // Mark batch as failed
   markFailed: async (id, reason, notes) => {
     const { rawBatches, updateBatch } = get();
     const batch = rawBatches.find((b) => b.id === id);
@@ -307,7 +204,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
       throw new Error(`Batch not found: ${id}`);
     }
 
-    // Validate transition (can fail from any non-terminal stage)
     if (!isValidTransition(batch.stage, 'failed')) {
       throw new Error(`Cannot mark batch as failed from '${batch.stage}' stage`);
     }
@@ -317,8 +213,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
       quantitySurviving: 0,
     };
 
-    // Note: We store failure reason in preparationNotes for now
-    // TODO: Add failureReason field to PropBatch type
     if (notes) {
       updates.preparationNotes = `${batch.preparationNotes || ''}\n\nFailed: ${reason} - ${notes}`.trim();
     } else {
@@ -328,30 +222,24 @@ export const useBatches = create<BatchesState>((set, get) => ({
     await updateBatch(id, updates);
   },
 
-  // Set filters
   setFilters: (filters) => {
     set((state) => ({
       filters: { ...state.filters, ...filters },
     }));
   },
 
-  // Set sort
   setSort: (sort) => {
     set({ sort });
   },
 
-  // Reset filters to defaults
   resetFilters: () => {
     set({ filters: { ...DEFAULT_FILTERS } });
   },
 
-  // Get filtered and sorted batches
   getFilteredBatches: () => {
     const { batches, filters, sort } = get();
-
     let filtered = [...batches];
 
-    // Apply stage filter
     if (filters.stage !== 'all') {
       if (filters.stage === 'active') {
         filtered = filtered.filter((b) => isActiveStage(b.stage));
@@ -359,33 +247,21 @@ export const useBatches = create<BatchesState>((set, get) => ({
         filtered = filtered.filter((b) => b.stage === filters.stage);
       }
     }
-
-    // Apply species filter
     if (filters.species !== 'all') {
       filtered = filtered.filter((b) => b.species === filters.species);
     }
-
-    // Apply method filter
     if (filters.method !== 'all') {
       filtered = filtered.filter((b) => b.method === filters.method);
     }
-
-    // Apply station filter
     if (filters.stationId !== 'all') {
       filtered = filtered.filter((b) => b.stationId === filters.stationId);
     }
-
-    // Apply mother plant filter
     if (filters.motherPlantId !== 'all') {
       filtered = filtered.filter((b) => b.motherPlantId === filters.motherPlantId);
     }
-
-    // Apply site filter
     if (filters.siteId !== 'all') {
       filtered = filtered.filter((b) => b.siteId === filters.siteId);
     }
-
-    // Apply date range filter
     if (filters.dateRange) {
       const { from, to } = filters.dateRange;
       filtered = filtered.filter((b) => {
@@ -394,7 +270,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
       });
     }
 
-    // Sort
     filtered.sort((a, b) => {
       let comparison = 0;
       switch (sort.field) {
@@ -408,16 +283,9 @@ export const useBatches = create<BatchesState>((set, get) => ({
           comparison = a.species.localeCompare(b.species);
           break;
         case 'stage': {
-          // Sort by stage order
           const stageOrder: PropagationStage[] = [
-            'taken',
-            'rooting',
-            'rooted',
-            'potted_up',
-            'hardening',
-            'ready',
-            'graduated',
-            'failed',
+            'taken', 'rooting', 'rooted', 'potted_up',
+            'hardening', 'ready', 'graduated', 'failed',
           ];
           comparison = stageOrder.indexOf(a.stage) - stageOrder.indexOf(b.stage);
           break;
@@ -435,69 +303,53 @@ export const useBatches = create<BatchesState>((set, get) => ({
     return filtered;
   },
 
-  // Get all active (non-terminal) batches
   getActiveBatches: () => {
     const { batches } = get();
     return batches.filter((b) => isActiveStage(b.stage));
   },
 
-  // Get batches by stage
   getBatchesByStage: (stage) => {
     const { batches } = get();
     return batches.filter((b) => b.stage === stage);
   },
 
-  // Get batches by station
   getBatchesByStation: (stationId) => {
     const { batches } = get();
     return batches.filter((b) => b.stationId === stationId);
   },
 
-  // Get batch by ID
   getBatchById: (id) => {
     const { batches } = get();
     return batches.find((b) => b.id === id);
   },
 
-  // Get unique species for filter dropdown
   getUniqueSpecies: () => {
     const { batches } = get();
     const species = [...new Set(batches.map((b) => b.species))];
     return species.sort();
   },
 
-  // Get unique stations for filter dropdown
   getUniqueStations: () => {
     const { batches } = get();
     const stations = [...new Set(batches.map((b) => b.stationId))];
     return stations.sort();
   },
 
-  // Get next batch number
   getNextBatchNumber: () => {
     const { rawBatches } = get();
     return generateNextBatchNumber(rawBatches);
   },
 
-  // Get overdue batches
   getOverdueBatches: () => {
     const { batches } = get();
     return batches.filter((b) => b.isOverdue && isActiveStage(b.stage));
   },
 
-  // Get counts by stage
   getStageCounts: () => {
     const { batches } = get();
     const counts: Record<PropagationStage | 'active', number> = {
-      taken: 0,
-      rooting: 0,
-      rooted: 0,
-      potted_up: 0,
-      hardening: 0,
-      ready: 0,
-      graduated: 0,
-      failed: 0,
-      active: 0,
+      taken: 0, rooting: 0, rooted: 0, potted_up: 0,
+      hardening: 0, ready: 0, graduated: 0, failed: 0, active: 0,
     };
 
     for (const batch of batches) {
@@ -506,11 +358,9 @@ export const useBatches = create<BatchesState>((set, get) => ({
         counts.active++;
       }
     }
-
     return counts;
   },
 
-  // Calculate success rate (graduated / (graduated + failed))
   getSuccessRate: () => {
     const { batches } = get();
     const graduated = batches.filter((b) => b.stage === 'graduated').length;
@@ -520,7 +370,6 @@ export const useBatches = create<BatchesState>((set, get) => ({
     return Math.round((graduated / total) * 100);
   },
 
-  // Calculate average survival rate across all batches
   getAverageSurvivalRate: () => {
     const { batches } = get();
     if (batches.length === 0) return 0;

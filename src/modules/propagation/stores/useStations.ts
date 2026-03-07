@@ -4,80 +4,39 @@
  * Manages propagation stations (mist bench, humidity dome, heat mat, etc.)
  * with CRUD operations, occupancy tracking, and environmental targets.
  *
- * Following patterns from useBatches.ts in the propagation module.
+ * Types and helpers extracted to useStations.types.ts
  */
 
 import { create } from 'zustand';
 import { propDb } from '@/lib/db';
 import type {
   PropStation,
-  PropBatchWithComputed,
-  StationType,
   CreateStationInput,
+  StationType,
   StationOccupancy,
 } from '../types';
 import { useBatches } from './useBatches';
+import {
+  enrichStation,
+  validateEnvironmentalTargets,
+  DEFAULT_ENVIRONMENTAL_TARGETS,
+  DEFAULT_FILTERS,
+} from './useStations.types';
+import type {
+  StationWithOccupancy,
+  StationFilters,
+  EnvironmentalValidation,
+  UpdateStationInput,
+} from './useStations.types';
 
-// ============================================
-// TYPES
-// ============================================
-
-/**
- * Station with computed occupancy fields.
- */
-export interface StationWithOccupancy extends PropStation {
-  currentOccupancy: number;
-  availableCapacity: number;
-  occupancyPercentage: number;
-  isAtCapacity: boolean;
-  batchCount: number;
-}
-
-/**
- * Station filters for list display.
- */
-export interface StationFilters {
-  siteId: string | 'all';
-  type: StationType | 'all';
-  isActive: boolean | 'all';
-  isIndoor: boolean | 'all';
-}
-
-/**
- * Default environmental targets by station type.
- * Based on typical propagation requirements.
- */
-export const DEFAULT_ENVIRONMENTAL_TARGETS: Record<
-  StationType,
-  {
-    tempMin: number;
-    tempMax: number;
-    humidityMin: number;
-    humidityMax: number;
-  }
-> = {
-  heated_propagator: { tempMin: 20, tempMax: 25, humidityMin: 80, humidityMax: 95 },
-  unheated_propagator: { tempMin: 15, tempMax: 22, humidityMin: 70, humidityMax: 90 },
-  water_propagation: { tempMin: 18, tempMax: 24, humidityMin: 50, humidityMax: 80 },
-  outdoor_bed: { tempMin: 10, tempMax: 30, humidityMin: 40, humidityMax: 80 },
-  cold_frame: { tempMin: 5, tempMax: 25, humidityMin: 50, humidityMax: 85 },
-  greenhouse_bench: { tempMin: 15, tempMax: 28, humidityMin: 60, humidityMax: 85 },
-  mist_system: { tempMin: 18, tempMax: 25, humidityMin: 85, humidityMax: 100 },
-  other: { tempMin: 15, tempMax: 25, humidityMin: 50, humidityMax: 80 },
-};
-
-/**
- * Environmental validation result.
- */
-export interface EnvironmentalValidation {
-  isValid: boolean;
-  errors: string[];
-}
-
-/**
- * Update input for station modifications.
- */
-export type UpdateStationInput = Partial<Omit<PropStation, 'id' | 'createdAt' | 'updatedAt'>>;
+// Re-export types and constants for consumers
+export { DEFAULT_ENVIRONMENTAL_TARGETS } from './useStations.types';
+export type {
+  StationWithOccupancy,
+  StationFilters,
+  EnvironmentalValidation,
+  UpdateStationInput,
+} from './useStations.types';
 
 export interface StationsState {
   // Raw data from DB
@@ -131,114 +90,6 @@ export interface StationsState {
 }
 
 // ============================================
-// HELPER FUNCTIONS
-// ============================================
-
-/**
- * Default filter values.
- */
-const DEFAULT_FILTERS: StationFilters = {
-  siteId: 'all',
-  type: 'all',
-  isActive: 'all',
-  isIndoor: 'all',
-};
-
-/**
- * Calculate occupancy for a station based on active batches.
- */
-function calculateOccupancy(
-  station: PropStation,
-  activeBatches: PropBatchWithComputed[]
-): {
-  currentOccupancy: number;
-  availableCapacity: number;
-  occupancyPercentage: number;
-  isAtCapacity: boolean;
-  batchCount: number;
-} {
-  // Count active batches at this station
-  // Each batch counts as occupying quantitySurviving slots
-  const stationBatches = activeBatches.filter((b) => b.stationId === station.id);
-  const currentOccupancy = stationBatches.reduce((sum, b) => sum + b.quantitySurviving, 0);
-  const batchCount = stationBatches.length;
-
-  const availableCapacity = Math.max(0, station.capacity - currentOccupancy);
-  const occupancyPercentage =
-    station.capacity > 0 ? Math.round((currentOccupancy / station.capacity) * 100) : 0;
-  const isAtCapacity = currentOccupancy >= station.capacity;
-
-  return {
-    currentOccupancy,
-    availableCapacity,
-    occupancyPercentage,
-    isAtCapacity,
-    batchCount,
-  };
-}
-
-/**
- * Enrich a station with computed occupancy fields.
- */
-function enrichStation(
-  station: PropStation,
-  activeBatches: PropBatchWithComputed[]
-): StationWithOccupancy {
-  const occupancy = calculateOccupancy(station, activeBatches);
-  return {
-    ...station,
-    ...occupancy,
-  };
-}
-
-/**
- * Validate environmental targets.
- */
-function validateEnvironmentalTargets(
-  tempMin?: number,
-  tempMax?: number,
-  humidityMin?: number,
-  humidityMax?: number
-): EnvironmentalValidation {
-  const errors: string[] = [];
-
-  // Temperature validation
-  if (tempMin !== undefined) {
-    if (tempMin < -40 || tempMin > 60) {
-      errors.push('Minimum temperature must be between -40 and 60 degrees Celsius');
-    }
-  }
-  if (tempMax !== undefined) {
-    if (tempMax < -40 || tempMax > 60) {
-      errors.push('Maximum temperature must be between -40 and 60 degrees Celsius');
-    }
-  }
-  if (tempMin !== undefined && tempMax !== undefined && tempMin > tempMax) {
-    errors.push('Minimum temperature cannot exceed maximum temperature');
-  }
-
-  // Humidity validation
-  if (humidityMin !== undefined) {
-    if (humidityMin < 0 || humidityMin > 100) {
-      errors.push('Minimum humidity must be between 0 and 100 percent');
-    }
-  }
-  if (humidityMax !== undefined) {
-    if (humidityMax < 0 || humidityMax > 100) {
-      errors.push('Maximum humidity must be between 0 and 100 percent');
-    }
-  }
-  if (humidityMin !== undefined && humidityMax !== undefined && humidityMin > humidityMax) {
-    errors.push('Minimum humidity cannot exceed maximum humidity');
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors,
-  };
-}
-
-// ============================================
 // STORE
 // ============================================
 
@@ -249,27 +100,20 @@ export const useStations = create<StationsState>((set, get) => ({
   error: null,
   filters: { ...DEFAULT_FILTERS },
 
-  // Load stations from database
   loadStations: async () => {
     try {
       set({ isLoading: true, error: null });
       const rawStations = await propDb.stations.toArray();
-
-      // Get active batches from useBatches store for occupancy calculation
       const activeBatches = useBatches.getState().getActiveBatches();
       const stations = rawStations.map((s) => enrichStation(s, activeBatches));
-
       set({ rawStations, stations, isLoading: false });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
     }
   },
 
-  // Add new station
   addStation: async (input: CreateStationInput) => {
     const now = new Date();
-
-    // Apply default environmental targets if not provided
     const defaults = DEFAULT_ENVIRONMENTAL_TARGETS[input.type] || DEFAULT_ENVIRONMENTAL_TARGETS.other;
 
     const station: Omit<PropStation, 'id'> = {
@@ -282,7 +126,6 @@ export const useStations = create<StationsState>((set, get) => ({
       updatedAt: now,
     };
 
-    // Validate environmental targets
     const validation = validateEnvironmentalTargets(
       station.targetTempMin,
       station.targetTempMax,
@@ -298,8 +141,6 @@ export const useStations = create<StationsState>((set, get) => ({
     try {
       const id = await propDb.stations.add(station as PropStation);
       const newStation = { ...station, id: String(id) } as PropStation;
-
-      // Get active batches for occupancy
       const activeBatches = useBatches.getState().getActiveBatches();
 
       set((state) => {
@@ -316,11 +157,9 @@ export const useStations = create<StationsState>((set, get) => ({
     }
   },
 
-  // Update station
   updateStation: async (id, updates) => {
     const updatedData = { ...updates, updatedAt: new Date() };
 
-    // Validate environmental targets if being updated
     if (
       updates.targetTempMin !== undefined ||
       updates.targetTempMax !== undefined ||
@@ -346,7 +185,6 @@ export const useStations = create<StationsState>((set, get) => ({
 
     try {
       await propDb.stations.update(id, updatedData);
-
       const activeBatches = useBatches.getState().getActiveBatches();
 
       set((state) => {
@@ -364,9 +202,7 @@ export const useStations = create<StationsState>((set, get) => ({
     }
   },
 
-  // Delete station (hard delete - use deactivateStation for soft delete)
   deleteStation: async (id) => {
-    // Check if station has active batches before deletion
     const activeBatches = useBatches.getState().getActiveBatches();
     const stationBatches = activeBatches.filter((b) => b.stationId === id);
 
@@ -381,7 +217,6 @@ export const useStations = create<StationsState>((set, get) => ({
 
     try {
       await propDb.stations.delete(id);
-
       set((state) => {
         const newRawStations = state.rawStations.filter((s) => s.id !== id);
         return {
@@ -395,71 +230,57 @@ export const useStations = create<StationsState>((set, get) => ({
     }
   },
 
-  // Activate station (soft undelete)
   activateStation: async (id) => {
     const { updateStation } = get();
     await updateStation(id, { isActive: true });
   },
 
-  // Deactivate station (soft delete)
   deactivateStation: async (id) => {
     const { updateStation } = get();
     await updateStation(id, { isActive: false });
   },
 
-  // Toggle station active status
   toggleStationActive: async (id) => {
     const { rawStations, updateStation } = get();
     const station = rawStations.find((s) => s.id === id);
-
     if (!station) {
       throw new Error(`Station not found: ${id}`);
     }
-
     await updateStation(id, { isActive: !station.isActive });
   },
 
-  // Set filters
   setFilters: (filters) => {
     set((state) => ({
       filters: { ...state.filters, ...filters },
     }));
   },
 
-  // Reset filters to defaults
   resetFilters: () => {
     set({ filters: { ...DEFAULT_FILTERS } });
   },
 
-  // Get current occupancy for a station (count of propagules)
   getCurrentOccupancy: (stationId) => {
     const { stations } = get();
     const station = stations.find((s) => s.id === stationId);
     return station?.currentOccupancy ?? 0;
   },
 
-  // Get available capacity for a station
   getAvailableCapacity: (stationId) => {
     const { stations } = get();
     const station = stations.find((s) => s.id === stationId);
     return station?.availableCapacity ?? 0;
   },
 
-  // Check if station is at capacity
   isAtCapacity: (stationId) => {
     const { stations } = get();
     const station = stations.find((s) => s.id === stationId);
     return station?.isAtCapacity ?? false;
   },
 
-  // Get detailed occupancy info for a station
   getStationOccupancy: (stationId) => {
     const { rawStations } = get();
     const station = rawStations.find((s) => s.id === stationId);
-
-    if (!station) {
-      return undefined;
-    }
+    if (!station) return undefined;
 
     const activeBatches = useBatches.getState().getActiveBatches();
     const stationBatches = activeBatches.filter((b) => b.stationId === stationId);
@@ -482,7 +303,6 @@ export const useStations = create<StationsState>((set, get) => ({
     };
   },
 
-  // Refresh occupancy calculations (call when batches change)
   refreshOccupancy: () => {
     const { rawStations } = get();
     const activeBatches = useBatches.getState().getActiveBatches();
@@ -490,63 +310,47 @@ export const useStations = create<StationsState>((set, get) => ({
     set({ stations });
   },
 
-  // Get filtered stations
   getFilteredStations: () => {
     const { stations, filters } = get();
-
     let filtered = [...stations];
 
-    // Apply site filter
     if (filters.siteId !== 'all') {
       filtered = filtered.filter((s) => s.siteId === filters.siteId);
     }
-
-    // Apply type filter
     if (filters.type !== 'all') {
       filtered = filtered.filter((s) => s.type === filters.type);
     }
-
-    // Apply active filter
     if (filters.isActive !== 'all') {
       filtered = filtered.filter((s) => s.isActive === filters.isActive);
     }
-
-    // Apply indoor filter
     if (filters.isIndoor !== 'all') {
       filtered = filtered.filter((s) => s.isIndoor === filters.isIndoor);
     }
 
-    // Sort by name
     filtered.sort((a, b) => a.name.localeCompare(b.name));
-
     return filtered;
   },
 
-  // Get all active stations
   getActiveStations: () => {
     const { stations } = get();
     return stations.filter((s) => s.isActive).sort((a, b) => a.name.localeCompare(b.name));
   },
 
-  // Get stations by type
   getStationsByType: (type) => {
     const { stations } = get();
     return stations.filter((s) => s.type === type).sort((a, b) => a.name.localeCompare(b.name));
   },
 
-  // Get stations by site
   getStationsBySite: (siteId) => {
     const { stations } = get();
     return stations.filter((s) => s.siteId === siteId).sort((a, b) => a.name.localeCompare(b.name));
   },
 
-  // Get station by ID
   getStationById: (id) => {
     const { stations } = get();
     return stations.find((s) => s.id === id);
   },
 
-  // Get stations with available capacity
   getStationsWithAvailability: () => {
     const { stations } = get();
     return stations
@@ -554,26 +358,22 @@ export const useStations = create<StationsState>((set, get) => ({
       .sort((a, b) => b.availableCapacity - a.availableCapacity);
   },
 
-  // Get unique station types for filter dropdown
   getUniqueTypes: () => {
     const { stations } = get();
     const types = [...new Set(stations.map((s) => s.type))];
     return types.sort();
   },
 
-  // Get unique sites for filter dropdown
   getUniqueSites: () => {
     const { stations } = get();
     const sites = [...new Set(stations.map((s) => s.siteId))];
     return sites.sort();
   },
 
-  // Get default environmental targets for a station type
   getDefaultTargets: (type) => {
     return DEFAULT_ENVIRONMENTAL_TARGETS[type] || DEFAULT_ENVIRONMENTAL_TARGETS.other;
   },
 
-  // Validate environmental targets
   validateEnvironmentalTargets: (tempMin, tempMax, humidityMin, humidityMax) => {
     return validateEnvironmentalTargets(tempMin, tempMax, humidityMin, humidityMax);
   },
