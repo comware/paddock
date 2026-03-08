@@ -219,3 +219,171 @@ decisions:
     quality_health: null
     sprint_id: "sprint-2026-03-07-code-health-ii"
     work_summary: "MILESTONE: goal-9 completed. 5 components split: AIAssistant 631→230, SpeciesConfigForm 559→274, PropagationGuideLibrary 552→224, MotherPlantForm 550→241, PropaguleUpdateForm 560→212. 16 new sub-component files created. 906 tests pass, build clean. Commit d7cf486. Retro saved (100% completion, -87% estimation variance)."
+
+  - timestamp: "2026-03-07T05:29:57Z"
+    iteration: 18
+    next_recommendation: "Plan a sprint for Infrastructure Testing & Deps (goal-10)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear success criteria from review. Mechanical tasks: create test files, update 2 packages. Previous sprints executed at 100%."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-10 — created sprint-2026-03-07-infra-tests with 4 handoffs (~2h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-infra-tests"
+    work_summary: "Created sprint for goal-10 with 3 implementation handoffs: db schema tests (P0), AI service tests (P0), dependency updates (P1), plus commit-verify. Files: sprint YAML + dispatch prompt."
+
+  - timestamp: "2026-03-07T05:36:13Z"
+    iteration: 19
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-infra-tests"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with mechanical tasks, well-defined acceptance criteria. Preflight passed (906 tests, build green)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-infra-tests — sequential execution, 4 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-infra-tests"
+    work_summary: "MILESTONE: goal-10 completed. 23 new tests (12 db schema, 11 AI service) in 2 new test files. react-router-dom updated ^7.11.0 → ^7.13.1. 929 tests pass (was 906), build clean. Commit 3e7993a. Retro saved (100% completion, -92% estimation variance). All 6 remediation goals (5-10) now complete."
+
+  - timestamp: "2026-03-07T05:47:00Z"
+    iteration: 20
+    next_recommendation: "Downtime cascade — all remediation goals complete, completion gate NOT MET (quality <70%, brainstorms 0/2)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Cascade audit step: quality review to measure remediation impact. No ambiguity."
+    action_taken: "proceeded"
+    action_detail: "/project:review --quick — cascade audit a (quality review)"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Quality review complete. Score 64/100 (D), up from 57/100 (F). Security 88→95, Test Coverage 65→72, Dependencies 79→97. Code Health unchanged at 10 (driven by 29 files >500 LOC, 14% duplication). 0 critical, 0 high findings."
+
+  - timestamp: "2026-03-07T05:49:17Z"
+    iteration: 21
+    next_recommendation: "Downtime cascade — risk assessment (audit b)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Cascade audit step: risk assessment. Routine computation from state files."
+    action_taken: "proceeded"
+    action_detail: "/project:risk — cascade audit b (risk assessment)"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Risk score 29/100 (B — Moderate), improved from 32/100 (C). Code Quality dimension improved 53→36 (lower=better). 3 data gaps remain: tech-debt, supply-chain, lifecycle. Top risks: orphaned goals 1+3, missing scans."
+
+  - timestamp: "2026-03-07T05:50:27Z"
+    iteration: 22
+    next_recommendation: "Downtime cascade — health check (audit c)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Cascade audit step: health check with --fix. Routine operational check."
+    action_taken: "proceeded"
+    action_detail: "/project:health-check --fix — cascade audit c (health check)"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Health check: 11/25 passed, 5 skipped (phase-gated), 6 issues found (0 auto-fixable). Issues: 2 orphaned in_progress goals (goal-1, goal-3), tech-debt not tracked, dependencies not audited, no test strategy, no CONTRIBUTING.md. CI/CD present, config hygiene good, workflow clean."
+
+  - timestamp: "2026-03-07T05:52:17Z"
+    iteration: 23
+    next_recommendation: "Downtime cascade — docs audit (audit d)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Cascade audit step: docs assessment. Quick inline check."
+    action_taken: "proceeded"
+    action_detail: "Inline docs audit — cascade audit d"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Docs audit: README comprehensive (50+ lines, features, quick start), 40+ doc files in docs/ (PRDs, design, investor). No CONTRIBUTING.md at project root. Documentation reasonably current for in_progress phase."
+
+  - timestamp: "2026-03-07T05:52:59Z"
+    iteration: 24
+    next_recommendation: "Downtime cascade — dependencies + tech debt (audits e+f)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Cascade audit steps: dependency audit and tech debt scan. Routine scans creating state files."
+    action_taken: "proceeded"
+    action_detail: "pnpm audit + tech debt scan — cascade audits e+f"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Dependencies: 1 high CVE (serialize-javascript, transitive/build-only via vite-plugin-pwa), 0 outdated, 0 license issues. State file created. Tech debt: score 55/100, improving trend. 12 source files >500 LOC, 14% duplication, 3 TODOs, 0 ts-ignore, 8 eslint-disable. State file created."
+
+  - timestamp: "2026-03-07T05:55:04Z"
+    iteration: 25
+    next_recommendation: "Downtime cascade — synthesize findings into goals"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Cascade synthesis step: converting audit findings into goals. Deduplicated against existing goals 5-10."
+    action_taken: "proceeded"
+    action_detail: "Created goal-11 (Code Health III) and goal-12 (Test Coverage Expansion) from cascade findings"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Cascade synthesis complete. 6/6 audits ran. Created 2 new goals: goal-11 (P1, split 12 remaining >500 LOC files — stores + utils) and goal-12 (P2, expand test coverage from 0.12 to 0.20+ ratio). Skipped: orphaned goals 1+3 (not auto-fixable), serialize-javascript CVE (build-only). Focus updated to goal-11. New goals target quality gate: 64→73."
+
+  - timestamp: "2026-03-07T05:58:30Z"
+    iteration: 26
+    next_recommendation: "Plan a sprint for goal-11 (Code Health III)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear scope from tech debt scan. Previous code health sprints (goals 7, 9) both executed at 100%. Mechanical refactoring."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-11 — created sprint-2026-03-07-code-health-iii with 3 handoffs (~2.5h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-code-health-iii"
+    work_summary: "Created sprint for goal-11 with 2 implementation handoffs: split 5 large stores (usePropagules 658, useStations 580, useGraduations 530, useBatches 522, usePlannerStore 557 LOC) to under 400 LOC each, plus split analyticsCalculations.ts (707) and types/index.ts (707) into focused sub-modules. Plus commit-verify."
+  - timestamp: "2026-03-07T06:13:42Z"
+    iteration: 27
+    next_recommendation: "Dispatch sprint sprint-2026-03-07-code-health-iii"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Sprint ready, mechanical refactoring with clear scope. Previous code health sprints succeeded. Build/tests green pre-dispatch."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-07-code-health-iii — sequential, 3 handoffs"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-07-code-health-iii"
+    work_summary: "MILESTONE: goal-11 completed. Sprint split 7 large files: 5 stores (usePropagules 658→334, useStations 580→380, useGraduations 530→380, useBatches 522→379, usePlannerStore 557→357), analyticsCalculations 707→194 (4 sub-modules), types/index 707→75 (3 domain files). 13 new sub-module files. 929 tests pass, build clean. Commit a2a00b2. Focus rotated to goal-12."
+
+  - timestamp: "2026-03-08T01:17:39Z"
+    iteration: 1
+    next_recommendation: "Plan sprint for goal-12 after archiving stale sprint"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Routine housekeeping — archiving completed sprint and cleaning stale workflow. No ambiguity."
+    action_taken: "proceeded"
+    action_detail: "Archived sprint-2026-03-07-code-health-iii from active/ to completed/. Cleaned stale workflow.yaml reference."
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Housekeeping: archived stale sprint, cleaned workflow state. Active sprints now empty, workflow idle."
+
+  - timestamp: "2026-03-08T01:20:03Z"
+    iteration: 2
+    next_recommendation: "Plan a sprint for goal-12 (Test Coverage Expansion)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Focus goal is clear, success criteria well-defined (specific modules to test), previous sprints all 100% completion. Mechanical test creation."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-12 — created sprint-2026-03-08-test-coverage with 3 handoffs (~2h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-08-test-coverage"
+    work_summary: "Created sprint for goal-12 with 2 implementation handoffs: 4 propagation util test files (stageHelpers, analyticsCalculations, costCalculations, batchNumbering) + 3 exporter/metric test files (unifiedExporter, motherPlantMetrics, exporters), plus commit-verify. 7 new test files will bring total from 28 to 35+."
+
+  - timestamp: "2026-03-08T01:32:30Z"
+    iteration: 3
+    next_recommendation: "Dispatch sprint sprint-2026-03-08-test-coverage"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with mechanical test creation, well-defined acceptance criteria. Preflight passed (929 tests, build green). Previous sprints all 100%."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-08-test-coverage — sequential execution, 3 handoffs"
+    result: "success"
+    quality_health: "HEALTHY"
+    sprint_id: "sprint-2026-03-08-test-coverage"
+    work_summary: "MILESTONE: goal-12 completed. 7 new test files: stageHelpers (22 tests), analyticsCalculations (18), costCalculations (16), batchNumbering (14), unifiedExporter (10), motherPlantMetrics (13), exporters (9). Total: 1080 tests across 35 test files (was 929/28). Commit c5e6fd5. Build clean. Retro saved (100% completion, -93% estimation variance)."
