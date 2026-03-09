@@ -6,8 +6,9 @@
  */
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, dateFnsLocalizer, type View } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay, addMonths, subMonths } from 'date-fns';
+import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enAU } from 'date-fns/locale';
 
 import { usePlannerStore, type PlannerEventWithComputed } from '../stores/usePlannerStore';
@@ -51,6 +52,7 @@ interface PlannerCalendarProps {
 }
 
 export function PlannerCalendar({ className = '' }: PlannerCalendarProps) {
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>('month');
   const [selectedEvent, setSelectedEvent] = useState<PlannerEventWithComputed | null>(null);
@@ -79,11 +81,11 @@ export function PlannerCalendar({ className = '' }: PlannerCalendarProps) {
     setIsModalOpen(true);
   }, []);
 
-  // Handle slot (date cell) click for future event creation
+  // Handle slot (date cell) click — navigate to event creation form with pre-filled date
   const handleSelectSlot = useCallback(({ start }: { start: Date }) => {
-    // TODO: Open event creation form with pre-filled date
-    console.log('Selected slot:', start);
-  }, []);
+    const dateStr = format(start, 'yyyy-MM-dd');
+    navigate(`/planner/events/new?date=${dateStr}`);
+  }, [navigate]);
 
   // Handle date navigation
   const handleNavigate = useCallback((date: Date) => {
@@ -101,18 +103,8 @@ export function PlannerCalendar({ className = '' }: PlannerCalendarProps) {
     setSelectedEvent(null);
   }, []);
 
-  // Quick navigation buttons
-  const handleToday = useCallback(() => {
-    setCurrentDate(new Date());
-  }, []);
 
-  const handlePreviousMonth = useCallback(() => {
-    setCurrentDate((prev) => subMonths(prev, 1));
-  }, []);
 
-  const handleNextMonth = useCallback(() => {
-    setCurrentDate((prev) => addMonths(prev, 1));
-  }, []);
 
   // Toggle show completed filter
   const handleToggleCompleted = useCallback(() => {
