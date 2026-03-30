@@ -103,12 +103,16 @@ export function FitQuestionnaire() {
     setIsDirty(true);
   };
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const handleSave = async () => {
+    setSaveError(null);
     try {
       await saveDecision(scores);
       setIsDirty(false);
     } catch (error) {
       console.error('Failed to save fit scores:', error);
+      setSaveError((error as Error).message || 'Failed to save scores');
     }
   };
 
@@ -134,6 +138,12 @@ export function FitQuestionnaire() {
           </span>
         </div>
       </div>
+
+      {saveError && (
+        <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+          {saveError}
+        </div>
+      )}
 
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
         Rate each statement on a scale of 1-10. Be honest - this helps you make the right decision.

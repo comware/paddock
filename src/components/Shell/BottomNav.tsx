@@ -89,7 +89,7 @@ export function BottomNav() {
           <NavLink
             key={item.path}
             to={item.path}
-            className={`flex flex-col items-center justify-center w-full h-full py-1 transition-colors ${
+            className={`flex flex-col items-center justify-center w-full h-full py-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-lg ${
               isActive(item.path)
                 ? 'text-primary-600 dark:text-primary-400'
                 : 'text-slate-500 dark:text-slate-400'

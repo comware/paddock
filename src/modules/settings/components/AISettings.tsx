@@ -139,6 +139,7 @@ function AISettingsContent() {
       setEditingProvider(null);
     } catch (error) {
       console.error('Failed to delete API key:', error);
+      alert('Failed to delete API key. Please try again.');
     }
   }, []);
 

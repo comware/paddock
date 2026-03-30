@@ -353,7 +353,7 @@ export function TrayList() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" aria-live="polite" aria-relevant="additions removals">
           {filteredTrays.map((tray) => (
             <TrayCard
               key={tray.id}

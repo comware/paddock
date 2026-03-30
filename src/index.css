@@ -99,6 +99,29 @@ select {
   animation: slide-up 0.3s ease-out;
 }
 
+/* Respect reduced motion preferences (WCAG 2.1 AA) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Card component class */
+.card {
+  background-color: var(--surface);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.dark .card {
+  background-color: var(--surface);
+}
+
 /* Safe area for PWA */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .safe-bottom {

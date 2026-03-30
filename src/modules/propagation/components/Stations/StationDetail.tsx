@@ -16,7 +16,7 @@ import { format } from 'date-fns';
 import { useStations } from '../../stores/useStations';
 import { useBatches } from '../../stores/useBatches';
 import { propDb } from '@/lib/db';
-import type { PropStation, PropStationLog, PropBatchWithComputed } from '../../types';
+import type { PropStationLog, PropBatchWithComputed } from '../../types';
 import { getStageDisplayName, getStageColors } from '../../utils';
 import { StationForm } from './StationForm';
 import { EnvironmentLogModal } from './EnvironmentLogModal';
@@ -163,6 +163,7 @@ export function StationDetail() {
   const [logsLoading, setLogsLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showLogModal, setShowLogModal] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Load data
   useEffect(() => {
@@ -185,6 +186,7 @@ export function StationDetail() {
         setEnvironmentLogs(logs.slice(0, 20)); // Last 20 logs
       } catch (error) {
         console.error('Failed to load environment logs:', error);
+        setActionError('Failed to load environment logs');
       } finally {
         setLogsLoading(false);
       }
@@ -217,10 +219,12 @@ export function StationDetail() {
   // Handle toggle active
   const handleToggleActive = useCallback(async () => {
     if (!id) return;
+    setActionError(null);
     try {
       await toggleStationActive(id);
     } catch (error) {
       console.error('Failed to toggle station active:', error);
+      setActionError((error as Error).message || 'Failed to update station status');
     }
   }, [id, toggleStationActive]);
 
@@ -275,6 +279,13 @@ export function StationDetail() {
         <span>&larr;</span>
         <span>Back to Stations</span>
       </Link>
+
+      {/* Action Error */}
+      {actionError && (
+        <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300" aria-live="polite">
+          {actionError}
+        </div>
+      )}
 
       {/* Header */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">

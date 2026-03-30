@@ -387,3 +387,133 @@ decisions:
     quality_health: "HEALTHY"
     sprint_id: "sprint-2026-03-08-test-coverage"
     work_summary: "MILESTONE: goal-12 completed. 7 new test files: stageHelpers (22 tests), analyticsCalculations (18), costCalculations (16), batchNumbering (14), unifiedExporter (10), motherPlantMetrics (13), exporters (9). Total: 1080 tests across 35 test files (was 929/28). Commit c5e6fd5. Build clean. Retro saved (100% completion, -93% estimation variance)."
+
+  - timestamp: "2026-03-08T01:34:55Z"
+    iteration: 4
+    next_recommendation: "Archive sprint-2026-03-08-test-coverage, rotate focus to goal-4"
+    next_phase: "0"
+    confidence: "high"
+    confidence_reasoning: "Routine housekeeping — archiving completed sprint and cleaning workflow."
+    action_taken: "proceeded"
+    action_detail: "Archived sprint to completed/. Cleaned workflow.yaml."
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Housekeeping: archived sprint-2026-03-08-test-coverage. Workflow idle. Ready for next action."
+
+  - timestamp: "2026-03-08T01:44:00Z"
+    iteration: 5
+    next_recommendation: "Run quality review to update score for completion gate"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Quality gate requires ≥70%. Last score 64/100. Remediation goals completed — need updated measurement."
+    action_taken: "proceeded"
+    action_detail: "/project:review --quick — quality review for completion gate condition B"
+    result: "success"
+    quality_health: "HEALTHY"
+    sprint_id: null
+    work_summary: "Quality review complete. Score 81/100 (B), up from 64/100 (D). Code Health 10→88 (+78), Security 95→91 (-4), Test Coverage 72→70 (-2), Dependencies 97→64 (-33 from stricter CVE scoring). 0 critical, 0 high findings. Quality gate condition B now satisfied (81 ≥ 70)."
+
+  - timestamp: "2026-03-08T01:48:18Z"
+    iteration: 6
+    next_recommendation: "Brainstorm cycle 1 (completion gate condition D: 0/2)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Required by completion gate condition D. Scope guard passed (9 sprints remaining). Brainstorm is read-only ideation."
+    action_taken: "proceeded"
+    action_detail: "/project:brainstorm --count 10 --save — brainstorm cycle 1"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Brainstorm cycle 1 complete. 10 ideas generated across 4 categories: 2 Quick Wins (Morning Brief, Yield Calculator), 4 Features (Succession Planting, Photo Capture, Adaptive Guides, Harvest Prediction), 2 Improvements (Stability Stress Test, Zero-Entry Quick-Log), 2 Integrations (Weather Forecast, Print Labels). Top impacts: IM-1 (unblocks goal-1), FT-1 (advances goal-4). All ideas map to existing goals 1-4 — no new goals needed. Saved to .claude/brainstorms/brainstorm-2026-03-08-general.md."
+
+  - timestamp: "2026-03-08T01:52:15Z"
+    iteration: 7
+    next_recommendation: "Brainstorm cycle 2 (completion gate condition D: 1/2)"
+    next_phase: "G"
+    confidence: "high"
+    confidence_reasoning: "Required by completion gate. Second brainstorm with different theme (dogfooding) for idea diversity."
+    action_taken: "proceeded"
+    action_detail: "/project:brainstorm dogfooding --count 10 --save — brainstorm cycle 2"
+    result: "success"
+    quality_health: null
+    sprint_id: null
+    work_summary: "Brainstorm cycle 2 complete. 10 new ideas focused on dogfooding/field-readiness: 3 Quick Wins (Lifecycle Timeline, Daily Diff, Seed Inventory), 6 Features (Recipe Templates, Batch Comparison, Task Queue, Swipe Check, Weekly Review, Voice Memos), 1 Improvement (Offline Activity Log). Top impacts: DF-5 (Task Queue), DF-10 (Voice Memos). All ideas advance existing goals 1-4 — no new goals created. 20 total brainstorm ideas across 2 sessions. Saved to .claude/brainstorms/brainstorm-2026-03-08-dogfooding.md."
+
+  - timestamp: "2026-03-09T06:47:45Z"
+    iteration: 1
+    next_recommendation: "Plan a sprint for Planner Module Foundation (goal-4)"
+    next_phase: "D"
+    confidence: "medium"
+    confidence_reasoning: "First sprint for a new goal (goal-4 at 0%). Module infrastructure already exists but needs functional UI gaps filled. Clear scope."
+    action_taken: "flagged"
+    action_detail: "/project:sprint-workshop --goal goal-4 — created sprint-2026-03-09-planner-foundation with 3 handoffs (~3h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-09-planner-foundation"
+    work_summary: "Created sprint for goal-4 with 2 implementation handoffs: EventCreateForm + wire calendar slot selection (P0), EventList + EventDetail views with routes (P1), plus commit-verify. Updated focus to goal-4. Discovered planner module already has store, types, integration, calendar — sprint focuses on real gaps."
+
+  - timestamp: "2026-03-09T06:55:10Z"
+    iteration: 2
+    next_recommendation: "Dispatch sprint sprint-2026-03-09-planner-foundation"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with clear scope, well-defined acceptance criteria. Previous sprints all 100%. Preflight passed (1080 tests, build green)."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-09-planner-foundation — sequential execution, 3 handoffs"
+    result: "success"
+    quality_health: "HEALTHY"
+    sprint_id: "sprint-2026-03-09-planner-foundation"
+    work_summary: "Sprint completed 3/3 handoffs. Created EventCreateForm.tsx (348 LOC), EventDetail.tsx (325 LOC), EventList.tsx (249 LOC). Wired calendar slot selection to event creation. Added routes /events, /events/new, /events/:id. Commit f1210f0. 1080 tests pass, build clean. Goal-4 updated to 75% (remaining: PRD)."
+
+  - timestamp: "2026-03-09T06:58:44Z"
+    iteration: 3
+    next_recommendation: "Run retro on completed planner-foundation sprint"
+    next_phase: "B"
+    confidence: "high"
+    confidence_reasoning: "Retro already completed via background agent in iteration 2 post-dispatch. Folded into sprint archival."
+    action_taken: "proceeded"
+    action_detail: "Retro already done (2d background agent). Archived sprint-2026-03-09-planner-foundation to completed/."
+    result: "success"
+    quality_health: "HEALTHY"
+    sprint_id: "sprint-2026-03-09-planner-foundation"
+    work_summary: "Sprint archived to completed/. Retro captured: 67% completion (commit-verify handled by harness), feature handoffs 2/2 complete. Retro flagged 4 action items for future sprints."
+
+  - timestamp: "2026-03-09T07:01:14Z"
+    iteration: 4
+    next_recommendation: "Plan a sprint to complete goal-4 (PRD documentation remaining)"
+    next_phase: "D"
+    confidence: "high"
+    confidence_reasoning: "Clear remaining scope (PRD docs + component tests). Previous sprint succeeded. Mechanical tasks."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-workshop --goal goal-4 — created sprint-2026-03-09-planner-prd with 3 handoffs (~2h)"
+    result: "success"
+    quality_health: null
+    sprint_id: "sprint-2026-03-09-planner-prd"
+    work_summary: "Created sprint for goal-4 completion with 2 implementation handoffs: write planner PRD (P0), add unit tests for EventCreateForm/EventList/EventDetail (P1), plus commit-verify."
+
+  - timestamp: "2026-03-09T07:04:59Z"
+    iteration: 5
+    next_recommendation: "Maintenance: health-check + risk assessment (due at iteration 5)"
+    next_phase: "maintenance"
+    confidence: "high"
+    confidence_reasoning: "Routine maintenance checks. Health check and risk assessment both due at iteration 5."
+    action_taken: "proceeded"
+    action_detail: "/project:health-check (12/25 passed, 4 issues) + /project:risk (27/100, B)"
+    result: "success"
+    quality_health: "HEALTHY"
+    sprint_id: null
+    work_summary: "Health check: 12/25 passed, 4 issues (2 orphaned goals, no test strategy, no CONTRIBUTING.md). Risk: 27/100 (B — Moderate), down from 29 (improved). Code quality dimension best ever (19, was 36). Tech debt dimension 55 (scan predates refactoring). No lifecycle defined. 1 high build-time CVE."
+
+  - timestamp: "2026-03-09T07:15:54Z"
+    iteration: 6
+    next_recommendation: "Dispatch sprint sprint-2026-03-09-planner-prd"
+    next_phase: "C"
+    confidence: "high"
+    confidence_reasoning: "Ready sprint with clear mechanical scope (PRD + tests). Previous sprints all succeeded. Build/tests green pre-dispatch."
+    action_taken: "proceeded"
+    action_detail: "/project:sprint-dispatch sprint-2026-03-09-planner-prd — 3 handoffs via Agent subagent"
+    result: "success"
+    quality_health: "HEALTHY"
+    sprint_id: "sprint-2026-03-09-planner-prd"
+    work_summary: "MILESTONE: goal-4 completed. Sprint created planner PRD (519 lines, docs/prd/planner-module-prd.md) and 33 component tests (EventCreateForm, EventList, EventDetail). 1139 tests across 38 files, build clean. Commit caec5eb. All goal-4 key_results met. Focus rotated — no actionable goals remain (goals 1,3 blocked on real-world usage)."

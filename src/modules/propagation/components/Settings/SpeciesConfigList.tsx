@@ -44,6 +44,7 @@ export function SpeciesConfigList() {
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingConfig, setEditingConfig] = useState<PropSpeciesConfig | undefined>();
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Filter configs based on search
   const filteredConfigs = useMemo(() => {
@@ -74,6 +75,7 @@ export function SpeciesConfigList() {
       setDeleteConfirmId(null);
     } catch (error) {
       console.error('Failed to delete config:', error);
+      setDeleteError((error as Error).message || 'Failed to delete configuration');
     }
   };
 
@@ -137,6 +139,13 @@ export function SpeciesConfigList() {
           />
         </svg>
       </div>
+
+      {/* Error Display */}
+      {deleteError && (
+        <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+          {deleteError}
+        </div>
+      )}
 
       {/* Empty State */}
       {filteredConfigs.length === 0 && (

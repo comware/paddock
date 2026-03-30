@@ -105,6 +105,7 @@ export function NewBatchForm({
         setSpeciesConfigs(await propDb.speciesConfigs.toArray());
       } catch (error) {
         console.error('Failed to load form data:', error);
+        setSubmitError('Failed to load form data. Please close and try again.');
       } finally {
         setIsLoadingData(false);
       }

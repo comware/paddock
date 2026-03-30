@@ -32,6 +32,7 @@ export function MotherPlantDetail() {
   const [showHealthModal, setShowHealthModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showTakeCuttingModal, setShowTakeCuttingModal] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Metrics state
   const [metrics, setMetrics] = useState<ExtendedMotherPlantMetrics | null>(null);
@@ -86,6 +87,7 @@ export function MotherPlantDetail() {
       setShowStatusModal(false);
     } catch (error) {
       console.error('Failed to update status:', error);
+      setActionError((error as Error).message || 'Failed to update plant status');
     }
   };
 
@@ -136,6 +138,13 @@ export function MotherPlantDetail() {
         <span>&larr;</span>
         <span>Back to Mother Plants</span>
       </Link>
+
+      {/* Action Error */}
+      {actionError && (
+        <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300" aria-live="polite">
+          {actionError}
+        </div>
+      )}
 
       {/* Header */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">

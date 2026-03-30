@@ -5,6 +5,7 @@
  */
 
 import { useRef, useState } from 'react';
+import { useToastStore } from '@/stores/useToastStore';
 import {
   downloadJSONBackup,
   downloadTraysCSV,
@@ -13,6 +14,7 @@ import {
   getDatabaseStats,
   getRawData,
 } from '@/lib/utils/exporters';
+import { downloadUnifiedBackup } from '@/lib/utils/unifiedExporter';
 import { seedDatabase } from '@/lib/db';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
@@ -24,6 +26,7 @@ export function DataExport() {
   const [debugData, setDebugData] = useState<string>('');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const toast = useToastStore();
 
   const handleExportJSON = async () => {
     setStatus('loading');
@@ -31,6 +34,20 @@ export function DataExport() {
       await downloadJSONBackup();
       setStatus('success');
       setMessage('Backup downloaded successfully');
+      toast.add('Backup downloaded successfully', 'success');
+    } catch (error) {
+      setStatus('error');
+      setMessage((error as Error).message);
+    }
+  };
+
+  const handleExportUnified = async () => {
+    setStatus('loading');
+    try {
+      await downloadUnifiedBackup();
+      setStatus('success');
+      setMessage('Full backup (Grow + Propagation) downloaded successfully');
+      toast.add('Full backup downloaded successfully', 'success');
     } catch (error) {
       setStatus('error');
       setMessage((error as Error).message);
@@ -43,6 +60,7 @@ export function DataExport() {
       await downloadTraysCSV();
       setStatus('success');
       setMessage('CSV exported successfully');
+      toast.add('CSV exported successfully', 'success');
     } catch (error) {
       setStatus('error');
       setMessage((error as Error).message);
@@ -147,18 +165,33 @@ export function DataExport() {
       )}
 
       <div className="space-y-3">
+        {/* Export All Data (Unified) */}
+        <button
+          type="button"
+          onClick={handleExportUnified}
+          disabled={status === 'loading'}
+          className="w-full text-left p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        >
+          <div className="font-medium text-green-700 dark:text-green-300">
+            💾 Export All Data
+          </div>
+          <div className="text-sm text-green-600 dark:text-green-400">
+            Complete backup of Grow + Propagation modules (recommended)
+          </div>
+        </button>
+
         {/* Export JSON */}
         <button
           type="button"
           onClick={handleExportJSON}
           disabled={status === 'loading'}
-          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
+          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         >
           <div className="font-medium text-slate-900 dark:text-white">
-            📤 Export Data
+            📤 Export Grow Data
           </div>
           <div className="text-sm text-slate-500 dark:text-slate-400">
-            Download all data as JSON backup
+            Download Grow module data as JSON backup
           </div>
         </button>
 
@@ -167,7 +200,7 @@ export function DataExport() {
           type="button"
           onClick={handleImportClick}
           disabled={status === 'loading'}
-          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
+          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         >
           <div className="font-medium text-slate-900 dark:text-white">
             📥 Import Data
@@ -189,7 +222,7 @@ export function DataExport() {
           type="button"
           onClick={handleExportCSV}
           disabled={status === 'loading'}
-          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
+          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         >
           <div className="font-medium text-slate-900 dark:text-white">
             📊 Export CSV
@@ -204,7 +237,7 @@ export function DataExport() {
           type="button"
           onClick={handleViewDebug}
           disabled={status === 'loading'}
-          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
+          className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         >
           <div className="font-medium text-slate-900 dark:text-white">
             🔍 {showDebug ? 'Hide' : 'View'} Raw Data

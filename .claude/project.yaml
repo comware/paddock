@@ -7,13 +7,12 @@ project:
     Built with Next.js, featuring Grow and Propagation modules.
 
 focus:
-  area: "Quality improvement — all remediation goals complete"
+  area: "All actionable goals complete"
   goal: null
-  updated: 2026-03-08
+  updated: 2026-03-09
   notes: |
-    goal-12 completed (2026-03-08): 7 new test files, 1080 tests, 35 test files.
-    All remediation goals (5-12) now complete. Remaining: goal-1 (95%, blocked on usage),
-    goal-3 (90%, blocked on field testing), goal-2 and goal-4 (not started).
+    All goals (4-12) complete. Goals 1,3 blocked on real-world validation/field testing.
+    No actionable goals remaining. Brainstorm cycles needed for completion gate.
 
 goals:
   - id: goal-1
@@ -60,11 +59,19 @@ goals:
 
   - id: goal-4
     title: "Planner Module Foundation"
-    status: not_started
-    progress: 0
-    updated: 2026-01-13
+    status: completed
+    progress: 100
+    updated: 2026-03-09
+    completed_date: 2026-03-09
     description: Crop calendar and succession planning
-    evidence: Identified as highest-value next module
+    evidence: |
+      Core planner store with CRUD, lifecycle, filters, linking (usePlannerStore.ts).
+      Integration hook connecting to Grow trays and Propagation batches (usePlannerIntegration.ts).
+      Calendar UI (react-big-calendar), EventCreateForm, EventList, EventDetail views.
+      Rich type system with 80+ types. Routes for /events, /events/new, /events/:id.
+      PRD documentation at docs/prd/planner-module-prd.md (519 lines).
+      33 component tests for EventCreateForm, EventList, EventDetail.
+      Commits f1210f0, caec5eb. 1139 tests pass across 38 files, build clean.
     key_results:
       - "PRD completed"
       - "Core planner store"

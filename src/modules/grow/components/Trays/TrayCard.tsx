@@ -215,7 +215,7 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
                 e.stopPropagation();
                 onMoveToLight(tray.id!);
               }}
-              className="flex-1 px-3 py-2 rounded-lg bg-yellow-500 text-white text-sm font-medium hover:bg-yellow-600 transition-colors"
+              className="flex-1 px-3 py-2 rounded-lg bg-yellow-500 text-white text-sm font-medium hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
             >
               💡 Move to Light
             </button>
@@ -226,7 +226,7 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
                 e.stopPropagation();
                 onHarvest(tray.id!);
               }}
-              className="flex-1 px-3 py-2 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition-colors"
+              className="flex-1 px-3 py-2 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             >
               🌿 Harvest
             </button>

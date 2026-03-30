@@ -11,7 +11,8 @@
  */
 
 import { useMemo } from 'react';
-import type { OutcomeDistribution, GraduationOutcome } from '../../utils/analyticsCalculations';
+import type { OutcomeDistribution } from '../../utils/analyticsCalculations';
+import type { GraduationOutcome } from '../../types';
 import { getOutcomeDisplayName } from '../../utils/analyticsCalculations';
 
 interface OutcomesChartProps {
@@ -70,7 +71,11 @@ export function OutcomesChart({ outcomes, totalGraduated }: OutcomesChartProps) 
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div
+      className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm"
+      role="img"
+      aria-label={`Propagation outcomes chart showing ${totalGraduated.quantity} graduated propagules across ${outcomes.length} outcome categories`}
+    >
       <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
         Graduation Outcomes
       </h2>
@@ -83,6 +88,7 @@ export function OutcomesChart({ outcomes, totalGraduated }: OutcomesChartProps) 
             <div
               className="w-48 h-48 rounded-full"
               style={{ background: pieGradient }}
+              aria-hidden="true"
             />
             {/* Center hole for donut effect */}
             <div className="absolute inset-0 flex items-center justify-center">

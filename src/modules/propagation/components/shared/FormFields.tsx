@@ -73,12 +73,14 @@ export function RequiredTextField({
   placeholder,
   disabled,
 }: RequiredTextFieldProps) {
+  const fieldId = `field-${registration.name}`;
   return (
     <div>
-      <label className={LABEL_CLASSES}>
+      <label htmlFor={fieldId} className={LABEL_CLASSES}>
         {label} <span className="text-red-500">*</span>
       </label>
       <input
+        id={fieldId}
         type="text"
         {...registration}
         placeholder={placeholder}
@@ -112,12 +114,14 @@ export function OptionalTextField({
   placeholder,
   disabled,
 }: OptionalTextFieldProps) {
+  const fieldId = `field-${registration.name}`;
   return (
     <div>
-      <label className={LABEL_CLASSES}>
+      <label htmlFor={fieldId} className={LABEL_CLASSES}>
         {label} <span className="text-slate-400 font-normal">(optional)</span>
       </label>
       <input
+        id={fieldId}
         type="text"
         {...registration}
         placeholder={placeholder}
@@ -170,10 +174,12 @@ export function NumericRangeField({
   disabled,
   hint,
 }: NumericRangeFieldProps) {
+  const fieldId = `field-${registration.name}`;
   return (
     <div>
-      <label className={LABEL_CLASSES}>{label}</label>
+      <label htmlFor={fieldId} className={LABEL_CLASSES}>{label}</label>
       <input
+        id={fieldId}
         type="number"
         {...registration}
         min={min}
@@ -228,9 +234,10 @@ export function SelectField({
   disabled,
   required,
 }: SelectFieldProps) {
+  const fieldId = `field-${registration.name}`;
   return (
     <div>
-      <label className={LABEL_CLASSES}>
+      <label htmlFor={fieldId} className={LABEL_CLASSES}>
         {label}
         {required && <span className="text-red-500 ml-0.5">*</span>}
         {!required && (
@@ -238,6 +245,7 @@ export function SelectField({
         )}
       </label>
       <select
+        id={fieldId}
         {...registration}
         disabled={disabled}
         className={INPUT_CLASSES}
@@ -278,9 +286,10 @@ export function TextareaField({
   rows = 2,
   required,
 }: TextareaFieldProps) {
+  const fieldId = `field-${registration.name}`;
   return (
     <div>
-      <label className={LABEL_CLASSES}>
+      <label htmlFor={fieldId} className={LABEL_CLASSES}>
         {label}
         {required && <span className="text-red-500 ml-0.5">*</span>}
         {!required && (
@@ -288,6 +297,7 @@ export function TextareaField({
         )}
       </label>
       <textarea
+        id={fieldId}
         {...registration}
         rows={rows}
         placeholder={placeholder}

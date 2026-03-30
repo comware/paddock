@@ -95,7 +95,7 @@ export function RecentActivity({ maxItems = 10 }: RecentActivityProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm" aria-live="polite">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
         Recent Activity
       </h2>

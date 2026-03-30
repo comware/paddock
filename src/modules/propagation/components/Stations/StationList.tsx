@@ -15,7 +15,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useStations } from '../../stores/useStations';
 import type { StationType, PropStation } from '../../types';
-import type { StationWithOccupancy, StationFilters } from '../../stores/useStations';
+import type { StationFilters } from '../../stores/useStations';
 import { StationCard } from './StationCard';
 import { StationForm } from './StationForm';
 import { EnvironmentLogModal } from './EnvironmentLogModal';
@@ -150,12 +150,16 @@ export function StationList() {
     [getStationById]
   );
 
+  const [actionError, setActionError] = useState<string | null>(null);
+
   const handleToggleActiveClick = useCallback(
     async (stationId: string) => {
+      setActionError(null);
       try {
         await toggleStationActive(stationId);
       } catch (error) {
         console.error('Failed to toggle station active:', error);
+        setActionError((error as Error).message || 'Failed to update station status');
       }
     },
     [toggleStationActive]
@@ -202,6 +206,13 @@ export function StationList() {
 
   return (
     <div className="space-y-6">
+      {/* Action Error */}
+      {actionError && (
+        <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300" aria-live="polite">
+          {actionError}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Propagation Stations</h1>

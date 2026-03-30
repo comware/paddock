@@ -34,9 +34,11 @@ export function LowStockAlert({
   // Compact version for dashboard widgets
   if (compact) {
     return (
-      <div
-        className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+      <button
+        type="button"
+        className="w-full text-left bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
         onClick={() => navigate('/propagation/supplies?lowStock=true')}
+        aria-label={`Low stock alert: ${lowStockItems.length} items need restocking. Click to view all.`}
       >
         <div className="flex items-center gap-3">
           <span className="text-2xl">!!</span>
@@ -50,7 +52,7 @@ export function LowStockAlert({
           </div>
           <span className="text-orange-500 dark:text-orange-400 text-sm">View all</span>
         </div>
-      </div>
+      </button>
     );
   }
 

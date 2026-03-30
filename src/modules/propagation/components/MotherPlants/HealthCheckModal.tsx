@@ -36,18 +36,21 @@ export function HealthCheckModal({
   const [score, setScore] = useState<number>(plant?.healthScore || 3);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!plant?.id) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       await onSubmit(plant.id, score, notes || undefined);
       setNotes('');
       onClose();
     } catch (error) {
       console.error('Failed to record health check:', error);
+      setSubmitError((error as Error).message || 'Failed to record health check');
     } finally {
       setIsSubmitting(false);
     }
@@ -145,6 +148,11 @@ export function HealthCheckModal({
           >
             Cancel
           </button>
+          {submitError && (
+            <div className="col-span-2 w-full p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+              {submitError}
+            </div>
+          )}
           <button
             type="submit"
             disabled={isSubmitting}

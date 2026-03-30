@@ -39,6 +39,7 @@ export function PlannedPlantingForm({
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Load varieties on mount
   useEffect(() => {
@@ -130,6 +131,7 @@ export function PlannedPlantingForm({
       onClose();
     } catch (error) {
       console.error('Failed to save planting:', error);
+      setSubmitError((error as Error).message || 'Failed to save planting');
     } finally {
       setIsSubmitting(false);
     }
@@ -292,6 +294,11 @@ export function PlannedPlantingForm({
             >
               Cancel
             </button>
+            {submitError && (
+              <div className="col-span-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                {submitError}
+              </div>
+            )}
             <button
               type="submit"
               disabled={isSubmitting || !variety || !sowDate || !harvestDate}
