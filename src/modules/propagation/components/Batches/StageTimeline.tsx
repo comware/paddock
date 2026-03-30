@@ -252,7 +252,7 @@ export function StageTimeline({
       <div className="py-2">
         {stages.map((stage, index) => {
           const status = isFailed
-            ? index < stages.indexOf(batch.stage) || batch.stage === 'failed'
+            ? index < (stages as PropagationStage[]).indexOf(batch.stage) || batch.stage === 'failed'
               ? 'completed'
               : 'future'
             : getStageStatus(stage, batch.stage);

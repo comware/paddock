@@ -13,7 +13,7 @@ import { usePlannerStore } from '../stores/usePlannerStore';
 import { useTrays } from '@/modules/grow/stores/useTrays';
 import { useBatches } from '@/modules/propagation/stores/useBatches';
 import type { GrowTray } from '@/lib/db';
-import type { PropBatch, PropagationMethod } from '@/modules/propagation/types';
+import type { PropagationMethod } from '@/modules/propagation/types';
 import type {
   CreateEntityResult,
   CreateTrayFromEventOptions,

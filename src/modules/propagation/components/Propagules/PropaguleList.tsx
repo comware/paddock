@@ -13,7 +13,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePropagules, type PropaguleFilters, type PropaguleSort } from '../../stores';
+import { usePropagules, type PropaguleSort } from '../../stores';
 import type { PropagationStage, PropPropaguleWithComputed } from '../../types';
 import { PropaguleCard } from './PropaguleCard';
 import { PropaguleUpdateForm } from './PropaguleUpdateForm';

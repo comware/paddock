@@ -12,8 +12,8 @@ import { describe, it, expect } from 'vitest';
 import type {
   PropBatchCost,
   PropBatchCostWithSupply,
-  SupplyCategory,
-  BatchCostSummary,
+  SupplyCategory as _SupplyCategory,
+  BatchCostSummary as _BatchCostSummary,
 } from '../../types';
 import {
   getTotalBatchCost,

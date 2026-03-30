@@ -8,7 +8,7 @@
  * - Site-scoped queries
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createMockObservation, daysAgo } from '@/test/mocks/db';
 
 // ============================================
@@ -257,9 +257,6 @@ describe('Mood Tracking', () => {
     });
 
     it('returns null when no observations have mood', () => {
-      const observations = [
-        createMockObservation({ moodEnergy: undefined as unknown as number }),
-      ];
       // Note: Our mock always sets moodEnergy, so this tests the logic
       expect(getAverageMood([])).toBeNull();
     });

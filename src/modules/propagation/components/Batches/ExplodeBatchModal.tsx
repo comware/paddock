@@ -274,7 +274,7 @@ export function ExplodeBatchModal({
 }: ExplodeBatchModalProps) {
   // Stores
   const { getBatchById, loadBatches } = useBatches();
-  const { explodeBatch, loadPropagules } = usePropagules();
+  const { explodeBatch } = usePropagules();
 
   // UI state
   const [step, setStep] = useState<'form' | 'confirm' | 'success'>('form');

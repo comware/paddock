@@ -8,8 +8,8 @@
  * - Store selectors (success rate, stage counts, etc.)
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import type { PropBatch, PropagationStage, PropBatchWithComputed } from '../../types';
+import { describe, it, expect } from 'vitest';
+import type { PropBatch, PropagationStage } from '../../types';
 import { VALID_STAGE_TRANSITIONS } from '../../types';
 import {
   calculateDaysInStage,

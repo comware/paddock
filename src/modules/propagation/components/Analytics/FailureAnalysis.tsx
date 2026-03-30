@@ -10,7 +10,8 @@
  */
 
 import { useMemo } from 'react';
-import type { FailureByStage, FailureReason } from '../../utils/analyticsCalculations';
+import type { FailureByStage } from '../../utils/analyticsCalculations';
+import type { FailureReason } from '../../types';
 import { getFailureReasonDisplayName } from '../../utils/analyticsCalculations';
 import { STAGE_DISPLAY_NAMES, STAGE_COLORS } from '../../utils/stageHelpers';
 import type { PropagationStage } from '../../types';

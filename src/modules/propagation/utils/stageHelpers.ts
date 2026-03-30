@@ -109,7 +109,7 @@ export function isActiveStage(stage: PropagationStage): boolean {
  */
 export function getStageProgressPercent(stage: PropagationStage): number {
   const activeStages = STAGE_ORDER.filter((s) => s !== 'graduated');
-  const index = activeStages.indexOf(stage);
+  const index = (activeStages as PropagationStage[]).indexOf(stage);
   if (index === -1) return stage === 'graduated' ? 100 : 0;
   return Math.round((index / (activeStages.length - 1)) * 100);
 }

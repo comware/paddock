@@ -24,7 +24,7 @@ import {
   getCostPerPropaguleStarted,
   getCostPerPropaguleSurviving,
   getBatchCostBreakdown,
-  getCostsBySupply as getCostsBySupplyUtil,
+  getCostsBySupply as _getCostsBySupplyUtil,
   getTotalSpentOnSupplies,
 } from '../utils/costCalculations';
 
@@ -181,7 +181,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
         .equals(batchId)
         .toArray();
 
-      const { rawCosts, costsByBatch } = get();
+      const { rawCosts, costsByBatch: _costsByBatch } = get();
 
       // Remove old costs for this batch and add new ones
       const otherCosts = rawCosts.filter((c) => c.batchId !== batchId);

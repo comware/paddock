@@ -17,7 +17,7 @@ import type {
   PropagationMethod,
   FailureReason,
 } from '../../types';
-import { VALID_STAGE_TRANSITIONS } from '../../types';
+import { VALID_STAGE_TRANSITIONS as _VALID_STAGE_TRANSITIONS } from '../../types';
 import {
   isActiveStage,
   isValidTransition,

@@ -10,7 +10,7 @@
  * - Filtering and sorting
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import type { PlannerEvent, PlannerEventType, PlannerEventStatus } from '@/lib/db';
 
 // ============================================

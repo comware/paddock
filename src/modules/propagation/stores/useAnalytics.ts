@@ -16,6 +16,7 @@ import type {
   PropBatchCost,
   PropStageTransition,
   PropagationStage,
+  FailureReason,
   SupplyCategory,
 } from '../types';
 import { useBatches } from './useBatches';
@@ -83,7 +84,7 @@ export interface AnalyticsState {
   // Failure Analysis Selectors
   getFailuresByStage: () => FailureByStage[];
   getFailureReasonDistribution: () => {
-    reason: string;
+    reason: FailureReason;
     count: number;
     percentage: number;
   }[];

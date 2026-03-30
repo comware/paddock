@@ -3,6 +3,7 @@
  *
  * Route configuration for propagation module:
  * - /propagation → Dashboard (landing)
+ * - /propagation/guides → Propagation guide library
  * - /propagation/batches → Batch list
  * - /propagation/batches/:id → Batch detail
  * - /propagation/propagules/:id → Propagule detail (individual tracking)
@@ -28,10 +29,14 @@ import { MotherPlantList, MotherPlantDetail } from './components/MotherPlants';
 import { SupplyList, SupplyDetail } from './components/Supplies';
 import { AnalyticsDashboard } from './components/Analytics';
 import { SettingsPage } from './components/Settings';
+import { PropagationGuideLibrary } from './components/Guides';
 
 export const propagationRoutes: RouteObject[] = [
   // Dashboard as landing page
   { index: true, element: <PropDashboard /> },
+
+  // Guides route
+  { path: 'guides', element: <PropagationGuideLibrary /> },
 
   // Batch routes
   { path: 'batches', element: <BatchList /> },

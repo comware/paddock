@@ -7,7 +7,7 @@
 
 // Event types and metadata
 export {
-  PlannerEventTypeEnum,
+  PlannerEventTypeValues,
   type PlannerEventType,
   type EventTypeMetadata,
   EVENT_TYPE_METADATA,
