@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { captureException, getStoredErrors, clearStoredErrors } from '../local-error-tracker';
 
 describe('local-error-tracker', () => {

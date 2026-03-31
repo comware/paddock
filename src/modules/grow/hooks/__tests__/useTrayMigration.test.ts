@@ -13,7 +13,7 @@ describe('useTrayMigration', () => {
 
   it('module has no default export', async () => {
     const mod = await import('../useTrayMigration');
-    expect(mod.default).toBeUndefined();
+    expect((mod as Record<string, unknown>).default).toBeUndefined();
   });
 
   it('named export matches expected pattern', async () => {
