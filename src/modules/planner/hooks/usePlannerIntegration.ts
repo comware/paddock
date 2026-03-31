@@ -122,7 +122,7 @@ export function usePlannerIntegration(): UsePlannerIntegrationReturn {
 
         return { success: true, entityId: trayId };
       } catch (error) {
-        console.error('Failed to create tray from event:', error);
+        if (import.meta.env.DEV) console.error('Failed to create tray from event:', error);
         return {
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error',
@@ -176,7 +176,7 @@ export function usePlannerIntegration(): UsePlannerIntegrationReturn {
 
         return { success: true, entityId: batchId };
       } catch (error) {
-        console.error('Failed to create batch from event:', error);
+        if (import.meta.env.DEV) console.error('Failed to create batch from event:', error);
         return {
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error',

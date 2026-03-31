@@ -130,7 +130,7 @@ export function PlannedPlantingForm({
 
       onClose();
     } catch (error) {
-      console.error('Failed to save planting:', error);
+      if (import.meta.env.DEV) console.error('Failed to save planting:', error);
       setSubmitError((error as Error).message || 'Failed to save planting');
     } finally {
       setIsSubmitting(false);

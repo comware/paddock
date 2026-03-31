@@ -59,7 +59,7 @@ export function useTheme(): UseThemeReturn {
         const resolved = applyTheme(savedTheme, prefersDark);
         setResolvedTheme(resolved);
       } catch (error) {
-        console.error('Failed to load theme:', error);
+        if (import.meta.env.DEV) console.error('Failed to load theme:', error);
         // Apply system default
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const resolved = applyTheme('system', prefersDark);
@@ -117,7 +117,7 @@ export function useTheme(): UseThemeReturn {
         await platformDb.settings.add({ key: 'theme', value: newTheme });
       }
     } catch (error) {
-      console.error('Failed to save theme preference:', error);
+      if (import.meta.env.DEV) console.error('Failed to save theme preference:', error);
     }
   }, []);
 

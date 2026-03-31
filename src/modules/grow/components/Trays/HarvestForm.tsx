@@ -78,7 +78,7 @@ export function HarvestForm({ isOpen, onClose, tray }: HarvestFormProps) {
       reset();
       onClose();
     } catch (error) {
-      console.error('Failed to record harvest:', error);
+      if (import.meta.env.DEV) console.error('Failed to record harvest:', error);
     }
   };
 

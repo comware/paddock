@@ -49,7 +49,7 @@ export function HealthCheckModal({
       setNotes('');
       onClose();
     } catch (error) {
-      console.error('Failed to record health check:', error);
+      if (import.meta.env.DEV) console.error('Failed to record health check:', error);
       setSubmitError((error as Error).message || 'Failed to record health check');
     } finally {
       setIsSubmitting(false);

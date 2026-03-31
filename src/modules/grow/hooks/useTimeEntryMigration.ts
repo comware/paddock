@@ -63,7 +63,7 @@ export function useTimeEntryMigration(): MigrationStatus {
         });
 
         if (count > 0) {
-          console.log(`Migrated ${count} time entries to default site: ${defaultSite.name}`);
+          if (import.meta.env.DEV) console.log(`Migrated ${count} time entries to default site: ${defaultSite.name}`);
         }
       } catch (error) {
         setStatus({

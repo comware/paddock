@@ -129,7 +129,7 @@ export function SpeciesConfigForm({
       }
       handleClose();
     } catch (error) {
-      console.error('Failed to save species config:', error);
+      if (import.meta.env.DEV) console.error('Failed to save species config:', error);
       setSubmitError((error as Error).message || 'Failed to save configuration');
     }
   };

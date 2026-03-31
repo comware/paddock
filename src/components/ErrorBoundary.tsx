@@ -63,8 +63,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     });
 
     // Log to console for debugging
-    console.error('ErrorBoundary caught error:', error);
-    console.error('Component stack:', errorInfo.componentStack);
+    if (import.meta.env.DEV) {
+      console.error('ErrorBoundary caught error:', error);
+      console.error('Component stack:', errorInfo.componentStack);
+    }
   }
 
   handleRetry = () => {

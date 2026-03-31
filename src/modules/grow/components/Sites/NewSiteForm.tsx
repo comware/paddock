@@ -196,7 +196,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
       reset();
       onClose();
     } catch (error) {
-      console.error('Failed to add site:', error);
+      if (import.meta.env.DEV) console.error('Failed to add site:', error);
     }
   };
 

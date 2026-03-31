@@ -39,7 +39,7 @@ export function TrayComments({ trayId }: TrayCommentsProps) {
       await addComment(trayId, newComment.trim());
       setNewComment('');
     } catch (error) {
-      console.error('Failed to add comment:', error);
+      if (import.meta.env.DEV) console.error('Failed to add comment:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -60,7 +60,7 @@ export function TrayComments({ trayId }: TrayCommentsProps) {
       setEditingId(null);
       setEditContent('');
     } catch (error) {
-      console.error('Failed to update comment:', error);
+      if (import.meta.env.DEV) console.error('Failed to update comment:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -77,7 +77,7 @@ export function TrayComments({ trayId }: TrayCommentsProps) {
       await deleteComment(id);
       setDeletingId(null);
     } catch (error) {
-      console.error('Failed to delete comment:', error);
+      if (import.meta.env.DEV) console.error('Failed to delete comment:', error);
     } finally {
       setIsSubmitting(false);
     }

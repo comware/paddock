@@ -107,7 +107,7 @@ export function NewTrayForm({ isOpen, onClose }: NewTrayFormProps) {
       reset();
       onClose();
     } catch (error) {
-      console.error('Failed to add tray:', error);
+      if (import.meta.env.DEV) console.error('Failed to add tray:', error);
     }
   };
 

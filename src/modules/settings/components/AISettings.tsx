@@ -120,7 +120,7 @@ function AISettingsContent() {
         await aiService.deleteApiKey(provider);
       }
     } catch (error) {
-      console.error('Failed to save API key:', error);
+      if (import.meta.env.DEV) console.error('Failed to save API key:', error);
       // Parse the error to get a specific error type
       const aiError = parseApiError(error, provider);
       setValidationStatus((prev) => ({ ...prev, [provider]: aiError.type }));
@@ -138,7 +138,7 @@ function AISettingsContent() {
       setApiKeys((prev) => ({ ...prev, [provider]: '' }));
       setEditingProvider(null);
     } catch (error) {
-      console.error('Failed to delete API key:', error);
+      if (import.meta.env.DEV) console.error('Failed to delete API key:', error);
       alert('Failed to delete API key. Please try again.');
     }
   }, []);

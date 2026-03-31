@@ -284,7 +284,7 @@ export function StationForm({ isOpen, onClose, onSuccess, editStation }: Station
 
       handleClose();
     } catch (error) {
-      console.error('Failed to save station:', error);
+      if (import.meta.env.DEV) console.error('Failed to save station:', error);
       setSubmitError((error as Error).message || 'Failed to save station');
     }
   };

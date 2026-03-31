@@ -145,7 +145,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
       });
       handleClose();
     } catch (error) {
-      console.error('Failed to update tray:', error);
+      if (import.meta.env.DEV) console.error('Failed to update tray:', error);
     }
   };
 
@@ -154,7 +154,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
       await deleteTray(tray.id!);
       handleClose();
     } catch (error) {
-      console.error('Failed to delete tray:', error);
+      if (import.meta.env.DEV) console.error('Failed to delete tray:', error);
     }
   };
 
@@ -167,7 +167,7 @@ export function EditTrayForm({ isOpen, onClose, tray }: EditTrayFormProps) {
       setCurrentStatus(newStatus);
       setStatusChanged(true);
     } catch (error) {
-      console.error('Failed to change tray status:', error);
+      if (import.meta.env.DEV) console.error('Failed to change tray status:', error);
     } finally {
       setIsStatusChanging(false);
     }

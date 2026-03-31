@@ -121,7 +121,7 @@ export function MotherPlantForm({
       setSpeciesSearch('');
       onClose();
     } catch (error) {
-      console.error('Failed to save mother plant:', error);
+      if (import.meta.env.DEV) console.error('Failed to save mother plant:', error);
       setSubmitError((error as Error).message || 'Failed to save mother plant');
     }
   };

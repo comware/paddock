@@ -104,7 +104,7 @@ export function NewBatchForm({
         setMotherPlants(allMotherPlants.filter((mp) => mp.status === 'active'));
         setSpeciesConfigs(await propDb.speciesConfigs.toArray());
       } catch (error) {
-        console.error('Failed to load form data:', error);
+        if (import.meta.env.DEV) console.error('Failed to load form data:', error);
         setSubmitError('Failed to load form data. Please close and try again.');
       } finally {
         setIsLoadingData(false);
@@ -197,7 +197,7 @@ export function NewBatchForm({
       onSuccess?.(batchId);
       onClose();
     } catch (error) {
-      console.error('Failed to add batch:', error);
+      if (import.meta.env.DEV) console.error('Failed to add batch:', error);
       setSubmitError((error as Error).message || 'Failed to create batch');
     }
   };

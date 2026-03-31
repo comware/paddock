@@ -111,7 +111,7 @@ export function FitQuestionnaire() {
       await saveDecision(scores);
       setIsDirty(false);
     } catch (error) {
-      console.error('Failed to save fit scores:', error);
+      if (import.meta.env.DEV) console.error('Failed to save fit scores:', error);
       setSaveError((error as Error).message || 'Failed to save scores');
     }
   };

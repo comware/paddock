@@ -158,7 +158,7 @@ export function StationList() {
       try {
         await toggleStationActive(stationId);
       } catch (error) {
-        console.error('Failed to toggle station active:', error);
+        if (import.meta.env.DEV) console.error('Failed to toggle station active:', error);
         setActionError((error as Error).message || 'Failed to update station status');
       }
     },

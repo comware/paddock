@@ -63,7 +63,7 @@ export function useObservationMigration(): MigrationStatus {
         });
 
         if (count > 0) {
-          console.log(`Migrated ${count} observations to default site: ${defaultSite.name}`);
+          if (import.meta.env.DEV) console.log(`Migrated ${count} observations to default site: ${defaultSite.name}`);
         }
       } catch (error) {
         setStatus({

@@ -110,7 +110,7 @@ export function EnvironmentLogModal({
       onSuccess?.();
       handleClose();
     } catch (error) {
-      console.error('Failed to log environment:', error);
+      if (import.meta.env.DEV) console.error('Failed to log environment:', error);
       setSubmitError((error as Error).message || 'Failed to save log');
     }
   };

@@ -16,130 +16,17 @@ import { format } from 'date-fns';
 import { useStations } from '../../stores/useStations';
 import { useBatches } from '../../stores/useBatches';
 import { propDb } from '@/lib/db';
-import type { PropStationLog, PropBatchWithComputed } from '../../types';
-import { getStageDisplayName, getStageColors } from '../../utils';
+import type { PropStationLog } from '../../types';
 import { StationForm } from './StationForm';
 import { EnvironmentLogModal } from './EnvironmentLogModal';
-
-// ============================================
-// TYPE DISPLAY NAMES
-// ============================================
-
-const TYPE_DISPLAY_NAMES: Record<string, string> = {
-  heated_propagator: 'Heated Propagator',
-  unheated_propagator: 'Unheated Propagator',
-  water_propagation: 'Water Propagation',
-  outdoor_bed: 'Outdoor Bed',
-  cold_frame: 'Cold Frame',
-  greenhouse_bench: 'Greenhouse Bench',
-  mist_system: 'Mist System',
-  other: 'Other',
-};
-
-// ============================================
-// SUB-COMPONENTS
-// ============================================
-
-/**
- * Metadata row component for consistent styling.
- */
-function MetadataRow({
-  label,
-  value,
-  children,
-}: {
-  label: string;
-  value?: string | number | null;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
-      <span className="text-slate-500 dark:text-slate-400">{label}</span>
-      {children || (
-        <span className="text-slate-900 dark:text-white font-medium">
-          {value ?? '-'}
-        </span>
-      )}
-    </div>
-  );
-}
-
-/**
- * Section header component.
- */
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-      {title}
-    </h3>
-  );
-}
-
-/**
- * Batch list item for station detail.
- */
-function BatchListItem({ batch }: { batch: PropBatchWithComputed }) {
-  const stageColors = getStageColors(batch.stage);
-
-  return (
-    <Link
-      to={`/propagation/batches/${batch.id}`}
-      className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-    >
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-slate-900 dark:text-white">
-            {batch.batchNumber}
-          </span>
-          <span
-            className={`px-2 py-0.5 rounded-full text-xs font-medium ${stageColors.bg} ${stageColors.text}`}
-          >
-            {getStageDisplayName(batch.stage)}
-          </span>
-        </div>
-        <div className="text-sm text-slate-600 dark:text-slate-400">
-          {batch.species}
-          {batch.variety && ` - ${batch.variety}`}
-        </div>
-      </div>
-      <div className="text-right text-sm">
-        <div className="text-slate-700 dark:text-slate-300">
-          {batch.quantitySurviving} propagules
-        </div>
-        <div className="text-slate-500 dark:text-slate-400 text-xs">
-          Day {batch.daysSinceTaken}
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/**
- * Environment log entry display.
- */
-function EnvironmentLogEntry({ log }: { log: PropStationLog }) {
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
-      <div className="flex items-center gap-4">
-        {log.temperature !== undefined && (
-          <span className="text-sm">
-            <span className="text-slate-500 dark:text-slate-400">Temp:</span>{' '}
-            <span className="text-slate-900 dark:text-white font-medium">{log.temperature}C</span>
-          </span>
-        )}
-        {log.humidity !== undefined && (
-          <span className="text-sm">
-            <span className="text-slate-500 dark:text-slate-400">Humidity:</span>{' '}
-            <span className="text-slate-900 dark:text-white font-medium">{log.humidity}%</span>
-          </span>
-        )}
-      </div>
-      <span className="text-xs text-slate-500 dark:text-slate-400">
-        {format(new Date(log.date), 'MMM d, h:mm a')}
-      </span>
-    </div>
-  );
-}
+import {
+  TYPE_DISPLAY_NAMES,
+  MetadataRow,
+  SectionHeader,
+  BatchListItem,
+  EnvironmentLogEntry,
+  getOccupancyColor,
+} from './StationDetailParts';
 
 // ============================================
 // MAIN COMPONENT
@@ -183,9 +70,9 @@ export function StationDetail() {
           .equals(id)
           .reverse()
           .sortBy('date');
-        setEnvironmentLogs(logs.slice(0, 20)); // Last 20 logs
+        setEnvironmentLogs(logs.slice(0, 20));
       } catch (error) {
-        console.error('Failed to load environment logs:', error);
+        if (import.meta.env.DEV) console.error('Failed to load environment logs:', error);
         setActionError('Failed to load environment logs');
       } finally {
         setLogsLoading(false);
@@ -209,13 +96,6 @@ export function StationDetail() {
     );
   }, [id, batches]);
 
-  // Get occupancy color
-  const getOccupancyColor = (percentage: number): string => {
-    if (percentage >= 90) return 'text-red-600 dark:text-red-400';
-    if (percentage >= 70) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-green-600 dark:text-green-400';
-  };
-
   // Handle toggle active
   const handleToggleActive = useCallback(async () => {
     if (!id) return;
@@ -223,7 +103,7 @@ export function StationDetail() {
     try {
       await toggleStationActive(id);
     } catch (error) {
-      console.error('Failed to toggle station active:', error);
+      if (import.meta.env.DEV) console.error('Failed to toggle station active:', error);
       setActionError((error as Error).message || 'Failed to update station status');
     }
   }, [id, toggleStationActive]);
@@ -257,7 +137,7 @@ export function StationDetail() {
           Station Not Found
         </h2>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This station doesn't exist or may have been deleted.
+          This station doesn&apos;t exist or may have been deleted.
         </p>
         <button
           onClick={() => navigate('/propagation/stations')}
@@ -347,9 +227,8 @@ export function StationDetail() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Metadata and Batches */}
+        {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Station Metadata */}
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
             <SectionHeader title="Station Details" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
@@ -371,7 +250,6 @@ export function StationDetail() {
               </div>
             </div>
 
-            {/* Environmental Targets */}
             {(station.targetTempMin !== undefined || station.targetHumidityMin !== undefined) && (
               <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
                 <h4 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
@@ -398,7 +276,6 @@ export function StationDetail() {
               </div>
             )}
 
-            {/* Description */}
             {station.description && (
               <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
                 <h4 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
@@ -411,7 +288,6 @@ export function StationDetail() {
             )}
           </div>
 
-          {/* Current Batches */}
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
             <SectionHeader title={`Current Batches (${stationBatches.length})`} />
             {stationBatches.length === 0 ? (
@@ -428,9 +304,8 @@ export function StationDetail() {
           </div>
         </div>
 
-        {/* Right Column - Environment Logs */}
+        {/* Right Column */}
         <div className="space-y-6">
-          {/* Occupancy Visual */}
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
             <SectionHeader title="Occupancy" />
             <div className="space-y-3">
@@ -457,7 +332,6 @@ export function StationDetail() {
             </div>
           </div>
 
-          {/* Environment Logs */}
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <SectionHeader title="Environment Logs" />
@@ -495,7 +369,6 @@ export function StationDetail() {
             )}
           </div>
 
-          {/* Quick Stats */}
           <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
             <SectionHeader title="Quick Stats" />
             <div className="space-y-3 text-sm">
@@ -518,15 +391,12 @@ export function StationDetail() {
         </div>
       </div>
 
-      {/* Edit Station Modal */}
       <StationForm
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         editStation={station}
         onSuccess={() => setShowEditModal(false)}
       />
-
-      {/* Environment Log Modal */}
       <EnvironmentLogModal
         isOpen={showLogModal}
         onClose={() => setShowLogModal(false)}

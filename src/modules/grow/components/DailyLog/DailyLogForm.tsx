@@ -161,7 +161,7 @@ export function DailyLogForm() {
 
   const onSubmit = async (data: DailyLogFormData) => {
     if (!siteId) {
-      console.error('No site selected');
+      if (import.meta.env.DEV) console.error('No site selected');
       return;
     }
     setIsSaving(true);
@@ -169,7 +169,7 @@ export function DailyLogForm() {
       await saveObservation({ ...data, siteId });
       setLastSaved(new Date());
     } catch (error) {
-      console.error('Failed to save observation:', error);
+      if (import.meta.env.DEV) console.error('Failed to save observation:', error);
     } finally {
       setIsSaving(false);
     }

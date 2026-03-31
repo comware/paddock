@@ -106,7 +106,7 @@ export function Scorecard() {
         ...reflections,
       });
     } catch (error) {
-      console.error('Failed to save decision:', error);
+      if (import.meta.env.DEV) console.error('Failed to save decision:', error);
     } finally {
       setIsSaving(false);
     }

@@ -54,7 +54,7 @@ export function RecentActivity({ maxItems = 10 }: RecentActivityProps) {
 
         setActivities(enriched);
       } catch (error) {
-        console.error('Failed to load recent activity:', error);
+        if (import.meta.env.DEV) console.error('Failed to load recent activity:', error);
       } finally {
         setIsLoading(false);
       }

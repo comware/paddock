@@ -72,7 +72,7 @@ export function captureException(error: Error, context?: Record<string, unknown>
     localStorage.setItem(STORAGE_KEY, JSON.stringify(errors.slice(0, MAX_ERRORS)));
   } catch (e) {
     // localStorage might be full or disabled - fail silently
-    console.warn('[ErrorTracker] Failed to store error:', e);
+    if (import.meta.env.DEV) console.warn('[ErrorTracker] Failed to store error:', e);
   }
 
   if (import.meta.env.DEV) {

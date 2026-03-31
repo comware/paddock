@@ -122,7 +122,7 @@ export function SupplyDetail() {
       await deleteSupply(id);
       navigate('/propagation/supplies');
     } catch (error) {
-      console.error('Failed to delete supply:', error);
+      if (import.meta.env.DEV) console.error('Failed to delete supply:', error);
       alert('Failed to delete supply. Please try again.');
     } finally {
       setIsDeleting(false);

@@ -171,7 +171,7 @@ export function BatchCostForm({
       onSuccess?.();
       handleClose();
     } catch (error) {
-      console.error('Failed to add supply cost:', error);
+      if (import.meta.env.DEV) console.error('Failed to add supply cost:', error);
       setSubmitError((error as Error).message || 'Failed to add cost');
     }
   };
@@ -190,7 +190,7 @@ export function BatchCostForm({
       onSuccess?.();
       handleClose();
     } catch (error) {
-      console.error('Failed to add manual cost:', error);
+      if (import.meta.env.DEV) console.error('Failed to add manual cost:', error);
       setSubmitError((error as Error).message || 'Failed to add cost');
     }
   };

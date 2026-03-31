@@ -207,7 +207,7 @@ export function EditSiteForm({ isOpen, onClose, site }: EditSiteFormProps) {
       });
       onClose();
     } catch (error) {
-      console.error('Failed to update site:', error);
+      if (import.meta.env.DEV) console.error('Failed to update site:', error);
     }
   };
 

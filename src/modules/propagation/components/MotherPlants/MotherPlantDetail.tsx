@@ -59,7 +59,7 @@ export function MotherPlantDetail() {
         const metricsData = await getExtendedMotherPlantMetrics(id);
         setMetrics(metricsData);
       } catch (error) {
-        console.error('Failed to load metrics:', error);
+        if (import.meta.env.DEV) console.error('Failed to load metrics:', error);
       } finally {
         setIsLoadingMetrics(false);
       }
@@ -86,7 +86,7 @@ export function MotherPlantDetail() {
       }
       setShowStatusModal(false);
     } catch (error) {
-      console.error('Failed to update status:', error);
+      if (import.meta.env.DEV) console.error('Failed to update status:', error);
       setActionError((error as Error).message || 'Failed to update plant status');
     }
   };

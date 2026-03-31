@@ -165,7 +165,7 @@ export function CostBreakdown({ batchId, onCostsUpdated }: CostBreakdownProps) {
       await removeCost(costToDelete);
       onCostsUpdated?.();
     } catch (error) {
-      console.error('Failed to delete cost:', error);
+      if (import.meta.env.DEV) console.error('Failed to delete cost:', error);
     } finally {
       setIsDeleting(false);
       setShowDeleteConfirm(false);

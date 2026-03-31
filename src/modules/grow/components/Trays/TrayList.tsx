@@ -167,7 +167,7 @@ export function TrayList() {
     try {
       await moveToLight(id);
     } catch (error) {
-      console.error('Failed to move tray to light:', error);
+      if (import.meta.env.DEV) console.error('Failed to move tray to light:', error);
     }
   };
 

@@ -74,7 +74,7 @@ export function SpeciesConfigList() {
       await deleteConfig(id);
       setDeleteConfirmId(null);
     } catch (error) {
-      console.error('Failed to delete config:', error);
+      if (import.meta.env.DEV) console.error('Failed to delete config:', error);
       setDeleteError((error as Error).message || 'Failed to delete configuration');
     }
   };

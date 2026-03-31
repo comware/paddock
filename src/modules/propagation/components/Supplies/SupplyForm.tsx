@@ -13,10 +13,9 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Modal } from '@/components/ui';
 import { useSupplies } from '../../stores/useSupplies';
-import type { PropSupply, SupplyCategory } from '../../types';
+import type { PropSupply } from '../../types';
 import {
   RequiredTextField,
   OptionalTextField,
@@ -27,108 +26,15 @@ import {
   FormActions,
   FormSectionHeader,
 } from '../shared/FormFields';
-
-// ============================================
-// CATEGORY OPTIONS
-// ============================================
-
-const SUPPLY_CATEGORIES: Array<{
-  value: SupplyCategory;
-  label: string;
-  description: string;
-}> = [
-  {
-    value: 'rooting_hormone',
-    label: 'Rooting Hormone',
-    description: 'Powders, gels, and liquids to promote root growth',
-  },
-  {
-    value: 'growing_medium',
-    label: 'Growing Medium',
-    description: 'Perlite, vermiculite, coco coir, potting mix',
-  },
-  {
-    value: 'containers',
-    label: 'Containers',
-    description: 'Pots, trays, cell packs, propagation flats',
-  },
-  {
-    value: 'labels',
-    label: 'Labels',
-    description: 'Plant labels, markers, tags',
-  },
-  {
-    value: 'tools',
-    label: 'Tools',
-    description: 'Scissors, scalpels, dibbers, misters',
-  },
-  {
-    value: 'heating',
-    label: 'Heating',
-    description: 'Heat mats, cables, thermostats',
-  },
-  {
-    value: 'misting',
-    label: 'Misting',
-    description: 'Misting systems, spray bottles, domes',
-  },
-  {
-    value: 'other',
-    label: 'Other',
-    description: 'Miscellaneous propagation supplies',
-  },
-];
-
-// ============================================
-// UNIT OPTIONS
-// ============================================
-
-const UNIT_OPTIONS = [
-  { value: 'ml', label: 'Milliliters (ml)' },
-  { value: 'L', label: 'Liters (L)' },
-  { value: 'g', label: 'Grams (g)' },
-  { value: 'kg', label: 'Kilograms (kg)' },
-  { value: 'pcs', label: 'Pieces (pcs)' },
-  { value: 'pack', label: 'Packs' },
-  { value: 'bag', label: 'Bags' },
-  { value: 'box', label: 'Boxes' },
-];
-
-// ============================================
-// VALIDATION SCHEMAS
-// ============================================
-
-const supplySchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
-  category: z.enum([
-    'rooting_hormone',
-    'growing_medium',
-    'containers',
-    'labels',
-    'tools',
-    'heating',
-    'misting',
-    'other',
-  ] as const, {
-    message: 'Please select a category',
-  }),
-  unit: z.string().min(1, 'Unit is required'),
-  quantityPurchased: z.number().min(0.01, 'Quantity must be greater than 0'),
-  totalCost: z.number().min(0, 'Cost cannot be negative'),
-  supplier: z.string().max(100, 'Supplier name too long').optional(),
-  lowStockThreshold: z.number().min(0).optional(),
-  notes: z.string().max(500, 'Notes too long').optional(),
-});
-
-type SupplyFormData = z.infer<typeof supplySchema>;
-
-const purchaseSchema = z.object({
-  quantity: z.number().min(0.01, 'Quantity must be greater than 0'),
-  totalCost: z.number().min(0, 'Cost cannot be negative'),
-  supplier: z.string().max(100, 'Supplier name too long').optional(),
-});
-
-type PurchaseFormData = z.infer<typeof purchaseSchema>;
+import {
+  SUPPLY_CATEGORIES,
+  UNIT_OPTIONS,
+  supplySchema,
+  purchaseSchema,
+  formatCurrency,
+  type SupplyFormData,
+  type PurchaseFormData,
+} from './SupplyFormConstants';
 
 // ============================================
 // PROPS
@@ -228,7 +134,6 @@ export function SupplyForm({
   useEffect(() => {
     if (isOpen) {
       if (editSupply && !purchaseMode) {
-        // Edit mode - populate with existing data
         resetSupply({
           name: editSupply.name,
           category: editSupply.category,
@@ -240,7 +145,6 @@ export function SupplyForm({
           notes: editSupply.notes || '',
         });
       } else if (purchaseMode && editSupply) {
-        // Purchase mode - reset purchase form
         resetPurchase({
           quantity: 1,
           totalCost: 0,
@@ -248,7 +152,6 @@ export function SupplyForm({
         });
         setNewCostPerUnit(null);
       } else {
-        // New supply mode
         resetSupply({
           name: '',
           category: undefined,
@@ -270,7 +173,6 @@ export function SupplyForm({
 
     try {
       if (isEditMode && editSupply?.id) {
-        // Update existing supply
         await updateSupply(editSupply.id, {
           name: data.name.trim(),
           category: data.category,
@@ -283,7 +185,6 @@ export function SupplyForm({
         });
         onSuccess?.(editSupply.id);
       } else {
-        // Create new supply
         const supplyId = await addSupply({
           name: data.name.trim(),
           category: data.category,
@@ -299,7 +200,7 @@ export function SupplyForm({
       }
       handleClose();
     } catch (error) {
-      console.error('Failed to save supply:', error);
+      if (import.meta.env.DEV) console.error('Failed to save supply:', error);
       setSubmitError((error as Error).message || 'Failed to save supply');
     }
   };
@@ -314,7 +215,6 @@ export function SupplyForm({
     }
 
     try {
-      // Calculate new values
       const newQuantityPurchased = editSupply.quantityPurchased + data.quantity;
       const newTotalCost = editSupply.totalCost + data.totalCost;
       const newQuantityRemaining = editSupply.quantityRemaining + data.quantity;
@@ -330,7 +230,7 @@ export function SupplyForm({
       onSuccess?.(editSupply.id);
       handleClose();
     } catch (error) {
-      console.error('Failed to record purchase:', error);
+      if (import.meta.env.DEV) console.error('Failed to record purchase:', error);
       setSubmitError((error as Error).message || 'Failed to record purchase');
     }
   };
@@ -342,15 +242,6 @@ export function SupplyForm({
     setNewCostPerUnit(null);
     onClose();
   };
-
-  // Format currency
-  const formatCurrency = (value: number) =>
-    value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-    });
 
   // Purchase mode form
   if (isPurchaseMode && editSupply) {
@@ -502,7 +393,6 @@ export function SupplyForm({
           <FormSectionHeader title={isEditMode ? 'Purchase History' : 'Initial Purchase'} />
 
           <div className="grid grid-cols-2 gap-4">
-            {/* Quantity */}
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Quantity *
@@ -518,7 +408,6 @@ export function SupplyForm({
               )}
             </div>
 
-            {/* Total Cost */}
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Total Cost *
@@ -538,7 +427,6 @@ export function SupplyForm({
             </div>
           </div>
 
-          {/* Cost Per Unit Preview */}
           {costPerUnitPreview > 0 && (
             <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-700">
               <span className="text-sm text-slate-600 dark:text-slate-400">Cost per unit: </span>
