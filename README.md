@@ -31,11 +31,24 @@ Paddock is a Progressive Web App (PWA) that helps hobbyist microgreens growers t
 - **📤 Export/Import** - Export and import propagation data
 - **⚙️ Species Configuration** - Configure species-specific propagation parameters
 
+### 📅 Planner Module
+- **🗓️ Crop Calendar** - Succession planning with calendar view (react-big-calendar)
+- **📝 Event Creation** - Create events with lifecycle tracking and status management
+- **🔗 Module Integration** - Link events to Grow trays and Propagation batches
+- **📋 Event List & Detail Views** - Browse, filter, and inspect planned activities
+- **🔄 Lifecycle Tracking** - Track events from planned through active to completed
+
 ### 🌐 Platform Features
 - **🌙 Dark Mode** - Easy on the eyes during late-night checks
 - **📱 Offline-First** - Works without internet, installs as mobile app
 - **🔒 Privacy-First** - All data stored locally on your device
 - **📱 Mobile Optimized** - Touch-friendly interface with responsive design
+- **♿ Skip Nav** - Skip navigation link for keyboard users
+- **🔔 Toast Notifications** - Toast notification system for action feedback
+- **📢 Live Regions** - aria-live regions for dynamic content updates
+- **🎯 Focus Ring Indicators** - Visible focus ring on all interactive elements
+- **🎭 Reduced Motion** - prefers-reduced-motion support for animations
+- **🏷️ Semantic HTML** - ARIA attributes and semantic markup throughout
 
 ## 🚀 Quick Start
 
@@ -92,6 +105,7 @@ paddock/
 │   ├── components/        # Shared UI components
 │   ├── modules/
 │   │   ├── grow/         # Grow module (trays, sites, calendar)
+│   │   ├── planner/      # Planner module (crop calendar, events)
 │   │   ├── propagation/  # Propagation module (batches, stations, mother plants)
 │   │   └── settings/     # Application settings
 │   ├── lib/              # Core libraries (db, ai, monitoring)
@@ -101,6 +115,42 @@ paddock/
 ├── playwright/          # E2E tests
 └── docs/               # Project documentation
 ```
+
+
+## 💾 Data Backup & Restore
+
+Paddock stores all data locally on your device. To ensure data durability, we recommend regular backups.
+
+### Backup Procedure
+
+1. Go to **Settings** (gear icon in navigation)
+2. Find the **Data Management** section
+3. Click **Export All Data** (green button)
+4. A JSON file named `paddock-full-backup-YYYY-MM-DD.json` will download
+5. Store this file safely (cloud storage, external drive, etc.)
+
+### Restore Procedure
+
+1. Go to **Settings**
+2. Click **Import Data**
+3. Select your backup JSON file
+4. Choose **Replace** (clear existing data) or **Merge** (add to existing data)
+5. The app will reload with your restored data
+
+### What's Included in Backups
+
+**Full Backup (Export All Data):**
+- Grow Module: trays, observations, time entries, variety configs, experiments, decisions
+- Propagation Module: batches, stations, mother plants, propagules, graduations, supplies, costs
+
+**Module-specific backups** are also available in each module's settings.
+
+### Best Practices
+
+- Export a backup before major operations
+- Keep multiple dated backups
+- Test restore on a separate device/browser periodically
+- Backups are JSON files that can be inspected if needed
 
 ## 🔐 Privacy & Security
 
