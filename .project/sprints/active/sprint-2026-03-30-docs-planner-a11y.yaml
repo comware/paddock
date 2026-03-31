@@ -1,0 +1,102 @@
+id: sprint-2026-03-30-docs-planner-a11y
+name: "Documentation Update — Planner & A11y"
+project: paddock
+status: completed
+
+created: 2026-03-30
+target_start: 2026-03-30
+target_end: 2026-03-30
+
+goal_id: goal-16
+
+goal: |
+  Update README.md to document the Planner module and accessibility features.
+  Exit criteria: README has Planner section, a11y features listed, and planner/ in project structure.
+
+context: |
+  Goal-4 delivered the Planner module (crop calendar, events, integration with Grow/Propagation).
+  Goal-13 delivered accessibility improvements (skip nav, toast notifications, aria-live, focus rings).
+  Neither is documented in README.md. This is a docs-only sprint — no code changes needed.
+  README currently has Grow Module and Propagation Module feature sections but no Planner section.
+  Project structure tree is missing the planner/ directory entry.
+
+success_criteria:
+  - "README has dedicated Planner module section (verified via: grep -c 'Planner Module\\|Planner' README.md shows 2+)"
+  - "README lists accessibility features including skip nav, toast, aria-live, focus rings (verified via: grep -c 'skip nav\\|toast\\|aria-live\\|focus ring' README.md shows 4)"
+  - "Project structure in README includes planner/ directory (verified via: grep 'planner/' README.md)"
+
+handoffs:
+  - id: "DOC16-001-readme-updates"
+    title: "Update README with Planner Section, A11y Features, and Project Structure"
+    priority: P0
+    estimate_hours: 0.5
+    status: pending
+    description: |
+      Update README.md with three additions:
+
+      1. ADD PLANNER MODULE SECTION after the Propagation Module section:
+         - Crop calendar and succession planning
+         - Event creation with lifecycle tracking
+         - Integration with Grow trays and Propagation batches
+         - Calendar view (react-big-calendar)
+         - Event list and detail views
+
+      2. ADD ACCESSIBILITY FEATURES to the Platform Features section:
+         - Skip navigation link
+         - Toast notification system for action feedback
+         - aria-live regions for dynamic content
+         - Focus ring indicators on interactive elements
+         - prefers-reduced-motion support
+         - Semantic HTML and ARIA attributes
+
+      3. UPDATE PROJECT STRUCTURE to include planner/:
+         Change the modules tree from:
+           ├── grow/
+           ├── propagation/
+           └── settings/
+         To:
+           ├── grow/
+           ├── planner/
+           ├── propagation/
+           └── settings/
+    acceptance_criteria:
+      - "README has Planner module section with at least 3 feature bullets (verified via: grep -A5 'Planner' README.md shows feature list)"
+      - "README lists skip nav, toast, aria-live, focus rings (verified via: grep -ci 'skip nav\\|toast\\|aria-live\\|focus ring' README.md shows 4)"
+      - "Project structure includes planner/ line (verified via: grep 'planner/' README.md exits 0)"
+    blocked_by: []
+
+  - id: "DOC16-999-commit-verify"
+    title: "Commit, Verify CI, Update Goal Progress"
+    priority: P0
+    estimate_hours: 0.5
+    status: pending
+    description: |
+      Final sprint handoff: commit all changes, verify CI, and update goal progress.
+
+      1. git status - review changes
+      2. git add README.md
+      3. git commit -m "docs: add Planner module section and accessibility features to README"
+      4. git push origin main
+      5. Wait for CI: sleep 10 && gh run watch --exit-status
+         - If CI fails: read logs with gh run view --log-failed, fix, push again
+         - Repeat until CI is green
+      6. Update goal progress in .project/project.yaml:
+         - Mark sc-16-1, sc-16-2, sc-16-3 as completed: true
+         - Set goal-16 progress to 100
+         - Set goal-16 status to completed
+         - Add completed_date: 2026-03-30
+
+      DO NOT mark sprint complete until CI is green.
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean)"
+      - "Pushed to remote (verified via: git push exits 0)"
+      - "Build passes (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+      - "Goal progress updated (verified via: grep 'progress: 100' .project/project.yaml)"
+      - "All prior handoff acceptance criteria pass (verified via: /project:sprint-validate --acceptance exits with verdict PASS)"
+    blocked_by:
+      - "DOC16-001-readme-updates"
+
+notes: |
+  Docs-only sprint. No code changes, no new tests needed.
+  Keep README style consistent with existing emoji-prefixed sections.

@@ -1,0 +1,12 @@
+workflow:
+  id: sprint-2026-03-30-docs-planner-a11y
+  started: "2026-03-30T00:00:00+00:00"
+  iteration: 0
+  paused: false
+  current_phase: "sequential execution"
+  parallel_mode: false
+  parallel_tracks: 1
+  handoffs_in_progress: []
+  handoffs_completed: []
+  handoffs_failed: []
+  handoffs_last_updated: null

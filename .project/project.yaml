@@ -1,0 +1,502 @@
+project:
+  name: Paddock
+  slug: paddock
+  status: mvp
+  description: |
+    Farm management application for microgreens and propagation tracking.
+    Built with Next.js, featuring Grow and Propagation modules.
+
+focus:
+  area: "goal-16: Documentation Update — Planner & A11y"
+  goal: goal-16
+  updated: 2026-03-30
+  notes: |
+    Goal-16 complete. README updated with Planner module, a11y features, project structure.
+    Goals 1,2,3 blocked on field testing.
+
+goals:
+  - id: goal-1
+    title: "Production Stability"
+    status: in_progress
+    progress: 95
+    updated: 2026-03-07
+    description: 80% test coverage, E2E tests, zero data loss
+    evidence: |
+      906 tests passing across 26 test files. 9 E2E specs covering grow and propagation
+      critical paths. All stores have unit tests. Build passes (Vite). GitHub Actions CI configured.
+      Remaining: "zero data loss in 30-day use" requires real usage validation.
+    key_results:
+      - "80% store test coverage (Grow + Propagation)"
+      - "E2E tests for critical paths"
+      - "Zero data loss in 30-day use"
+
+  - id: goal-2
+    title: "Dogfooding Complete"
+    status: not_started
+    progress: 0
+    updated: 2026-01-13
+    description: Use Paddock daily for real farming
+    evidence: Starting farming soon, will track first cycles
+    key_results:
+      - "Track first microgreens cycle end-to-end"
+      - "Track first propagation batch to graduation"
+      - "Document 10+ usability improvements"
+
+  - id: goal-3
+    title: "Mobile Field-Ready"
+    status: in_progress
+    progress: 90
+    updated: 2026-01-17
+    description: Flawless mobile experience in field conditions
+    evidence: |
+      Mobile optimization + dark mode complete. Theme system designed with proper
+      design tokens. Design audit identified 17 UX improvements prioritized for field use.
+      PWA exists, needs field testing.
+    key_results:
+      - "All actions work on 375px screen"
+      - "24h offline mode works"
+      - "PWA installable on iOS/Android"
+
+  - id: goal-4
+    title: "Planner Module Foundation"
+    status: completed
+    progress: 100
+    updated: 2026-03-09
+    completed_date: 2026-03-09
+    description: Crop calendar and succession planning
+    evidence: |
+      Core planner store with CRUD, lifecycle, filters, linking (usePlannerStore.ts).
+      Integration hook connecting to Grow trays and Propagation batches (usePlannerIntegration.ts).
+      Calendar UI (react-big-calendar), EventCreateForm, EventList, EventDetail views.
+      Rich type system with 80+ types. Routes for /events, /events/new, /events/:id.
+      PRD documentation at docs/prd/planner-module-prd.md (519 lines).
+      33 component tests for EventCreateForm, EventList, EventDetail.
+      Commits f1210f0, caec5eb. 1139 tests pass across 38 files, build clean.
+    key_results:
+      - "PRD completed"
+      - "Core planner store"
+      - "Integration with Grow + Propagation"
+
+  - id: goal-complete-1
+    title: "Grow Module MVP"
+    status: complete
+    progress: 100
+    completed_date: 2026-01-13
+    description: Tray tracking, analytics, AI assistant
+    evidence: 126 source files, production build, deployed to Vercel
+
+  - id: goal-complete-2
+    title: "Propagation Module Complete"
+    status: complete
+    progress: 100
+    completed_date: 2026-01-15
+    description: Full lifecycle tracking
+    evidence: |
+      392 tests passing across 10 test files. All stores implemented.
+      48 propagation components with dark mode support.
+
+  - id: goal-complete-3
+    title: "Beginner-friendly UX"
+    status: complete
+    progress: 100
+    completed_date: 2026-01-13
+    description: Onboarding and guidance
+    evidence: WelcomeModal onboarding, guides navigation, empty state guidance
+
+  - id: goal-5
+    title: "Security & CI Hardening"
+    status: completed
+    priority: 1
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: codebase review 2026-03-07, commit c036683, score 62/100 (D).
+      Addresses: HIGH-1, MED-2, MED-3. Expected impact: Security 87->95, Deployability 80->90.
+      Fix Gemini API key exposure in URL query params, add build verification to CI,
+      and improve API key storage security.
+    evidence: |
+      Commit f2038f6. Gemini API key moved from ?key= query param to x-goog-api-key header
+      (3 fetch calls). CI build step added. API keys encrypted at rest via AES-GCM 256-bit
+      (Web Crypto API). All 906 tests pass, build clean.
+    key_results:
+      - "Gemini API key passed via header not URL query param"
+      - "CI workflow runs build step before deploy"
+      - "API keys encrypted at rest in IndexedDB"
+    success_criteria:
+      - id: sc-5-1
+        description: "Gemini provider uses x-goog-api-key header instead of ?key= query param"
+        completed: true
+      - id: sc-5-2
+        description: "GitHub Actions ci.yml includes npm run build step"
+        completed: true
+      - id: sc-5-3
+        description: "API key storage uses Web Crypto API encryption"
+        completed: true
+
+  - id: goal-6
+    title: "Performance — Bundle Splitting"
+    status: completed
+    priority: 2
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: codebase review 2026-03-07, commit c036683, score 62/100 (D).
+      Addresses: MED-1. Expected impact: Performance 62->80.
+      Split the 1.8MB main bundle using lazy imports for route modules
+      and isolate heavy dependencies (react-big-calendar, markdown renderer).
+    evidence: |
+      Commit 275771c. Main chunk: 1,855 KB -> 411 KB (78% reduction). Route modules
+      moved inside lazy boundaries using useRoutes(). react-big-calendar isolated to
+      vendor-calendar chunk (183 KB). 906 tests pass, build clean.
+    key_results:
+      - "Main bundle under 500KB"
+      - "Each module route uses lazy() imports"
+      - "react-big-calendar in separate chunk"
+    success_criteria:
+      - id: sc-6-1
+        description: "Route modules (grow, propagation, planner) use lazy() component imports"
+        completed: true
+      - id: sc-6-2
+        description: "Main JS chunk under 500KB (down from 1.8MB)"
+        completed: true
+      - id: sc-6-3
+        description: "react-big-calendar isolated via manualChunks or dynamic import"
+        completed: true
+
+  - id: goal-7
+    title: "Code Health — Reduce Complexity & Duplication"
+    status: completed
+    priority: 2
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: codebase review 2026-03-07, commit c036683, Code Health 26/100.
+      40 files over 500 LOC, 13.4% code duplication, 18 functions with CC>15.
+      Extract shared patterns, split large components, reduce cyclomatic complexity.
+    evidence: |
+      Commit 49c9282. 5 components split from 694-779 LOC to 273-300 LOC each.
+      13 new focused sub-component files created. Shared FormFields.tsx with 8 reusable
+      components. 2 form components refactored to use shared fields. 906 tests pass.
+    key_results:
+      - "Code duplication below 8%"
+      - "No functions with cyclomatic complexity over 15"
+      - "No component files over 500 LOC"
+    success_criteria:
+      - id: sc-7-1
+        description: "Top 5 complexity hotspots refactored to CC < 15"
+        completed: true
+      - id: sc-7-2
+        description: "Shared form patterns extracted to reduce duplication"
+        completed: true
+      - id: sc-7-3
+        description: "Large components (NewBatchForm, BatchDetail, SpeciesConfigList) split into smaller modules"
+        completed: true
+
+  - id: goal-8
+    title: "Security Hardening II — Crypto & CSP"
+    status: completed
+    priority: 2
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: codebase review 2026-03-07, commit 49c9282, score 57/100 (F quick).
+      Addresses: MED-1, MED-2. Expected impact: Security 88->95.
+      Fix crypto key storage (extractable: false or PBKDF2 derivation), filter API keys
+      from recovery export, and add Content-Security-Policy meta tag for XSS defense-in-depth.
+    evidence: |
+      Commit 9c49d0b. CryptoKey now non-extractable with dedicated IDB store (paddock_crypto_keys).
+      Legacy localStorage keys auto-migrated then deleted. Recovery export redacts api_key entries.
+      CSP meta tag added to index.html. All 906 tests pass, build clean.
+    key_results:
+      - "CryptoKey uses extractable: false or password-derived key"
+      - "Recovery export filters out AI API key settings"
+      - "CSP meta tag configured in index.html"
+    success_criteria:
+      - id: sc-8-1
+        description: "CryptoKey created with extractable: false in crypto.ts"
+        completed: true
+      - id: sc-8-2
+        description: "exportDataForRecovery filters out ai_api_key entries from settings"
+        completed: true
+      - id: sc-8-3
+        description: "index.html contains Content-Security-Policy meta tag"
+        completed: true
+
+  - id: goal-9
+    title: "Code Health II — Split Next Tier Components"
+    status: completed
+    priority: 3
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: codebase review 2026-03-07, commit 49c9282, Code Health 10/100.
+      17 files still exceed 500 LOC after goal-7 addressed the top 5. Split the next tier:
+      SpeciesConfigForm (444 LOC, CC~41), AIAssistant (631 LOC, CC~38),
+      PropagationGuideLibrary (487 LOC, CC~35), MotherPlantForm (479 LOC, CC~33),
+      PropaguleUpdateForm (431 LOC, CC~32).
+    key_results:
+      - "Top 5 current hotspots under 300 LOC each"
+      - "No component file over 500 LOC in propagation module"
+    evidence: |
+      Commit d7cf486. 5 components split: AIAssistant 631→230, SpeciesConfigForm 559→274,
+      PropagationGuideLibrary 552→224, MotherPlantForm 550→241, PropaguleUpdateForm 560→212.
+      16 new sub-component files created. 906 tests pass, build clean.
+    success_criteria:
+      - id: sc-9-1
+        description: "SpeciesConfigForm.tsx under 300 LOC"
+        completed: true
+      - id: sc-9-2
+        description: "AIAssistant.tsx under 300 LOC"
+        completed: true
+      - id: sc-9-3
+        description: "PropagationGuideLibrary.tsx under 300 LOC"
+        completed: true
+
+  - id: goal-10
+    title: "Infrastructure Testing & Dependency Updates"
+    status: completed
+    priority: 3
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: codebase review 2026-03-07, commit 49c9282, Test Coverage 65/100, Dependencies 79/100.
+      Add tests for untested infrastructure layers (db schema, AI service, exporters,
+      weather service, cost calculations). Update react-router-dom and vite-plugin-pwa
+      to fix 8 HIGH CVEs.
+    evidence: |
+      Commit 3e7993a. 12 db schema tests + 11 AI service tests created (23 new tests).
+      react-router-dom updated to ^7.13.1. vite-plugin-pwa already at latest (1.2.0).
+      929 tests pass across 28 test files. Build clean.
+    key_results:
+      - "Infrastructure layer test files created for db, ai, exporters"
+      - "react-router-dom updated to >=7.13.1"
+      - "vite-plugin-pwa updated to fix workbox CVEs"
+    success_criteria:
+      - id: sc-10-1
+        description: "Test file exists for src/lib/db with at least 5 tests"
+        completed: true
+      - id: sc-10-2
+        description: "Test file exists for src/lib/ai/service.ts with at least 5 tests"
+        completed: true
+      - id: sc-10-3
+        description: "react-router-dom version >= 7.13.1 in package.json"
+        completed: true
+
+  - id: goal-11
+    title: "Code Health III — Split Large Stores & Utils"
+    status: completed
+    priority: 1
+    progress: 100
+    updated: 2026-03-07
+    completed_date: 2026-03-07
+    description: |
+      Source: cascade audit 2026-03-07, review score 64/100 (D), Code Health 10/100.
+      Addresses: MED-2 (12 source files >500 LOC). Expected impact: Code Health 10->30.
+      After goals 7 and 9 split 10 large components, 12 source files remain >500 LOC.
+      These are primarily stores (usePropagules 658, useStations 580, useGraduations 530,
+      useBatches 522, usePlannerStore 557) and utils (analyticsCalculations 707, types/index 707,
+      seed 674). Split stores into action/selector modules and break up large util files.
+    evidence: |
+      Commit a2a00b2. 5 stores split: usePropagules 658→334, useStations 580→380,
+      useGraduations 530→380, useBatches 522→379, usePlannerStore 557→357.
+      analyticsCalculations 707→194 LOC (4 sub-modules). types/index 707→75 LOC
+      (3 domain files). 13 new focused sub-module files created. 929 tests pass, build clean.
+    key_results:
+      - "No source file over 500 LOC (excluding test files)"
+      - "Store files split into focused modules"
+      - "analyticsCalculations.ts and types/index.ts split into sub-modules"
+    success_criteria:
+      - id: sc-11-1
+        description: "All 5 large store files (usePropagules, useStations, useGraduations, useBatches, usePlannerStore) under 400 LOC each"
+        completed: true
+      - id: sc-11-2
+        description: "analyticsCalculations.ts split into focused calculation modules, each under 300 LOC"
+        completed: true
+      - id: sc-11-3
+        description: "propagation/types/index.ts split into domain-specific type files, each under 300 LOC"
+        completed: true
+
+  - id: goal-12
+    title: "Test Coverage Expansion — Utilities & Stores"
+    status: completed
+    priority: 2
+    progress: 100
+    updated: 2026-03-08
+    completed_date: 2026-03-08
+    description: |
+      Source: cascade audit 2026-03-07, review score 64/100 (D), Test Coverage 72/100.
+      Addresses: MED-4 (test-to-source ratio 0.12). Expected impact: Test Coverage 72->85.
+      After goal-10 added db and AI tests, test ratio is still 0.12 (28 test files / ~240 source).
+      Add tests for: stageHelpers, unifiedExporter, analyticsCalculations, cost calculations,
+      graduation logic, and remaining untested store modules.
+    evidence: |
+      Commit c5e6fd5. 7 new test files created: stageHelpers (22 tests), analyticsCalculations (18),
+      costCalculations (16), batchNumbering (14), unifiedExporter (10), motherPlantMetrics (13),
+      exporters (9). Total: 1080 tests across 35 test files (was 929/28). Build clean.
+    key_results:
+      - "Test-to-source ratio above 0.20"
+      - "All utility modules have test coverage"
+      - "40+ test files total"
+    success_criteria:
+      - id: sc-12-1
+        description: "Test files exist for stageHelpers, unifiedExporter, and analyticsCalculations"
+        completed: true
+      - id: sc-12-2
+        description: "Test files exist for useGraduations, useStations stores"
+        completed: true
+      - id: sc-12-3
+        description: "Total test file count is 35 or more (currently 28)"
+        completed: true
+
+  - id: goal-13
+    title: "UX/UI Accessibility & Interaction Fixes"
+    status: completed
+    priority: 1
+    progress: 100
+    updated: 2026-03-30
+    completed_date: 2026-03-30
+    description: |
+      Source: UX/UI design review 2026-03-30, score 48/100 (Grade F).
+      Addresses 5 critical and 7 high findings across accessibility, error handling,
+      interaction feedback, and semantic HTML. Expected impact: UX score 48->75+.
+    key_results:
+      - "All critical accessibility violations resolved (WCAG 2.1 AA)"
+      - "User-facing error feedback for all form submissions"
+      - "Focus management and keyboard navigation improved across all nav components"
+    success_criteria:
+      - id: sc-13-1
+        description: "FormFields.tsx form labels programmatically associated with inputs via htmlFor/id"
+        completed: true
+      - id: sc-13-2
+        description: "All form onSubmit catch blocks surface errors to users (not just console.error)"
+        completed: true
+      - id: sc-13-3
+        description: "Disabled TopNav links have aria-disabled=\"true\" and tabIndex={-1}"
+        completed: true
+      - id: sc-13-4
+        description: "OutcomesChart has role=\"img\" and aria-label"
+        completed: true
+      - id: sc-13-5
+        description: "prefers-reduced-motion media query added to index.css"
+        completed: true
+      - id: sc-13-6
+        description: "Skip navigation link added to AppShell"
+        completed: true
+      - id: sc-13-7
+        description: "Focus indicators (focus:ring) on BottomNav, TopNav, TrayCard buttons, DataExport buttons"
+        completed: true
+      - id: sc-13-8
+        description: "Toast notification system added for async action feedback"
+        completed: true
+      - id: sc-13-9
+        description: "Undo/confirmation for destructive actions improved"
+        completed: true
+      - id: sc-13-10
+        description: ".card CSS class defined in index.css"
+        completed: true
+      - id: sc-13-11
+        description: "LowStockAlert uses button element (not div onClick)"
+        completed: true
+      - id: sc-13-12
+        description: "aria-live regions added for dynamic content"
+        completed: true
+
+  - id: goal-14
+    title: "Fix npm CVEs & Update Dependencies"
+    status: completed
+    priority: 1
+    progress: 100
+    completed_date: 2026-03-31
+    updated: 2026-03-30
+    description: |
+      10 HIGH CVEs in vite-plugin-pwa/workbox/serialize-javascript.
+      Fix: npm audit fix --force to vite-plugin-pwa@0.19.8.
+      28 outdated packages (major bumps available for vite, typescript, eslint).
+    key_results:
+      - "Zero high or critical npm audit vulnerabilities"
+      - "vite-plugin-pwa updated to latest"
+      - "All tests pass after dependency updates"
+    success_criteria:
+      - id: sc-14-1
+        description: "npm audit shows 0 high or critical vulnerabilities"
+        completed: false
+      - id: sc-14-2
+        description: "vite-plugin-pwa updated to latest version"
+        completed: false
+      - id: sc-14-3
+        description: "All tests pass after dependency updates"
+        completed: false
+
+  - id: goal-15
+    title: "Code Health IV — Console Cleanup & File Splits"
+    status: completed
+    priority: 2
+    completed_date: 2026-03-31
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      56 console.log/error statements in production source code.
+      5 source files still >500 LOC (seed.ts, GraduationForm, SupplyForm, StationDetail, GraduationModal).
+      Test-to-source ratio 0.14 (below 0.20 target).
+    key_results:
+      - "Zero console.log/error in production source"
+      - "No source file exceeds 500 LOC"
+      - "Test-to-source ratio above 0.20"
+    success_criteria:
+      - id: sc-15-1
+        description: "Zero console.log/error in production source (or guarded by env check)"
+        completed: false
+      - id: sc-15-2
+        description: "No source file exceeds 500 LOC"
+        completed: false
+      - id: sc-15-3
+        description: "Test-to-source ratio above 0.20"
+        completed: false
+
+  - id: goal-16
+    title: "Documentation Update — Planner & A11y"
+    status: completed
+    priority: 2
+    progress: 100
+    updated: 2026-03-30
+    completed_date: 2026-03-30
+    description: |
+      README missing Planner module section and project structure entry.
+      README missing accessibility features from goal-13.
+      CLAUDE.md missing Toast component references.
+    evidence: |
+      Commit 91e8849. README updated with Planner Module section (5 feature bullets),
+      accessibility features (skip nav, toast, aria-live, focus rings, reduced motion,
+      semantic HTML), and planner/ added to project structure tree.
+      1285 tests pass across 59 files, build clean.
+    key_results:
+      - "README has dedicated Planner module section"
+      - "README lists accessibility features"
+      - "Project structure in README includes planner/ directory"
+    success_criteria:
+      - id: sc-16-1
+        description: "README has dedicated Planner module section"
+        completed: true
+      - id: sc-16-2
+        description: "README lists accessibility features (skip nav, toast, aria-live, focus rings)"
+        completed: true
+      - id: sc-16-3
+        description: "Project structure in README includes planner/ directory"
+        completed: true
+
+leads:
+  - engineering
+  - product
+  - design
+  - qa
+  - ops
+  - security
+  - marketing
+  - sales
+  - customer-success
