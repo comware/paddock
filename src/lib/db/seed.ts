@@ -8,6 +8,7 @@
 import { db } from './schema';
 import { defaultVarieties } from './seed-varieties';
 import { defaultMediums } from './seed-mediums';
+import { seedDemoHistory } from './seed-demo-history';
 
 /**
  * Seeds the database with default configurations.
@@ -28,6 +29,18 @@ export async function seedDatabase(): Promise<void> {
     if (import.meta.env.DEV) console.log('[Paddock] Seeding default growing medium configurations...');
     await db.growMediumConfigs.bulkAdd(defaultMediums);
     if (import.meta.env.DEV) console.log('[Paddock] Seeded', defaultMediums.length, 'growing mediums');
+  }
+
+  // Demo growing history - opt-in only.
+  //
+  // Gated behind an explicit env flag rather than DEV, because the demo deployment is a
+  // production build. A real grower running their own Paddock must never find invented
+  // trays in their database, so the default is off everywhere.
+  if (import.meta.env.VITE_DEMO_SEED === 'true') {
+    const count = await seedDemoHistory();
+    if (count > 0 && import.meta.env.DEV) {
+      console.log('[Paddock] Seeded', count, 'demo trays');
+    }
   }
 }
 
