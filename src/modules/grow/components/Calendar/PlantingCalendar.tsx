@@ -157,7 +157,11 @@ export function PlantingCalendar() {
     <div className="space-y-4">
       {/* Anything an agent has staged, above the calendar. Renders nothing when there is
           no proposal awaiting a decision. */}
-      <ProposalReview />
+      <ProposalReview
+        onApproved={(firstSowDate) =>
+          setCurrentWeekStart(startOfWeek(firstSowDate, { weekStartsOn: 1 }))
+        }
+      />
 
       {/* Header with Navigation */}
       <div className="flex items-center justify-between">

@@ -12,7 +12,17 @@
 import { useMemo, useState } from 'react';
 import { format, differenceInCalendarDays, startOfDay } from 'date-fns';
 import type { GrowPlannedPlanting } from '@/lib/db';
+import { useToastStore } from '@/stores/useToastStore';
 import { usePlannedPlantings, useVarieties } from '../../stores';
+
+interface ProposalReviewProps {
+  /**
+   * Called with the first scheduled sow date after an option is approved, so the calendar
+   * can move to where the work actually lands. Approving a plan that starts weeks out
+   * otherwise leaves the grower staring at an unchanged, empty week.
+   */
+  onApproved?: (firstSowDate: Date) => void;
+}
 
 interface OptionSummary {
   option: number;
@@ -60,9 +70,10 @@ function cadenceOf(plantings: GrowPlannedPlanting[]): number | null {
   return gaps[Math.floor(gaps.length / 2)];
 }
 
-export function ProposalReview() {
+export function ProposalReview({ onApproved }: ProposalReviewProps = {}) {
   const { plantings, approveProposal, declineProposal } = usePlannedPlantings();
   const { getVariety } = useVarieties();
+  const addToast = useToastStore((state) => state.add);
   const [selected, setSelected] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -139,8 +150,21 @@ export function ProposalReview() {
 
   const handleApprove = async () => {
     setBusy(true);
+    const firstSow = new Date(active.plantings[0].plannedSowDate);
+    const count = active.sowings;
+
     try {
       await approveProposal(proposal.id, active.option);
+
+      // The panel disappears on success, so without these the only feedback is an empty
+      // week and a calendar that did not move.
+      addToast(
+        `Scheduled ${count} ${count === 1 ? 'sowing' : 'sowings'} — first on ${format(firstSow, 'd MMMM')}`,
+        'success',
+      );
+      onApproved?.(firstSow);
+    } catch {
+      addToast('Could not schedule that plan. Nothing was changed.', 'error');
     } finally {
       setBusy(false);
     }
@@ -148,8 +172,16 @@ export function ProposalReview() {
 
   const handleDecline = async () => {
     setBusy(true);
+    const count = proposal.options.length;
+
     try {
       await declineProposal(proposal.id);
+      addToast(
+        `Discarded ${count} proposed ${count === 1 ? 'option' : 'options'}`,
+        'info',
+      );
+    } catch {
+      addToast('Could not discard that proposal.', 'error');
     } finally {
       setBusy(false);
     }
