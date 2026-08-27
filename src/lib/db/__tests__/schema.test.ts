@@ -18,8 +18,8 @@ describe('PaddockDB Schema', () => {
     expect(db.name).toBe('Paddock');
   });
 
-  it('should be at schema version 9', () => {
-    expect(db.verno).toBe(9);
+  it('should be at schema version 10', () => {
+    expect(db.verno).toBe(10);
   });
 
   it('should have all 21 expected tables', () => {

@@ -181,8 +181,12 @@ export interface GrowPlannedPlanting {
   targetHarvestDate: Date;      // Expected harvest date
   quantity: number;             // Number of trays to plant
   notes?: string;               // Optional notes
-  status: 'planned' | 'converted' | 'cancelled';
+  // 'proposed' is staged, not committed: written by an agent via WebMCP and awaiting
+  // human approval. Approving moves it to 'planned'; rejecting moves it to 'cancelled'.
+  status: 'proposed' | 'planned' | 'converted' | 'cancelled';
   convertedTrayId?: string;     // If converted to actual tray
+  proposalId?: string;          // Groups plantings from one agent proposal
+  proposedBy?: 'agent';         // Provenance; absent for human-created plantings
   createdAt: Date;
   updatedAt: Date;
 }
@@ -430,6 +434,15 @@ class PaddockDB extends Dexie {
     // - trayId, batchId: Quick lookup for linked entities
     this.version(9).stores({
       plannerEvents: '++id, siteId, scheduledDate, status, eventType, trayId, batchId, [siteId+scheduledDate], [siteId+status], [siteId+eventType]',
+    });
+
+    // Version 10: Index agent-proposed plantings (WebMCP)
+    // Additive only - no migration of existing rows. Existing plantings keep their
+    // status and simply have no proposalId/proposedBy.
+    // [proposalId+status]: fetch one proposal set for approve/reject in a single query
+    this.version(10).stores({
+      growPlannedPlantings:
+        '++id, siteId, variety, plannedSowDate, status, proposalId, [siteId+plannedSowDate], [proposalId+status]',
     });
   }
 }

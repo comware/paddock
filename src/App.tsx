@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 import { seedDatabase } from '@/lib/db';
+import { registerPaddockTools } from '@/lib/webmcp';
 import { useTheme } from '@/hooks';
 
 export default function App() {
@@ -23,6 +24,11 @@ export default function App() {
     async function init() {
       await seedDatabase();
       setIsReady(true);
+
+      // Expose growing tools to any browser AI agent. Registered after seeding so the
+      // agent never sees an empty database, and awaited separately so a WebMCP failure
+      // can never block the app from rendering.
+      void registerPaddockTools();
     }
     init();
   }, []);
