@@ -14,7 +14,6 @@ export {
   getProposal,
   getPendingProposalIds,
 } from './proposals';
-export { onProposalsChanged, emitProposalsChanged, clearProposalListeners } from './events';
 export { isWebMCPAvailable } from './types';
 
 export type { GrowingContext, VarietyHistory } from './context';
@@ -24,5 +23,4 @@ export type {
   ProposedPlanting,
   UnavailableWindow,
 } from './planner';
-export type { ProposalChange } from './events';
 export type { ToolDefinition, RegisteredTool, ModelContext } from './types';

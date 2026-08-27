@@ -10,24 +10,17 @@
  * nothing there is no way to tell that apart from "no proposals". One source of truth
  * means the badge and the panel cannot contradict each other.
  *
+ * Keeping that store current is useLivePlantings' job, mounted once for the module.
+ *
  * Counts distinct proposals rather than rows: one plan of nine sowings across three
  * options is one thing to decide, not twenty-seven.
  */
 
-import { useEffect, useMemo } from 'react';
-import { onProposalsChanged } from '@/lib/webmcp';
+import { useMemo } from 'react';
 import { usePlannedPlantings } from '../stores';
 
 export function usePendingProposals(): number {
   const plantings = usePlannedPlantings((state) => state.plantings);
-  const loadPlantings = usePlannedPlantings((state) => state.loadPlantings);
-
-  useEffect(() => {
-    void loadPlantings();
-  }, [loadPlantings]);
-
-  // Reload when an agent writes, so the badge appears without navigating.
-  useEffect(() => onProposalsChanged(() => void loadPlantings()), [loadPlantings]);
 
   return useMemo(() => {
     const ids = new Set<string>();

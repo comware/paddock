@@ -13,7 +13,7 @@ import { useRoutes } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useSites, useTrays } from './stores';
-import { useTrayMigration, usePendingProposals } from './hooks';
+import { useTrayMigration, usePendingProposals, useLivePlantings } from './hooks';
 import { growRoutes } from './routes';
 
 // Site-centric navigation:
@@ -41,6 +41,10 @@ function GrowModuleContent() {
   // Run migration for orphan trays (those without a site)
   // Safe to call every mount - only migrates if orphan trays exist
   useTrayMigration();
+
+  // Keep the plantings store in step with the database for every view in this module,
+  // including writes made by an agent while the grower is looking at another page.
+  useLivePlantings();
 
   // Surface agent-staged proposals wherever the grower happens to be in the module.
   // Without this a proposal is only discoverable by opening the calendar and noticing it.

@@ -20,7 +20,6 @@ import {
   isBefore,
   startOfDay,
 } from 'date-fns';
-import { onProposalsChanged } from '@/lib/webmcp';
 import { useTrays, useVarieties, usePlannedPlantings, useSites } from '../../stores';
 import { getUpcomingHarvests } from '../../utils';
 import { PlannedPlantingForm } from './PlannedPlantingForm';
@@ -58,14 +57,6 @@ export function PlantingCalendar() {
     loadPlantings();
     loadSites();
   }, [loadTrays, loadVarieties, loadPlantings, loadSites]);
-
-  // Reload when an agent stages or changes a proposal.
-  //
-  // Every other write in Paddock originates from this page, so a mount-time load was
-  // always enough. An agent writing through WebMCP changes the database while the user is
-  // sitting here, and without this the calendar keeps showing a stale view until it
-  // happens to remount.
-  useEffect(() => onProposalsChanged(() => loadPlantings()), [loadPlantings]);
 
   // Generate week days
   const weekDays = useMemo(() => {
