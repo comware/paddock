@@ -24,6 +24,7 @@ import { useTrays, useVarieties, usePlannedPlantings, useSites } from '../../sto
 import { getUpcomingHarvests } from '../../utils';
 import { PlannedPlantingForm } from './PlannedPlantingForm';
 import { ProposalReview } from './ProposalReview';
+import { EventDetail } from './EventDetail';
 
 interface CalendarEvent {
   id: string;
@@ -43,6 +44,7 @@ export function PlantingCalendar() {
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   const { trays, loadTrays } = useTrays();
   const { getVariety, loadVarieties } = useVarieties();
@@ -258,10 +260,35 @@ export function PlantingCalendar() {
               >
                 <div className="space-y-1">
                   {dayEvents.map((event) => (
-                    <div
+                    <button
                       key={event.id}
-                      onClick={(e) => e.stopPropagation()}
-                      className={`p-2 rounded-lg text-xs ${
+                      type="button"
+                      // A div with a click handler is neither focusable nor announced.
+                      // These carry real detail now, so they have to be buttons.
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (event.plantingId) setDetailId(event.plantingId);
+                      }}
+                      disabled={!event.plantingId}
+                      title={
+                        event.plantingId
+                          ? `${event.label} — click for details`
+                          : event.label
+                      }
+                      aria-label={`${event.label}, ${
+                        event.type === 'proposed'
+                          ? 'proposed sowing'
+                          : event.type === 'sow'
+                          ? 'scheduled sowing'
+                          : 'expected harvest'
+                      } on ${format(event.date, 'd MMMM')}${
+                        event.plantingId ? '. Show details.' : ''
+                      }`}
+                      className={`w-full text-left p-2 rounded-lg text-xs ${
+                        event.plantingId
+                          ? 'cursor-pointer hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500'
+                          : 'cursor-default'
+                      } ${
                         event.type === 'sow'
                           ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800'
                           : event.type === 'proposed'
@@ -280,7 +307,7 @@ export function PlantingCalendar() {
                       <div className="text-xs opacity-75 truncate">
                         {event.type === 'proposed' ? 'Proposed — not scheduled' : event.variety}
                       </div>
-                    </div>
+                    </button>
                   ))}
 
                   {/* Add button for empty days or days with events */}
@@ -325,6 +352,11 @@ export function PlantingCalendar() {
       </div>
 
       {/* Planned Planting Form Modal */}
+      <EventDetail
+        planting={plantings.find((p) => p.id === detailId) ?? null}
+        onClose={() => setDetailId(null)}
+      />
+
       <PlannedPlantingForm
         isOpen={isFormOpen}
         onClose={handleCloseForm}
