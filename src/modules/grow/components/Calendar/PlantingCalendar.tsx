@@ -23,10 +23,11 @@ import {
 import { useTrays, useVarieties, usePlannedPlantings, useSites } from '../../stores';
 import { getUpcomingHarvests } from '../../utils';
 import { PlannedPlantingForm } from './PlannedPlantingForm';
+import { ProposalReview } from './ProposalReview';
 
 interface CalendarEvent {
   id: string;
-  type: 'sow' | 'harvest';
+  type: 'sow' | 'harvest' | 'proposed';
   date: Date;
   variety: string;
   label: string;
@@ -86,6 +87,26 @@ export function PlantingCalendar() {
         }
       });
 
+    // Agent-staged sowings awaiting a decision. Shown alongside committed ones so the
+    // grower can see what a proposal would do to a week they already have plans for.
+    plantings
+      .filter((p) => p.status === 'proposed')
+      .forEach((planting) => {
+        const sowDate = startOfDay(planting.plannedSowDate);
+        if (sowDate >= currentWeekStart && sowDate <= weekEnd) {
+          events.push({
+            id: `proposed-${planting.id}`,
+            type: 'proposed',
+            date: planting.plannedSowDate,
+            variety: planting.variety,
+            label: `${planting.quantity}x ${planting.variety}`,
+            status: planting.status,
+            plantingId: planting.id,
+            quantity: planting.quantity,
+          });
+        }
+      });
+
     // Add expected harvests from active trays
     const activeTrays = trays.filter((t) => t.status === 'blackout' || t.status === 'light');
     const upcomingHarvests = getUpcomingHarvests(activeTrays, getVariety, 14);
@@ -134,6 +155,10 @@ export function PlantingCalendar() {
 
   return (
     <div className="space-y-4">
+      {/* Anything an agent has staged, above the calendar. Renders nothing when there is
+          no proposal awaiting a decision. */}
+      <ProposalReview />
+
       {/* Header with Navigation */}
       <div className="flex items-center justify-between">
         <div>
@@ -176,6 +201,12 @@ export function PlantingCalendar() {
           <span className="w-3 h-3 rounded-full bg-green-500" />
           <span className="text-slate-600 dark:text-slate-400">Expected Harvest</span>
         </div>
+        {calendarEvents.some((e) => e.type === 'proposed') && (
+          <div className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full border-2 border-dashed border-amber-500" />
+            <span className="text-slate-600 dark:text-slate-400">Proposed (not scheduled)</span>
+          </div>
+        )}
       </div>
 
       {/* Calendar Grid */}
@@ -229,14 +260,22 @@ export function PlantingCalendar() {
                       className={`p-2 rounded-lg text-xs ${
                         event.type === 'sow'
                           ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800'
+                          : event.type === 'proposed'
+                          ? // Dashed to read as provisional at a glance, distinct from
+                            // anything the grower has actually committed to.
+                            'bg-amber-50 dark:bg-amber-900/20 text-amber-900 dark:text-amber-200 border border-dashed border-amber-400 dark:border-amber-600'
                           : 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800'
                       }`}
                     >
                       <div className="flex items-center gap-1">
-                        <span>{event.type === 'sow' ? '🌱' : '🌿'}</span>
+                        <span aria-hidden="true">
+                          {event.type === 'sow' ? '🌱' : event.type === 'proposed' ? '🤖' : '🌿'}
+                        </span>
                         <span className="font-medium truncate">{event.label}</span>
                       </div>
-                      <div className="text-xs opacity-75 truncate">{event.variety}</div>
+                      <div className="text-xs opacity-75 truncate">
+                        {event.type === 'proposed' ? 'Proposed — not scheduled' : event.variety}
+                      </div>
                     </div>
                   ))}
 
