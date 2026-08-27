@@ -13,6 +13,7 @@
 
 import { growDb } from '@/lib/db';
 import type { GrowPlannedPlanting } from '@/lib/db';
+import { emitProposalsChanged } from './events';
 import type { PlanOption } from './planner';
 
 /** Stable, readable, and unique enough for a client-side grouping key. */
@@ -56,6 +57,10 @@ export async function stageProposal(
   }
 
   await growDb.plannedPlantings.bulkAdd(rows as GrowPlannedPlanting[]);
+
+  // Tell any open view that something arrived while the user was not looking.
+  emitProposalsChanged('staged');
+
   return proposalId;
 }
 
@@ -89,16 +94,20 @@ export async function approveProposalOption(
     .filter((row) => row.status === 'proposed' && row.proposalOption !== option)
     .modify({ status: 'cancelled', updatedAt: now });
 
+  emitProposalsChanged('approved');
   return { approved, discarded };
 }
 
 /** Reject an entire proposal. Every option is cancelled. */
 export async function rejectProposal(proposalId: string): Promise<number> {
-  return await growDb.plannedPlantings
+  const cancelled = await growDb.plannedPlantings
     .where('proposalId')
     .equals(proposalId)
     .filter((row) => row.status === 'proposed')
     .modify({ status: 'cancelled', updatedAt: new Date() });
+
+  emitProposalsChanged('rejected');
+  return cancelled;
 }
 
 /** Staged plantings for one proposal, still awaiting a decision. */

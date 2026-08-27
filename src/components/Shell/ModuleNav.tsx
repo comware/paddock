@@ -11,6 +11,10 @@ export interface ModuleNavItem {
   name: string;
   path: string;
   icon?: string;
+  /** Count of items needing attention. Rendered as a badge; 0 or undefined shows nothing. */
+  badge?: number;
+  /** What the badge means, for screen readers. */
+  badgeLabel?: string;
 }
 
 interface ModuleNavProps {
@@ -36,8 +40,22 @@ export function ModuleNav({ items, basePath }: ModuleNavProps) {
                 }`
               }
             >
-              {item.icon && <span>{item.icon}</span>}
+              {item.icon && <span aria-hidden="true">{item.icon}</span>}
               {item.name}
+              {item.badge !== undefined && item.badge > 0 && (
+                <span
+                  // Announced politely rather than assertively: something arrived, but it
+                  // is not urgent enough to interrupt what the user is doing.
+                  aria-live="polite"
+                  className="ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-amber-500 text-white text-xs font-bold"
+                >
+                  {item.badge}
+                  <span className="sr-only">
+                    {' '}
+                    {item.badgeLabel ?? 'awaiting attention'}
+                  </span>
+                </span>
+              )}
             </NavLink>
           ))}
         </div>

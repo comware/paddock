@@ -8,12 +8,12 @@
  * Wrapped in ErrorBoundary for module isolation.
  */
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useSites, useTrays } from './stores';
-import { useTrayMigration } from './hooks';
+import { useTrayMigration, usePendingProposals } from './hooks';
 import { growRoutes } from './routes';
 
 // Site-centric navigation:
@@ -42,12 +42,33 @@ function GrowModuleContent() {
   // Safe to call every mount - only migrates if orphan trays exist
   useTrayMigration();
 
+  // Surface agent-staged proposals wherever the grower happens to be in the module.
+  // Without this a proposal is only discoverable by opening the calendar and noticing it.
+  const pendingProposals = usePendingProposals();
+
+  const navItems = useMemo(
+    () =>
+      growNavItems.map((item) =>
+        item.path === '/calendar'
+          ? {
+              ...item,
+              badge: pendingProposals,
+              badgeLabel:
+                pendingProposals === 1
+                  ? 'proposed plan awaiting your decision'
+                  : 'proposed plans awaiting your decision',
+            }
+          : item,
+      ),
+    [pendingProposals],
+  );
+
   // Render child routes internally — keeps route definitions inside the lazy boundary
   const routeElement = useRoutes(growRoutes);
 
   return (
     <>
-      <ModuleNav items={growNavItems} basePath="/grow" />
+      <ModuleNav items={navItems} basePath="/grow" />
       <div className="flex-1 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           {routeElement}
