@@ -249,6 +249,36 @@ const proposeSuccessionPlan: ToolDefinition<ProposeInput> = {
           harvestsOutsideWindow: o.coverage.harvestsOutsideWindow,
         },
       })),
+      // Explain the edges rather than leaving them to be discovered. A first harvest a
+      // few days after the requested date is usually the earliest the constraints allow,
+      // not a failure - but silence invites the agent to report it as a mismatch.
+      windowEdges: options.map((o) => {
+        const first = o.coverage.firstHarvest;
+        const last = o.coverage.lastHarvest;
+        const offset = (a: string | null, b: string) =>
+          a ? Math.round((Date.parse(a) - Date.parse(b)) / 86_400_000) : null;
+
+        const startOffset = offset(first, input.harvestFrom);
+        const endOffset = offset(last, input.harvestTo);
+        const blocked = (input.unavailable ?? [])
+          .map((w) => `${w.from} to ${w.to}${w.reason ? ` (${w.reason})` : ''}`)
+          .join(', ');
+
+        return {
+          option: o.rank,
+          firstHarvest: first,
+          daysAfterWindowOpens: startOffset,
+          lastHarvest: last,
+          daysBeforeWindowCloses: endOffset === null ? null : -endOffset,
+          explanation:
+            startOffset && startOffset > 0
+              ? `Earliest possible first harvest is ${first}, ${startOffset} days after ` +
+                `${input.harvestFrom}` +
+                (blocked ? `, because sowing was blocked ${blocked}.` : '.') +
+                ' Not a shortfall - the constraints do not allow earlier.'
+              : `First harvest lands on ${first}, as requested.`,
+        };
+      }),
       caveats: options
         .flatMap((o) => {
           const notes: string[] = [];

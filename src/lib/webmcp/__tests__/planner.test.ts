@@ -252,8 +252,26 @@ describe('buildPlanOptions', () => {
       expect(lean!.coverage.effectiveCadenceDays).toBeGreaterThan(base.cadenceDays);
     });
 
-    it('does not offer a lean option when the tight plan already fits', () => {
+    it('still offers a leaner alternative when the budget is generous', () => {
+      // A grower with room to spare may still prefer to tie up fewer trays. Offering
+      // this only when the budget is busted leaves them with options that differ by a
+      // day or two - which is not a choice.
       const options = buildPlanOptions({ ...base, trayBudget: 99 });
+      const lean = options.find((o) => o.strategy === 'lean');
+      const tight = tightOf(options);
+
+      expect(lean).toBeDefined();
+      expect(lean!.peakTrayUsage).toBeLessThan(tight.peakTrayUsage);
+    });
+
+    it('does not offer a lean option that saves nothing', () => {
+      // One tray at a time cannot be reduced further.
+      const options = buildPlanOptions({
+        ...base,
+        harvestFrom: '2026-10-01',
+        harvestTo: '2026-10-01',
+      });
+
       expect(options.find((o) => o.strategy === 'lean')).toBeUndefined();
     });
 

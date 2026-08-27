@@ -355,30 +355,50 @@ export function buildPlanOptions(req: SuccessionRequest): PlanOption[] {
     ),
   );
 
-  // 2. Stretch the cadence until peak occupancy fits the tray budget. Only offered when
-  //    the tight plan actually exceeds it - otherwise it is the same plan twice.
-  if (req.trayBudget !== undefined && peakOccupancy(tight) > req.trayBudget) {
+  // 2. Stretch the cadence to use fewer trays at once.
+  //
+  //    Offered whenever it makes a real difference - not only when the tight plan busts a
+  //    stated budget. A grower choosing between "weekly, four trays tied up" and "every
+  //    ten days, three trays" is making a genuine trade-off about their own space. An
+  //    option that differs by a day or two is not a choice, it is noise.
+  const tightPeak = peakOccupancy(tight);
+  const targetPeak =
+    req.trayBudget !== undefined && tightPeak > req.trayBudget
+      ? req.trayBudget
+      : tightPeak - 1;
+
+  if (targetPeak >= 1) {
     let cadence = req.cadenceDays;
     let lean = tight;
 
     // Bounded: cadence never usefully exceeds the growing period itself, since one tray
     // has finished before the next is sown.
-    while (peakOccupancy(lean) > req.trayBudget && cadence < req.daysToHarvest * 2) {
+    while (peakOccupancy(lean) > targetPeak && cadence < req.daysToHarvest * 2) {
       cadence += 1;
       lean = buildSchedule(req, cadence, 0);
     }
 
-    options.push(
-      summarise(
-        req,
-        lean,
-        'lean',
-        `Every ${cadence} days to stay within ${req.trayBudget} trays`,
-        `Stretches the gap to ${cadence} days so no more than ${req.trayBudget} trays ` +
-          'are ever occupied at once. Slightly less continuity.',
-        cadence,
-      ),
-    );
+    const leanPeak = peakOccupancy(lean);
+
+    // Only worth offering if it actually saves trays and still plans something.
+    if (leanPeak < tightPeak && lean.length > 0) {
+      const fits = req.trayBudget !== undefined && tightPeak > req.trayBudget;
+
+      options.push(
+        summarise(
+          req,
+          lean,
+          'lean',
+          `Every ${cadence} days, ${leanPeak} trays at a time`,
+          fits
+            ? `Stretches the gap to ${cadence} days so no more than ${req.trayBudget} ` +
+                'trays are ever occupied at once.'
+            : `Ties up ${leanPeak} trays instead of ${tightPeak}, at the cost of ` +
+                `harvesting every ${cadence} days rather than ${req.cadenceDays}.`,
+          cadence,
+        ),
+      );
+    }
   }
 
   // 3. Sow two days early throughout. Cheap insurance on a bench that has already shown
