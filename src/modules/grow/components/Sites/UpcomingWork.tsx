@@ -12,9 +12,10 @@
  * and trays due to harvest - because on any given morning those are the same question.
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, addDays, differenceInCalendarDays, startOfDay } from 'date-fns';
+import { EventDetail } from '../Calendar/EventDetail';
 import { usePlannedPlantings, useVarieties, type TrayWithComputed } from '../../stores';
 
 interface UpcomingWorkProps {
@@ -32,6 +33,10 @@ interface WorkItem {
   kind: WorkKind;
   title: string;
   detail?: string;
+  /** Set for scheduled sowings - opens the same detail dialog as the calendar. */
+  plantingId?: string;
+  /** Set for tray work - jumps to the tray list. */
+  trayId?: string;
 }
 
 const KIND_STYLE: Record<WorkKind, { icon: string; chip: string }> = {
@@ -61,7 +66,8 @@ function whenLabel(date: Date, today: Date): string {
 export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
   const navigate = useNavigate();
   const { plantings } = usePlannedPlantings();
-  const { getVariety } = useVarieties();
+  const { getVariety, varieties } = useVarieties();
+  const [detailId, setDetailId] = useState<string | null>(null);
 
   const today = startOfDay(new Date());
 
@@ -88,6 +94,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
         kind: 'sow',
         title: `Sow ${p.quantity} ${p.quantity === 1 ? 'tray' : 'trays'} of ${p.variety}`,
         detail: `ready ${format(new Date(p.targetHarvestDate), 'd MMM')}`,
+        plantingId: p.id,
       });
     }
 
@@ -105,6 +112,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
           kind: 'light',
           title: `Move tray #${tray.trayNumber} to light`,
           detail: tray.variety,
+          trayId: tray.id,
         });
       }
 
@@ -117,6 +125,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
           kind: 'harvest',
           title: `Harvest tray #${tray.trayNumber}`,
           detail: tray.variety,
+          trayId: tray.id,
         });
       }
     }
@@ -176,42 +185,70 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
             const style = KIND_STYLE[item.kind];
 
             return (
-              <li key={item.id} className="flex items-center gap-3 px-4 py-3">
-                <span
-                  aria-hidden="true"
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${style.chip}`}
+              <li key={item.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    // A sowing opens the same detail dialog as the calendar; tray work
+                    // goes to the tray it concerns, since that is where it gets done.
+                    if (item.plantingId) setDetailId(item.plantingId);
+                    else if (item.trayId) navigate(`/grow/site/${siteId}/trays`);
+                  }}
+                  aria-label={`${item.title}, ${whenLabel(item.date, today).toLowerCase()} on ${format(item.date, 'd MMMM')}. Show details.`}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 transition-colors"
                 >
-                  {style.icon}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                    {item.title}
-                  </p>
-                  {item.detail && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                      {item.detail}
-                    </p>
-                  )}
-                </div>
-                <div className="text-right shrink-0">
-                  <p
-                    className={`text-sm font-medium ${
-                      overdue
-                        ? 'text-red-600 dark:text-red-400'
-                        : 'text-slate-900 dark:text-white'
-                    }`}
+                  <span
+                    aria-hidden="true"
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${style.chip}`}
                   >
-                    {whenLabel(item.date, today)}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {format(item.date, 'EEE d MMM')}
-                  </p>
-                </div>
+                    {style.icon}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                      {item.title}
+                    </p>
+                    {item.detail && (
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        {item.detail}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p
+                      className={`text-sm font-medium ${
+                        overdue
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-slate-900 dark:text-white'
+                      }`}
+                    >
+                      {whenLabel(item.date, today)}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {format(item.date, 'EEE d MMM')}
+                    </p>
+                  </div>
+                  <span aria-hidden="true" className="text-slate-300 dark:text-slate-600">
+                    ›
+                  </span>
+                </button>
               </li>
             );
           })}
         </ul>
       )}
+
+      <EventDetail
+        planting={plantings.find((p) => p.id === detailId) ?? null}
+        variety={
+          detailId
+            ? varieties.find(
+                (v) => v.name === plantings.find((p) => p.id === detailId)?.variety,
+              )
+            : undefined
+        }
+        trays={trays}
+        onClose={() => setDetailId(null)}
+      />
 
       {items.length > shown.length && (
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">

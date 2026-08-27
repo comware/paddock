@@ -15,3 +15,4 @@ export {
   clearGlobalErrorHandler,
   type StoreError,
 } from './errorMiddleware';
+export { useModulesStore, MODULE_DEFINITIONS, type ModuleId, type ModuleDefinition } from './useModulesStore';

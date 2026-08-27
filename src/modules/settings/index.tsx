@@ -5,7 +5,7 @@
  * Wrapped in ErrorBoundary for module isolation.
  */
 
-import { AISettings, DataExport, Preferences, ExperimentConfig, VarietyManager } from './components';
+import { AISettings, DataExport, Preferences, ExperimentConfig, VarietyManager, ModuleSettings } from './components';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 function SettingsModuleContent() {
@@ -18,6 +18,9 @@ function SettingsModuleContent() {
       <div className="space-y-6">
         {/* Preferences */}
         <Preferences />
+
+        {/* Which modules to show */}
+        <ModuleSettings />
 
         {/* AI Assistant */}
         <AISettings />
