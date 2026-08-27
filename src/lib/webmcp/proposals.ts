@@ -65,48 +65,40 @@ export async function stageProposal(
  *
  * Cancelled rather than deleted - the alternatives the grower rejected are part of how
  * the plan was arrived at, and worth keeping.
+ *
+ * Uses Dexie's collection `.modify()` rather than `.update(key, ...)`. The table is keyed
+ * `++id`, so keys are numbers at runtime even though the interface types them as strings -
+ * looking a row up by a stringified key silently matches nothing and the write is lost.
+ * Modifying through the query avoids touching keys at all.
  */
 export async function approveProposalOption(
   proposalId: string,
   option: number,
 ): Promise<{ approved: number; discarded: number }> {
-  const rows = await growDb.plannedPlantings.where('proposalId').equals(proposalId).toArray();
-
   const now = new Date();
-  let approved = 0;
-  let discarded = 0;
 
-  await Promise.all(
-    rows.map((row) => {
-      const keep = row.proposalOption === option;
-      if (keep) approved += 1;
-      else discarded += 1;
+  const approved = await growDb.plannedPlantings
+    .where('proposalId')
+    .equals(proposalId)
+    .filter((row) => row.status === 'proposed' && row.proposalOption === option)
+    .modify({ status: 'planned', updatedAt: now });
 
-      return growDb.plannedPlantings.update(String(row.id), {
-        status: keep ? 'planned' : 'cancelled',
-        updatedAt: now,
-      });
-    }),
-  );
+  const discarded = await growDb.plannedPlantings
+    .where('proposalId')
+    .equals(proposalId)
+    .filter((row) => row.status === 'proposed' && row.proposalOption !== option)
+    .modify({ status: 'cancelled', updatedAt: now });
 
   return { approved, discarded };
 }
 
 /** Reject an entire proposal. Every option is cancelled. */
 export async function rejectProposal(proposalId: string): Promise<number> {
-  const rows = await growDb.plannedPlantings.where('proposalId').equals(proposalId).toArray();
-  const now = new Date();
-
-  await Promise.all(
-    rows.map((row) =>
-      growDb.plannedPlantings.update(String(row.id), {
-        status: 'cancelled',
-        updatedAt: now,
-      }),
-    ),
-  );
-
-  return rows.length;
+  return await growDb.plannedPlantings
+    .where('proposalId')
+    .equals(proposalId)
+    .filter((row) => row.status === 'proposed')
+    .modify({ status: 'cancelled', updatedAt: new Date() });
 }
 
 /** Staged plantings for one proposal, still awaiting a decision. */

@@ -12,37 +12,53 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { GrowPlannedPlanting } from '@/lib/db';
 
-/** In-memory stand-in for the plannedPlantings table. */
+/**
+ * In-memory stand-in for the plannedPlantings table.
+ *
+ * Rows are given NUMERIC ids, matching what Dexie actually does with a `++id` key -
+ * even though GrowPlannedPlanting types `id` as a string. A mock that handed out string
+ * ids would hide the exact class of bug this file exists to catch: looking a row up by a
+ * stringified key matches nothing, and the write is silently lost.
+ */
 let rows: GrowPlannedPlanting[] = [];
+let nextId = 1;
+
+function matches(index: string, value: unknown) {
+  return (r: GrowPlannedPlanting) => {
+    if (index === 'proposalId') return r.proposalId === value;
+    if (index === 'status') return r.status === value;
+    if (index === '[proposalId+status]') {
+      const [pid, status] = value as [string, string];
+      return r.proposalId === pid && r.status === status;
+    }
+    return false;
+  };
+}
+
+/** Mirrors Dexie's Collection: filter() narrows, modify() writes and returns a count. */
+function collection(predicate: (r: GrowPlannedPlanting) => boolean) {
+  return {
+    toArray: async () => rows.filter(predicate),
+    filter: (extra: (r: GrowPlannedPlanting) => boolean) =>
+      collection((r) => predicate(r) && extra(r)),
+    modify: async (changes: Partial<GrowPlannedPlanting>) => {
+      const hit = rows.filter(predicate);
+      hit.forEach((r) => Object.assign(r, changes));
+      return hit.length;
+    },
+  };
+}
 
 vi.mock('@/lib/db', () => ({
   growDb: {
     plannedPlantings: {
       bulkAdd: vi.fn(async (added: GrowPlannedPlanting[]) => {
         rows.push(
-          ...added.map((r, i) => ({ ...r, id: `row-${rows.length + i}` })),
+          ...added.map((r) => ({ ...r, id: nextId++ as unknown as string })),
         );
       }),
-      update: vi.fn(async (id: string, changes: Partial<GrowPlannedPlanting>) => {
-        const row = rows.find((r) => String(r.id) === String(id));
-        if (row) Object.assign(row, changes);
-      }),
       where: (index: string) => ({
-        equals: (value: unknown) => ({
-          toArray: async () => {
-            if (index === 'proposalId') {
-              return rows.filter((r) => r.proposalId === value);
-            }
-            if (index === 'status') {
-              return rows.filter((r) => r.status === value);
-            }
-            if (index === '[proposalId+status]') {
-              const [pid, status] = value as [string, string];
-              return rows.filter((r) => r.proposalId === pid && r.status === status);
-            }
-            return [];
-          },
-        }),
+        equals: (value: unknown) => collection(matches(index, value)),
       }),
     },
   },
@@ -86,6 +102,21 @@ const twoOptions = [
 
 beforeEach(() => {
   rows = [];
+  nextId = 1;
+});
+
+describe('key handling', () => {
+  it('writes actually land on rows with numeric ids', async () => {
+    // Regression: approve and reject looked rows up by String(row.id). Dexie keys a
+    // `++id` table with numbers, so the lookup matched nothing, both calls succeeded
+    // silently, and the UI button appeared to do nothing at all.
+    const id = await stageProposal(twoOptions, 'site-1', 'note');
+    expect(rows.every((r) => typeof r.id === 'number')).toBe(true);
+
+    await rejectProposal(id);
+
+    expect(rows.every((r) => r.status === 'cancelled')).toBe(true);
+  });
 });
 
 describe('stageProposal', () => {
