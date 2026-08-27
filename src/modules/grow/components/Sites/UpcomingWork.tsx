@@ -15,7 +15,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, addDays, differenceInCalendarDays, startOfDay } from 'date-fns';
-import { EventDetail } from '../Calendar/EventDetail';
+import { WorkDetail, type WorkSubject } from '../Calendar/WorkDetail';
 import { usePlannedPlantings, useVarieties, type TrayWithComputed } from '../../stores';
 
 interface UpcomingWorkProps {
@@ -67,7 +67,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
   const navigate = useNavigate();
   const { plantings } = usePlannedPlantings();
   const { getVariety, varieties } = useVarieties();
-  const [detailId, setDetailId] = useState<string | null>(null);
+  const [subject, setSubject] = useState<WorkSubject | null>(null);
 
   const today = startOfDay(new Date());
 
@@ -189,10 +189,22 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
                 <button
                   type="button"
                   onClick={() => {
-                    // A sowing opens the same detail dialog as the calendar; tray work
-                    // goes to the tray it concerns, since that is where it gets done.
-                    if (item.plantingId) setDetailId(item.plantingId);
-                    else if (item.trayId) navigate(`/grow/site/${siteId}/trays`);
+                    // Everything opens the same dialog. A sowing and a tray waiting to be
+                    // harvested are different records, but from the grower's side they
+                    // are the same question - so they behave the same way.
+                    if (item.plantingId) {
+                      const planting = plantings.find((p) => p.id === item.plantingId);
+                      if (planting) setSubject({ kind: 'planting', planting });
+                    } else if (item.trayId) {
+                      const tray = trays.find((t) => t.id === item.trayId);
+                      if (tray) {
+                        setSubject({
+                          kind: 'tray',
+                          tray,
+                          focus: item.kind === 'harvest' ? 'harvest' : 'light',
+                        });
+                      }
+                    }
                   }}
                   aria-label={`${item.title}, ${whenLabel(item.date, today).toLowerCase()} on ${format(item.date, 'd MMMM')}. Show details.`}
                   className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 transition-colors"
@@ -237,17 +249,25 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
         </ul>
       )}
 
-      <EventDetail
-        planting={plantings.find((p) => p.id === detailId) ?? null}
+      <WorkDetail
+        subject={subject}
         variety={
-          detailId
+          subject
             ? varieties.find(
-                (v) => v.name === plantings.find((p) => p.id === detailId)?.variety,
+                (v) =>
+                  v.name ===
+                  (subject.kind === 'planting'
+                    ? subject.planting.variety
+                    : subject.tray.variety),
               )
             : undefined
         }
         trays={trays}
-        onClose={() => setDetailId(null)}
+        onOpenTray={() => {
+          setSubject(null);
+          navigate(`/grow/site/${siteId}/trays`);
+        }}
+        onClose={() => setSubject(null)}
       />
 
       {items.length > shown.length && (

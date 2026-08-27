@@ -24,7 +24,7 @@ import { useTrays, useVarieties, usePlannedPlantings, useSites } from '../../sto
 import { getUpcomingHarvests } from '../../utils';
 import { PlannedPlantingForm } from './PlannedPlantingForm';
 import { ProposalReview } from './ProposalReview';
-import { EventDetail } from './EventDetail';
+import { WorkDetail } from './WorkDetail';
 
 interface CalendarEvent {
   id: string;
@@ -353,8 +353,8 @@ export function PlantingCalendar() {
       </div>
 
       {/* Planned Planting Form Modal */}
-      <EventDetail
-        planting={detailPlanting}
+      <WorkDetail
+        subject={detailPlanting ? { kind: 'planting', planting: detailPlanting } : null}
         variety={detailPlanting ? getVariety(detailPlanting.variety) : undefined}
         trays={trays}
         onClose={() => setDetailId(null)}
