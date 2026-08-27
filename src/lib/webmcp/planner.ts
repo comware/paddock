@@ -71,6 +71,12 @@ export interface PlanOption {
     lastHarvest: string | null;
     /** Cadence actually achieved, which may differ from the one requested. */
     effectiveCadenceDays: number;
+    /** Intervals longer than the requested cadence. Empty means unbroken continuity. */
+    gaps: Array<{ after: string; before: string; days: number }>;
+    /** Harvests landing outside the requested window - early ones are usually waste. */
+    harvestsOutsideWindow: string[];
+    /** Whether anything is ready within one cadence of the window opening. */
+    windowStartCovered: boolean;
   };
   peakTrayUsage: number;
   withinTrayBudget: boolean;
@@ -91,27 +97,123 @@ const inWindow = (d: Date, w: UnavailableWindow): boolean =>
 /**
  * Move a sow date out of an unavailable window.
  *
- * Always shifts *earlier*. A grower who will be away sows before they leave; sowing after
- * they return would leave a gap they have already decided to accept. Shifting earlier
- * costs a slightly older tray at harvest, which is recoverable - a missed sowing is not.
+ * Both directions are considered. Sowing before the grower leaves is the instinctive
+ * answer, but it is not always the right one: shifting earlier can land the harvest
+ * before the window the grower actually asked for, which wastes it entirely. Shifting
+ * later delays a harvest but keeps it inside the window.
+ *
+ * So: prefer whichever shift keeps the harvest inside the requested window, and among
+ * those the one closest to the date originally wanted. Earlier wins ties, since a
+ * slightly over-mature tray is more use than one that is not ready.
+ *
+ * Adjacent windows are handled by scanning outward rather than recursing - two windows a
+ * day apart would otherwise bounce a recursive search between them forever.
  */
+
+/** Nearest date in the given direction that is not inside any window. */
+function scanClear(
+  from: Date,
+  step: -1 | 1,
+  windows: UnavailableWindow[],
+  maxDays = 400,
+): Date | null {
+  let d = from;
+  for (let i = 0; i < maxDays; i++) {
+    if (!windows.some((w) => inWindow(d, w))) return d;
+    d = addDays(d, step);
+  }
+  return null; // Blocked for longer than any plausible planning horizon.
+}
+
 function avoidUnavailable(
   sow: Date,
   windows: UnavailableWindow[],
+  opts: { daysToHarvest: number; harvestFrom: Date; harvestTo: Date },
 ): { date: Date; adjustment?: string } {
   const hit = windows.find((w) => inWindow(sow, w));
   if (!hit) return { date: sow };
 
-  const movedTo = addDays(toDate(hit.from), -1);
-  const shifted = Math.round((sow.getTime() - movedTo.getTime()) / DAY);
+  const idealHarvest = addDays(sow, opts.daysToHarvest);
+
+  const earlier = scanClear(addDays(toDate(hit.from), -1), -1, windows);
+  const later = scanClear(addDays(toDate(hit.to), 1), 1, windows);
+
+  const candidates = [
+    earlier ? { date: earlier, direction: 'early' as const } : null,
+    later ? { date: later, direction: 'late' as const } : null,
+  ]
+    .filter((c): c is { date: Date; direction: 'early' | 'late' } => c !== null)
+    .map((c) => {
+      const harvest = addDays(c.date, opts.daysToHarvest);
+      return {
+        ...c,
+        harvest,
+        inWindow: harvest >= opts.harvestFrom && harvest <= opts.harvestTo,
+        distance: Math.abs(harvest.getTime() - idealHarvest.getTime()),
+      };
+    });
+
+  // Blocked in both directions for longer than the planning horizon - leave it be rather
+  // than inventing a date.
+  if (candidates.length === 0) return { date: sow };
+
+  const best = candidates.sort((a, b) => {
+    if (a.inWindow !== b.inWindow) return a.inWindow ? -1 : 1;
+    if (a.distance !== b.distance) return a.distance - b.distance;
+    return a.direction === 'early' ? -1 : 1;
+  })[0];
+
+  const shifted = Math.abs(Math.round((sow.getTime() - best.date.getTime()) / DAY));
 
   return {
-    date: movedTo,
+    date: best.date,
     adjustment:
-      `sown ${shifted} day${shifted === 1 ? '' : 's'} early to clear ` +
+      `sown ${shifted} day${shifted === 1 ? '' : 's'} ${best.direction} to clear ` +
       (hit.reason ? `${hit.reason} ` : '') +
       `(${hit.from} to ${hit.to})`,
   };
+}
+
+/**
+ * Find breaks in harvest continuity.
+ *
+ * A plan that quietly stops meeting the cadence it was asked for is worse than one that
+ * admits it. Reports every interval longer than the requested cadence, plus harvests that
+ * fall outside the window entirely.
+ */
+export function findCoverageGaps(
+  plantings: ProposedPlanting[],
+  cadenceDays: number,
+  harvestFrom: string,
+  harvestTo: string,
+): {
+  gaps: Array<{ after: string; before: string; days: number }>;
+  harvestsOutsideWindow: string[];
+  windowStartCovered: boolean;
+} {
+  const harvests = plantings.map((p) => p.targetHarvestDate).sort();
+
+  const gaps: Array<{ after: string; before: string; days: number }> = [];
+  for (let i = 1; i < harvests.length; i++) {
+    const days = Math.round(
+      (toDate(harvests[i]).getTime() - toDate(harvests[i - 1]).getTime()) / DAY,
+    );
+    if (days > cadenceDays) {
+      gaps.push({ after: harvests[i - 1], before: harvests[i], days });
+    }
+  }
+
+  const outside = harvests.filter((h) => h < harvestFrom || h > harvestTo);
+
+  // The window is covered from the start if something is ready within one cadence of the
+  // date the grower asked for.
+  const firstInside = harvests.find((h) => h >= harvestFrom);
+  const windowStartCovered =
+    firstInside !== undefined &&
+    Math.round((toDate(firstInside).getTime() - toDate(harvestFrom).getTime()) / DAY) <=
+      cadenceDays;
+
+  return { gaps, harvestsOutsideWindow: outside, windowStartCovered };
 }
 
 // ============================================
@@ -164,7 +266,11 @@ function buildSchedule(
 
   for (let harvest = from; harvest <= to; harvest = addDays(harvest, cadenceDays)) {
     const ideal = addDays(harvest, -lead);
-    const { date: sow, adjustment } = avoidUnavailable(ideal, windows);
+    const { date: sow, adjustment } = avoidUnavailable(ideal, windows, {
+      daysToHarvest: req.daysToHarvest,
+      harvestFrom: from,
+      harvestTo: to,
+    });
 
     // Shifting out of an unavailable window can collide with the previous sowing.
     const key = toISO(sow);
@@ -195,6 +301,12 @@ function summarise(
 ): Omit<PlanOption, 'rank'> {
   const peak = peakOccupancy(plantings);
   const harvests = plantings.map((p) => p.targetHarvestDate).sort();
+  const continuity = findCoverageGaps(
+    plantings,
+    cadenceDays,
+    req.harvestFrom,
+    req.harvestTo,
+  );
 
   return {
     strategy,
@@ -206,6 +318,7 @@ function summarise(
       firstHarvest: harvests[0] ?? null,
       lastHarvest: harvests[harvests.length - 1] ?? null,
       effectiveCadenceDays: cadenceDays,
+      ...continuity,
     },
     peakTrayUsage: peak,
     withinTrayBudget: req.trayBudget === undefined || peak <= req.trayBudget,
@@ -283,10 +396,21 @@ export function buildPlanOptions(req: SuccessionRequest): PlanOption[] {
     ),
   );
 
-  // Rank: fitting the tray budget beats everything, then more harvests, then fewer trays.
+  // Rank: fit the tray budget, then keep continuity unbroken, then cover the start of the
+  // window, then more harvests, then fewer trays.
+  //
+  // Continuity outranks harvest count deliberately. A plan with more harvests and a
+  // three-week hole in the middle is worse for someone supplying a weekly market than a
+  // plan with fewer, evenly spaced ones.
   return options
     .sort((a, b) => {
       if (a.withinTrayBudget !== b.withinTrayBudget) return a.withinTrayBudget ? -1 : 1;
+      if (a.coverage.gaps.length !== b.coverage.gaps.length) {
+        return a.coverage.gaps.length - b.coverage.gaps.length;
+      }
+      if (a.coverage.windowStartCovered !== b.coverage.windowStartCovered) {
+        return a.coverage.windowStartCovered ? -1 : 1;
+      }
       if (a.coverage.harvestsPlanned !== b.coverage.harvestsPlanned) {
         return b.coverage.harvestsPlanned - a.coverage.harvestsPlanned;
       }

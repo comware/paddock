@@ -240,7 +240,40 @@ const proposeSuccessionPlan: ToolDefinition<ProposeInput> = {
         withinTrayBudget: o.withinTrayBudget,
         sowDates: o.plantings.map((p) => p.plannedSowDate),
         adjustments: o.plantings.map((p) => p.adjustment).filter(Boolean),
+        // Reported explicitly so a plan cannot quietly stop meeting the cadence it was
+        // asked for. Tell the grower about these rather than glossing them.
+        continuity: {
+          unbroken: o.coverage.gaps.length === 0,
+          gaps: o.coverage.gaps,
+          windowStartCovered: o.coverage.windowStartCovered,
+          harvestsOutsideWindow: o.coverage.harvestsOutsideWindow,
+        },
       })),
+      caveats: options
+        .flatMap((o) => {
+          const notes: string[] = [];
+          if (o.coverage.gaps.length) {
+            notes.push(
+              `Option ${o.rank}: ${o.coverage.gaps
+                .map((g) => `${g.days}-day gap between ${g.after} and ${g.before}`)
+                .join(', ')}.`,
+            );
+          }
+          if (!o.coverage.windowStartCovered) {
+            notes.push(
+              `Option ${o.rank}: nothing ready within ${o.coverage.effectiveCadenceDays} ` +
+                `days of ${input.harvestFrom}.`,
+            );
+          }
+          if (o.coverage.harvestsOutsideWindow.length) {
+            notes.push(
+              `Option ${o.rank}: harvests outside the requested window on ` +
+                `${o.coverage.harvestsOutsideWindow.join(', ')}.`,
+            );
+          }
+          return notes;
+        })
+        .slice(0, 10),
     };
   },
 };
