@@ -186,6 +186,7 @@ export interface GrowPlannedPlanting {
   status: 'proposed' | 'planned' | 'converted' | 'cancelled';
   convertedTrayId?: string;     // If converted to actual tray
   proposalId?: string;          // Groups plantings from one agent proposal
+  proposalOption?: number;      // Which ranked option within that proposal (1 = top)
   proposedBy?: 'agent';         // Provenance; absent for human-created plantings
   createdAt: Date;
   updatedAt: Date;

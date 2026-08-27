@@ -15,6 +15,16 @@ export interface ToolDefinition<TInput = Record<string, unknown>> {
   execute: (input: TInput) => unknown | Promise<unknown>;
 }
 
+/**
+ * A tool of any input shape, for holding a heterogeneous registry.
+ *
+ * `never` as the parameter type is what makes this work: parameters are contravariant, so
+ * a handler accepting any specific input is assignable to one accepting `never`. This
+ * keeps each tool strongly typed at its definition while still allowing them to sit in
+ * one array - no casts, no `any`.
+ */
+export type AnyToolDefinition = ToolDefinition<never>;
+
 export interface RegisteredTool {
   name: string;
   description: string;

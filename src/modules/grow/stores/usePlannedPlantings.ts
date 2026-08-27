@@ -7,6 +7,7 @@
 
 import { create } from 'zustand';
 import { growDb, type GrowPlannedPlanting } from '@/lib/db';
+import { approveProposalOption, rejectProposal } from '@/lib/webmcp';
 import {
   startOfDay,
   endOfDay,
@@ -20,7 +21,7 @@ import {
 // TYPES
 // ============================================
 
-export type PlannedPlantingStatus = 'planned' | 'converted' | 'cancelled';
+export type PlannedPlantingStatus = 'proposed' | 'planned' | 'converted' | 'cancelled';
 
 export interface PlannedPlantingWithComputed extends GrowPlannedPlanting {
   daysUntilSow: number;
@@ -51,6 +52,10 @@ export interface PlannedPlantingsState {
   deletePlanting: (id: string) => Promise<void>;
   convertToTray: (id: string, trayId: string) => Promise<void>;
   cancelPlanting: (id: string) => Promise<void>;
+
+  // Agent proposals (WebMCP). An agent stages a plan; only a human commits it.
+  approveProposal: (proposalId: string, option: number) => Promise<void>;
+  declineProposal: (proposalId: string) => Promise<void>;
 
   // Filters
   setFilters: (filters: Partial<PlannedPlantingsFilters>) => void;
@@ -181,6 +186,30 @@ export const usePlannedPlantings = create<PlannedPlantingsState>((set, get) => (
   // Cancel planned planting
   cancelPlanting: async (id) => {
     await get().updatePlanting(id, { status: 'cancelled' });
+  },
+
+  // Approve one option of an agent proposal. The chosen option becomes 'planned' and
+  // every alternative is cancelled - kept rather than deleted, since the options the
+  // grower turned down are part of how the plan was arrived at.
+  approveProposal: async (proposalId, option) => {
+    try {
+      await approveProposalOption(proposalId, option);
+      await get().loadPlantings();
+    } catch (error) {
+      set({ error: (error as Error).message });
+      throw error;
+    }
+  },
+
+  // Decline the whole proposal. Every option is cancelled.
+  declineProposal: async (proposalId) => {
+    try {
+      await rejectProposal(proposalId);
+      await get().loadPlantings();
+    } catch (error) {
+      set({ error: (error as Error).message });
+      throw error;
+    }
   },
 
   // Set filters
