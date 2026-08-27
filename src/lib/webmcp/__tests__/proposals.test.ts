@@ -234,3 +234,29 @@ describe('rejectProposal', () => {
     expect(rows.some((r) => r.status === 'planned')).toBe(false);
   });
 });
+
+describe('getPendingProposalIds', () => {
+  it('lists proposals still awaiting a decision', async () => {
+    const { getPendingProposalIds } = await import('../proposals');
+    const id = await stageProposal(twoOptions, 'site-1', 'note');
+
+    expect(await getPendingProposalIds()).toEqual([id]);
+  });
+
+  it('counts a proposal once, not once per row', async () => {
+    const { getPendingProposalIds } = await import('../proposals');
+    await stageProposal(twoOptions, 'site-1', 'note');
+
+    // Nine sowings across three options is one decision, not twenty-seven.
+    expect(rows.length).toBeGreaterThan(1);
+    expect(await getPendingProposalIds()).toHaveLength(1);
+  });
+
+  it('drops a proposal once it has been decided', async () => {
+    const { getPendingProposalIds } = await import('../proposals');
+    const id = await stageProposal(twoOptions, 'site-1', 'note');
+    await approveProposalOption(id, 1);
+
+    expect(await getPendingProposalIds()).toEqual([]);
+  });
+});
