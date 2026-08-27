@@ -12,6 +12,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContext } from './SiteContext';
 import { useTrays, useTimeEntries, useObservations, type TrayWithComputed } from '../../stores';
+import { UpcomingWork } from './UpcomingWork';
 import { NewTrayForm } from '../Trays/NewTrayForm';
 import { HarvestForm } from '../Trays/HarvestForm';
 import { format, addDays, isAfter, startOfDay } from 'date-fns';
@@ -267,6 +268,10 @@ export function SiteDashboard() {
           />
         </div>
       </div>
+
+      {/* What this site needs next. Placed above Today because it is the thing a grower
+          opens the dashboard to find out. */}
+      <UpcomingWork siteId={siteId} trays={siteTrays} />
 
       {/* Today's Status */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
