@@ -155,8 +155,10 @@ const proposeSuccessionPlan: ToolDefinition<ProposeInput> = {
       notes: {
         type: 'string',
         description:
-          'Anything the grower said that the data would not know - a bench that catches ' +
-          'frost, a market that wants volume in a particular month.',
+          'ONE short line naming any constraint the data would not know - "north bench ' +
+          'catches frost in early October", "market wants volume in December". This is ' +
+          'shown against every sowing in the plan, so keep it brief and do not restate ' +
+          'the request or repeat parameters already passed above.',
       },
     },
     required: ['variety', 'harvestFrom', 'harvestTo'],

@@ -154,6 +154,7 @@ export function PlantingCalendar() {
   };
 
   const today = startOfDay(new Date());
+  const detailPlanting = plantings.find((p) => p.id === detailId) ?? null;
 
   return (
     <div className="space-y-4">
@@ -353,7 +354,9 @@ export function PlantingCalendar() {
 
       {/* Planned Planting Form Modal */}
       <EventDetail
-        planting={plantings.find((p) => p.id === detailId) ?? null}
+        planting={detailPlanting}
+        variety={detailPlanting ? getVariety(detailPlanting.variety) : undefined}
+        trays={trays}
         onClose={() => setDetailId(null)}
       />
 
