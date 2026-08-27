@@ -90,11 +90,12 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
 const STORAGE_KEY = 'enabled_modules';
 
 /**
- * A fresh install starts with the two modules that are actually built out. Someone
- * running Paddock for the first time should see a small, coherent app rather than a menu
- * of unfinished sections.
+ * A fresh install starts with Grow alone. Someone running Paddock for the first time is
+ * tracking trays; propagation, sales and the rest are things they may grow into. Starting
+ * narrow and letting them switch modules on beats presenting seven sections and leaving
+ * them to work out which two matter.
  */
-const DEFAULT_ENABLED: ModuleId[] = ['grow', 'propagation'];
+const DEFAULT_ENABLED: ModuleId[] = ['grow'];
 
 const REQUIRED: ModuleId[] = MODULE_DEFINITIONS.filter((m) => m.required).map((m) => m.id);
 

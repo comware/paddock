@@ -37,16 +37,16 @@ const store = () => useModulesStore.getState();
 beforeEach(() => {
   settings = [];
   nextId = 1;
-  useModulesStore.setState({ enabled: ['grow', 'propagation'], isLoaded: false });
+  useModulesStore.setState({ enabled: ['grow'], isLoaded: false });
 });
 
 describe('module enablement', () => {
-  it('starts with the modules that are actually built out', async () => {
+  it('starts with Grow alone', async () => {
     await store().load();
 
-    expect(store().enabled).toContain('grow');
-    expect(store().enabled).toContain('propagation');
-    expect(store().enabled).not.toContain('crm');
+    // A first-time grower is tracking trays. Everything else is something they may grow
+    // into, and can switch on when they do.
+    expect(store().enabled).toEqual(['grow']);
   });
 
   it('turns a module on and persists it', async () => {
@@ -59,6 +59,7 @@ describe('module enablement', () => {
 
   it('turns a module off and persists it', async () => {
     await store().load();
+    await store().setEnabled('propagation', true);
     await store().setEnabled('propagation', false);
 
     expect(store().isEnabled('propagation')).toBe(false);
