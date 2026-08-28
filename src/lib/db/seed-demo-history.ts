@@ -30,7 +30,7 @@
 
 import { db } from './schema';
 import { seedDemoWeather } from './seed-demo-weather';
-import type { GrowSite, GrowTray } from './schema';
+import type { GrowExperiment, GrowSite, GrowTray } from './schema';
 
 const DAY = 86_400_000;
 
@@ -284,6 +284,19 @@ export async function seedDemoHistory(): Promise<number> {
   // Daily readings for the same period, so the analytics can test whether the cold
   // greenhouse actually explains the slow basil rather than asserting it.
   await seedDemoWeather(siteId, now);
+
+  // An experiment record dated to the first tray. Without one the app assumes the grower
+  // started today and reports "Week 1 of a six-week trial" over six months of history.
+  if ((await db.growExperiments.count()) === 0) {
+    const firstSown = Math.max(...ALL_SPECS.map((spec) => spec.sown));
+
+    await db.growExperiments.add({
+      startDate: daysAgo(firstSown, now),
+      targetTrays: 24,
+      targetSuccessRate: 80,
+      targetHoursPerWeek: 5,
+    } as GrowExperiment);
+  }
 
   return trays.length;
 }

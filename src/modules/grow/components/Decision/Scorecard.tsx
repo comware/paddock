@@ -364,11 +364,12 @@ function generateMarkdownExport(
 ): string {
   const decisionLabel = DECISION_OPTIONS.find((d) => d.value === decision)?.label ?? 'Not decided';
 
-  return `# Microgreens Experiment - Week 6 Decision
+  return `# Microgreens - variety scorecard
 
 **Date**: ${format(new Date(), 'MMMM d, yyyy')}
+**Growing for**: ${metrics.daysElapsed} days
 
-## Experiment Summary
+## Summary
 
 - **Days Elapsed**: ${metrics.daysElapsed}
 - **Trays Completed**: ${metrics.harvestedTrays} of ${metrics.totalTrays}

@@ -2,7 +2,7 @@
  * useExperiment - Zustand store for experiment config and analytics
  *
  * Manages experiment settings, computes analytics from other stores,
- * and handles Week 6 decision data.
+ * and handles the variety scorecard data.
  */
 
 import { create } from 'zustand';

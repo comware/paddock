@@ -55,55 +55,78 @@ export function TrendCharts() {
 
   return (
     <div className="space-y-6">
-      {/* Experiment Progress */}
+      {/*
+        Two different questions, depending on where the grower is.
+        
+        Paddock began as a six-week trial: does this work, is it worth continuing. For
+        someone in week three that framing is exactly right, and the progress bar means
+        something.
+        
+        For someone six months in it is nonsense - a bar pinned at 100% and a label
+        reading "Week 6 of 6" forever. Past the trial the same figures answer a different
+        question: how is it going, against the targets that were set.
+      */}
       <div className="card p-6">
-        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">
-          Experiment Progress
+        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">
+          {experimentMetrics.isComplete ? 'How it is going' : 'Trial progress'}
         </h3>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          {experimentMetrics.isComplete
+            ? `Growing for ${experimentMetrics.daysElapsed} days.`
+            : `Week ${Math.min(experimentMetrics.weeksElapsed + 1, 6)} of a six-week trial.`}
+        </p>
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <StatCard
-            label="Days Elapsed"
+            label={experimentMetrics.isComplete ? 'Growing for' : 'Days elapsed'}
             value={experimentMetrics.daysElapsed}
             suffix="days"
-            subtext={`Week ${Math.min(experimentMetrics.weeksElapsed + 1, 6)} of 6`}
+            subtext={
+              experimentMetrics.isComplete
+                ? undefined
+                : `${experimentMetrics.weeksRemaining} weeks to go`
+            }
           />
           <StatCard
-            label="Trays Completed"
+            label="Trays harvested"
             value={experimentMetrics.harvestedTrays}
             suffix={`/ ${experimentMetrics.totalTrays}`}
             subtext={`${experimentMetrics.failedTrays} failed`}
           />
           <StatCard
-            label="Success Rate"
+            label="Success rate"
             value={experimentMetrics.overallSuccessRate}
             suffix="%"
             color={experimentMetrics.overallSuccessRate >= 80 ? 'green' : experimentMetrics.overallSuccessRate >= 60 ? 'amber' : 'red'}
           />
           <StatCard
-            label="Avg Yield"
+            label="Avg yield"
             value={experimentMetrics.avgYieldRatio}
             suffix="x"
             color={experimentMetrics.avgYieldRatio >= 6 ? 'green' : 'amber'}
           />
         </div>
 
-        {/* Progress bar to Week 6 */}
-        <div className="mt-6">
-          <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
-            <span>Progress to Week 6</span>
-            <span>{Math.round((experimentMetrics.daysElapsed / 42) * 100)}%</span>
+        {/* Only while the trial is actually running. Afterwards it is a bar pinned at
+            100% that tells the grower nothing. */}
+        {!experimentMetrics.isComplete && (
+          <div className="mt-6">
+            <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
+              <span>Progress through the trial</span>
+              <span>{Math.round((experimentMetrics.daysElapsed / 42) * 100)}%</span>
+            </div>
+            <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary-500 rounded-full transition-all"
+                style={{ width: `${Math.min((experimentMetrics.daysElapsed / 42) * 100, 100)}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <span>Start</span>
+              <span>Six weeks</span>
+            </div>
           </div>
-          <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary-500 rounded-full transition-all"
-              style={{ width: `${Math.min((experimentMetrics.daysElapsed / 42) * 100, 100)}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-1">
-            <span>Start</span>
-            <span>Week 6</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Yield Trend */}
