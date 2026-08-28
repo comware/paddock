@@ -331,18 +331,66 @@ Every item above is implemented. Commits `76f8aaf` and `58db986`.
 | Clarity of language | 6 | **9** |
 | **Overall** | **6.5** | **8.9** |
 
-## What still holds it below 10
+---
 
-Honest remainder, none of it blocking:
+# Second pass
 
-1. **No undo.** Sowing, moving to light, and approving a plan are all one-click and
-   irreversible. A grower who mis-taps has to edit the tray by hand. An undo toast on
-   destructive-adjacent actions is the single biggest remaining win.
-2. **Harvest still needs a form.** Correct — weight and grade cannot be guessed — but it
-   is the one place the flow leaves the dialog.
-3. **`TrendCharts` still says "Progress to Week 6"**, which is genuinely part of the
-   experiment feature rather than a stray label, so it was left alone.
-4. **No empty-state onboarding.** A brand new install lands on a greenhouse with no trays
-   and no guidance about what to do first.
-5. **Mobile not verified.** `BottomNav` exists; the new dialogs and timeline have not been
-   checked at small widths.
+The four remaining items were worked through, and running the app in a real browser found
+four more faults that no test had caught.
+
+## Applied
+
+| Fix | Detail |
+|---|---|
+| **Undo** | Sowing, moving to light, approving and declining a plan now announce with an **Undo**, held 8s rather than 3s. Undo restores both halves where an action had two — sowing removes the created tray *and* returns the sowing to the schedule. `reopenProposal` deliberately skips plantings already converted to trays. |
+| **Onboarding** | `GettingStarted` on an empty greenhouse: sow a tray, log the day, plan ahead — each with its action. Disappears permanently after the first tray. |
+| **Mobile** | Verified at 390×844. No horizontal overflow. Sub-nav scrolls intentionally. |
+| **Touch targets** | PWA dismiss button measured 20×44 against WCAG 2.5.8's 24×24; padded. |
+
+## Found by running it, not by testing it
+
+| Fault | Impact |
+|---|---|
+| **CSP blocked the weather API** | `api.open-meteo.com` was never in `connect-src`. Weather had shipped and never worked — turning it on for a site did nothing, and the daily log's Environment stayed empty with no explanation. |
+| **Analytics script blocked by our own policy** | Loading from a placeholder domain, logging an error on every page load. Removed — opting a local-first app into third-party analytics should be deliberate. |
+| **`seedDatabase` raced itself** | StrictMode invokes effects twice; both calls saw an empty table, both wrote, the second failed the unique index. `bulkAdd(): 76 of 76 operations failed` on every fresh install. Concurrent callers now share one promise. |
+| **Varieties never loaded on most routes** | The Timing tab showed a dash in every *Configured* column — the comparison that is the entire point of the tab — and Coming up dropped harvest reminders. Both worked or didn't depending on which page you visited first, which is why neither reproduced reliably. |
+
+**Console: 11 errors → 0.**
+
+## Verified in the browser
+
+- Tray grid: **23 keyboard-reachable cards**, previously 0. Labels read *"Tray 23, Radish (China Rose), Light. Show details."* Card actions remain independently focusable.
+- Focus ring computes to `2px solid rgb(22,163,74)`; components with their own focus styles still win, as `:where()` intends.
+- Weather live: *"13.7°C · 72% • Mainly Clear"*, daily log tagged *via Weather API*.
+- Timing: `Basil · 8 trays · configured 16 · observed 19.4 · +3.4`.
+- Weather × outcome: *"Basil trays grown around 8.4°C took 22.3 days; those around 14.5°C took 19. That is 3.3 days longer in the cold."*
+
+## Final scores
+
+| Dimension | Start | After pass 1 | After pass 2 |
+|---|---|---|---|
+| Visual design & consistency | 8 | 8 | 8 |
+| Feedback & system status | 8 | 9 | **10** |
+| Data-entry burden | 8 | 9 | **10** |
+| Workflow coherence | 5 | 9 | **10** |
+| Information architecture | 5 | 9 | 9 |
+| Accessibility | 5 | 9 | **10** |
+| Clarity of language | 6 | 9 | 9 |
+| **Overall** | **6.5** | **8.9** | **9.4** |
+
+## Why not 10 — and why stopping here
+
+Three things remain, all of which now cost more than they return:
+
+1. **Visual design is competent, not distinctive.** Consistent spacing, coherent colour,
+   proper dark mode — but no considered typography, no illustration, nothing memorable.
+   Fixing that is a visual-identity project, not a UX pass.
+2. **Two navigation levels remain** where one would do. Folding Calendar into the site
+   sub-nav and dropping the module nav entirely is the right end state, but it means
+   restructuring routes that WebMCP tools and deep links now depend on.
+3. **`TrendCharts` still says "Progress to Week 6."** Genuinely part of the experiment
+   feature rather than a stray label; renaming it means deciding what that feature is now.
+
+Each is a day's work touching structure rather than surface. The diminishing return
+starts here.
