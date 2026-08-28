@@ -1,5 +1,5 @@
 /**
- * Scorecard - Week 6 Decision Analysis
+ * Scorecard - variety comparison and go/no-go analysis
  *
  * Auto-populates metrics from all tracked data.
  * Shows pass/fail for each criterion.
@@ -146,7 +146,7 @@ export function Scorecard() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-              Week 6 Decision Scorecard
+              Variety scorecard
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {metrics.isComplete

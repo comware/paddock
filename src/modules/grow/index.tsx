@@ -3,7 +3,7 @@
  *
  * Microgreens experiment tracking module.
  * Handles tray management, daily logging, time tracking,
- * analytics, and Week 6 decision support.
+ * analytics, and variety comparison.
  *
  * Wrapped in ErrorBoundary for module isolation.
  */
@@ -20,16 +20,37 @@ import { growRoutes } from './routes';
 // - Sites overview is the landing page (index route)
 // - Site-specific nav is handled by SiteDetailLayout's SiteSubNav
 // - These are global/cross-site views
-const growNavItems: ModuleNavItem[] = [
-  { name: 'Sites', path: '', icon: '📍' },              // Sites overview (landing)
-  { name: 'Calendar', path: '/calendar', icon: '📅' },   // Planting calendar
-  { name: 'Analytics', path: '/analytics', icon: '📊' }, // Cross-site analytics
-  { name: 'Decision', path: '/decision', icon: '🎯' },   // Week 6 decision
-  { name: 'Guides', path: '/guides', icon: '📚' },       // Reference material
-];
+/**
+ * Module navigation, built for the install rather than the product.
+ *
+ * 'Guides' lives in the top navigation already, so it is not repeated here. The
+ * greenhouse list and cross-site analytics only mean anything with more than one
+ * greenhouse - with a single one they were a page listing it, and a chart identical to
+ * the one a click away inside it.
+ *
+ * 'Decision' was an artefact of the original six-week experiment framing and told a
+ * grower nothing about what the page does.
+ */
+function buildNavItems(siteCount: number): ModuleNavItem[] {
+  const items: ModuleNavItem[] = [];
+
+  if (siteCount > 1) {
+    items.push({ name: 'Greenhouses', path: '', icon: '📍' });
+  }
+
+  items.push({ name: 'Calendar', path: '/calendar', icon: '📅' });
+
+  if (siteCount > 1) {
+    items.push({ name: 'All greenhouses', path: '/analytics', icon: '📊' });
+  }
+
+  items.push({ name: 'Compare varieties', path: '/decision', icon: '🎯' });
+
+  return items;
+}
 
 function GrowModuleContent() {
-  const { loadSites } = useSites();
+  const { sites, loadSites } = useSites();
   const { loadTrays } = useTrays();
 
   // Load sites and trays on module mount
@@ -52,7 +73,7 @@ function GrowModuleContent() {
 
   const navItems = useMemo(
     () =>
-      growNavItems.map((item) =>
+      buildNavItems(sites.length).map((item) =>
         item.path === '/calendar'
           ? {
               ...item,
@@ -64,7 +85,7 @@ function GrowModuleContent() {
             }
           : item,
       ),
-    [pendingProposals],
+    [pendingProposals, sites.length],
   );
 
   // Render child routes internally — keeps route definitions inside the lazy boundary

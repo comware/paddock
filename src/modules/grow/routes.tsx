@@ -5,7 +5,7 @@
  * - /grow → Sites overview (landing)
  * - /grow/site/:siteId → Site detail with nested routes
  * - /grow/analytics → Cross-site analytics
- * - /grow/decision → Week 6 decision
+ * - /grow/decision → variety scorecard
  * - /grow/guides → Reference material
  */
 

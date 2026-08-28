@@ -174,6 +174,17 @@ export function SitesOverview() {
     loadTrays();
   }, [loadSites, loadTrays]);
 
+  // A list of one is a speed bump, not a choice. Most growers have a single greenhouse
+  // and were made to click through a page listing it before reaching anything.
+  //
+  // replace: true so the back button leaves the module rather than bouncing off this
+  // redirect.
+  useEffect(() => {
+    if (!sitesLoading && sites.length === 1 && sites[0].id) {
+      navigate(`/grow/site/${sites[0].id}`, { replace: true });
+    }
+  }, [sitesLoading, sites, navigate]);
+
   // Compute metrics for all sites
   const siteMetrics = useMemo(() => {
     const metrics = new Map<string, SiteMetrics>();
@@ -209,9 +220,9 @@ export function SitesOverview() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Your Sites</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Your greenhouses</h1>
           <p className="text-slate-600 dark:text-slate-400">
-            {sites.length} site{sites.length !== 1 ? 's' : ''}
+            {sites.length} greenhouse{sites.length !== 1 ? 's' : ''}
             {totalNeedsAttention > 0 && (
               <span className="ml-2 text-orange-600 dark:text-orange-400">
                 • {totalNeedsAttention} need attention
@@ -280,7 +291,7 @@ export function SitesOverview() {
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">🎯</span>
-              <span className="font-medium text-slate-900 dark:text-white">Week 6 Decision</span>
+              <span className="font-medium text-slate-900 dark:text-white">Compare varieties</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Evaluate progress</span>
             </button>
             <button

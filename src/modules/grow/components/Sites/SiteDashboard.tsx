@@ -87,28 +87,6 @@ function ActionItem({ icon, title, count, actionLabel, onClick, variant }: Actio
 }
 
 // ============================================
-// QUICK ACTION BUTTON
-// ============================================
-
-interface QuickActionProps {
-  icon: string;
-  label: string;
-  onClick: () => void;
-}
-
-function QuickAction({ icon, label, onClick }: QuickActionProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center gap-2 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-    >
-      <span className="text-2xl">{icon}</span>
-      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</span>
-    </button>
-  );
-}
-
-// ============================================
 // SITE DASHBOARD
 // ============================================
 
@@ -246,29 +224,21 @@ export function SiteDashboard() {
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Quick Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <QuickAction icon="🌱" label="New Tray" onClick={() => setIsNewTrayOpen(true)} />
-          <QuickAction
-            icon="📝"
-            label="Log Day"
-            onClick={() => navigate(`/grow/site/${siteId}/daily`)}
-          />
-          <QuickAction
-            icon="⏱️"
-            label="Log Time"
-            onClick={() => navigate(`/grow/site/${siteId}/time`)}
-          />
-          <QuickAction
-            icon="🌿"
-            label="Harvest"
-            onClick={() => navigate(`/grow/site/${siteId}/trays?status=light`)}
-          />
-        </div>
+      <div className="flex justify-end">
+        <button
+          onClick={() => setIsNewTrayOpen(true)}
+          className="px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium transition-colors"
+        >
+          + New tray
+        </button>
       </div>
 
+      {/* What this site needs next, first.
+          'Quick Actions' used to sit here: four generic buttons - New Tray, Log Day, Log
+          Time, Harvest - competing with a list below that names the specific tray and the
+          specific sowing. 'Harvest' could only take the grower to a filtered list to
+          search; 'Coming up' knows which tray. Only starting a tray from scratch was not
+          covered, and that is now a button on the header. */}
       {/* What this site needs next. Placed above Today because it is the thing a grower
           opens the dashboard to find out. */}
       <UpcomingWork siteId={siteId} trays={siteTrays} />
