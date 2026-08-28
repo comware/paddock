@@ -9,12 +9,20 @@
  * Otherwise falls back to active site for backwards compatibility.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { MoodSlider } from './MoodSlider';
-import { useObservations, useTrays, useSites } from '../../stores';
+import { DaySummary } from './DaySummary';
+import {
+  useObservations,
+  useTrays,
+  useSites,
+  useVarieties,
+  usePlannedPlantings,
+} from '../../stores';
+import { deriveDaySummary, summariseActions } from '../../utils';
 import { useWeather } from '../../hooks/useWeather';
 import { getWeatherEmoji } from '@/lib/weather';
 import { useSiteContext } from '../Sites/SiteContext';
@@ -45,6 +53,8 @@ type DailyLogFormData = z.infer<typeof dailyLogSchema>;
 export function DailyLogForm() {
   const { getTodaysObservationForSite, saveObservation, loadObservations, isLoading } = useObservations();
   const { trays } = useTrays();
+  const { varieties } = useVarieties();
+  const { plantings } = usePlannedPlantings();
   const { getActiveSite, loadSites } = useSites();
 
   // Use site from context if available (inside SiteDetailLayout), fall back to active site
@@ -58,10 +68,17 @@ export function DailyLogForm() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [weatherSource, setWeatherSource] = useState<'manual' | 'api'>('manual');
 
-  // Calculate current tray counts from store (filtered by site if available)
-  const siteTrays = siteId ? trays.filter((t) => t.siteId === siteId) : trays;
-  const blackoutCount = siteTrays.filter((t) => t.status === 'blackout').length;
-  const lightCount = siteTrays.filter((t) => t.status === 'light').length;
+  // Everything the app can work out for itself: tray counts, what changed today, and
+  // what is overdue. The grower used to type the first of those while the correct answer
+  // was displayed underneath the field.
+  const summary = useMemo(
+    () => deriveDaySummary({ trays, plantings, varieties, siteId }),
+    [trays, plantings, varieties, siteId],
+  );
+
+  const blackoutCount = summary.counts.blackout;
+  const lightCount = summary.counts.light;
+  const harvestedCount = summary.counts.harvestedToday;
 
   // Get today's observation for this site
   const todaysEntry = siteId ? getTodaysObservationForSite(siteId) : null;
@@ -72,6 +89,7 @@ export function DailyLogForm() {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors, isDirty },
   } = useForm<DailyLogFormData>({
     resolver: zodResolver(dailyLogSchema),
@@ -80,7 +98,7 @@ export function DailyLogForm() {
       humidity: undefined,
       traysBlackout: blackoutCount,
       traysLight: lightCount,
-      traysHarvestedToday: 0,
+      traysHarvestedToday: harvestedCount,
       problemsSpotted: '',
       actionsTaken: '',
       moodEnergy: 5,
@@ -101,9 +119,11 @@ export function DailyLogForm() {
       reset({
         temperature: todaysEntry.temperature ?? undefined,
         humidity: todaysEntry.humidity ?? undefined,
-        traysBlackout: todaysEntry.traysBlackout ?? blackoutCount,
-        traysLight: todaysEntry.traysLight ?? lightCount,
-        traysHarvestedToday: todaysEntry.traysHarvestedToday ?? 0,
+        // Counts are always current rather than whatever was true when the entry was
+        // first saved - they are observations of state, not something typed once.
+        traysBlackout: blackoutCount,
+        traysLight: lightCount,
+        traysHarvestedToday: harvestedCount,
         problemsSpotted: todaysEntry.problemsSpotted ?? '',
         actionsTaken: todaysEntry.actionsTaken ?? '',
         moodEnergy: todaysEntry.moodEnergy ?? 5,
@@ -116,7 +136,7 @@ export function DailyLogForm() {
       reset({
         traysBlackout: blackoutCount,
         traysLight: lightCount,
-        traysHarvestedToday: 0,
+        traysHarvestedToday: harvestedCount,
         problemsSpotted: '',
         actionsTaken: '',
         moodEnergy: 5,
@@ -124,7 +144,7 @@ export function DailyLogForm() {
         tomorrowPriority: '',
       });
     }
-  }, [todaysEntry?.id, blackoutCount, lightCount, reset]);
+  }, [todaysEntry?.id, blackoutCount, lightCount, harvestedCount, reset]);
 
   // Auto-populate weather when available (only for new entries or entries without weather)
   useEffect(() => {
@@ -321,49 +341,14 @@ export function DailyLogForm() {
         </div>
       </div>
 
-      {/* Tray Counts */}
-      <div className="card p-6">
-        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">
-          Tray Counts
-        </h3>
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              In Blackout
-            </label>
-            <input
-              type="number"
-              {...register('traysBlackout', { valueAsNumber: true })}
-              className="input w-full"
-              min={0}
-            />
-            <p className="text-xs text-slate-500 mt-1">Current: {blackoutCount}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              In Light
-            </label>
-            <input
-              type="number"
-              {...register('traysLight', { valueAsNumber: true })}
-              className="input w-full"
-              min={0}
-            />
-            <p className="text-xs text-slate-500 mt-1">Current: {lightCount}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Harvested Today
-            </label>
-            <input
-              type="number"
-              {...register('traysHarvestedToday', { valueAsNumber: true })}
-              className="input w-full"
-              min={0}
-            />
-          </div>
-        </div>
-      </div>
+      {/* What the app already knows. Replaces three fields the grower used to type. */}
+      <DaySummary
+        summary={summary}
+        actionsAlreadyFilled={Boolean(watch('actionsTaken'))}
+        onUseAsActions={() =>
+          setValue('actionsTaken', summariseActions(summary), { shouldDirty: true })
+        }
+      />
 
       {/* Problems & Actions */}
       <div className="card p-6">

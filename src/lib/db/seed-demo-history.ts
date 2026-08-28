@@ -261,7 +261,9 @@ export async function seedDemoHistory(): Promise<number> {
       timezone: 'Australia/Melbourne',
       isDefault: true,
       isIndoor: false,
-      weatherEnabled: false,
+      // Outdoor site with coordinates, so the daily log can fill temperature and humidity
+      // from the weather API rather than asking the grower to read a thermometer.
+      weatherEnabled: true,
       createdAt: new Date(now - 200 * DAY),
       updatedAt: new Date(now - 200 * DAY),
     };
