@@ -56,6 +56,23 @@ export function TrayList() {
   const [harvestingTray, setHarvestingTray] = useState<TrayWithComputed | null>(null);
   const [editingTray, setEditingTray] = useState<TrayWithComputed | null>(null);
 
+  // ?harvest=<id> opens straight onto the harvest form for that tray, so following
+  // "Harvest now" from elsewhere does not land the grower in a list to search.
+  const harvestParam = searchParams.get('harvest');
+  useEffect(() => {
+    if (!harvestParam) return;
+
+    const target = trays.find((t) => t.id === harvestParam);
+    if (!target) return;
+
+    setHarvestingTray(target);
+
+    // Clear it so a refresh or a back-navigation does not reopen the form.
+    const next = new URLSearchParams(searchParams);
+    next.delete('harvest');
+    setSearchParams(next, { replace: true });
+  }, [harvestParam, trays, searchParams, setSearchParams]);
+
   // Get unique values for filter dropdowns
   const uniqueVarieties = getUniqueVarieties();
   const uniqueMediums = getUniqueMediums();

@@ -15,8 +15,15 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, addDays, differenceInCalendarDays, startOfDay } from 'date-fns';
+import type { GrowPlannedPlanting } from '@/lib/db';
+import { useToastStore } from '@/stores/useToastStore';
 import { WorkDetail, type WorkSubject } from '../Calendar/WorkDetail';
-import { usePlannedPlantings, useVarieties, type TrayWithComputed } from '../../stores';
+import {
+  usePlannedPlantings,
+  useVarieties,
+  useTrays,
+  type TrayWithComputed,
+} from '../../stores';
 
 interface UpcomingWorkProps {
   siteId: string;
@@ -65,9 +72,60 @@ function whenLabel(date: Date, today: Date): string {
 
 export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
   const navigate = useNavigate();
-  const { plantings } = usePlannedPlantings();
+  const { plantings, convertToTray } = usePlannedPlantings();
   const { getVariety, varieties } = useVarieties();
+  const { addTray, moveToLight, getNextTrayNumber } = useTrays();
+  const addToast = useToastStore((state) => state.add);
   const [subject, setSubject] = useState<WorkSubject | null>(null);
+
+  /**
+   * Turn a scheduled sowing into a real tray.
+   *
+   * This link did not exist anywhere in the app: a plan could be made, approved, and
+   * displayed, but never acted on - leaving the sowing permanently due and the grower
+   * retyping into New Tray what the plan already held.
+   *
+   * Seed weight and medium come from the last tray of that variety, since that is what
+   * this grower has settled on. Where there is no history the tray is still created; the
+   * grower can fill those in on the tray itself.
+   */
+  const handleSowNow = async (planting: GrowPlannedPlanting) => {
+    const config = getVariety(planting.variety);
+    const previous = [...trays]
+      .filter((t) => t.variety === planting.variety)
+      .sort((a, b) => new Date(b.dateSown).getTime() - new Date(a.dateSown).getTime())[0];
+
+    try {
+      const trayId = await addTray({
+        siteId: planting.siteId ?? siteId,
+        trayNumber: getNextTrayNumber(),
+        variety: planting.variety,
+        dateSown: new Date(),
+        seedWeight: previous?.seedWeight ?? 0,
+        growingMedium: previous?.growingMedium ?? 'coco_coir',
+        preSoaked: config?.preSoakRequired ?? false,
+        blackoutDays: config?.defaultBlackoutDays ?? 4,
+        problemsObserved: '',
+        lessonsLearned: '',
+      });
+
+      await convertToTray(planting.id!, trayId);
+      setSubject(null);
+      addToast(`Sown — tray #${getNextTrayNumber() - 1} of ${planting.variety}`, 'success');
+    } catch {
+      addToast('Could not create that tray. Nothing was changed.', 'error');
+    }
+  };
+
+  const handleMoveToLight = async (trayId: string) => {
+    try {
+      await moveToLight(trayId);
+      setSubject(null);
+      addToast('Moved to light', 'success');
+    } catch {
+      addToast('Could not move that tray.', 'error');
+    }
+  };
 
   const today = startOfDay(new Date());
 
@@ -263,6 +321,14 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
             : undefined
         }
         trays={trays}
+        onSowNow={handleSowNow}
+        onMoveToLight={handleMoveToLight}
+        onHarvest={(trayId) => {
+          // Harvesting needs weight and grade, so it keeps its form - but opens on the
+          // right tray rather than sending the grower to find it.
+          setSubject(null);
+          navigate(`/grow/site/${siteId}/trays?harvest=${trayId}`);
+        }}
         onOpenTray={() => {
           setSubject(null);
           navigate(`/grow/site/${siteId}/trays`);

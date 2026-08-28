@@ -87,13 +87,30 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 ${
+      className={`relative rounded-xl p-4 shadow-sm border-2 ${
         needsAction
           ? 'border-orange-400 dark:border-orange-500 ring-2 ring-orange-200 dark:ring-orange-900/50'
           : 'border-slate-200 dark:border-slate-700'
-      } ${config.bgClass} cursor-pointer hover:shadow-md transition-shadow`}
-      onClick={() => onClick?.(tray.id!)}
+      } ${config.bgClass} hover:shadow-md transition-shadow`}
     >
+      {/*
+        Stretched link. The whole card is the target, but the Harvest and Move to light
+        buttons inside it must stay independently reachable - and a button cannot legally
+        contain another button. So the card's control is an absolutely positioned button
+        beneath the content, and the actions sit above it.
+
+        Previously this was a div with an onClick: not focusable, not announced, and
+        impossible to activate from a keyboard. WCAG 2.1.1 and 4.1.2.
+      */}
+      {onClick && (
+        <button
+          type="button"
+          onClick={() => onClick(tray.id!)}
+          aria-label={`Tray ${tray.trayNumber}, ${tray.variety}, ${config.label}. Show details.`}
+          className="absolute inset-0 z-0 rounded-xl cursor-pointer"
+        />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -206,9 +223,9 @@ export function TrayCard({ tray, onMoveToLight, onHarvest, onClick }: TrayCardPr
         </div>
       )}
 
-      {/* Actions */}
+      {/* Actions sit above the stretched link so they stay clickable and focusable. */}
       {(tray.status === 'blackout' || tray.status === 'light') && (
-        <div className="flex gap-2 mt-3 pt-3 border-t border-current/10">
+        <div className="relative z-10 flex gap-2 mt-3 pt-3 border-t border-current/10">
           {tray.status === 'blackout' && onMoveToLight && (
             <button
               onClick={(e) => {

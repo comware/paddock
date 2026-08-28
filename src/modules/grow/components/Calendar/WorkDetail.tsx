@@ -13,7 +13,7 @@
  * can put work in someone's calendar, "who put this here and why" stops being obvious.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { format, differenceInCalendarDays, addDays } from 'date-fns';
 import type { GrowPlannedPlanting, GrowTray, GrowVarietyConfig } from '@/lib/db';
 import type { TrayWithComputed } from '../../stores';
@@ -29,7 +29,15 @@ interface WorkDetailProps {
   variety?: GrowVarietyConfig;
   /** Past trays, used to recall what this grower actually sows. */
   trays: GrowTray[];
-  /** Offered as the primary action when there is somewhere useful to go. */
+  /**
+   * Do the work from here rather than sending the grower somewhere else to do it. The
+   * dialog already knows which tray or which planned sowing it is describing; making them
+   * find it again on another screen is the step worth removing.
+   */
+  onSowNow?: (planting: GrowPlannedPlanting) => void | Promise<void>;
+  onMoveToLight?: (trayId: string) => void | Promise<void>;
+  onHarvest?: (trayId: string) => void;
+  /** Kept for the full record - the dialog is a summary, not a replacement. */
   onOpenTray?: (trayId: string) => void;
   onClose: () => void;
 }
@@ -78,10 +86,14 @@ export function WorkDetail({
   subject,
   variety,
   trays,
+  onSowNow,
+  onMoveToLight,
+  onHarvest,
   onOpenTray,
   onClose,
 }: WorkDetailProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [busy, setBusy] = useState(false);
 
   // Move focus into the dialog so a keyboard user is not left behind, and let Escape
   // dismiss it.
@@ -114,6 +126,9 @@ export function WorkDetail({
   let varietyName: string;
   let trayId: string | undefined;
   let createdAt: Date | undefined;
+  /** The scheduled sowing this dialog describes, when it describes one. */
+  const planting = subject.kind === 'planting' ? subject.planting : null;
+  const trayFocus = subject.kind === 'tray' ? subject.focus : null;
 
   if (subject.kind === 'planting') {
     const p = subject.planting;
@@ -337,11 +352,57 @@ export function WorkDetail({
           </div>
         )}
 
-        <div className="px-4 py-3 bg-slate-50 dark:bg-slate-700/30 border-t border-slate-200 dark:border-slate-700 flex justify-end gap-2">
+        <div className="px-4 py-3 bg-slate-50 dark:bg-slate-700/30 border-t border-slate-200 dark:border-slate-700 flex flex-wrap justify-end gap-2">
+          {/* A scheduled sowing had no way to become a tray anywhere in the app, so a
+              plan could be made and never acted on. */}
+          {planting?.status === 'planned' && onSowNow && (
+            <button
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  await onSowNow(planting);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+              className="px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-sm font-medium transition-colors"
+            >
+              Sow this now
+            </button>
+          )}
+
+          {/* Moving a tray to light is a single state change and never needed a form. */}
+          {trayFocus === 'light' && trayId && onMoveToLight && (
+            <button
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  await onMoveToLight(trayId!);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+              className="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white text-sm font-medium transition-colors"
+            >
+              Move to light
+            </button>
+          )}
+
+          {trayFocus === 'harvest' && trayId && onHarvest && (
+            <button
+              onClick={() => onHarvest(trayId!)}
+              className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
+            >
+              Harvest now
+            </button>
+          )}
+
           {trayId && onOpenTray && (
             <button
               onClick={() => onOpenTray(trayId!)}
-              className="px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium transition-colors"
+              className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium transition-colors"
             >
               Open tray
             </button>

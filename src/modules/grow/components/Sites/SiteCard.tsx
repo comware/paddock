@@ -29,13 +29,21 @@ export function SiteCard({
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 transition-all cursor-pointer ${
+      className={`relative rounded-xl p-4 shadow-sm border-2 transition-all ${
         isActive
           ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
           : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
       }`}
-      onClick={onSelect}
     >
+      {/* Stretched link - see TrayCard for why the control sits beneath the content
+          rather than wrapping it. */}
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-label={`Open ${site.name}`}
+        className="absolute inset-0 z-0 rounded-xl cursor-pointer"
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -110,8 +118,8 @@ export function SiteCard({
         <span>{site.timezone}</span>
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
+      {/* Actions sit above the stretched link so they stay clickable and focusable. */}
+      <div className="relative z-10 flex gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
         {!site.isDefault && onSetDefault && (
           <button
             onClick={(e) => {

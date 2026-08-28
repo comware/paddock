@@ -52,7 +52,7 @@ function SiteSubNav({ siteId }: { siteId: string }) {
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            <span>{item.icon}</span>
+            <span aria-hidden="true">{item.icon}</span>
             <span>{item.label}</span>
           </Link>
         );

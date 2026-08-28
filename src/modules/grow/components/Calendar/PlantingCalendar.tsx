@@ -22,6 +22,8 @@ import {
 } from 'date-fns';
 import { useTrays, useVarieties, usePlannedPlantings, useSites } from '../../stores';
 import { getUpcomingHarvests } from '../../utils';
+import type { GrowPlannedPlanting } from '@/lib/db';
+import { useToastStore } from '@/stores/useToastStore';
 import { PlannedPlantingForm } from './PlannedPlantingForm';
 import { ProposalReview } from './ProposalReview';
 import { WorkDetail } from './WorkDetail';
@@ -46,9 +48,9 @@ export function PlantingCalendar() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
 
-  const { trays, loadTrays } = useTrays();
+  const { trays, loadTrays, addTray, getNextTrayNumber } = useTrays();
   const { getVariety, loadVarieties } = useVarieties();
-  const { plantings, loadPlantings } = usePlannedPlantings();
+  const { plantings, loadPlantings, convertToTray } = usePlannedPlantings();
   const { loadSites, getActiveSite } = useSites();
   const activeSite = getActiveSite();
 
@@ -155,6 +157,36 @@ export function PlantingCalendar() {
 
   const today = startOfDay(new Date());
   const detailPlanting = plantings.find((p) => p.id === detailId) ?? null;
+  const addToast = useToastStore((state) => state.add);
+
+  /** Turn a scheduled sowing into a real tray. See UpcomingWork for why this matters. */
+  const handleSowNow = async (planting: GrowPlannedPlanting) => {
+    const config = getVariety(planting.variety);
+    const previous = [...trays]
+      .filter((t) => t.variety === planting.variety)
+      .sort((a, b) => new Date(b.dateSown).getTime() - new Date(a.dateSown).getTime())[0];
+
+    try {
+      const trayId = await addTray({
+        siteId: planting.siteId ?? activeSite?.id,
+        trayNumber: getNextTrayNumber(),
+        variety: planting.variety,
+        dateSown: new Date(),
+        seedWeight: previous?.seedWeight ?? 0,
+        growingMedium: previous?.growingMedium ?? 'coco_coir',
+        preSoaked: config?.preSoakRequired ?? false,
+        blackoutDays: config?.defaultBlackoutDays ?? 4,
+        problemsObserved: '',
+        lessonsLearned: '',
+      });
+
+      await convertToTray(planting.id!, trayId);
+      setDetailId(null);
+      addToast(`Sown — ${planting.quantity}x ${planting.variety}`, 'success');
+    } catch {
+      addToast('Could not create that tray. Nothing was changed.', 'error');
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -357,6 +389,7 @@ export function PlantingCalendar() {
         subject={detailPlanting ? { kind: 'planting', planting: detailPlanting } : null}
         variety={detailPlanting ? getVariety(detailPlanting.variety) : undefined}
         trays={trays}
+        onSowNow={handleSowNow}
         onClose={() => setDetailId(null)}
       />
 
