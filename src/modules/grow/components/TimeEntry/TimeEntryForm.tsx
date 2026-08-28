@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useTimeEntries, TIME_CATEGORIES, type TimeCategory } from '../../stores';
 import { useSiteContext } from '../Sites/SiteContext';
+import { TimeSuggestion } from './TimeSuggestion';
 
 const QUICK_INCREMENTS = [5, 15, 30];
 
@@ -106,6 +107,10 @@ export function TimeEntryForm() {
           Tap a category, then tap time to add. Quick and simple.
         </p>
       </div>
+
+      {/* Offer the day's time rather than asking for it. Renders nothing when there is
+          no activity to estimate from, or when time is already logged. */}
+      <TimeSuggestion siteId={siteId} alreadyLogged={todaysTotal > 0} />
 
       {/* Category Cards */}
       <div className="space-y-3">
