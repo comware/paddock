@@ -14,3 +14,4 @@ export { SiteDetailLayout } from './SiteDetailLayout';
 export { useSiteContext } from './SiteContext';
 export { SiteDashboard } from './SiteDashboard';
 export { UpcomingWork } from './UpcomingWork';
+export { GettingStarted } from './GettingStarted';

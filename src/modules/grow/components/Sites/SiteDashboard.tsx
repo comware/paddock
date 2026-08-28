@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSiteContext } from './SiteContext';
 import { useTrays, useTimeEntries, useObservations, type TrayWithComputed } from '../../stores';
 import { UpcomingWork } from './UpcomingWork';
+import { GettingStarted } from './GettingStarted';
 import { NewTrayForm } from '../Trays/NewTrayForm';
 import { HarvestForm } from '../Trays/HarvestForm';
 import { format, addDays, isAfter, startOfDay } from 'date-fns';
@@ -222,6 +223,12 @@ export function SiteDashboard() {
             />
           )}
         </div>
+      )}
+
+      {/* Until something has been sown, every panel below reads zero and none of them
+          says what to do about it. Disappears for good once the first tray exists. */}
+      {siteTrays.length === 0 && (
+        <GettingStarted siteId={siteId} onNewTray={() => setIsNewTrayOpen(true)} />
       )}
 
       <div className="flex justify-end">
