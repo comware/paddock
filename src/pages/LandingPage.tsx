@@ -70,7 +70,7 @@ const learningPaths = [
   },
   {
     icon: '🏠',
-    title: 'Manage Sites',
+    title: 'Manage growing spaces',
     description: 'Set up and organize your growing locations from windowsills to grow rooms.',
     link: '/grow',
     color: 'from-amber-500 to-orange-600',
@@ -81,9 +81,9 @@ const learningPaths = [
 const steps = [
   {
     number: '1',
-    title: 'Set Up Your First Site',
+    title: 'Set up your first growing space',
     description:
-      "Create a growing site — whether it's a sunny windowsill, grow tent, or dedicated room.",
+      "Wherever you grow — a sunny windowsill, a grow tent, a greenhouse, a spare room.",
   },
   {
     number: '2',

@@ -34,7 +34,7 @@ import { SiteContext, type SiteContextValue } from './SiteContext';
 // ============================================
 
 /**
- * Everything a grower does for one greenhouse, in the order they do it: see the state,
+ * Everything a grower does for one growing space, in the order they do it: see the state,
  * work the trays, plan ahead, record the day, record the time, look back.
  *
  * Calendar and the variety scorecard used to live a level up, which split one job across
@@ -188,7 +188,7 @@ export function SiteDetailLayout() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500 dark:text-slate-400">Loading site...</div>
+        <div className="text-slate-500 dark:text-slate-400">Loading…</div>
       </div>
     );
   }
@@ -202,13 +202,13 @@ export function SiteDetailLayout() {
           Site Not Found
         </h2>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This site doesn't exist or may have been deleted.
+          This growing space doesn't exist, or may have been deleted.
         </p>
         <button
           onClick={() => navigate('/grow')}
           className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
         >
-          Back to greenhouses
+          Back to growing spaces
         </button>
       </div>
     );
@@ -218,8 +218,8 @@ export function SiteDetailLayout() {
     <SiteContext.Provider value={contextValue}>
       <div className="space-y-4">
         {/*
-          With one greenhouse there is no list to go back to - /grow redirects straight
-          back here, so "Back to greenhouses" was a link that visibly did nothing.
+          With one growing space there is no list to go back to - /grow redirects straight
+          back here, so "Back to growing spaces" was a link that visibly did nothing.
 
           It becomes the way to add a second instead, which otherwise had no route at all
           once the list stopped rendering.
@@ -231,12 +231,12 @@ export function SiteDetailLayout() {
           {sites.length > 1 ? (
             <>
               <ArrowLeft aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
-              <span>Back to greenhouses</span>
+              <span>Back to growing spaces</span>
             </>
           ) : (
             <>
               <SlidersHorizontal aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
-              <span>Manage greenhouses</span>
+              <span>Manage growing spaces</span>
             </>
           )}
         </Link>

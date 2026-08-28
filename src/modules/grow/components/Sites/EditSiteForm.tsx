@@ -252,7 +252,7 @@ export function EditSiteForm({ isOpen, onClose, site }: EditSiteFormProps) {
         {/* Indoor Toggle */}
         <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700">
           <div>
-            <div className="font-medium text-slate-900 dark:text-white">Indoor Site</div>
+            <div className="font-medium text-slate-900 dark:text-white">Indoors</div>
             <div className="text-sm text-slate-600 dark:text-slate-400">
               Weather fetching disabled for indoor sites
             </div>

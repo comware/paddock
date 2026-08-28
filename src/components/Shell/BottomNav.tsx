@@ -78,7 +78,7 @@ export function BottomNav() {
    * Match the section, not the literal path.
    *
    * These links point at the site-less aliases, which redirect into the grower's
-   * greenhouse - so by the time the page renders the URL is /grow/site/1/trays and a
+   * growing space - so by the time the page renders the URL is /grow/site/1/trays and a
    * prefix match against /grow/trays finds nothing. Comparing the last segment keeps the
    * right tab lit wherever the redirect lands.
    */
@@ -86,7 +86,7 @@ export function BottomNav() {
     const current = location.pathname.replace(/\/$/, '');
 
     if (path === '/grow') {
-      // Only the greenhouse dashboard itself, not everything beneath it.
+      // Only the growing space dashboard itself, not everything beneath it.
       return current === '/grow' || /^\/grow\/site\/[^/]+$/.test(current);
     }
 

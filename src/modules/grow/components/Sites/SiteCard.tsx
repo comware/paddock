@@ -96,7 +96,7 @@ export function SiteCard({
         <div className="mb-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-700">
           <div className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-2">
             <span>🏠</span>
-            <span>Indoor site - weather disabled</span>
+            <span>Indoors — no weather</span>
           </div>
         </div>
       ) : (

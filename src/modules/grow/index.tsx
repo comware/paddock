@@ -22,22 +22,22 @@ import { growRoutes } from './routes';
 // - Site-specific nav is handled by SiteDetailLayout's SiteSubNav
 // - These are global/cross-site views
 /**
- * Module navigation exists only to move between greenhouses.
+ * Module navigation exists only to move between growing spaces.
  *
- * Everything a grower does happens to one greenhouse, so it all lives in that
- * greenhouse's own navigation - including the calendar, which used to sit a level up and
+ * Everything a grower does happens to one growing space, so it all lives in that
+ * growing space's own navigation - including the calendar, which used to sit a level up and
  * split one job across two bars. The variety scorecard moved into Analytics, where it
  * belongs.
  *
- * With a single greenhouse there is nothing left to switch between, so this bar does not
+ * With a single growing space there is nothing left to switch between, so this bar does not
  * render at all: one level of navigation instead of two, for the common case.
  */
 function buildNavItems(siteCount: number): ModuleNavItem[] {
   if (siteCount <= 1) return [];
 
   return [
-    { name: 'Greenhouses', path: '', Icon: MapPin },
-    { name: 'All greenhouses', path: '/analytics', Icon: ChartColumn },
+    { name: 'Spaces', path: '', Icon: MapPin },
+    { name: 'All spaces', path: '/analytics', Icon: ChartColumn },
   ];
 }
 

@@ -1,5 +1,5 @@
 /**
- * GettingStarted - the first thing a new greenhouse should say
+ * GettingStarted - the first thing a new growing space should say
  *
  * A fresh install landed on a dashboard of zeroes: no trays, no harvests, an empty
  * "Coming up", and nothing indicating what to do first. Every panel was technically

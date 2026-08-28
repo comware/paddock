@@ -174,7 +174,7 @@ export function SitesOverview() {
     loadTrays();
   }, [loadSites, loadTrays]);
 
-  // A list of one is a speed bump, not a choice. Most growers have a single greenhouse
+  // A list of one is a speed bump, not a choice. Most growers have a single growing space
   // and were made to click through a page listing it before reaching anything.
   //
   // replace: true so the back button leaves the module rather than bouncing off this
@@ -220,9 +220,9 @@ export function SitesOverview() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Your greenhouses</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Your growing spaces</h1>
           <p className="text-slate-600 dark:text-slate-400">
-            {sites.length} greenhouse{sites.length !== 1 ? 's' : ''}
+            {sites.length} space{sites.length !== 1 ? 's' : ''}
             {totalNeedsAttention > 0 && (
               <span className="ml-2 text-orange-600 dark:text-orange-400">
                 • {totalNeedsAttention} need attention
@@ -235,7 +235,7 @@ export function SitesOverview() {
           className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
         >
           <span>+</span>
-          <span>Add Site</span>
+          <span>Add a space</span>
         </button>
       </div>
 
@@ -283,8 +283,8 @@ export function SitesOverview() {
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">📊</span>
-              <span className="font-medium text-slate-900 dark:text-white">Cross-Site Analytics</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare all sites</span>
+              <span className="font-medium text-slate-900 dark:text-white">All spaces</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare every growing space</span>
             </button>
             <button
               onClick={() => navigate('/grow/analytics')}
@@ -307,7 +307,7 @@ export function SitesOverview() {
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">⚙️</span>
-              <span className="font-medium text-slate-900 dark:text-white">Manage Sites</span>
+              <span className="font-medium text-slate-900 dark:text-white">Manage spaces</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Edit & configure</span>
             </button>
           </div>

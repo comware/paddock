@@ -208,7 +208,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Add New Site">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Add a growing space">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Site Name */}
         <div>
@@ -218,7 +218,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
           <input
             type="text"
             {...register('name')}
-            placeholder="e.g., Home Greenhouse, Farm Site A"
+            placeholder="e.g. Home Greenhouse, Kitchen Rack, Back Shed"
             className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
           {errors.name && (
@@ -233,7 +233,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
           </label>
           <textarea
             {...register('description')}
-            placeholder="Optional description of this site"
+            placeholder="Optional — unheated, gets afternoon sun, that sort of thing"
             rows={2}
             className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
@@ -242,7 +242,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
         {/* Indoor Toggle */}
         <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700">
           <div>
-            <div className="font-medium text-slate-900 dark:text-white">Indoor Site</div>
+            <div className="font-medium text-slate-900 dark:text-white">Indoors</div>
             <div className="text-sm text-slate-600 dark:text-slate-400">
               Weather fetching disabled for indoor sites
             </div>

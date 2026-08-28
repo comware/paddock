@@ -36,13 +36,13 @@ export function SiteList() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-500 dark:text-slate-400">Loading sites...</div>
+        <div className="text-slate-500 dark:text-slate-400">Loading growing spaces...</div>
       </div>
     );
   }
 
-  // With one greenhouse /grow redirects into it, so the only way back from here is the
-  // greenhouse itself. Without this the page is a cul-de-sac.
+  // With one growing space /grow redirects into it, so the only way back from here is the
+  // growing space itself. Without this the page is a cul-de-sac.
   const defaultSite = sites.find((site) => site.isDefault) ?? sites[0];
 
   return (
@@ -60,9 +60,9 @@ export function SiteList() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Greenhouses</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Growing spaces</h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Manage your growing locations
+            Where you grow — a greenhouse, a windowsill, a tent, a spare room
           </p>
         </div>
         <button
@@ -70,7 +70,7 @@ export function SiteList() {
           className="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors flex items-center gap-2"
         >
           <Plus aria-hidden="true" className="w-4 h-4" strokeWidth={2} />
-          <span>Add greenhouse</span>
+          <span>Add a space</span>
         </button>
       </div>
 
@@ -114,13 +114,13 @@ export function SiteList() {
               <span className="text-xl">💡</span>
               <div>
                 <h3 className="font-medium text-blue-900 dark:text-blue-100">
-                  Site Tips
+                  Tips
                 </h3>
                 <ul className="text-sm text-blue-800 dark:text-blue-200 mt-1 space-y-1">
-                  <li>• Click a site card to make it the active site</li>
-                  <li>• The active site is used for new trays and daily observations</li>
+                  <li>• Click a space to make it the active one</li>
+                  <li>• New trays and daily logs go to the active space</li>
                   <li>• Enable weather to auto-fetch temperature and humidity</li>
-                  <li>• Indoor sites don't fetch weather data</li>
+                  <li>• Indoor spaces don't fetch weather</li>
                 </ul>
               </div>
             </div>
