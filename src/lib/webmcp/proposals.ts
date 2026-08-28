@@ -104,6 +104,23 @@ export async function rejectProposal(proposalId: string): Promise<number> {
   return cancelled;
 }
 
+/**
+ * Return a decided proposal to `proposed`, so every option is on the table again.
+ *
+ * Approving is a single click on the most consequential decision in the flow. Rather than
+ * guard it with a confirmation - which slows down the common case where the click was
+ * right - the result is announced with a way back.
+ */
+export async function reopenProposal(proposalId: string): Promise<number> {
+  return await growDb.plannedPlantings
+    .where('proposalId')
+    .equals(proposalId)
+    // Only rows this proposal decided. A planting already sown has left the proposal
+    // behind and must not be dragged back into it.
+    .filter((row) => row.status === 'planned' || row.status === 'cancelled')
+    .modify({ status: 'proposed', updatedAt: new Date() });
+}
+
 /** Staged plantings for one proposal, still awaiting a decision. */
 export async function getProposal(proposalId: string): Promise<GrowPlannedPlanting[]> {
   return await growDb.plannedPlantings

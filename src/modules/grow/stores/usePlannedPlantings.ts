@@ -7,7 +7,7 @@
 
 import { create } from 'zustand';
 import { growDb, type GrowPlannedPlanting } from '@/lib/db';
-import { approveProposalOption, rejectProposal } from '@/lib/webmcp';
+import { approveProposalOption, rejectProposal, reopenProposal } from '@/lib/webmcp';
 import {
   startOfDay,
   endOfDay,
@@ -56,6 +56,8 @@ export interface PlannedPlantingsState {
   // Agent proposals (WebMCP). An agent stages a plan; only a human commits it.
   approveProposal: (proposalId: string, option: number) => Promise<void>;
   declineProposal: (proposalId: string) => Promise<void>;
+  /** Undo a decision: every option goes back on the table. */
+  reopenProposal: (proposalId: string) => Promise<void>;
 
   // Filters
   setFilters: (filters: Partial<PlannedPlantingsFilters>) => void;
@@ -194,6 +196,17 @@ export const usePlannedPlantings = create<PlannedPlantingsState>((set, get) => (
   approveProposal: async (proposalId, option) => {
     try {
       await approveProposalOption(proposalId, option);
+      await get().loadPlantings();
+    } catch (error) {
+      set({ error: (error as Error).message });
+      throw error;
+    }
+  },
+
+  // Undo an approve or a decline.
+  reopenProposal: async (proposalId) => {
+    try {
+      await reopenProposal(proposalId);
       await get().loadPlantings();
     } catch (error) {
       set({ error: (error as Error).message });

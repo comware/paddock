@@ -72,10 +72,11 @@ function whenLabel(date: Date, today: Date): string {
 
 export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
   const navigate = useNavigate();
-  const { plantings, convertToTray } = usePlannedPlantings();
+  const { plantings, convertToTray, updatePlanting } = usePlannedPlantings();
   const { getVariety, varieties } = useVarieties();
-  const { addTray, moveToLight, getNextTrayNumber } = useTrays();
+  const { addTray, moveToLight, moveToBlackout, deleteTray, getNextTrayNumber } = useTrays();
   const addToast = useToastStore((state) => state.add);
+  const addToastWithUndo = useToastStore((state) => state.addWithUndo);
   const [subject, setSubject] = useState<WorkSubject | null>(null);
 
   /**
@@ -111,7 +112,19 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
 
       await convertToTray(planting.id!, trayId);
       setSubject(null);
-      addToast(`Sown — tray #${getNextTrayNumber() - 1} of ${planting.variety}`, 'success');
+
+      addToastWithUndo(
+        `Sown — ${planting.quantity}x ${planting.variety}`,
+        async () => {
+          // Put both halves back: remove the tray that was created, and return the
+          // sowing to the schedule it came from.
+          await deleteTray(trayId);
+          await updatePlanting(planting.id!, {
+            status: 'planned',
+            convertedTrayId: undefined,
+          });
+        },
+      );
     } catch {
       addToast('Could not create that tray. Nothing was changed.', 'error');
     }
@@ -121,7 +134,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
     try {
       await moveToLight(trayId);
       setSubject(null);
-      addToast('Moved to light', 'success');
+      addToastWithUndo('Moved to light', () => moveToBlackout(trayId));
     } catch {
       addToast('Could not move that tray.', 'error');
     }

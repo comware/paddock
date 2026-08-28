@@ -64,9 +64,8 @@ vi.mock('@/lib/db', () => ({
   },
 }));
 
-const { stageProposal, approveProposalOption, rejectProposal, getProposal } = await import(
-  '../proposals'
-);
+const { stageProposal, approveProposalOption, rejectProposal, reopenProposal, getProposal } =
+  await import('../proposals');
 
 function option(rank: number, sowDates: string[]) {
   return {
@@ -258,5 +257,54 @@ describe('getPendingProposalIds', () => {
     await approveProposalOption(id, 1);
 
     expect(await getPendingProposalIds()).toEqual([]);
+  });
+});
+
+
+describe('reopenProposal', () => {
+  it('puts every option back on the table after an approval', async () => {
+    const id = await stageProposal(twoOptions, 'site-1', 'note');
+    await approveProposalOption(id, 1);
+
+    const reopened = await reopenProposal(id);
+
+    expect(reopened).toBe(4);
+    expect(rows.every((r) => r.status === 'proposed')).toBe(true);
+    expect(await getProposal(id)).toHaveLength(4);
+  });
+
+  it('puts every option back after a decline', async () => {
+    const id = await stageProposal(twoOptions, 'site-1', 'note');
+    await rejectProposal(id);
+
+    await reopenProposal(id);
+
+    expect(rows.every((r) => r.status === 'proposed')).toBe(true);
+  });
+
+  it('leaves a sowing that has already been sown alone', async () => {
+    const id = await stageProposal(twoOptions, 'site-1', 'note');
+    await approveProposalOption(id, 1);
+
+    // One of the approved sowings has since become a real tray.
+    const sown = rows.find((r) => r.status === 'planned')!;
+    sown.status = 'converted';
+
+    await reopenProposal(id);
+
+    // Undoing the decision must not drag a tray that exists back into a proposal.
+    expect(rows.find((r) => r.id === sown.id)!.status).toBe('converted');
+  });
+
+  it('does not touch a different proposal', async () => {
+    const first = await stageProposal(twoOptions, 'site-1', 'note');
+    const second = await stageProposal(twoOptions, 'site-1', 'note');
+    await approveProposalOption(first, 1);
+    await approveProposalOption(second, 2);
+
+    await reopenProposal(first);
+
+    const secondRows = rows.filter((r) => r.proposalId === second);
+    expect(secondRows.some((r) => r.status === 'planned')).toBe(true);
   });
 });

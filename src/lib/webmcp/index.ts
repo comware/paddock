@@ -11,6 +11,7 @@ export {
   stageProposal,
   approveProposalOption,
   rejectProposal,
+  reopenProposal,
   getProposal,
   getPendingProposalIds,
 } from './proposals';

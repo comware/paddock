@@ -44,6 +44,14 @@ export function ToastContainer() {
             {TYPE_ICONS[toast.type]}
           </span>
           <p className="text-sm font-medium flex-1">{toast.message}</p>
+          {toast.action && (
+            <button
+              onClick={() => void toast.action!.onAction()}
+              className="flex-shrink-0 px-2.5 py-1 rounded font-semibold text-sm underline underline-offset-2 hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+            >
+              {toast.action.label}
+            </button>
+          )}
           <button
             onClick={() => dismiss(toast.id)}
             className="flex-shrink-0 p-1 rounded hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"

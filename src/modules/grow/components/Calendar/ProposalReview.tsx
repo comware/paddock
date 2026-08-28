@@ -71,9 +71,11 @@ function cadenceOf(plantings: GrowPlannedPlanting[]): number | null {
 }
 
 export function ProposalReview({ onApproved }: ProposalReviewProps = {}) {
-  const { plantings, approveProposal, declineProposal } = usePlannedPlantings();
+  const { plantings, approveProposal, declineProposal, reopenProposal } =
+    usePlannedPlantings();
   const { getVariety } = useVarieties();
   const addToast = useToastStore((state) => state.add);
+  const addToastWithUndo = useToastStore((state) => state.addWithUndo);
   const [selected, setSelected] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -150,6 +152,9 @@ export function ProposalReview({ onApproved }: ProposalReviewProps = {}) {
 
   const handleApprove = async () => {
     setBusy(true);
+    // Held before the write, because the panel unmounts as soon as it succeeds and the
+    // undo closure would otherwise capture a proposal that no longer resolves.
+    const proposalId = proposal.id;
     const firstSow = new Date(active.plantings[0].plannedSowDate);
     const count = active.sowings;
 
@@ -157,10 +162,11 @@ export function ProposalReview({ onApproved }: ProposalReviewProps = {}) {
       await approveProposal(proposal.id, active.option);
 
       // The panel disappears on success, so without these the only feedback is an empty
-      // week and a calendar that did not move.
-      addToast(
+      // week and a calendar that did not move. The undo matters more here than anywhere
+      // else: this is the most consequential single click in the app.
+      addToastWithUndo(
         `Scheduled ${count} ${count === 1 ? 'sowing' : 'sowings'} — first on ${format(firstSow, 'd MMMM')}`,
-        'success',
+        () => reopenProposal(proposalId),
       );
       onApproved?.(firstSow);
     } catch {
@@ -172,13 +178,14 @@ export function ProposalReview({ onApproved }: ProposalReviewProps = {}) {
 
   const handleDecline = async () => {
     setBusy(true);
+    const proposalId = proposal.id;
     const count = proposal.options.length;
 
     try {
       await declineProposal(proposal.id);
-      addToast(
+      addToastWithUndo(
         `Discarded ${count} proposed ${count === 1 ? 'option' : 'options'}`,
-        'info',
+        () => reopenProposal(proposalId),
       );
     } catch {
       addToast('Could not discard that proposal.', 'error');
