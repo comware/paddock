@@ -55,7 +55,7 @@ export function DailyLogForm() {
   const { trays } = useTrays();
   const { varieties } = useVarieties();
   const { plantings } = usePlannedPlantings();
-  const { getActiveSite, loadSites } = useSites();
+  const { getActiveSite, loadSites, updateSite } = useSites();
 
   // Use site from context if available (inside SiteDetailLayout), fall back to active site
   const siteContext = useSiteContext();
@@ -242,7 +242,17 @@ export function DailyLogForm() {
         )}
       </div>
 
-      {/* Mood & Energy - Most important, at the top */}
+      {/* The day itself, first: it is the context for everything asked below, and it
+          replaces three fields the grower used to type. */}
+      <DaySummary
+        summary={summary}
+        actionsAlreadyFilled={Boolean(watch('actionsTaken'))}
+        onUseAsActions={() =>
+          setValue('actionsTaken', summariseActions(summary), { shouldDirty: true })
+        }
+      />
+
+      {/* Mood & Energy - the first thing only the grower can answer */}
       <div className="card p-6">
         <Controller
           name="moodEnergy"
@@ -284,6 +294,24 @@ export function DailyLogForm() {
             )}
           </div>
         </div>
+
+        {/* Outdoor site with coordinates but weather switched off. The fields sit empty
+            and nothing explains why, so say it and offer the fix here rather than sending
+            the grower to site settings to work it out. */}
+        {!weather && activeSite && !activeSite.isIndoor && !activeSite.weatherEnabled && (
+          <div className="mb-4 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Paddock can fill these in from the forecast for {activeSite.name}.
+            </p>
+            <button
+              type="button"
+              onClick={() => activeSite.id && updateSite(activeSite.id, { weatherEnabled: true })}
+              className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+            >
+              Turn on weather
+            </button>
+          </div>
+        )}
 
         {/* Show current API weather if available */}
         {weather && activeSite?.weatherEnabled && !activeSite?.isIndoor && (
@@ -340,15 +368,6 @@ export function DailyLogForm() {
           </div>
         </div>
       </div>
-
-      {/* What the app already knows. Replaces three fields the grower used to type. */}
-      <DaySummary
-        summary={summary}
-        actionsAlreadyFilled={Boolean(watch('actionsTaken'))}
-        onUseAsActions={() =>
-          setValue('actionsTaken', summariseActions(summary), { shouldDirty: true })
-        }
-      />
 
       {/* Problems & Actions */}
       <div className="card p-6">
