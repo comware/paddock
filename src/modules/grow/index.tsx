@@ -12,7 +12,7 @@ import { useEffect, useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { useSites, useTrays } from './stores';
+import { useSites, useTrays, useVarieties } from './stores';
 import { useTrayMigration, usePendingProposals, useLivePlantings } from './hooks';
 import { growRoutes } from './routes';
 
@@ -52,12 +52,20 @@ function buildNavItems(siteCount: number): ModuleNavItem[] {
 function GrowModuleContent() {
   const { sites, loadSites } = useSites();
   const { loadTrays } = useTrays();
+  const { loadVarieties } = useVarieties();
 
-  // Load sites and trays on module mount
+  // Load sites, trays and varieties on module mount.
+  //
+  // Varieties were loaded only by the pages that happened to need them for a form, so
+  // anything reading the store on a different route saw an empty list and silently
+  // degraded: the Timing tab showed no configured days-to-harvest to compare against,
+  // and Coming up dropped harvest reminders entirely. Whether either worked depended on
+  // which page the grower had visited first.
   useEffect(() => {
     loadSites();
     loadTrays();
-  }, [loadSites, loadTrays]);
+    loadVarieties();
+  }, [loadSites, loadTrays, loadVarieties]);
 
   // Run migration for orphan trays (those without a site)
   // Safe to call every mount - only migrates if orphan trays exist
