@@ -12,6 +12,7 @@
 import type { RouteObject } from 'react-router-dom';
 import { TrayList } from './components/Trays';
 import { SiteList, SitesOverview, SiteDetailLayout, SiteDashboard } from './components/Sites';
+import { DefaultSiteRedirect } from './components/Sites';
 import { GuideLibrary } from './components/Guides';
 import { PlantingCalendar } from './components/Calendar';
 import { DailyLogPage, TimeTrackingPage, AnalyticsPage, DecisionPage } from './pages';
@@ -47,10 +48,23 @@ export const growRoutes: RouteObject[] = [
   { path: 'decision', element: <DecisionPage /> },
   { path: 'guides', element: <GuideLibrary /> },
 
-  // Legacy routes - redirect to site-centric equivalents
-  // These can be removed after migration period
-  { path: 'trays', element: <TrayList /> },
-  { path: 'daily', element: <DailyLogPage /> },
-  { path: 'time', element: <TimeTrackingPage /> },
+  // Site-less aliases, kept for links, bookmarks and the mobile navigation.
+  //
+  // These used to render the page without a greenhouse: /grow/time showed "No Site
+  // Selected", and the others silently worked across every greenhouse at once. They
+  // redirect into the default greenhouse now, which is what an alias should do. The
+  // fallback renders only when there is no greenhouse to redirect into.
+  {
+    path: 'trays',
+    element: <DefaultSiteRedirect to="trays" fallback={<TrayList />} />,
+  },
+  {
+    path: 'daily',
+    element: <DefaultSiteRedirect to="daily" fallback={<DailyLogPage />} />,
+  },
+  {
+    path: 'time',
+    element: <DefaultSiteRedirect to="time" fallback={<TimeTrackingPage />} />,
+  },
   { path: 'sites', element: <SiteList /> },
 ];

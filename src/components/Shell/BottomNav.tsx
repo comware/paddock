@@ -74,12 +74,24 @@ const navItems: NavItem[] = [
 export function BottomNav() {
   const location = useLocation();
 
-  // Check if we're in a sub-route that matches
+  /**
+   * Match the section, not the literal path.
+   *
+   * These links point at the site-less aliases, which redirect into the grower's
+   * greenhouse - so by the time the page renders the URL is /grow/site/1/trays and a
+   * prefix match against /grow/trays finds nothing. Comparing the last segment keeps the
+   * right tab lit wherever the redirect lands.
+   */
   const isActive = (path: string) => {
+    const current = location.pathname.replace(/\/$/, '');
+
     if (path === '/grow') {
-      return location.pathname === '/grow' || location.pathname === '/grow/';
+      // Only the greenhouse dashboard itself, not everything beneath it.
+      return current === '/grow' || /^\/grow\/site\/[^/]+$/.test(current);
     }
-    return location.pathname.startsWith(path);
+
+    const section = path.split('/').pop();
+    return current.startsWith(path) || current.endsWith(`/${section}`);
   };
 
   return (

@@ -15,3 +15,4 @@ export { useSiteContext } from './SiteContext';
 export { SiteDashboard } from './SiteDashboard';
 export { UpcomingWork } from './UpcomingWork';
 export { GettingStarted } from './GettingStarted';
+export { DefaultSiteRedirect } from './DefaultSiteRedirect';
