@@ -58,6 +58,14 @@ export const growRoutes: RouteObject[] = [
     path: 'trays',
     element: <DefaultSiteRedirect to="trays" fallback={<TrayList />} />,
   },
+  // TrayList never read the :id parameter, so this always rendered the plain list -
+  // outside a greenhouse, where it had almost nothing to show. The planner and the
+  // welcome modal both link here. Redirect to the greenhouse's tray list, which is what
+  // the link was reaching for.
+  {
+    path: 'trays/:id',
+    element: <DefaultSiteRedirect to="trays" fallback={<TrayList />} />,
+  },
   {
     path: 'daily',
     element: <DefaultSiteRedirect to="daily" fallback={<DailyLogPage />} />,

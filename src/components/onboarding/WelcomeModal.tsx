@@ -41,7 +41,7 @@ const steps: Step[] = [
     icon: '🚀',
     cta: {
       text: 'Add First Tray',
-      to: '/grow/trays/new',
+      to: '/grow/trays',
     },
   },
 ];
