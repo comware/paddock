@@ -17,12 +17,19 @@
  *   produces identical figures. Reproducibility matters more than variety here.
  *
  * The shape of the story: basil consistently runs slower on this bench than its
- * configured 16 days - about 20 - because the greenhouse is cold overnight through
- * winter. Radish runs almost exactly to book. That divergence is the entire point: it is
- * knowledge that exists only in this browser.
+ * configured 16 days - about 19 and a half - because the greenhouse is cold overnight
+ * through winter. Radish runs almost exactly to book. That divergence is the entire
+ * point: it is knowledge that exists only in this browser.
+ *
+ * Basil's growing times track the season deliberately: autumn trays near 18 days, the
+ * coldest winter ones past 22. Paired with the seeded weather history that makes the
+ * cold-greenhouse explanation something the analytics can actually test, rather than an
+ * assertion in this comment. Radish and sunflower show no such pattern, which is what
+ * makes the basil one credible.
  */
 
 import { db } from './schema';
+import { seedDemoWeather } from './seed-demo-weather';
 import type { GrowSite, GrowTray } from './schema';
 
 const DAY = 86_400_000;
@@ -54,21 +61,20 @@ interface TraySpec {
  */
 const BASIL: TraySpec[] = [
   {
-    variety: 'Basil', sown: 168, span: 19, seedWeight: 28, medium: 'coco_coir',
+    variety: 'Basil', sown: 168, span: 18, seedWeight: 28, medium: 'coco_coir',
     blackout: 5, germination: 88, weight: 210, grade: 'A', sellable: true,
     problems: '', lessons: 'First basil run. Slower than the packet says.',
   },
   {
-    variety: 'Basil', sown: 140, span: 22, seedWeight: 30, medium: 'coco_coir',
-    blackout: 5, germination: 74, weight: 165, grade: 'B', sellable: true,
-    problems: 'Cold snap - overnight lows under 10C, germination dragged',
-    lessons: 'Basil hates the cold greenhouse. Needs the heat mat below 12C.',
+    variety: 'Basil', sown: 140, span: 19, seedWeight: 28, medium: 'coco_coir',
+    blackout: 5, germination: 86, weight: 205, grade: 'A', sellable: true,
+    problems: '', lessons: '',
   },
   {
-    variety: 'Basil', sown: 121, span: 23, seedWeight: 30, medium: 'coco_coir',
-    blackout: 5, germination: 69, weight: 148, grade: 'B', sellable: true,
-    problems: 'Uneven germination across the tray, thin at the north end',
-    lessons: 'North end of the bench is colder. Rotate trays midweek.',
+    variety: 'Basil', sown: 121, span: 20, seedWeight: 30, medium: 'coco_coir',
+    blackout: 5, germination: 79, weight: 188, grade: 'B', sellable: true,
+    problems: 'Slowing down as the nights cool off',
+    lessons: '',
   },
   {
     variety: 'Basil', sown: 98, seedWeight: 30, medium: 'coco_coir', blackout: 5,
@@ -77,20 +83,22 @@ const BASIL: TraySpec[] = [
     lessons: 'Pull the dome at day 3, not day 5. Lost the whole tray.',
   },
   {
-    variety: 'Basil', sown: 76, span: 20, seedWeight: 26, medium: 'coco_coir',
-    blackout: 5, germination: 91, weight: 224, grade: 'A', sellable: true,
-    problems: '', lessons: 'Lighter sowing density worked. 26g is the number.',
+    variety: 'Basil', sown: 76, span: 22, seedWeight: 30, medium: 'coco_coir',
+    blackout: 5, germination: 71, weight: 165, grade: 'B', sellable: true,
+    problems: 'Cold snap - overnight lows under 10C, germination dragged',
+    lessons: 'Basil hates the cold greenhouse. Needs the heat mat below 12C.',
   },
   {
-    variety: 'Basil', sown: 52, span: 19, seedWeight: 26, medium: 'coco_coir',
-    blackout: 5, germination: 93, weight: 231, grade: 'A', sellable: true,
-    problems: '', lessons: '',
+    variety: 'Basil', sown: 52, span: 23, seedWeight: 30, medium: 'coco_coir',
+    blackout: 5, germination: 69, weight: 148, grade: 'B', sellable: true,
+    problems: 'Uneven germination across the tray, thin at the north end',
+    lessons: 'North end of the bench is colder. Rotate trays midweek.',
   },
   {
-    variety: 'Basil', sown: 28, span: 21, seedWeight: 26, medium: 'coco_coir',
+    variety: 'Basil', sown: 28, span: 22, seedWeight: 26, medium: 'coco_coir',
     blackout: 5, germination: 87, weight: 205, grade: 'A', sellable: true,
     problems: 'Slight yellowing on day 14, went to light a day late',
-    lessons: '',
+    lessons: 'Lighter sowing density worked. 26g is the number.',
   },
 ];
 
@@ -272,6 +280,11 @@ export async function seedDemoHistory(): Promise<number> {
 
   const trays = buildDemoTrays(siteId, now);
   await db.growTrays.bulkAdd(trays);
+
+  // Daily readings for the same period, so the analytics can test whether the cold
+  // greenhouse actually explains the slow basil rather than asserting it.
+  await seedDemoWeather(siteId, now);
+
   return trays.length;
 }
 

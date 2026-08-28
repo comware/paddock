@@ -3,14 +3,20 @@
  */
 
 import { useState } from 'react';
-import { VarietyComparison, TrendCharts, TimingAccuracy } from '../components/Analytics';
+import {
+  VarietyComparison,
+  TrendCharts,
+  TimingAccuracy,
+  WeatherOutcome,
+} from '../components/Analytics';
 
-type View = 'timing' | 'variety' | 'trends';
+type View = 'timing' | 'weather' | 'variety' | 'trends';
 
 const VIEWS: Array<{ id: View; label: string }> = [
   // Timing leads: how long things actually take here is the figure worth planning
   // against, and the one the app is uniquely placed to know.
   { id: 'timing', label: 'Timing' },
+  { id: 'weather', label: 'Weather' },
   { id: 'variety', label: 'By Variety' },
   { id: 'trends', label: 'Trends' },
 ];
@@ -41,6 +47,7 @@ export function AnalyticsPage() {
 
       {/* Content */}
       {view === 'timing' && <TimingAccuracy />}
+      {view === 'weather' && <WeatherOutcome />}
       {view === 'variety' && <VarietyComparison />}
       {view === 'trends' && <TrendCharts />}
     </div>
