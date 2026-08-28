@@ -44,7 +44,7 @@ export function GettingStarted({ siteId, onNewTray }: GettingStartedProps) {
       body:
         'The calendar works backwards from when you want a harvest — using how long ' +
         'things actually take on your bench, once it has a few to go on.',
-      action: { label: 'Planting calendar', run: () => navigate('/grow/calendar') },
+      action: { label: 'Planting calendar', run: () => navigate(`/grow/site/${siteId}/calendar`) },
     },
   ];
 

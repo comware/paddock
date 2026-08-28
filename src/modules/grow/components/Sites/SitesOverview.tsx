@@ -287,7 +287,7 @@ export function SitesOverview() {
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare all sites</span>
             </button>
             <button
-              onClick={() => navigate('/grow/decision')}
+              onClick={() => navigate('/grow/analytics')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">🎯</span>

@@ -214,7 +214,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
       <div className="flex items-baseline justify-between mb-3">
         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Coming up</h2>
         <button
-          onClick={() => navigate('/grow/calendar')}
+          onClick={() => navigate(`/grow/site/${siteId}/calendar`)}
           className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
         >
           Planting calendar →
@@ -223,7 +223,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
 
       {proposalsPending > 0 && (
         <button
-          onClick={() => navigate('/grow/calendar')}
+          onClick={() => navigate(`/grow/site/${siteId}/calendar`)}
           className="w-full mb-3 flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 text-left hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
         >
           <Bot aria-hidden="true" className="w-5 h-5 shrink-0 text-amber-700 dark:text-amber-300" strokeWidth={1.75} />
@@ -244,7 +244,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
         <div className="rounded-xl bg-white dark:bg-slate-800 p-4 text-sm text-slate-600 dark:text-slate-400">
           Nothing scheduled.{' '}
           <button
-            onClick={() => navigate('/grow/calendar')}
+            onClick={() => navigate(`/grow/site/${siteId}/calendar`)}
             className="text-primary-600 dark:text-primary-400 hover:underline"
           >
             Plan some sowings →

@@ -6,7 +6,7 @@
  */
 
 import { useEffect } from 'react';
-import { Sprout } from 'lucide-react';
+import { Sprout, Settings } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useModulesStore, MODULE_DEFINITIONS } from '@/stores/useModulesStore';
 
@@ -92,6 +92,7 @@ export function TopNav() {
 
           <NavLink
             to="/settings"
+            aria-label="Settings"
             className={({ isActive }) =>
               `p-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                 isActive
@@ -100,7 +101,7 @@ export function TopNav() {
               }`
             }
           >
-            <span className="text-xl">⚙️</span>
+            <Settings aria-hidden="true" className="w-5 h-5" strokeWidth={1.75} />
           </NavLink>
         </div>
       </div>

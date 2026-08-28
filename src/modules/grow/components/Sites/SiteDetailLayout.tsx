@@ -8,12 +8,14 @@
  * - Outlet for nested routes
  */
 
+import { usePendingProposals } from '../../hooks';
 import {
   LayoutDashboard,
   Sprout,
   NotebookPen,
   Timer,
   ChartLine,
+  CalendarDays,
   MapPin,
   Home,
 } from 'lucide-react';
@@ -29,9 +31,17 @@ import { SiteContext, type SiteContextValue } from './SiteContext';
 // SUB-NAVIGATION
 // ============================================
 
+/**
+ * Everything a grower does for one greenhouse, in the order they do it: see the state,
+ * work the trays, plan ahead, record the day, record the time, look back.
+ *
+ * Calendar and the variety scorecard used to live a level up, which split one job across
+ * two navigation bars. The scorecard is now a tab inside Analytics, where it belongs.
+ */
 const navItems = [
   { path: '', label: 'Overview', Icon: LayoutDashboard },
   { path: 'trays', label: 'Trays', Icon: Sprout },
+  { path: 'calendar', label: 'Calendar', Icon: CalendarDays },
   { path: 'daily', label: 'Daily Log', Icon: NotebookPen },
   { path: 'time', label: 'Time', Icon: Timer },
   { path: 'analytics', label: 'Analytics', Icon: ChartLine },
@@ -40,6 +50,8 @@ const navItems = [
 function SiteSubNav({ siteId }: { siteId: string }) {
   const location = useLocation();
   const basePath = `/grow/site/${siteId}`;
+  // Proposals awaiting a decision, surfaced on the tab that shows them.
+  const pendingProposals = usePendingProposals();
 
   // Determine active tab
   const currentPath = location.pathname.replace(basePath, '').replace(/^\//, '');
@@ -63,6 +75,20 @@ function SiteSubNav({ siteId }: { siteId: string }) {
           >
             <item.Icon aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
             <span>{item.label}</span>
+            {item.path === 'calendar' && pendingProposals > 0 && (
+              <span
+                aria-live="polite"
+                className="ml-0.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-amber-500 text-white text-xs font-bold"
+              >
+                {pendingProposals}
+                <span className="sr-only">
+                  {' '}
+                  {pendingProposals === 1
+                    ? 'proposed plan awaiting your decision'
+                    : 'proposed plans awaiting your decision'}
+                </span>
+              </span>
+            )}
           </Link>
         );
       })}

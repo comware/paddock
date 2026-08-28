@@ -9,8 +9,9 @@ import {
   TimingAccuracy,
   WeatherOutcome,
 } from '../components/Analytics';
+import { Scorecard } from '../components/Decision';
 
-type View = 'timing' | 'weather' | 'variety' | 'trends';
+type View = 'timing' | 'weather' | 'variety' | 'trends' | 'scorecard';
 
 const VIEWS: Array<{ id: View; label: string }> = [
   // Timing leads: how long things actually take here is the figure worth planning
@@ -19,6 +20,9 @@ const VIEWS: Array<{ id: View; label: string }> = [
   { id: 'weather', label: 'Weather' },
   { id: 'variety', label: 'By Variety' },
   { id: 'trends', label: 'Trends' },
+  // Was a top-level 'Decision' tab. It compares varieties and recommends what to grow,
+  // which is analytics - the separate tab was an artefact of the six-week experiment.
+  { id: 'scorecard', label: 'Scorecard' },
 ];
 
 export function AnalyticsPage() {
@@ -50,6 +54,7 @@ export function AnalyticsPage() {
       {view === 'weather' && <WeatherOutcome />}
       {view === 'variety' && <VarietyComparison />}
       {view === 'trends' && <TrendCharts />}
+      {view === 'scorecard' && <Scorecard />}
     </div>
   );
 }
