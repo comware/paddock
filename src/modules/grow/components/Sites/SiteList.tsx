@@ -4,6 +4,8 @@
  * Shows all sites in a grid with options to add, edit, and delete.
  */
 
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSites } from '../../stores';
 import { SiteCard } from './SiteCard';
@@ -39,22 +41,36 @@ export function SiteList() {
     );
   }
 
+  // With one greenhouse /grow redirects into it, so the only way back from here is the
+  // greenhouse itself. Without this the page is a cul-de-sac.
+  const defaultSite = sites.find((site) => site.isDefault) ?? sites[0];
+
   return (
     <div className="space-y-6">
+      {defaultSite?.id && (
+        <Link
+          to={`/grow/site/${defaultSite.id}`}
+          className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+        >
+          <ArrowLeft aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+          <span>Back to {defaultSite.name}</span>
+        </Link>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Sites</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Greenhouses</h1>
           <p className="text-slate-600 dark:text-slate-400">
             Manage your growing locations
           </p>
         </div>
         <button
           onClick={() => setIsNewSiteOpen(true)}
-          className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
+          className="px-4 py-2 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors flex items-center gap-2"
         >
-          <span>+</span>
-          <span>Add Site</span>
+          <Plus aria-hidden="true" className="w-4 h-4" strokeWidth={2} />
+          <span>Add greenhouse</span>
         </button>
       </div>
 

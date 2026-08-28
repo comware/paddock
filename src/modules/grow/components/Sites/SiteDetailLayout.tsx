@@ -18,6 +18,8 @@ import {
   CalendarDays,
   MapPin,
   Home,
+  ArrowLeft,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useParams, useNavigate, useLocation, Link } from 'react-router-dom';
@@ -215,13 +217,28 @@ export function SiteDetailLayout() {
   return (
     <SiteContext.Provider value={contextValue}>
       <div className="space-y-4">
-        {/* Back Link */}
+        {/*
+          With one greenhouse there is no list to go back to - /grow redirects straight
+          back here, so "Back to greenhouses" was a link that visibly did nothing.
+
+          It becomes the way to add a second instead, which otherwise had no route at all
+          once the list stopped rendering.
+        */}
         <Link
-          to="/grow"
+          to={sites.length > 1 ? '/grow' : '/grow/sites/manage'}
           className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
-          <span>←</span>
-          <span>Back to greenhouses</span>
+          {sites.length > 1 ? (
+            <>
+              <ArrowLeft aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+              <span>Back to greenhouses</span>
+            </>
+          ) : (
+            <>
+              <SlidersHorizontal aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+              <span>Manage greenhouses</span>
+            </>
+          )}
         </Link>
 
         {/* Site Header */}
