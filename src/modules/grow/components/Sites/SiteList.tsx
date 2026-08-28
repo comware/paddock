@@ -4,7 +4,7 @@
  * Shows all sites in a grid with options to add, edit, and delete.
  */
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSites } from '../../stores';
@@ -15,6 +15,7 @@ import type { GrowSite } from '@/lib/db';
 
 export function SiteList() {
   const { sites, activeSiteId, isLoading, loadSites, setActiveSite, updateSite, deleteSite } = useSites();
+  const navigate = useNavigate();
 
   const [isNewSiteOpen, setIsNewSiteOpen] = useState(false);
   const [editingSite, setEditingSite] = useState<GrowSite | null>(null);
@@ -100,7 +101,14 @@ export function SiteList() {
                 key={site.id}
                 site={site}
                 isActive={site.id === activeSiteId}
-                onSelect={() => setActiveSite(site.id!)}
+                // Open it. Previously this only marked the space active, so clicking
+                // the one you were already in did nothing at all - and the card's own
+                // label promised "Open Home Greenhouse". Making it active on the way in
+                // is the right side effect, not the whole action.
+                onSelect={() => {
+                  setActiveSite(site.id!);
+                  navigate(`/grow/site/${site.id}`);
+                }}
                 onEdit={() => setEditingSite(site)}
                 onDelete={() => setDeleteConfirmId(site.id!)}
                 onSetDefault={() => handleSetDefault(site.id!)}
@@ -117,8 +125,8 @@ export function SiteList() {
                   Tips
                 </h3>
                 <ul className="text-sm text-blue-800 dark:text-blue-200 mt-1 space-y-1">
-                  <li>• Click a space to make it the active one</li>
-                  <li>• New trays and daily logs go to the active space</li>
+                  <li>• Click a space to open it</li>
+                  <li>• New trays and daily logs go to whichever space you opened last</li>
                   <li>• Enable weather to auto-fetch temperature and humidity</li>
                   <li>• Indoor spaces don't fetch weather</li>
                 </ul>
