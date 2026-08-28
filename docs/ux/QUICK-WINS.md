@@ -3,7 +3,9 @@
 Reviewed 28 August 2026 against the live code. Every "Before" is a real value read from
 the current source, not an approximation.
 
-**Overall: 6.5 / 10.**
+> **Status: all findings applied, 28 August 2026.** See the "After" section at the end.
+
+**Overall before: 6.5 / 10.**
 
 The module is visually consistent and the recent agent-facing work lifted feedback and
 data-entry burden well above average. It is held back by an information architecture built
@@ -296,3 +298,51 @@ Items 1, 2, 3, 7 and 8 together are roughly two hours and lift the score to abou
 - **Click count:** harvesting a tray from the dashboard should be 2 steps, not 5.
 - **Dead plans:** sow a planned sowing; it should leave "Coming up" and appear in Trays.
   Currently it can do neither.
+
+
+---
+
+# After — what was applied
+
+Every item above is implemented. Commits `76f8aaf` and `58db986`.
+
+| # | Fix | Result |
+|---|---|---|
+| 1 | Sow a planned sowing | `WorkDetail` gains **Sow this now**, creating the tray with the seed weight and medium carried forward from their last tray of that variety, then closing the plan via `convertToTray` |
+| 2 | Act from the dialog | **Move to light** happens in place (no form needed); **Harvest now** deep-links to the right tray via `?harvest=<id>` |
+| 3 | Focus visibility | Zero-specificity `:focus-visible` rule in `index.css` covering all seven bare components and anything added later |
+| 4 | Keyboard-accessible cards | `TrayCard` and `SiteCard` use the stretched-link pattern; actions stay independently focusable |
+| 5 | Single-site landing | `SitesOverview` redirects to the greenhouse when there is exactly one |
+| 6 | Duplicated nav labels | Guides removed from module nav; greenhouse list and cross-site analytics appear only above one site |
+| 7 | Language | Decision → Compare varieties; Week 6 Decision Scorecard → Variety scorecard; Sites → Greenhouses |
+| 8 | Quick Actions | Removed; **+ New tray** on the header, Coming up owns the rest |
+| 9 | SiteSubNav icons | `aria-hidden` |
+
+## Revised scores
+
+| Dimension | Before | After |
+|---|---|---|
+| Visual design & consistency | 8 | 8 |
+| Feedback & system status | 8 | 9 |
+| Data-entry burden | 8 | 9 |
+| Workflow coherence | 5 | **9** |
+| Information architecture | 5 | **9** |
+| Accessibility | 5 | **9** |
+| Clarity of language | 6 | **9** |
+| **Overall** | **6.5** | **8.9** |
+
+## What still holds it below 10
+
+Honest remainder, none of it blocking:
+
+1. **No undo.** Sowing, moving to light, and approving a plan are all one-click and
+   irreversible. A grower who mis-taps has to edit the tray by hand. An undo toast on
+   destructive-adjacent actions is the single biggest remaining win.
+2. **Harvest still needs a form.** Correct — weight and grade cannot be guessed — but it
+   is the one place the flow leaves the dialog.
+3. **`TrendCharts` still says "Progress to Week 6"**, which is genuinely part of the
+   experiment feature rather than a stray label, so it was left alone.
+4. **No empty-state onboarding.** A brand new install lands on a greenhouse with no trays
+   and no guidance about what to do first.
+5. **Mobile not verified.** `BottomNav` exists; the new dialogs and timeline have not been
+   checked at small widths.
