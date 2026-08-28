@@ -1,0 +1,124 @@
+sprint:
+  id: sprint-2026-03-09-planner-prd
+  goal: goal-4
+  title: "Planner Module PRD & Test Coverage"
+  status: planned
+  created: "2026-03-09"
+  estimated_hours: 2
+  description: |
+    Complete goal-4's remaining key result: PRD documentation.
+    Also add unit tests for the 3 new planner components created in
+    sprint-2026-03-09-planner-foundation (EventCreateForm, EventList, EventDetail).
+    This will close out goal-4 at 100%.
+
+  handoffs:
+    - id: planner-prd-001-write-prd
+      title: "Write Planner Module PRD"
+      priority: P0
+      estimate_hours: 1.0
+      description: |
+        Create a comprehensive PRD for the Planner module at docs/prd/planner-module-prd.md.
+        Document:
+        - Module purpose: crop calendar and succession planning for microgreens/propagation
+        - Domain model: PlannerEvent entity, event types (sow, harvest, etc.), status lifecycle
+        - Core features: calendar view, event CRUD, cross-module linking (Grow trays, Propagation batches)
+        - Integration architecture: usePlannerIntegration hook, bidirectional navigation
+        - Type system: 80+ types across eventTypes.ts and planner.ts
+        - Data persistence: Dexie/IndexedDB via plannerDb
+        - UI components: PlannerCalendar, EventCreateForm, EventList, EventDetail, EventDetailModal
+        - Routes: /planner (calendar), /events, /events/new, /events/:id
+        - Future roadmap: succession planning, auto-event generation, recurring events
+        Follow the format of existing PRDs (docs/prd/propagation-module-prd.md).
+      tasks:
+        - "Read existing module code to document accurately"
+        - "Create docs/prd/planner-module-prd.md"
+        - "Include domain model, features, integration, and future roadmap sections"
+      acceptance_criteria:
+        - "docs/prd/planner-module-prd.md exists (verified via: test -f docs/prd/planner-module-prd.md)"
+        - "PRD covers domain model section (verified via: grep -i 'domain model' docs/prd/planner-module-prd.md)"
+        - "PRD covers integration section (verified via: grep -i 'integration' docs/prd/planner-module-prd.md)"
+        - "PRD covers future roadmap (verified via: grep -i 'roadmap\\|future' docs/prd/planner-module-prd.md)"
+        - "PRD is at least 100 lines (verified via: wc -l docs/prd/planner-module-prd.md shows >= 100)"
+      blocked_by: []
+
+    - id: planner-prd-002-component-tests
+      title: "Add Unit Tests for New Planner Components"
+      priority: P1
+      estimate_hours: 0.5
+      description: |
+        Add unit tests for the 3 new planner components created in the previous sprint:
+        - EventCreateForm: test rendering, form validation, submission
+        - EventList: test filtering, rendering events, empty state
+        - EventDetail: test status actions (complete, skip, cancel, delete)
+        Use vitest + @testing-library/react patterns consistent with existing tests.
+      tasks:
+        - "Create src/modules/planner/components/__tests__/EventCreateForm.test.tsx"
+        - "Create src/modules/planner/components/__tests__/EventList.test.tsx"
+        - "Create src/modules/planner/components/__tests__/EventDetail.test.tsx"
+      acceptance_criteria:
+        - "Test files exist for all 3 components (verified via: ls src/modules/planner/components/__tests__/Event*.test.tsx | wc -l shows >= 3)"
+        - "Tests pass (verified via: pnpm exec vitest run --reporter verbose src/modules/planner 2>&1 | grep -E 'passed|failed')"
+        - "At least 15 total new tests (verified via: pnpm exec vitest run src/modules/planner 2>&1 | grep -oP '\\d+ passed' | head -1)"
+        - "Build passes (verified via: pnpm run build exits 0)"
+      blocked_by: []
+
+    - id: planner-prd-999-commit-verify
+      title: "Commit and Verify CI"
+      priority: P0
+      estimate_hours: 0.5
+      description: |
+        Final sprint handoff - commit, push, verify CI, update goals.
+
+        1. git status - review changes
+        2. git add - stage files (avoid secrets)
+        3. git commit - descriptive message
+        4. git push - push to remote
+        5. Verify CI passes (all checks green)
+        6. Update goal progress in .claude/project.yaml
+
+        DO NOT mark sprint complete until CI is green.
+      acceptance_criteria:
+        - "All changes committed (verified via: git status --porcelain shows clean)"
+        - "Pushed to remote (verified via: git push exits 0)"
+        - "Build passes (verified via: pnpm run build exits 0)"
+        - "Tests pass (verified via: pnpm exec vitest run exits 0)"
+        - "Goal progress updated (verified via: grep 'progress:' .claude/project.yaml)"
+        - "All prior handoff acceptance criteria pass (verified via: /project:sprint-validate --acceptance exits with verdict PASS)"
+      blocked_by:
+        - planner-prd-001-write-prd
+        - planner-prd-002-component-tests
+
+retro:
+  conducted_at: "2026-03-09T18:15:00Z"
+  duration: "unknown"
+  completion_rate: 67
+  estimation_variance: 0
+  acceptance_verification:
+    total_criteria: 15
+    passed: 13
+    failed: 2
+    manual: 0
+    verdict: "FAIL"
+    failures:
+      - handoff: "planner-prd-999-commit-verify"
+        criterion: "All changes committed (git status --porcelain shows clean)"
+        detail: "45 uncommitted files in working tree"
+      - handoff: "planner-prd-999-commit-verify"
+        criterion: "Pushed to remote (git push exits 0)"
+        detail: "Changes not yet pushed to remote"
+    criteria_quality_pct: 100
+  successes:
+    - "PRD handoff fully completed - 519-line comprehensive document at docs/prd/planner-module-prd.md"
+    - "Component tests handoff fully completed - 121 tests passing across 4 test files"
+    - "All 15 acceptance criteria are automated with verification commands (100% criteria quality)"
+    - "Build passes cleanly"
+  challenges:
+    - "Commit-verify handoff incomplete - 45 files uncommitted and not pushed"
+    - "Sprint status still 'planned' despite work being substantially done"
+  action_items:
+    - "Complete commit-verify handoff: stage, commit, and push all changes"
+    - "Update sprint status from 'planned' to 'in_progress' or 'completed' after commit"
+    - "Fix 2 failing acceptance criteria in planner-prd-999-commit-verify before archiving"
+  recommendations:
+    - "Ensure commit-verify handoff is executed promptly after code handoffs complete"
+    - "Consider auto-transitioning sprint status to 'in_progress' when first handoff begins"

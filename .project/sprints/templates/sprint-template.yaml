@@ -1,0 +1,117 @@
+# Sprint Template
+# Copy this file to ../active/sprint-YYYY-MM-DD-{name}.yaml
+
+id: sprint-YYYY-MM-DD-name
+name: "Human Readable Sprint Name"
+project: oztam-data-analyst
+status: ready  # ready | in_progress | completed | blocked
+
+created: YYYY-MM-DD
+target_start: YYYY-MM-DD
+target_end: YYYY-MM-DD
+
+# Which goal does this sprint advance?
+goal_id: goal-1
+
+# Clear, measurable exit criteria
+goal: |
+  What this sprint delivers.
+  Exit criteria: Specific measurable outcome.
+
+# Background context for the executing agent
+context: |
+  Why this sprint exists.
+  What has been done before.
+  Key references and constraints.
+
+# Measurable success criteria — EVERY criterion MUST include verification method
+# Format: "Description (verified via: command or test name)"
+success_criteria:
+  - "Criterion 1 (verified via: pnpm test --grep 'pattern' exits 0)"
+  - "Criterion 2 (verified via: curl -s localhost:3000/api/... | jq .status)"
+  - "Criterion 3 (verified via: test -f path/to/expected/file)"
+
+# Handoffs are units of work within the sprint
+# Execute in dependency order
+handoffs:
+  - id: "SPRINT-001-setup"  # Replace SPRINT with sprint prefix
+    title: "Handoff Title"
+    priority: P0  # P0 = blocking, P1 = important, P2 = nice-to-have
+    estimate_hours: 2
+    status: pending  # pending | in_progress | completed | blocked
+    description: |
+      What to do in this handoff.
+      Be specific and actionable.
+    acceptance_criteria:
+      - "Criterion 1 (verified via: specific command or test)"
+      - "Criterion 2 (verified via: specific command or test)"
+    blocked_by: []  # IDs of handoffs that must complete first
+
+  - id: "SPRINT-002-implement"  # Replace SPRINT with sprint prefix
+    title: "Second Handoff"
+    priority: P0
+    estimate_hours: 3
+    status: pending
+    description: |
+      Second unit of work.
+    acceptance_criteria:
+      - "Criterion 1 (verified via: specific command or test)"
+    blocked_by:
+      - "SPRINT-001-setup"
+
+  # ALWAYS include this final handoff - it commits and verifies CI
+  - id: "SPRINT-999-commit-verify"  # Replace SPRINT with sprint prefix
+    title: "Commit, Verify CI, Update Goal Progress"
+    priority: P0
+    estimate_hours: 0.5
+    status: pending
+    description: |
+      Final sprint handoff: commit all changes, verify CI, and update goal progress.
+
+      This handoff ensures:
+      1. All sprint work is committed with proper messages
+      2. Changes are pushed to remote
+      3. CI pipeline passes (wait for it and fix if needed)
+      4. Goal progress is updated in project.yaml
+
+      DO NOT skip this handoff. DO NOT mark sprint complete until CI is green.
+
+      CI VERIFICATION (MANDATORY after push):
+      1. Push changes: git push origin <branch>
+      2. Wait for CI to start: sleep 10 && gh run list --limit 1
+      3. Watch CI run: gh run watch --exit-status
+         - If CI passes: proceed to goal progress update
+         - If CI fails: read the failure logs with gh run view --log-failed
+         - Fix the failures (lint, type errors, test failures)
+         - Commit the fix, push again, and re-watch
+         - Repeat until CI is green
+      4. Common CI-only failures to watch for:
+         - Lint rules not caught locally (stricter CI config)
+         - Type errors in strict mode
+         - Test failures in different runtime version
+         - Coverage threshold not met
+         - Missing test environment variables
+
+      GOAL PROGRESS UPDATE:
+      - Open .project/project.yaml
+      - Find the goal this sprint advances (goal_id field above)
+      - Mark any newly satisfied success_criteria as completed: true
+      - Recalculate progress: (completed criteria / total criteria) * 100
+      - Update the goal's progress field
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean)"
+      - "Pushed to remote (verified via: git push exits 0)"
+      - "CI pipeline passes (verified via: gh run list --limit 1 shows success)"
+      - "Lint clean in CI (verified via: project lint command exits 0)"
+      - "Types clean in CI (verified via: project type-check command exits 0)"
+      - "Tests pass in CI (verified via: project test command exits 0)"
+      - "No uncommitted changes remain (verified via: git status --porcelain is empty)"
+      - "Goal progress updated (verified via: grep 'progress:' .project/project.yaml)"
+    blocked_by:
+      # Add ALL preceding handoff IDs here
+      - "SPRINT-001-setup"
+      - "SPRINT-002-implement"
+
+# Optional notes
+notes: |
+  Additional context, links, or considerations.

@@ -1,0 +1,74 @@
+id: retro-sprint-2026-03-30-fix-cves
+sprint_id: sprint-2026-03-30-fix-cves
+date: 2026-03-30
+project: paddock
+
+summary: |
+  All 5 handoffs completed. serialize-javascript override eliminated all 14 CVEs
+  (10 high, 4 moderate) down to zero. Build and full test suite pass (1139/1139).
+
+outcome:
+  handoffs_planned: 5
+  handoffs_completed: 5
+  completion_rate: 100%
+  tests_passing: 1139/1139
+  cves_before: 14
+  cves_after: 0
+
+went_well:
+  - id: ww-1
+    title: "Single root-cause fix resolved all HIGH CVEs"
+    detail: |
+      Updating serialize-javascript via the override approach eliminated all 10
+      HIGH CVEs in one targeted change, avoiding risky major version bumps of
+      the full vite-plugin-pwa -> workbox chain.
+
+  - id: ww-2
+    title: "Zero test regressions"
+    detail: |
+      All 1139 tests continued to pass after dependency changes, confirming the
+      override approach was non-breaking.
+
+  - id: ww-3
+    title: "Clean sprint scoping — right-sized at 5 handoffs"
+    detail: |
+      Sprint was well-scoped for a single-session effort. The dependency chain
+      was pre-analyzed in the sprint definition, which saved investigation time.
+
+improve:
+  - id: imp-1
+    title: "Proactive transitive dependency monitoring"
+    detail: |
+      The CVEs accumulated over time in transitive deps (workbox -> serialize-javascript).
+      A periodic npm audit check (weekly or in CI) would catch these earlier.
+
+  - id: imp-2
+    title: "Override approach needs periodic review"
+    detail: |
+      Using npm overrides is a tactical fix. The override should be removed once
+      vite-plugin-pwa ships a version that pulls in a fixed serialize-javascript
+      natively. Add a reminder or TODO to revisit.
+
+actions:
+  - id: act-1
+    title: "Add npm audit to CI pipeline"
+    detail: |
+      Add a CI step that runs npm audit --audit-level=high and fails the build
+      if new high/critical CVEs appear. Prevents silent accumulation.
+    owner: engineering
+    priority: P1
+
+  - id: act-2
+    title: "Schedule quarterly dependency review"
+    detail: |
+      Review npm overrides and outdated major deps quarterly. Remove overrides
+      once upstream fixes land.
+    owner: engineering
+    priority: P2
+
+  - id: act-3
+    title: "Archive sprint to completed"
+    detail: |
+      Move sprint-2026-03-30-fix-cves.yaml from active/ to completed/.
+    owner: project-ops
+    priority: P0

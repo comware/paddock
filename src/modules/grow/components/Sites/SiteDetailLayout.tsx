@@ -8,6 +8,15 @@
  * - Outlet for nested routes
  */
 
+import {
+  LayoutDashboard,
+  Sprout,
+  NotebookPen,
+  Timer,
+  ChartLine,
+  MapPin,
+  Home,
+} from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useSites } from '../../stores';
@@ -21,11 +30,11 @@ import { SiteContext, type SiteContextValue } from './SiteContext';
 // ============================================
 
 const navItems = [
-  { path: '', label: 'Overview', icon: '📊' },
-  { path: 'trays', label: 'Trays', icon: '🌱' },
-  { path: 'daily', label: 'Daily Log', icon: '📝' },
-  { path: 'time', label: 'Time', icon: '⏱️' },
-  { path: 'analytics', label: 'Analytics', icon: '📈' },
+  { path: '', label: 'Overview', Icon: LayoutDashboard },
+  { path: 'trays', label: 'Trays', Icon: Sprout },
+  { path: 'daily', label: 'Daily Log', Icon: NotebookPen },
+  { path: 'time', label: 'Time', Icon: Timer },
+  { path: 'analytics', label: 'Analytics', Icon: ChartLine },
 ];
 
 function SiteSubNav({ siteId }: { siteId: string }) {
@@ -52,7 +61,7 @@ function SiteSubNav({ siteId }: { siteId: string }) {
                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            <span aria-hidden="true">{item.icon}</span>
+            <item.Icon aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
             <span>{item.label}</span>
           </Link>
         );
@@ -71,7 +80,11 @@ function SiteHeader({ site }: { site: GrowSite }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <span className="text-3xl">{site.isIndoor ? '🏠' : '📍'}</span>
+        {site.isIndoor ? (
+          <Home aria-hidden="true" className="w-7 h-7 shrink-0 text-primary-600 dark:text-primary-400" strokeWidth={1.75} />
+        ) : (
+          <MapPin aria-hidden="true" className="w-7 h-7 shrink-0 text-primary-600 dark:text-primary-400" strokeWidth={1.75} />
+        )}
         <div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-white">{site.name}</h1>
           {site.description && (
@@ -167,7 +180,7 @@ export function SiteDetailLayout() {
           onClick={() => navigate('/grow')}
           className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
         >
-          Back to Sites
+          Back to greenhouses
         </button>
       </div>
     );
@@ -182,7 +195,7 @@ export function SiteDetailLayout() {
           className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           <span>←</span>
-          <span>Back to Sites</span>
+          <span>Back to greenhouses</span>
         </Link>
 
         {/* Site Header */}

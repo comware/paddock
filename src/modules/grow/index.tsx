@@ -10,6 +10,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
+import { MapPin, CalendarDays, ChartColumn, Target } from 'lucide-react';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useSites, useTrays, useVarieties } from './stores';
@@ -35,16 +36,16 @@ function buildNavItems(siteCount: number): ModuleNavItem[] {
   const items: ModuleNavItem[] = [];
 
   if (siteCount > 1) {
-    items.push({ name: 'Greenhouses', path: '', icon: '📍' });
+    items.push({ name: 'Greenhouses', path: '', Icon: MapPin });
   }
 
-  items.push({ name: 'Calendar', path: '/calendar', icon: '📅' });
+  items.push({ name: 'Calendar', path: '/calendar', Icon: CalendarDays });
 
   if (siteCount > 1) {
-    items.push({ name: 'All greenhouses', path: '/analytics', icon: '📊' });
+    items.push({ name: 'All greenhouses', path: '/analytics', Icon: ChartColumn });
   }
 
-  items.push({ name: 'Compare varieties', path: '/decision', icon: '🎯' });
+  items.push({ name: 'Compare varieties', path: '/decision', Icon: Target });
 
   return items;
 }

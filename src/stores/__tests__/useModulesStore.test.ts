@@ -113,10 +113,10 @@ describe('module enablement', () => {
     expect(settings).toHaveLength(1);
   });
 
-  it('defines a path and icon for every module', () => {
+  it('defines a path, icon and description for every module', () => {
     for (const module of MODULE_DEFINITIONS) {
       expect(module.path).toMatch(/^\//);
-      expect(module.icon).toBeTruthy();
+      expect(module.Icon).toBeTruthy();
       expect(module.description).toBeTruthy();
     }
   });

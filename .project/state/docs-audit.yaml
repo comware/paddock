@@ -1,0 +1,31 @@
+last_audit: "2026-03-09"
+lifecycle_phase: in_progress
+completeness_score: 38
+completeness:
+  expected: 8
+  present: 3
+  missing:
+    - id: license
+      name: "License"
+    - id: contributing
+      name: "Contributing Guide"
+    - id: quickstart
+      name: "Quick Start"
+    - id: api_reference
+      name: "API Reference"
+    - id: testing_guide
+      name: "Testing Guide"
+  bonus:
+    - id: config_reference
+      name: "Config Reference"
+      path: ".env.example"
+  present_list:
+    - id: readme
+      name: "README"
+      path: "README.md"
+    - id: changelog
+      name: "Changelog"
+      path: "CHANGELOG.md"
+    - id: architecture
+      name: "Architecture / Design"
+      path: "docs/design/"

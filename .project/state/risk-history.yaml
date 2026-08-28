@@ -1,0 +1,128 @@
+history:
+  - date: "2026-03-07"
+    score: 35
+    grade: C
+    dimensions:
+      goal_health: 70
+      sprint_execution: 5
+      code_quality: 43
+      tech_debt: 40
+      supply_chain: 40
+      lifecycle_readiness: 40
+      operational_health: 0
+    top_risks:
+      - "goal-1 orphaned: in_progress at 95% with no active sprint"
+      - "goal-3 orphaned: in_progress at 90% with no active sprint"
+      - "0/3 success criteria met for goal-5"
+      - "Codebase review score 62/100 (Grade D) with 1 high finding"
+      - "Tech debt never scanned"
+    missing_data:
+      - tech_debt
+      - supply_chain
+      - lifecycle_readiness
+
+  - date: "2026-03-07"
+    score: 28
+    grade: B
+    dimensions:
+      goal_health: 40
+      sprint_execution: 0
+      code_quality: 43
+      tech_debt: 40
+      supply_chain: 40
+      lifecycle_readiness: 40
+      operational_health: 0
+    top_risks:
+      - "goal-1 orphaned: in_progress at 95% with no active sprint"
+      - "goal-3 orphaned: in_progress at 90% with no active sprint"
+      - "Codebase review score 62/100 with 1 high finding"
+      - "Tech debt never scanned"
+      - "Dependencies never audited"
+    missing_data:
+      - tech_debt
+      - supply_chain
+      - lifecycle_readiness
+
+  - date: "2026-03-07"
+    score: 32
+    grade: C
+    dimensions:
+      goal_health: 40
+      sprint_execution: 10
+      code_quality: 53
+      tech_debt: 40
+      supply_chain: 40
+      lifecycle_readiness: 40
+      operational_health: 0
+    top_risks:
+      - "Review score declining (62 → 57) — code health dimension still low"
+      - "goal-1 orphaned: in_progress at 95% with no active sprint"
+      - "goal-3 orphaned: in_progress at 90% with no active sprint"
+      - "Tech debt never scanned"
+      - "Dependencies never audited"
+    missing_data:
+      - tech_debt
+      - supply_chain
+      - lifecycle_readiness
+
+  - date: "2026-03-07"
+    score: 29
+    grade: B
+    dimensions:
+      goal_health: 40
+      sprint_execution: 10
+      code_quality: 36
+      tech_debt: 40
+      supply_chain: 40
+      lifecycle_readiness: 40
+      operational_health: 0
+    top_risks:
+      - "goal-1 orphaned: in_progress at 95% with no active sprint"
+      - "goal-3 orphaned: in_progress at 90% with no active sprint"
+      - "Tech debt never scanned"
+      - "Dependencies never audited"
+      - "No lifecycle defined"
+    missing_data:
+      - tech_debt
+      - supply_chain
+      - lifecycle_readiness
+
+  - date: "2026-03-09"
+    score: 27
+    grade: B
+    dimensions:
+      goal_health: 40
+      sprint_execution: 12
+      code_quality: 19
+      tech_debt: 55
+      supply_chain: 10
+      lifecycle_readiness: 40
+      operational_health: 0
+    top_risks:
+      - "goal-1 orphaned: in_progress at 95% with no active sprint (blocked on real-world validation)"
+      - "goal-3 orphaned: in_progress at 90% with no active sprint (blocked on field testing)"
+      - "1 high-severity tech debt item (large files — scan predates refactoring sprints)"
+      - "No lifecycle defined"
+      - "1 high CVE in build-time dependency (serialize-javascript)"
+    missing_data:
+      - lifecycle_readiness
+
+  - date: "2026-03-30"
+    score: 26
+    grade: B
+    dimensions:
+      goal_health: 40
+      sprint_execution: 10
+      code_quality: 19
+      tech_debt: 55
+      supply_chain: 10
+      lifecycle_readiness: 40
+      operational_health: 0
+    top_risks:
+      - "goal-1 orphaned: in_progress at 95% with no active sprint (blocked on real-world validation)"
+      - "goal-3 orphaned: in_progress at 90% with no active sprint (blocked on field testing)"
+      - "1 high-severity tech debt item (12 large files — scan predates refactoring sprints)"
+      - "No lifecycle defined"
+      - "1 high CVE in build-time dependency (serialize-javascript)"
+    missing_data:
+      - lifecycle_readiness

@@ -5,11 +5,14 @@
  * Used as a secondary nav below the main content area.
  */
 
+import type { LucideIcon } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 export interface ModuleNavItem {
   name: string;
   path: string;
+  /** Line icon. Preferred over the emoji field, which remains for unconverted modules. */
+  Icon?: LucideIcon;
   icon?: string;
   /** Count of items needing attention. Rendered as a badge; 0 or undefined shows nothing. */
   badge?: number;
@@ -40,7 +43,11 @@ export function ModuleNav({ items, basePath }: ModuleNavProps) {
                 }`
               }
             >
-              {item.icon && <span aria-hidden="true">{item.icon}</span>}
+              {item.Icon ? (
+                <item.Icon aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+              ) : (
+                item.icon && <span aria-hidden="true">{item.icon}</span>
+              )}
               {item.name}
               {item.badge !== undefined && item.badge > 0 && (
                 <span

@@ -13,6 +13,16 @@
  */
 
 import { create } from 'zustand';
+import {
+  Sprout,
+  Leaf,
+  Banknote,
+  Store,
+  Users,
+  ChartColumn,
+  CalendarDays,
+  type LucideIcon,
+} from 'lucide-react';
 import { platformDb } from '@/lib/db';
 
 export type ModuleId =
@@ -28,7 +38,7 @@ export interface ModuleDefinition {
   id: ModuleId;
   name: string;
   path: string;
-  icon: string;
+  Icon: LucideIcon;
   description: string;
   /** Cannot be turned off. */
   required?: boolean;
@@ -39,7 +49,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     id: 'grow',
     name: 'Grow',
     path: '/grow',
-    icon: '🌱',
+    Icon: Sprout,
     description: 'Trays, sowing calendar, daily logs, and harvest records',
     required: true,
   },
@@ -47,42 +57,42 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     id: 'propagation',
     name: 'Propagation',
     path: '/propagation',
-    icon: '🪴',
+    Icon: Leaf,
     description: 'Cuttings, rooting stations, and mother plants',
   },
   {
     id: 'sales',
     name: 'Sales',
     path: '/sales',
-    icon: '💰',
+    Icon: Banknote,
     description: 'Orders and customers',
   },
   {
     id: 'markets',
     name: 'Markets',
     path: '/markets',
-    icon: '🏪',
+    Icon: Store,
     description: 'Market days and stall takings',
   },
   {
     id: 'crm',
     name: 'CRM',
     path: '/crm',
-    icon: '👥',
+    Icon: Users,
     description: 'Contacts and follow-ups',
   },
   {
     id: 'finance',
     name: 'Finance',
     path: '/finance',
-    icon: '📊',
+    Icon: ChartColumn,
     description: 'Costs, margins, and reporting',
   },
   {
     id: 'planner',
     name: 'Planner',
     path: '/planner',
-    icon: '📅',
+    Icon: CalendarDays,
     description: 'Cross-module scheduling and succession planning',
   },
 ];

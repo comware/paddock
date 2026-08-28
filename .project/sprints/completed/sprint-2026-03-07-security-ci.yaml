@@ -1,0 +1,149 @@
+id: sprint-2026-03-07-security-ci
+created: 2026-03-07
+status: completed
+dispatched_at: "2026-03-07T03:51:17Z"
+completed_at: "2026-03-07T03:55:00Z"
+source: sprint-workshop
+
+name: "Security & CI Hardening"
+description: |
+  Fix verified security findings and CI gaps from codebase review (62/100, Grade D).
+  Addresses HIGH-1 (Gemini API key in URL), MED-2 (unencrypted API keys),
+  MED-3 (CI missing build step). Quick, mechanical fixes with clear acceptance criteria.
+
+advances_goals:
+  - project: paddock
+    goal: goal-5
+    before: 0
+    after: 100
+    contribution: "Fixes all 3 success criteria for goal-5"
+
+estimated_hours: 2
+
+exit_criteria:
+  - "Gemini provider uses x-goog-api-key header instead of ?key= query param"
+  - "GitHub Actions ci.yml includes npm run build step"
+  - "All tests pass, build passes"
+
+handoffs:
+  - id: "sc-001-gemini-api-key"
+    title: "Fix Gemini API Key Exposure"
+    priority: P0
+    estimate_hours: 0.5
+    description: |
+      The Gemini provider passes API keys as ?key= URL query parameters in fetch calls.
+      This exposes keys in browser history, proxy logs, and network tools.
+
+      Fix: Change all fetch calls in src/lib/ai/providers/gemini.ts to use
+      the x-goog-api-key header instead of the ?key= query parameter.
+      The Gemini API supports this header for authentication.
+
+      Files to modify:
+      - src/lib/ai/providers/gemini.ts (lines ~56, ~101, ~168)
+
+      Pattern:
+      BEFORE: fetch(`${GEMINI_API_BASE}/models?key=${apiKey}`)
+      AFTER:  fetch(`${GEMINI_API_BASE}/models`, { headers: { 'x-goog-api-key': apiKey } })
+    acceptance_criteria:
+      - "No ?key= query params in any fetch calls in gemini.ts (verified via: grep -c 'key=' src/lib/ai/providers/gemini.ts returns 0)"
+      - "x-goog-api-key header used in all fetch calls (verified via: grep -c 'x-goog-api-key' src/lib/ai/providers/gemini.ts returns >= 3)"
+      - "All existing tests still pass (verified via: npm test exits 0)"
+    blocked_by: []
+
+  - id: "sc-002-ci-build-step"
+    title: "Add Build Step to CI"
+    priority: P0
+    estimate_hours: 0.25
+    description: |
+      GitHub Actions CI workflow runs tests but never verifies the production build.
+      Add npm run build step to .github/workflows/ci.yml.
+
+      Files to modify:
+      - .github/workflows/ci.yml
+
+      Add a build step after the test step:
+        - name: Build
+          run: npm run build
+    acceptance_criteria:
+      - "ci.yml contains 'npm run build' or 'pnpm run build' step (verified via: grep -c 'run build' .github/workflows/ci.yml returns >= 1)"
+      - "Build step runs after test step in workflow"
+    blocked_by: []
+
+  - id: "sc-003-api-key-encryption"
+    title: "Encrypt API Keys at Rest"
+    priority: P1
+    estimate_hours: 1
+    description: |
+      API keys for AI providers are stored as plaintext in IndexedDB.
+      Use the Web Crypto API to encrypt keys before storing and decrypt on retrieval.
+
+      Files to modify:
+      - src/lib/ai/service.ts (lines ~84-96 where keys are stored/retrieved)
+      - May need a new utility file for crypto helpers
+
+      Implementation approach:
+      1. Generate or derive an encryption key using Web Crypto API
+      2. Use AES-GCM for symmetric encryption
+      3. Encrypt API keys before writing to IndexedDB
+      4. Decrypt when reading from IndexedDB for API calls
+      5. Store the encryption key in a way that survives page reloads
+         (e.g., derived from a user passphrase or stored in sessionStorage)
+
+      Note: For a local-first app, perfect key management is difficult.
+      A reasonable approach is using a device-derived key or user-entered passphrase.
+      The goal is defense-in-depth, not perfect security.
+    acceptance_criteria:
+      - "API keys not stored as plaintext in IndexedDB (verified via: reading settings table does not show raw API key strings)"
+      - "Keys are encrypted using Web Crypto API AES-GCM (verified via: grep -c 'crypto.subtle' in service.ts or crypto utility)"
+      - "AI features still work after encryption (verified via: existing AI-related tests pass)"
+    blocked_by: []
+
+  - id: "sc-999-commit-verify"
+    title: "Commit and Verify CI"
+    priority: P0
+    estimate_hours: 0.25
+    description: |
+      Final sprint handoff - commit, push, verify CI, update goals.
+
+      1. Run npm test — verify all tests pass
+      2. Run npm run build — verify build passes
+      3. git status — review changes
+      4. git add — stage files (avoid secrets)
+      5. git commit -m "fix(security): use API key headers, encrypt storage, add CI build step"
+      6. git push — push to remote
+      7. Update goal-5 progress in .claude/project.yaml
+
+      DO NOT mark sprint complete until build is green.
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean)"
+      - "Pushed to remote (verified via: git push exits 0)"
+      - "Build passes (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+      - "Goal progress updated (verified via: grep 'progress:' .claude/project.yaml)"
+    blocked_by: ["sc-001-gemini-api-key", "sc-002-ci-build-step", "sc-003-api-key-encryption"]
+
+retro:
+  conducted_at: "2026-03-07T03:55:00Z"
+  duration: "3m"
+  completion_rate: 100
+  estimation_variance: null
+  acceptance_verification:
+    total_criteria: 13
+    passed: 11
+    failed: 0
+    manual: 2
+    verdict: "PASS"
+    criteria_quality_pct: 85
+  successes:
+    - "All 4 handoffs completed first attempt — zero failures"
+    - "All 3 goal-5 success criteria verified passing"
+    - "906 tests passing, build clean post-sprint"
+    - "Backward compatibility for existing plaintext keys"
+  challenges:
+    - "No actual_effort tracked per handoff for velocity calibration"
+  action_items:
+    - "Track actual_effort per handoff in future sprints"
+    - "Batch more mechanical fixes per sprint for efficiency"
+  recommendations:
+    - "Mechanical fix sprints execute very quickly — batch more per sprint"
+    - "All criteria had verification commands — maintain this standard"

@@ -15,6 +15,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, addDays, differenceInCalendarDays, startOfDay } from 'date-fns';
+import { Sprout, Sun, Scissors, Bot, type LucideIcon } from 'lucide-react';
 import type { GrowPlannedPlanting } from '@/lib/db';
 import { useToastStore } from '@/stores/useToastStore';
 import { WorkDetail, type WorkSubject } from '../Calendar/WorkDetail';
@@ -46,18 +47,18 @@ interface WorkItem {
   trayId?: string;
 }
 
-const KIND_STYLE: Record<WorkKind, { icon: string; chip: string }> = {
+const KIND_STYLE: Record<WorkKind, { Icon: LucideIcon; chip: string }> = {
   sow: {
-    icon: '🌱',
-    chip: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200',
+    Icon: Sprout,
+    chip: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
   },
   light: {
-    icon: '💡',
-    chip: 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200',
+    Icon: Sun,
+    chip: 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300',
   },
   harvest: {
-    icon: '🌿',
-    chip: 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200',
+    Icon: Scissors,
+    chip: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
   },
 };
 
@@ -225,7 +226,7 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
           onClick={() => navigate('/grow/calendar')}
           className="w-full mb-3 flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 text-left hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
         >
-          <span aria-hidden="true" className="text-lg">🤖</span>
+          <Bot aria-hidden="true" className="w-5 h-5 shrink-0 text-amber-700 dark:text-amber-300" strokeWidth={1.75} />
           <span className="flex-1">
             <span className="block text-sm font-semibold text-amber-900 dark:text-amber-100">
               {proposalsPending} proposed{' '}
@@ -282,9 +283,9 @@ export function UpcomingWork({ siteId, trays, limit = 5 }: UpcomingWorkProps) {
                 >
                   <span
                     aria-hidden="true"
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${style.chip}`}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${style.chip}`}
                   >
-                    {style.icon}
+                    <style.Icon className="w-4 h-4" strokeWidth={1.75} />
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900 dark:text-white truncate">

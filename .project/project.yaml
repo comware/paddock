@@ -490,6 +490,96 @@ goals:
         description: "Project structure in README includes planner/ directory"
         completed: true
 
+  - id: goal-17
+    title: "Planner Module E2E Tests"
+    status: not_started
+    priority: 1
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      Source: brainstorm 2026-03-30. Planner has zero E2E tests while Grow and Propagation
+      each have 3 specs. Add E2E coverage for event CRUD, list/filter, detail view,
+      and integration links to Grow trays and Propagation batches.
+    key_results:
+      - "E2E spec for planner event creation flow"
+      - "E2E spec for planner event list and filtering"
+      - "E2E spec for planner-to-module integration links"
+
+  - id: goal-18
+    title: "PWA Offline Caching Strategy"
+    status: not_started
+    priority: 1
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      Source: brainstorm 2026-03-30. PWA has basic precaching only — no runtime caching
+      strategies for app shell, static assets, or API responses. Add workbox runtime
+      caching rules for true 24h offline operation.
+    key_results:
+      - "Runtime caching strategies configured (CacheFirst, NetworkFirst)"
+      - "App shell and static assets cached for offline use"
+      - "Offline fallback page for uncached routes"
+
+  - id: goal-19
+    title: "Data Import Validation & Schema Versioning"
+    status: not_started
+    priority: 2
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      Source: brainstorm 2026-03-30. importUnifiedBackup accepts JSON without validation.
+      UnifiedPaddockBackup lacks schema version field. Add validation and versioning
+      to prevent data corruption and ensure forward compatibility.
+    key_results:
+      - "Schema validation on backup import with clear error messages"
+      - "schemaVersion field added to UnifiedPaddockBackup"
+      - "Migration logic for version mismatches"
+
+  - id: goal-20
+    title: "IndexedDB Auto-Backup & Recovery"
+    status: not_started
+    priority: 2
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      Source: brainstorm 2026-03-30. ErrorBoundary detects IDB corruption but recovery
+      depends on manual exports. Add automatic periodic backup on app start to provide
+      a zero-effort data safety net during field testing.
+    key_results:
+      - "Auto-backup to secondary IDB on app initialization"
+      - "Recovery UI to restore from auto-backup"
+      - "Configurable backup frequency in settings"
+
+  - id: goal-21
+    title: "Performance Monitoring & Optimistic UI"
+    status: not_started
+    priority: 3
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      Source: brainstorm 2026-03-30. No performance instrumentation exists. Store mutations
+      await IDB writes before UI updates. Add Web Performance API marks for key flows
+      and optimistic Zustand updates with rollback for snappier field interactions.
+    key_results:
+      - "Performance marks for tray creation, batch transitions, event CRUD"
+      - "Optimistic UI updates for high-frequency store mutations"
+      - "Dev-mode performance dashboard"
+
+  - id: goal-22
+    title: "CSV Export & Offline State Indicators"
+    status: not_started
+    priority: 3
+    progress: 0
+    updated: 2026-03-30
+    description: |
+      Source: brainstorm 2026-03-30. Exporter outputs JSON only. No offline state
+      indicators in UI. Add CSV export for tray/observation/batch data and visual
+      indicators for offline-created data.
+    key_results:
+      - "CSV export for trays, observations, and batch lifecycle"
+      - "Visual offline state indicators on modified records"
+      - "Last-synced timestamp in app footer"
+
 leads:
   - engineering
   - product

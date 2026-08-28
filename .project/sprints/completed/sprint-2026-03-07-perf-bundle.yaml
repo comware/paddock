@@ -1,0 +1,139 @@
+id: sprint-2026-03-07-perf-bundle
+created: 2026-03-07
+status: completed
+dispatched_at: "2026-03-07T04:00:00Z"
+completed_at: "2026-03-07T04:10:00Z"
+source: sprint-workshop
+
+name: "Performance — Bundle Splitting"
+description: |
+  Split the 1.8MB main JS bundle by moving route children inside lazy boundaries
+  and isolating react-big-calendar. Currently routes.tsx statically imports
+  growRoutes/propagationRoutes/plannerRoutes which pull all components into
+  the main chunk despite lazy() on module entry points.
+
+advances_goals:
+  - project: paddock
+    goal: goal-6
+    before: 0
+    after: 100
+    contribution: "Addresses all 3 success criteria for goal-6"
+
+estimated_hours: 1.5
+
+exit_criteria:
+  - "Main JS chunk under 500KB"
+  - "Route modules use lazy() component imports"
+  - "react-big-calendar in separate chunk"
+
+handoffs:
+  - id: "pb-001-lazy-routes"
+    title: "Move Route Children Inside Lazy Boundaries"
+    priority: P0
+    estimate_hours: 1
+    description: |
+      The root cause of the 1.8MB bundle: src/routes.tsx statically imports
+      growRoutes, propagationRoutes, plannerRoutes — which statically import
+      ALL components. Even though lazy() wraps module entry points, the child
+      route imports defeat code splitting.
+
+      Fix approach:
+      1. Remove static imports of growRoutes, propagationRoutes, plannerRoutes
+         from src/routes.tsx
+      2. Move the children route arrays INTO each module's index.tsx (the lazy
+         entry point). Each module index should export a component that renders
+         <Routes> or uses <Outlet> with its own children.
+      3. In routes.tsx, use path: 'grow/*' with just the lazy module element
+         (no children prop). The module handles its own sub-routing internally.
+
+      Alternative simpler approach:
+      1. Keep route structure in routes.tsx
+      2. But lazy-load each route component individually using React.lazy()
+      3. Replace static imports in grow/routes.tsx, propagation/routes.tsx,
+         planner/routes.tsx with lazy(() => import('./components/...'))
+
+      Choose whichever approach is cleaner. The key constraint: the static
+      import chain from routes.tsx → module/routes.tsx → components must be broken.
+
+      Files to modify:
+      - src/routes.tsx (remove static route imports)
+      - src/modules/grow/routes.tsx (lazy-load components)
+      - src/modules/propagation/routes.tsx (lazy-load components)
+      - src/modules/planner/routes.tsx (lazy-load components)
+      - Possibly src/modules/grow/index.tsx, propagation/index.tsx, planner/index.tsx
+    acceptance_criteria:
+      - "No static component imports in route files (verified via: grep -c 'import {' src/modules/grow/routes.tsx src/modules/propagation/routes.tsx src/modules/planner/routes.tsx returns 0 or only type imports)"
+      - "Main JS chunk under 500KB (verified via: npm run build 2>&1 | grep 'index-' | awk '{print $1}' shows size < 500)"
+      - "All tests pass (verified via: npm test exits 0)"
+      - "Build succeeds (verified via: npm run build exits 0)"
+    blocked_by: []
+
+  - id: "pb-002-calendar-chunk"
+    title: "Isolate react-big-calendar in Separate Chunk"
+    priority: P1
+    estimate_hours: 0.25
+    description: |
+      Add react-big-calendar to manualChunks in vite.config.ts to ensure
+      it's in its own vendor chunk, not bundled with app code.
+
+      File to modify:
+      - vite.config.ts (add to build.rollupOptions.output.manualChunks)
+
+      Add:
+        'vendor-calendar': ['react-big-calendar'],
+
+      This keeps the calendar library (~200KB) in its own chunk that only
+      loads when the planner module is accessed.
+    acceptance_criteria:
+      - "react-big-calendar in manualChunks (verified via: grep -c 'react-big-calendar' vite.config.ts returns >= 1)"
+      - "Build produces vendor-calendar chunk (verified via: npm run build 2>&1 | grep 'vendor-calendar')"
+      - "Build succeeds (verified via: npm run build exits 0)"
+    blocked_by: []
+
+  - id: "pb-999-commit-verify"
+    title: "Commit and Verify CI"
+    priority: P0
+    estimate_hours: 0.25
+    description: |
+      Final sprint handoff - commit, verify, update goals.
+
+      1. Run npm test — verify all tests pass
+      2. Run npm run build — verify build passes and main chunk < 500KB
+      3. git add relevant files
+      4. git commit -m "perf: split 1.8MB bundle via lazy routes and calendar chunk"
+      5. DO NOT run git push — the autopilot harness handles remote sync
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean for src/ files)"
+      - "Build passes (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+      - "Main chunk under 500KB (verified via: npm run build output)"
+      - "Goal progress updated (verified via: grep 'progress:' .claude/project.yaml)"
+    blocked_by: ["pb-001-lazy-routes", "pb-002-calendar-chunk"]
+
+retro:
+  conducted_at: "2026-03-07T04:09:49Z"
+  duration: "~10m"
+  completion_rate: 100
+  estimation_variance: -30
+  acceptance_verification:
+    total_criteria: 12
+    passed: 12
+    failed: 0
+    manual: 0
+    verdict: "PASS"
+    failures: []
+    criteria_quality_pct: 100
+  successes:
+    - "All 3 handoffs completed successfully — 100% completion rate"
+    - "Main chunk reduced from 1,855 KB to 411 KB (78% reduction, well under 500KB target)"
+    - "Sprint completed faster than 1.5h estimate (~10 min)"
+    - "Goal-6 fully completed — all 3 success criteria met"
+    - "906 tests still passing — zero regressions"
+  challenges:
+    - "No significant challenges — mechanical fix with clear root cause"
+  action_items:
+    - "Reduce estimates for well-scoped mechanical refactors — this sprint was estimated at 1.5h but completed much faster"
+    - "Consider monitoring lazy-loaded chunk sizes in CI to prevent regression"
+  recommendations:
+    - "For code-splitting sprints, analyze the import dependency chain first — root cause identification made this sprint trivial"
+    - "The propagation module chunk (844KB) is the next candidate for splitting if performance remains a concern"

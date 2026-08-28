@@ -36,9 +36,11 @@ export function ModuleSettings() {
 
           return (
             <li key={module.id} className="flex items-center gap-3 px-4 py-3">
-              <span aria-hidden="true" className="text-xl">
-                {module.icon}
-              </span>
+              <module.Icon
+                aria-hidden="true"
+                className="w-5 h-5 text-slate-400 dark:text-slate-500 shrink-0"
+                strokeWidth={1.75}
+              />
 
               <div className="flex-1 min-w-0">
                 <label

@@ -1,0 +1,230 @@
+sprint:
+  id: sprint-2026-03-30-ux-accessibility
+  name: "UX/UI Accessibility & Interaction Fixes"
+  goal: goal-13
+  status: completed
+  created: 2026-03-30
+  estimated_hours: 6.0
+  description: |
+    Address 5 critical and 7 high UX/UI findings from design review (score 48/100).
+    Covers WCAG 2.1 AA accessibility, error surfacing, focus management, motion preferences,
+    toast notifications, semantic HTML, and aria-live regions. Target: score 75+.
+  exit_criteria:
+    - "All 12 success criteria from goal-13 satisfied"
+    - "All tests pass (1080+ existing + any new tests)"
+    - "Build succeeds"
+    - "No accessibility regressions"
+  handoffs:
+    - id: ux-001-form-labels
+      title: "FormFields.tsx Label Association (CRIT-1)"
+      priority: P0
+      estimate_hours: 0.5
+      description: |
+        Fix FormFields.tsx so all form labels are programmatically associated with inputs.
+
+        1. Add unique `id` props to all input/select/textarea elements in FormFields.tsx
+        2. Add matching `htmlFor` attributes to all <label> elements
+        3. Ensure every shared field component (TextInput, Select, Textarea, NumberInput, etc.)
+           accepts and applies an `id` prop, with label `htmlFor` matching
+
+        Files: src/components/FormFields.tsx (and any sub-components)
+
+        Satisfies: sc-13-1
+      acceptance_criteria:
+        - "Every <label> in FormFields.tsx has htmlFor matching an input id (verified via: grep -c 'htmlFor' src/components/FormFields.tsx shows matches for each label)"
+        - "Every input/select/textarea in FormFields.tsx has an id attribute (verified via: grep 'id=' src/components/FormFields.tsx)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-002-error-surfacing
+      title: "Error Surfacing in Form Catch Blocks (CRIT-2)"
+      priority: P0
+      estimate_hours: 0.75
+      description: |
+        Replace console.error-only catch blocks with user-visible error feedback.
+
+        1. Search all form onSubmit handlers for catch blocks that only call console.error
+        2. Add state-based error messages that render in the UI near the form
+        3. Use a consistent pattern: setError(message) -> display in an alert/banner above submit button
+        4. Cover all modules: Grow, Propagation, Planner, Settings
+
+        Satisfies: sc-13-2
+      acceptance_criteria:
+        - "No form onSubmit catch block uses only console.error without user feedback (verified via: manual search of catch blocks in form components)"
+        - "Error messages render visually in the form UI (verified via: grep -r 'setError\|error &&\|error ?' src/modules/ src/components/ shows patterns)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-003-topnav-skipnav
+      title: "TopNav Disabled Links + Skip Navigation (CRIT-3, HIGH-1)"
+      priority: P0
+      estimate_hours: 0.75
+      description: |
+        Fix disabled navigation links and add skip-to-content link.
+
+        1. In TopNav, add aria-disabled="true" and tabIndex={-1} to disabled links
+        2. Ensure disabled links don't navigate (preventDefault or render as span)
+        3. Add a skip navigation link as first focusable element in AppShell
+           - Visually hidden until focused (sr-only + focus:not-sr-only pattern)
+           - Links to #main-content
+           - Add id="main-content" to the main content area
+
+        Files: src/components/Shell/TopNav.tsx, src/components/Shell/AppShell.tsx
+
+        Satisfies: sc-13-3, sc-13-6
+      acceptance_criteria:
+        - "Disabled TopNav links have aria-disabled='true' and tabIndex={-1} (verified via: grep 'aria-disabled' src/components/Shell/TopNav.tsx)"
+        - "Skip navigation link exists in AppShell (verified via: grep 'skip' src/components/Shell/AppShell.tsx)"
+        - "Main content area has id='main-content' (verified via: grep 'main-content' src/components/Shell/AppShell.tsx)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-004-outcomes-chart
+      title: "OutcomesChart Accessibility (CRIT-4)"
+      priority: P0
+      estimate_hours: 0.5
+      description: |
+        Make OutcomesChart accessible to screen readers.
+
+        1. Add role="img" to the chart container element
+        2. Add a descriptive aria-label summarizing what the chart shows
+           (e.g., "Propagation outcomes chart showing success and failure rates")
+        3. Consider adding a visually-hidden table as an alternative data representation
+
+        Files: src/modules/propagation/components/Analytics/OutcomesChart.tsx
+
+        Satisfies: sc-13-4
+      acceptance_criteria:
+        - "OutcomesChart container has role='img' (verified via: grep 'role=\"img\"' src/modules/propagation/components/Analytics/OutcomesChart.tsx)"
+        - "OutcomesChart container has aria-label (verified via: grep 'aria-label' src/modules/propagation/components/Analytics/OutcomesChart.tsx)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-005-motion-focus
+      title: "prefers-reduced-motion + Focus Indicators (CRIT-5, HIGH-2)"
+      priority: P0
+      estimate_hours: 0.75
+      description: |
+        Add motion preference support and visible focus indicators.
+
+        1. Add @media (prefers-reduced-motion: reduce) to index.css
+           - Disable CSS transitions and animations for users who prefer reduced motion
+           - Pattern: *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        2. Add focus:ring utility classes to interactive elements:
+           - BottomNav buttons/links
+           - TopNav buttons/links
+           - TrayCard action buttons
+           - DataExport buttons
+           - Use Tailwind focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 or equivalent CSS
+
+        Files: src/index.css, BottomNav, TopNav, TrayCard, DataExport components
+
+        Satisfies: sc-13-5, sc-13-7
+      acceptance_criteria:
+        - "prefers-reduced-motion media query exists in index.css (verified via: grep 'prefers-reduced-motion' src/index.css)"
+        - "Focus ring styles on BottomNav (verified via: grep 'focus' src/components/Shell/BottomNav.tsx)"
+        - "Focus ring styles on TopNav (verified via: grep 'focus' src/components/Shell/TopNav.tsx)"
+        - "Focus ring styles on DataExport (verified via: grep 'focus' src/modules/settings/components/DataExport.tsx)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-006-toast-system
+      title: "Toast Notification System (HIGH-3)"
+      priority: P1
+      estimate_hours: 1.0
+      description: |
+        Add a lightweight toast notification system for async action feedback.
+
+        1. Create a toast store (useToastStore) with Zustand
+           - Queue of toast messages with id, message, type (success/error/info), duration
+           - add(message, type) and dismiss(id) actions
+           - Auto-dismiss after configurable duration (default 3s)
+        2. Create a ToastContainer component
+           - Renders active toasts in a fixed position (bottom-right or top-right)
+           - Each toast has role="alert" and aria-live="polite"
+           - Includes dismiss button
+        3. Mount ToastContainer in AppShell
+        4. Wire up at least 2-3 existing async actions to show toasts
+           (e.g., data export success, batch creation, settings save)
+
+        Satisfies: sc-13-8
+      acceptance_criteria:
+        - "Toast store exists (verified via: test -f src/stores/useToastStore.ts)"
+        - "ToastContainer component exists (verified via: test -f src/components/Toast/ToastContainer.tsx)"
+        - "ToastContainer mounted in AppShell (verified via: grep -i 'toast' src/components/Shell/AppShell.tsx)"
+        - "Toast has role='alert' (verified via: grep 'role=\"alert\"' src/components/Toast/ToastContainer.tsx)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-007-card-css
+      title: ".card CSS Class Definition (HIGH-5)"
+      priority: P1
+      estimate_hours: 0.25
+      description: |
+        Define the .card CSS class that is referenced but undefined.
+
+        1. Search for usage of .card class in components
+        2. Add .card class definition to index.css with appropriate styles:
+           - Background, border-radius, padding, shadow
+           - Dark mode variant
+        3. Ensure existing components using .card render correctly
+
+        Files: src/index.css
+
+        Satisfies: sc-13-10
+      acceptance_criteria:
+        - ".card class defined in index.css (verified via: grep '.card' src/index.css)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-008-lowstock-aria
+      title: "LowStockAlert Button Fix + aria-live Regions (HIGH-6, HIGH-7)"
+      priority: P1
+      estimate_hours: 0.75
+      description: |
+        Fix semantic HTML and add aria-live regions for dynamic content.
+
+        1. In LowStockAlert, replace any div with onClick with a proper <button> element
+           - Ensure keyboard accessible (Enter/Space triggers action)
+           - Add appropriate aria-label if button text isn't descriptive
+        2. Add aria-live="polite" regions for dynamic content areas:
+           - Tray list updates
+           - Batch status changes
+           - Analytics data loading
+           - Any area where content changes without page navigation
+        3. Improve undo/confirmation for destructive actions where feasible
+
+        Satisfies: sc-13-11, sc-13-12, sc-13-9 (partial)
+      acceptance_criteria:
+        - "LowStockAlert uses <button> element (verified via: grep '<button' src/modules/grow/components/ -r | grep -i stock)"
+        - "aria-live regions exist in dynamic content areas (verified via: grep -r 'aria-live' src/modules/ | wc -l shows 3+)"
+        - "Build passes (verified via: npm run build exits 0)"
+      blocked_by: []
+
+    - id: ux-999-commit-verify
+      title: "Commit, Verify CI, Update Goal Progress"
+      priority: P0
+      estimate_hours: 0.5
+      description: |
+        Final sprint handoff - commit, push, verify CI, update goals.
+
+        1. git status - review all changes
+        2. git add - stage accessibility and UX files (avoid secrets)
+        3. git commit -m "fix(a11y): resolve 12 UX/UI accessibility findings (goal-13)"
+        4. git push origin main
+        5. Verify CI passes: gh run watch --exit-status
+           - If CI fails: read logs, fix, recommit, re-push
+        6. Update goal-13 progress in .project/project.yaml
+           - Mark completed success_criteria as completed: true
+           - Calculate progress percentage
+           - Update status to in_progress or completed
+
+        DO NOT mark sprint complete until CI is green.
+      acceptance_criteria:
+        - "All changes committed (verified via: git status --porcelain shows clean)"
+        - "Pushed to remote (verified via: git push exits 0)"
+        - "Build passes (verified via: npm run build exits 0)"
+        - "Tests pass (verified via: npm test exits 0)"
+        - "Goal-13 progress updated (verified via: grep 'progress:' .project/project.yaml)"
+        - "All prior handoff acceptance criteria pass"
+      blocked_by: ["ux-001-form-labels", "ux-002-error-surfacing", "ux-003-topnav-skipnav", "ux-004-outcomes-chart", "ux-005-motion-focus", "ux-006-toast-system", "ux-007-card-css", "ux-008-lowstock-aria"]

@@ -6,6 +6,7 @@
  */
 
 import { useEffect } from 'react';
+import { Sprout } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useModulesStore, MODULE_DEFINITIONS } from '@/stores/useModulesStore';
 
@@ -26,8 +27,23 @@ export function TopNav() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <span className="text-2xl">🌱</span>
-          <span className="font-bold text-xl text-slate-900 dark:text-white">
+          <Sprout
+            aria-hidden="true"
+            className="w-6 h-6 text-primary-600 dark:text-primary-400"
+            strokeWidth={1.75}
+          />
+          {/* The wordmark leans harder on Fraunces than body headings do: more softness,
+              a larger optical size, and the WONK axis on, which is where the typeface's
+              character actually lives. */}
+          <span
+            className="text-2xl text-slate-900 dark:text-white"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontVariationSettings: "'SOFT' 60, 'WONK' 1, 'opsz' 96",
+              fontWeight: 600,
+              letterSpacing: '-0.02em',
+            }}
+          >
             Paddock
           </span>
         </div>
@@ -46,7 +62,11 @@ export function TopNav() {
                 }`
               }
             >
-              <span className="mr-1" aria-hidden="true">{module.icon}</span>
+              <module.Icon
+                aria-hidden="true"
+                className="w-4 h-4 mr-1.5 inline-block align-[-0.2em]"
+                strokeWidth={1.75}
+              />
               {module.name}
             </NavLink>
           ))}

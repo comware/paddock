@@ -52,7 +52,7 @@ export function DaySummary({
         {countRows.map((row) => (
           <div key={row.label} className="bg-white dark:bg-slate-800 px-3 py-2.5">
             <dt className="text-xs text-slate-500 dark:text-slate-400">{row.label}</dt>
-            <dd className="text-xl font-bold text-slate-900 dark:text-white tabular-nums">
+            <dd className="stat-figure text-2xl text-slate-900 dark:text-white">
               {row.value}
             </dd>
           </div>

@@ -1,0 +1,162 @@
+id: sprint-2026-03-07-code-health
+created: 2026-03-07
+status: completed
+dispatched_at: "2026-03-07T04:20:00Z"
+completed_at: "2026-03-07T04:37:55Z"
+source: sprint-workshop
+
+name: "Code Health — Split Large Components & Extract Patterns"
+description: |
+  Reduce complexity in the propagation module by splitting 5 components over
+  500 LOC into focused sub-components and extracting shared form validation
+  patterns. Targets the Code Health dimension (26/100 → ~50/100).
+
+advances_goals:
+  - project: paddock
+    goal: goal-7
+    before: 0
+    after: 100
+    contribution: "Addresses all 3 success criteria for goal-7"
+
+estimated_hours: 2
+
+exit_criteria:
+  - "No component files over 500 LOC in the top 5 hotspots"
+  - "Shared form patterns extracted to reduce duplication"
+  - "All 906+ tests still pass"
+
+handoffs:
+  - id: "ch-001-split-components"
+    title: "Split Top 5 Large Components Into Focused Sub-Components"
+    priority: P0
+    estimate_hours: 1.25
+    description: |
+      Split these 5 files (all >700 LOC) into smaller, focused modules:
+
+      1. NewBatchForm.tsx (779 LOC) → Split into:
+         - NewBatchForm.tsx (shell with form state)
+         - BatchBasicInfo.tsx (species, name, date fields)
+         - BatchStageConfig.tsx (stage selection, timing)
+         - BatchQuantitySection.tsx (quantity, container config)
+
+      2. StageTransitionModal.tsx (755 LOC) → Split into:
+         - StageTransitionModal.tsx (modal shell)
+         - TransitionChecklist.tsx (checklist items)
+         - TransitionMetrics.tsx (metrics/measurements)
+
+      3. MotherPlantDetail.tsx (718 LOC) → Split into:
+         - MotherPlantDetail.tsx (layout shell)
+         - MotherPlantInfo.tsx (static info display)
+         - MotherPlantCuttings.tsx (cutting history)
+         - MotherPlantHealth.tsx (health tracking)
+
+      4. BatchDetail.tsx (715 LOC) → Split into:
+         - BatchDetail.tsx (layout shell)
+         - BatchTimeline.tsx (stage timeline)
+         - BatchMetrics.tsx (batch metrics display)
+         - BatchActions.tsx (action buttons)
+
+      5. PropaguleDetail.tsx (694 LOC) → Split into:
+         - PropaguleDetail.tsx (layout shell)
+         - PropaguleInfo.tsx (static info)
+         - PropaguleObservations.tsx (observation history)
+
+      Rules:
+      - Each extracted component gets its own file in the same directory
+      - Parent components import and compose the children
+      - No logic changes — pure extraction refactoring
+      - Each resulting file should be under 300 LOC
+      - Maintain all existing props and behavior
+
+      Files in: src/modules/propagation/components/
+    acceptance_criteria:
+      - "NewBatchForm.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Batches/NewBatchForm.tsx | awk '$1 < 300')"
+      - "StageTransitionModal.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Batches/StageTransitionModal.tsx | awk '$1 < 300')"
+      - "MotherPlantDetail.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/MotherPlants/MotherPlantDetail.tsx | awk '$1 < 300')"
+      - "BatchDetail.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Batches/BatchDetail.tsx | awk '$1 < 300')"
+      - "PropaguleDetail.tsx under 300 LOC (verified via: wc -l src/modules/propagation/components/Propagules/PropaguleDetail.tsx | awk '$1 < 300')"
+      - "All tests pass (verified via: pnpm vitest run exits 0)"
+      - "Build succeeds (verified via: pnpm run build exits 0)"
+    blocked_by: []
+
+  - id: "ch-002-extract-form-patterns"
+    title: "Extract Shared Form Validation Patterns"
+    priority: P1
+    estimate_hours: 0.5
+    description: |
+      Multiple form components duplicate similar validation patterns (required fields,
+      numeric ranges, date validation). Extract shared patterns.
+
+      1. Create src/modules/propagation/components/shared/FormFields.tsx with:
+         - RequiredTextField (label, validation, error display)
+         - NumericRangeField (min/max validation)
+         - DateField (date validation with format)
+         - SelectField (options with validation)
+
+      2. Refactor the split form components to use shared fields where applicable:
+         - NewBatchForm and its children
+         - SupplyForm.tsx (689 LOC)
+         - StationForm.tsx (528 LOC)
+         - GraduationForm.tsx (583 LOC)
+
+      Focus on extracting the MOST duplicated patterns. Don't force every field
+      to use shared components — only where it reduces real duplication.
+
+      Files:
+      - NEW: src/modules/propagation/components/shared/FormFields.tsx
+      - MODIFY: Form components listed above
+    acceptance_criteria:
+      - "Shared FormFields.tsx exists (verified via: test -f src/modules/propagation/components/shared/FormFields.tsx)"
+      - "FormFields exports at least 3 shared components (verified via: grep -c 'export' src/modules/propagation/components/shared/FormFields.tsx shows >= 3)"
+      - "At least 2 form components import from shared FormFields (verified via: grep -rl 'shared/FormFields' src/modules/propagation/components/ | wc -l shows >= 2)"
+      - "All tests pass (verified via: pnpm vitest run exits 0)"
+      - "Build succeeds (verified via: pnpm run build exits 0)"
+    blocked_by: ["ch-001-split-components"]
+
+  - id: "ch-999-commit-verify"
+    title: "Commit and Verify CI"
+    priority: P0
+    estimate_hours: 0.25
+    description: |
+      Final sprint handoff - commit, verify, update goals.
+
+      1. Run pnpm vitest run — verify all tests pass
+      2. Run pnpm run build — verify build passes
+      3. git add relevant files (new component files + modified files)
+      4. git commit -m "refactor: split large components and extract shared form patterns"
+      5. DO NOT run git push — the autopilot harness handles remote sync
+      6. Update goal-7 progress in .claude/project.yaml
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean for src/ files)"
+      - "Build passes (verified via: pnpm run build exits 0)"
+      - "Tests pass (verified via: pnpm vitest run exits 0)"
+      - "Goal progress updated (verified via: grep 'progress:' .claude/project.yaml)"
+    blocked_by: ["ch-001-split-components", "ch-002-extract-form-patterns"]
+
+retro:
+  conducted_at: "2026-03-07T04:37:55Z"
+  duration: "18m"
+  completion_rate: 100
+  estimation_variance: -85
+  acceptance_verification:
+    total_criteria: 16
+    passed: 16
+    failed: 0
+    manual: 0
+    verdict: "PASS"
+    failures: []
+    criteria_quality_pct: 100
+  successes:
+    - "All 5 large components split to under 300 LOC each (from 694-779 LOC)"
+    - "13 new focused sub-component files created — clean extraction"
+    - "Shared FormFields.tsx with 8 reusable exports exceeds the 3-export target"
+    - "Sprint completed in ~18m vs 2h estimated (85% faster)"
+    - "All 906 tests pass with zero regressions"
+    - "goal-7 fully completed — all 3 success criteria met"
+  challenges: []
+  action_items:
+    - "Reduce estimates for pure refactoring work by 80%"
+    - "Consider batching multiple refactoring goals into a single sprint"
+  recommendations:
+    - "Tag handoffs as refactoring vs feature for better calibration"
+    - "For refactoring-only sprints estimate total sprint at 30min instead of 2h"

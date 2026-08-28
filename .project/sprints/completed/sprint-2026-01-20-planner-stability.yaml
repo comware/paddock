@@ -1,0 +1,305 @@
+id: sprint-2026-01-20-planner-stability
+created: 2026-01-19T18:15:00+11:00
+status: completed
+dispatched_at: 2026-01-19T18:25:00+11:00
+completed_at: 2026-01-19T19:23:00+11:00
+source: brainstorm-session
+
+name: "Planner Foundation + Stability Completion"
+description: |
+  Combined sprint to complete production stability (80% → 100%) while
+  building the foundation for the Planner module (0% → 40-50%).
+
+  Strategic rationale:
+  - Stability work hardens existing code before Planner integrates
+  - Different skill profiles enable parallel execution
+  - Planner is highest-value next module (crop calendar for farming)
+
+  Design decisions:
+  - Simple crop calendar first (no succession planting yet)
+  - Use react-big-calendar library
+  - Integrate with existing Grow trays and Propagation batches
+
+advances_goals:
+  - project: paddock
+    goal: "Production Stability - 80% test coverage, E2E tests, zero data loss"
+    before: 80
+    after: 100
+    contribution: "E2E tests for critical paths, component tests, error boundaries"
+  - project: paddock
+    goal: "Planner Module Foundation - crop calendar and succession planning"
+    before: 0
+    after: 45
+    contribution: "PRD, store layer, types, calendar scaffold with react-big-calendar"
+
+projects_included:
+  - paddock
+
+projects_skipped:
+  - claude-explorer: "Separate focus - detail pane work ongoing"
+  - pm-dashboard: "Stable"
+  - claude-ecosystem: "Maintenance mode"
+
+items:
+  # ═══════════════════════════════════════════════════════════════
+  # TRACK 1: STABILITY COMPLETION
+  # ═══════════════════════════════════════════════════════════════
+
+  - handoff_id: handoff-033-e2e-propagation
+    project: paddock
+    title: "E2E Tests for Propagation Critical Path"
+    lead: engineering
+    priority: high
+    effort: 4h
+    status: pending
+    dependencies: []
+    deliverables:
+      - "E2E test: Create batch → track stages → graduate → complete"
+      - "E2E test: Mother plant → take cuttings → batch creation"
+      - "E2E test: Station management and capacity tracking"
+      - "Playwright test files in e2e/propagation/"
+    notes: |
+      Critical user journeys that must not regress:
+      1. Full batch lifecycle from creation to graduation
+      2. Mother plant cutting workflow
+      3. Station/location management
+
+      Use existing Playwright setup. Follow patterns from any existing E2E tests.
+
+  - handoff_id: handoff-034-e2e-grow
+    project: paddock
+    title: "E2E Tests for Grow Critical Path"
+    lead: engineering
+    priority: high
+    effort: 3h
+    status: pending
+    dependencies: []
+    deliverables:
+      - "E2E test: Create tray → daily log → harvest → archive"
+      - "E2E test: Site management and tray assignment"
+      - "E2E test: Analytics dashboard data display"
+      - "Playwright test files in e2e/grow/"
+    notes: |
+      Critical user journeys:
+      1. Full tray lifecycle from seeding to harvest
+      2. Daily logging workflow
+      3. Site/location management
+
+      Microgreens-focused - this is the primary Grow use case.
+
+  - handoff_id: handoff-035-component-tests
+    project: paddock
+    title: "Component Tests for Dashboard Widgets"
+    lead: engineering
+    priority: medium
+    effort: 3h
+    status: pending
+    dependencies: []
+    deliverables:
+      - "Tests for StatCard component (various states)"
+      - "Tests for chart components (empty, loading, data)"
+      - "Tests for EmptyState component"
+      - "Tests for LoadingState component"
+      - "Vitest component test files"
+    notes: |
+      Focus on components that appear on dashboards - high visibility.
+      Test rendering states: loading, empty, error, success.
+      Use @testing-library/react patterns.
+
+  - handoff_id: handoff-036-error-boundaries
+    project: paddock
+    title: "Error Boundaries and Graceful Degradation"
+    lead: engineering
+    priority: medium
+    effort: 2h
+    status: pending
+    dependencies: []
+    deliverables:
+      - "ErrorBoundary component with fallback UI"
+      - "Module-level error boundaries (Grow, Propagation, Planner)"
+      - "Store error handling (Zustand middleware or try-catch)"
+      - "User-friendly error messages"
+    notes: |
+      App should never crash completely. If one module fails:
+      - Show friendly error message
+      - Allow navigation to other modules
+      - Provide "retry" or "report issue" options
+
+      Consider: What happens if IndexedDB is corrupted?
+
+  # ═══════════════════════════════════════════════════════════════
+  # TRACK 2: PLANNER FOUNDATION
+  # ═══════════════════════════════════════════════════════════════
+
+  - handoff_id: handoff-037-planner-prd
+    project: paddock
+    title: "Planner Module PRD"
+    lead: product
+    priority: high
+    effort: 4h
+    status: pending
+    dependencies: []
+    deliverables:
+      - "Product Requirements Document in docs/planner/PRD.md"
+      - "User stories for crop calendar"
+      - "Data model specification (events, schedules, links)"
+      - "Integration points with Grow trays and Propagation batches"
+      - "MVP scope vs future features (succession planting = future)"
+    notes: |
+      Scope for MVP:
+      - Simple crop calendar (not succession planting yet)
+      - View planned activities by day/week/month
+      - Create planting events linked to species
+      - Link events to Grow trays or Propagation batches when executed
+
+      User context: Personal farming, microgreens + propagation focus.
+
+      Questions to answer:
+      - What's a "planner event"? (Planting, harvesting, task?)
+      - How do events become trays/batches?
+      - What calendar views are essential?
+
+  - handoff_id: handoff-038-planner-store
+    project: paddock
+    title: "Core Planner Store (Zustand + Dexie)"
+    lead: engineering
+    priority: high
+    effort: 5h
+    status: pending
+    dependencies:
+      - handoff-037-planner-prd
+    deliverables:
+      - "usePlannerStore.ts with Zustand"
+      - "Dexie table for planner events"
+      - "CRUD operations for planner events"
+      - "Date range queries (for calendar views)"
+      - "Unit tests for store operations"
+    notes: |
+      Follow existing patterns from useGrowStore and usePropagationStore.
+
+      Key operations:
+      - createEvent, updateEvent, deleteEvent
+      - getEventsByDateRange(start, end)
+      - getEventsBySpecies(speciesId)
+      - linkEventToTray(eventId, trayId)
+      - linkEventToBatch(eventId, batchId)
+
+      Persistence: IndexedDB via Dexie (offline-first).
+
+  - handoff_id: handoff-039-planner-types
+    project: paddock
+    title: "Planner Types and Integration Hooks"
+    lead: engineering
+    priority: medium
+    effort: 3h
+    status: pending
+    dependencies:
+      - handoff-037-planner-prd
+      - handoff-038-planner-store
+    deliverables:
+      - "types/planner.ts with full TypeScript definitions"
+      - "PlannerEvent, PlannerEventType, RecurrenceRule types"
+      - "Integration types linking to Grow and Propagation"
+      - "usePlannerIntegration hook for cross-module operations"
+    notes: |
+      Types should support:
+      - Event types: planting, harvesting, task, reminder
+      - Optional links to: trayId, batchId, speciesId, siteId, stationId
+      - Date/time fields: scheduledDate, completedDate
+      - Status: planned, in_progress, completed, skipped
+
+      Integration hook provides:
+      - createTrayFromEvent(eventId) → creates Grow tray
+      - createBatchFromEvent(eventId) → creates Propagation batch
+      - getRelatedEvents(trayId | batchId) → finds linked events
+
+  - handoff_id: handoff-040-calendar-scaffold
+    project: paddock
+    title: "Basic Calendar View with react-big-calendar"
+    lead: engineering
+    priority: medium
+    effort: 4h
+    status: pending
+    dependencies:
+      - handoff-038-planner-store
+      - handoff-039-planner-types
+    deliverables:
+      - "Install and configure react-big-calendar"
+      - "PlannerCalendar component with month/week/day views"
+      - "Event display with color coding by type"
+      - "Click event to view details (modal or side panel)"
+      - "Mobile-responsive calendar layout"
+      - "Dark mode styling for calendar"
+    notes: |
+      Use react-big-calendar: https://github.com/jquense/react-big-calendar
+
+      Configuration:
+      - Use date-fns as localizer (already in project)
+      - Custom event component for Paddock styling
+      - Touch-friendly for mobile/tablet use
+
+      Views needed:
+      - Month view (primary)
+      - Week view
+      - Day view (optional for MVP)
+      - Agenda view (list of upcoming)
+
+      Styling: Match Paddock's existing design system (slate grays, green accent).
+
+summary:
+  total_items: 8
+  total_effort: "28h"
+  completed: 0
+  pending: 8
+  by_lead:
+    engineering: 7
+    product: 1
+  by_priority:
+    high: 4
+    medium: 4
+  by_project:
+    paddock: 8
+  tracks:
+    stability: 4
+    planner: 4
+
+execution_waves:
+  wave_1:
+    description: "Parallel start - no dependencies"
+    parallel: true
+    items:
+      - handoff-033-e2e-propagation
+      - handoff-034-e2e-grow
+      - handoff-037-planner-prd
+  wave_2:
+    description: "After Wave 1 completes"
+    parallel: true
+    items:
+      - handoff-035-component-tests
+      - handoff-036-error-boundaries
+      - handoff-038-planner-store
+  wave_3:
+    description: "After store exists"
+    parallel: true
+    items:
+      - handoff-039-planner-types
+      - handoff-040-calendar-scaffold
+
+expected_outcomes:
+  - "Production Stability: 80% → 100%"
+  - "E2E test coverage for both Grow and Propagation critical paths"
+  - "Error boundaries prevent app crashes"
+  - "Planner PRD defines clear MVP scope"
+  - "Planner store layer ready for UI development"
+  - "react-big-calendar integrated with Paddock styling"
+  - "Planner Foundation: 0% → 45%"
+
+notes: |
+  Combined sprint merging stability completion with planner foundation.
+
+  Key decisions made:
+  1. Simple crop calendar first (no succession planting yet)
+  2. Use react-big-calendar library (faster, feature-rich)
+  3. Integrate with existing Grow trays and Propagation batches
+
+  Dispatch strategy: Run Wave 1 items in parallel, then cascade.

@@ -1,0 +1,57 @@
+quality_history:
+  first_snapshot: "2026-03-08T01:30:49Z"
+  last_snapshot: "2026-03-09T18:00:00Z"
+  snapshot_count: 4
+
+  snapshots:
+    - id: "snap-001"
+      timestamp: "2026-03-08T01:30:49Z"
+      trigger: "post-sprint"
+      sprint: "sprint-2026-03-08-test-coverage"
+      metrics:
+        tests: { total: 1080, passed: 1080, failed: 0, skipped: 0 }
+        build: { success: true, duration_s: 8 }
+        typecheck: { errors: 0, warnings: 0 }
+        goals: { total: 12, completed: 8, in_progress: 2 }
+        sprint: { id: "sprint-2026-03-08-test-coverage", result: "success" }
+
+    - id: "snap-002"
+      timestamp: "2026-03-08T01:55:00Z"
+      trigger: "post-session"
+      sprint: null
+      metrics:
+        tests: { total: 1080, passed: 1080, failed: 0, skipped: 0 }
+        build: { success: true, duration_s: 3 }
+        typecheck: { errors: 0, warnings: 0 }
+        goals: { total: 12, completed: 8, in_progress: 2 }
+
+    - id: "snap-003"
+      timestamp: "2026-03-09T12:00:00Z"
+      trigger: "post-session"
+      sprint: null
+      metrics:
+        tests: { total: 1080, passed: 1080, failed: 0, skipped: 0 }
+        build: { success: true, duration_s: 3 }
+        typecheck: { errors: 0, warnings: 0 }
+        goals: { total: 12, completed: 8, in_progress: 2 }
+
+    - id: "snap-004"
+      timestamp: "2026-03-09T18:00:00Z"
+      trigger: "post-session"
+      sprint: null
+      metrics:
+        tests: { total: 1139, passed: 1139, failed: 0, skipped: 0 }
+        build: { success: true, duration_s: 3 }
+        typecheck: { errors: 0, warnings: 0 }
+        goals: { total: 15, completed: 11, in_progress: 3 }
+
+  trends:
+    tests.total: "↑ improving"
+    tests.pass_rate: "→ stable"
+    build.success: "→ stable"
+    build.duration_s: "→ stable"
+    typecheck.errors: "→ stable"
+    goals.completed: "↑ improving"
+    sprint.success_rate: "→ stable"
+
+  overall: HEALTHY

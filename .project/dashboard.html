@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paddock — Project Dashboard</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+@import url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.min.css');
+@import url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/style.min.css');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --radius: 0.625rem;
+  --bg: #fafafa;
+  --bg-card: #ffffff;
+  --bg-surface: #ffffff;
+  --text: #0a0a0a;
+  --text-dim: #737373;
+  --text-muted: #a3a3a3;
+  --border: #e5e5e5;
+  --border-subtle: #f5f5f5;
+  --emerald-50: #ecfdf5; --emerald-100: #d1fae5;
+  --emerald-400: #34d399; --emerald-500: #10b981;
+  --emerald-600: #059669; --emerald-700: #047857;
+  --amber-50: #fffbeb; --amber-100: #fef3c7; --amber-400: #fbbf24; --amber-500: #f59e0b; --amber-700: #b45309;
+  --red-50: #fef2f2; --red-100: #fee2e2; --red-400: #f87171; --red-500: #ef4444; --red-600: #dc2626; --red-700: #b91c1c;
+  --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-300: #93c5fd; --blue-400: #60a5fa; --blue-500: #3b82f6; --blue-600: #2563eb; --blue-700: #1d4ed8;
+  --gray-50: #fafafa; --gray-100: #f5f5f5; --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252; --gray-700: #404040; --gray-800: #262626; --gray-900: #171717; --gray-950: #0a0a0a;
+  --purple-100: #f3e8ff; --purple-600: #9333ea; --purple-700: #7e22ce;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --bg-card: #1c1c1c;
+    --bg-surface: #171717;
+    --text: #fafafa;
+    --text-dim: #a3a3a3;
+    --text-muted: #737373;
+    --border: rgba(255,255,255,0.1);
+    --border-subtle: rgba(255,255,255,0.05);
+  }
+}
+
+body {
+  font-family: 'Geist', 'Geist Fallback', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono { font-family: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, monospace; }
+
+.status-header {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px; gap: 12px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+@media (prefers-color-scheme: dark) {
+  .status-header { background: rgba(23,23,23,0.92); }
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.project-name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--gray-400); }
+.header-meta { font-size: 11px; color: var(--text-muted); }
+.header-meta span { margin-right: 12px; }
+
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500;
+  white-space: nowrap; letter-spacing: 0.01em;
+}
+.badge-emerald { background: var(--emerald-100); color: var(--emerald-700); }
+.badge-amber { background: var(--amber-100); color: var(--amber-700); }
+.badge-red { background: var(--red-100); color: var(--red-700); }
+.badge-blue { background: var(--blue-100); color: var(--blue-700); }
+.badge-gray { background: var(--gray-100); color: var(--gray-600); }
+@media (prefers-color-scheme: dark) {
+  .badge-emerald { background: rgba(6,78,59,0.3); color: var(--emerald-400); }
+  .badge-amber { background: rgba(120,53,15,0.3); color: var(--amber-400); }
+  .badge-red { background: rgba(127,29,29,0.3); color: var(--red-400); }
+  .badge-blue { background: rgba(30,58,138,0.3); color: var(--blue-400); }
+  .badge-gray { background: rgba(255,255,255,0.08); color: var(--gray-400); }
+}
+
+.main-container {
+  display: flex; max-width: 1400px; margin: 0 auto; padding: 16px; gap: 16px;
+  min-height: calc(100vh - 44px);
+}
+.narrative-stream { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.sidebar {
+  width: 380px; flex-shrink: 0; display: none; flex-direction: column;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg-card); overflow: hidden; position: sticky; top: 60px;
+  max-height: calc(100vh - 76px);
+}
+@media (min-width: 1024px) {
+  .sidebar { display: flex !important; }
+  .fab-btn { display: none !important; }
+}
+
+.filter-bar {
+  display: flex; gap: 6px; padding: 0 0 8px 0; border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 4px;
+}
+.filter-btn {
+  font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-dim); cursor: pointer; font-weight: 500;
+  transition: all 0.15s;
+}
+.filter-btn:hover { color: var(--text); border-color: var(--gray-300); }
+.filter-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+.narrative-card {
+  border-radius: 8px; border: 1px solid var(--border);
+  padding: 12px; display: flex; flex-direction: column; gap: 6px;
+  background: var(--bg-card);
+  animation: fadeIn 0.3s ease-out both;
+}
+.narrative-card:nth-child(2) { animation-delay: 0.05s; }
+.narrative-card:nth-child(3) { animation-delay: 0.1s; }
+.narrative-card:nth-child(4) { animation-delay: 0.15s; }
+.narrative-card:nth-child(5) { animation-delay: 0.2s; }
+.card-header { display: flex; align-items: center; gap: 8px; }
+.card-title { font-size: 13px; font-weight: 600; flex: 1; }
+.card-time { font-size: 10px; color: var(--text-muted); }
+.card-body { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+.card-footer { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+
+.summary-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;
+  margin-bottom: 6px;
+}
+.summary-card {
+  border-radius: 8px; border: 1px solid var(--border); padding: 14px;
+  background: var(--bg-card); animation: fadeIn 0.3s ease-out both;
+}
+.summary-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.summary-value { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin-top: 2px; }
+.summary-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+.tab-bar { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.tab-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 4px;
+  min-height: 44px; padding: 10px 0; font-size: 12px; font-weight: 500;
+  color: var(--text-dim); border: none; border-bottom: 2px solid transparent;
+  background: transparent; cursor: pointer; transition: color 0.15s;
+}
+.tab-btn.active { color: var(--blue-600); border-bottom-color: var(--blue-600); }
+.tab-btn:hover:not(.active) { color: var(--text); }
+@media (prefers-color-scheme: dark) {
+  .tab-btn.active { color: var(--blue-400); border-bottom-color: var(--blue-400); }
+}
+.tab-content { display: none; flex: 1; overflow-y: auto; padding: 12px; }
+.tab-content.active { display: block; }
+
+.goal-row {
+  border-radius: 6px; border: 1px solid var(--border); padding: 10px 12px;
+  margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s;
+}
+.goal-row:hover { border-color: var(--gray-300); }
+.goal-row.focused { border-color: var(--blue-300); background: rgba(239,246,255,0.5); }
+@media (prefers-color-scheme: dark) {
+  .goal-row.focused { border-color: var(--blue-700); background: rgba(23,37,84,0.15); }
+}
+.goal-header { display: flex; align-items: center; gap: 8px; }
+.goal-title { font-size: 12px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.goal-detail { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-dim); line-height: 1.6; }
+.criteria-item { display: flex; align-items: flex-start; gap: 6px; margin: 3px 0; }
+
+.progress-track { height: 6px; border-radius: 9999px; background: var(--gray-200); overflow: hidden; flex: 1; }
+@media (prefers-color-scheme: dark) { .progress-track { background: var(--gray-700); } }
+.progress-fill { height: 100%; border-radius: 9999px; transition: width 0.3s ease; }
+.fill-emerald { background: var(--emerald-500); }
+.fill-blue { background: var(--blue-500); }
+.fill-amber { background: var(--amber-500); }
+
+.sprint-row { border-radius: 6px; border: 1px solid var(--border); padding: 10px 12px; margin-bottom: 8px; }
+.sprint-header { display: flex; align-items: center; gap: 8px; }
+.sprint-name { font-size: 12px; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sprint-meta { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.handoff-stats { display: flex; gap: 8px; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+.decision-row { padding: 8px 0; border-bottom: 1px solid var(--border-subtle); }
+.decision-row:last-child { border-bottom: none; }
+.decision-time { font-size: 10px; color: var(--text-muted); }
+.decision-action { font-size: 12px; font-weight: 500; margin-top: 2px; }
+.decision-detail { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+.quality-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.quality-item { border-radius: 6px; border: 1px solid var(--border-subtle); padding: 10px; text-align: center; }
+.quality-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.quality-value { font-size: 20px; font-weight: 700; margin-top: 2px; }
+.quality-trend { font-size: 10px; margin-top: 2px; }
+
+.chevron { transition: transform 0.2s; display: inline-flex; }
+.chevron.open { transform: rotate(90deg); }
+.hidden { display: none !important; }
+
+.fab-btn {
+  position: fixed; bottom: 20px; right: 20px; z-index: 30;
+  width: 48px; height: 48px; border-radius: 50%; border: none;
+  background: var(--blue-600); color: white; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40; }
+.mobile-sidebar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  max-height: 70vh; background: var(--bg-card); border-top-left-radius: 16px; border-top-right-radius: 16px;
+  overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+.mobile-sidebar.open { transform: translateY(0); }
+
+.empty-state { text-align: center; padding: 32px 0; color: var(--text-muted); font-size: 12px; }
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.sidebar ::-webkit-scrollbar { width: 4px; }
+.sidebar ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
+
+.focus-banner {
+  border-radius: 8px; padding: 12px 14px;
+  background: linear-gradient(135deg, var(--blue-50), var(--emerald-50));
+  border: 1px solid var(--blue-300); margin-bottom: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  .focus-banner { background: linear-gradient(135deg, rgba(30,58,138,0.12), rgba(6,78,59,0.12)); border-color: var(--blue-700); }
+}
+.focus-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+.focus-text { font-size: 13px; font-weight: 600; margin-top: 2px; }
+.focus-note { font-size: 11px; color: var(--text-dim); margin-top: 4px; line-height: 1.5; }
+.section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 12px 0 8px; }
+</style>
+</head>
+<body>
+
+<!-- Status Header -->
+<header class="status-header">
+  <div class="header-left">
+    <div class="status-dot"></div>
+    <span class="project-name">Paddock</span>
+    <span class="badge badge-blue">MVP</span>
+  </div>
+  <div class="header-right">
+    <div class="header-meta">
+      <span>Workflow: completed</span>
+      <span class="font-mono">1,285 tests passing</span>
+      <span id="header-generated"></span>
+    </div>
+  </div>
+</header>
+
+<!-- Main Layout -->
+<div class="main-container">
+  <!-- Narrative Stream -->
+  <main class="narrative-stream">
+    <!-- Summary Row -->
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="summary-label">Goals</div>
+        <div class="summary-value">19<span style="font-size:14px;color:var(--text-muted);font-weight:400;">/25</span></div>
+        <div class="summary-sub">2 active &middot; 4 pending</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Tests</div>
+        <div class="summary-value" style="color:var(--emerald-600);">1,285</div>
+        <div class="summary-sub">1,285 passed &middot; 0 failed</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Sprints</div>
+        <div class="summary-value">16</div>
+        <div class="summary-sub">All completed &middot; 0 failed</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Tech Debt</div>
+        <div class="summary-value">55<span style="font-size:14px;color:var(--text-muted);font-weight:400;">/100</span></div>
+        <div class="summary-sub" style="color:var(--emerald-600);">&#8593; improving</div>
+      </div>
+    </div>
+
+    <!-- Focus Banner -->
+    <div class="focus-banner">
+      <div class="focus-label">Current Focus</div>
+      <div class="focus-text">goal-16: Documentation Update &mdash; Planner &amp; A11y</div>
+      <div class="focus-note">Goal-16 complete. README updated with Planner module, a11y features, project structure. Goals 1,2,3 blocked on field testing.</div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all" onclick="filterCards('all')">All</button>
+      <button class="filter-btn" data-filter="sprint" onclick="filterCards('sprint')">Sprints</button>
+      <button class="filter-btn" data-filter="goal" onclick="filterCards('goal')">Goals</button>
+      <button class="filter-btn" data-filter="quality" onclick="filterCards('quality')">Quality</button>
+    </div>
+
+    <!-- Quality Card -->
+    <div class="narrative-card" data-type="quality">
+      <div class="card-header">
+        <span style="color:var(--emerald-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </span>
+        <span class="card-title">Quality Status</span>
+        <span class="badge badge-emerald">HEALTHY</span>
+      </div>
+      <div class="card-body">
+        <span><strong>1,285</strong> tests passing</span> &nbsp;&middot;&nbsp;
+        <span><strong>0</strong> type errors</span> &nbsp;&middot;&nbsp;
+        <span>Build <strong style="color:var(--emerald-600);">passing</strong></span>
+      </div>
+    </div>
+
+    <!-- Active Goal: Production Stability -->
+    <div class="narrative-card" data-type="goal">
+      <div class="card-header">
+        <span style="color:var(--blue-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        <span class="card-title">Production Stability</span>
+        <span class="badge badge-blue">In Progress</span>
+      </div>
+      <div class="card-body">80% test coverage, E2E tests, zero data loss. Remaining 5% requires real usage validation.</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="progress-track"><div class="progress-fill fill-blue" style="width:95%"></div></div>
+        <span style="font-size:11px;font-weight:600;color:var(--blue-600);">95%</span>
+      </div>
+    </div>
+
+    <!-- Active Goal: Mobile Field-Ready -->
+    <div class="narrative-card" data-type="goal">
+      <div class="card-header">
+        <span style="color:var(--blue-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        <span class="card-title">Mobile Field-Ready</span>
+        <span class="badge badge-blue">In Progress</span>
+      </div>
+      <div class="card-body">Flawless mobile experience in field conditions. PWA exists, needs field testing.</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="progress-track"><div class="progress-fill fill-blue" style="width:90%"></div></div>
+        <span style="font-size:11px;font-weight:600;color:var(--blue-600);">90%</span>
+      </div>
+    </div>
+
+    <!-- Pending Goals -->
+    <div class="narrative-card" data-type="goal">
+      <div class="card-header">
+        <span style="color:var(--gray-400);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        <span class="card-title">Dogfooding Complete</span>
+        <span class="badge badge-amber">P1</span>
+        <span class="badge badge-gray">Not Started</span>
+      </div>
+      <div class="card-body">Use Paddock daily for real farming. Track first microgreens cycle end-to-end.</div>
+    </div>
+
+    <div class="narrative-card" data-type="goal">
+      <div class="card-header">
+        <span style="color:var(--gray-400);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        <span class="card-title">Planner Module E2E Tests</span>
+        <span class="badge badge-amber">P1</span>
+        <span class="badge badge-gray">Not Started</span>
+      </div>
+      <div class="card-body">E2E coverage for planner event CRUD, filtering, and integration links.</div>
+    </div>
+
+    <div class="narrative-card" data-type="goal">
+      <div class="card-header">
+        <span style="color:var(--gray-400);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </span>
+        <span class="card-title">PWA Offline Caching Strategy</span>
+        <span class="badge badge-amber">P1</span>
+        <span class="badge badge-gray">Not Started</span>
+      </div>
+      <div class="card-body">Workbox runtime caching for 24h offline operation.</div>
+    </div>
+
+    <!-- Recent Sprints -->
+    <div class="narrative-card" data-type="sprint">
+      <div class="card-header">
+        <span style="color:var(--emerald-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <span class="card-title">Docs: Planner &amp; A11y</span>
+        <span class="card-time">Mar 30, 2026</span>
+      </div>
+      <div class="card-footer">
+        <span class="badge badge-emerald">2/2 handoffs</span>
+        <span class="badge badge-gray">goal-16</span>
+        <span class="badge badge-blue">Latest</span>
+      </div>
+    </div>
+
+    <div class="narrative-card" data-type="sprint">
+      <div class="card-header">
+        <span style="color:var(--emerald-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <span class="card-title">UX Accessibility &amp; Interaction</span>
+        <span class="card-time">Mar 30, 2026</span>
+      </div>
+      <div class="card-footer">
+        <span class="badge badge-emerald">12/12 handoffs</span>
+        <span class="badge badge-gray">goal-13</span>
+      </div>
+    </div>
+
+    <div class="narrative-card" data-type="sprint">
+      <div class="card-header">
+        <span style="color:var(--emerald-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <span class="card-title">Fix npm CVEs</span>
+        <span class="card-time">Mar 30, 2026</span>
+      </div>
+      <div class="card-footer">
+        <span class="badge badge-emerald">3/3 handoffs</span>
+        <span class="badge badge-gray">goal-14</span>
+      </div>
+    </div>
+
+    <div class="narrative-card" data-type="sprint">
+      <div class="card-header">
+        <span style="color:var(--emerald-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <span class="card-title">Code Health IV</span>
+        <span class="card-time">Mar 30, 2026</span>
+      </div>
+      <div class="card-footer">
+        <span class="badge badge-emerald">4/4 handoffs</span>
+        <span class="badge badge-gray">goal-15</span>
+      </div>
+    </div>
+
+    <div class="narrative-card" data-type="sprint">
+      <div class="card-header">
+        <span style="color:var(--emerald-500);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <span class="card-title">Planner Foundation</span>
+        <span class="card-time">Mar 9, 2026</span>
+      </div>
+      <div class="card-footer">
+        <span class="badge badge-emerald">6/6 handoffs</span>
+        <span class="badge badge-gray">goal-4</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="goals" onclick="switchTab('goals')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Goals
+      </button>
+      <button class="tab-btn" data-tab="sprints" onclick="switchTab('sprints')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Sprints
+      </button>
+      <button class="tab-btn" data-tab="health" onclick="switchTab('health')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Health
+      </button>
+      <button class="tab-btn" data-tab="decisions" onclick="switchTab('decisions')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Log
+      </button>
+    </div>
+
+    <!-- Goals Tab -->
+    <div class="tab-content active" id="tab-goals">
+      <div class="section-title">Active</div>
+
+      <div class="goal-row focused" onclick="toggleExpand('g1')">
+        <div class="goal-header">
+          <span style="color:var(--blue-600);font-size:13px;font-weight:700;">&#9673;</span>
+          <span class="goal-title">Production Stability</span>
+          <span class="badge badge-amber">P1</span>
+          <span style="font-size:11px;font-weight:600;color:var(--blue-600);">95%</span>
+          <span class="chevron" id="chevron-g1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          <div class="progress-track"><div class="progress-fill fill-blue" style="width:95%"></div></div>
+        </div>
+        <div class="goal-detail hidden" id="detail-g1">
+          80% test coverage, E2E tests, zero data loss. 906 tests, 9 E2E specs, build passing. Remaining: 30-day usage validation.
+          <div style="margin-top:6px;">
+            <div class="criteria-item"><span style="color:var(--emerald-600);font-size:12px;">&#10003;</span> 80% store test coverage</div>
+            <div class="criteria-item"><span style="color:var(--emerald-600);font-size:12px;">&#10003;</span> E2E tests for critical paths</div>
+            <div class="criteria-item"><span style="color:var(--gray-400);font-size:12px;">&#9675;</span> Zero data loss in 30-day use</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g3')">
+        <div class="goal-header">
+          <span style="color:var(--blue-600);font-size:13px;font-weight:700;">&#9673;</span>
+          <span class="goal-title">Mobile Field-Ready</span>
+          <span class="badge badge-amber">P1</span>
+          <span style="font-size:11px;font-weight:600;color:var(--blue-600);">90%</span>
+          <span class="chevron" id="chevron-g3"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          <div class="progress-track"><div class="progress-fill fill-blue" style="width:90%"></div></div>
+        </div>
+        <div class="goal-detail hidden" id="detail-g3">
+          Mobile optimization + dark mode complete. PWA exists, needs field testing.
+          <div style="margin-top:6px;">
+            <div class="criteria-item"><span style="color:var(--emerald-600);font-size:12px;">&#10003;</span> 375px screen support</div>
+            <div class="criteria-item"><span style="color:var(--emerald-600);font-size:12px;">&#10003;</span> 24h offline mode works</div>
+            <div class="criteria-item"><span style="color:var(--gray-400);font-size:12px;">&#9675;</span> PWA installable (field test)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Not Started</div>
+
+      <div class="goal-row" onclick="toggleExpand('g2')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">Dogfooding Complete</span>
+          <span class="badge badge-amber">P1</span>
+          <span class="chevron" id="chevron-g2"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g2">Use Paddock daily for real farming. Track first microgreens cycle end-to-end.</div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g17')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">Planner Module E2E Tests</span>
+          <span class="badge badge-amber">P1</span>
+          <span class="chevron" id="chevron-g17"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g17">E2E coverage for planner event CRUD, filtering, and integration links.</div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g18')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">PWA Offline Caching Strategy</span>
+          <span class="badge badge-amber">P1</span>
+          <span class="chevron" id="chevron-g18"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g18">Workbox runtime caching for 24h offline operation.</div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g19')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">Data Import Validation</span>
+          <span class="badge badge-blue">P2</span>
+          <span class="chevron" id="chevron-g19"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g19">Schema validation on backup import with versioning.</div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g20')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">IndexedDB Auto-Backup</span>
+          <span class="badge badge-blue">P2</span>
+          <span class="chevron" id="chevron-g20"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g20">Automatic periodic backup on app start.</div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g21')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">Perf Monitoring &amp; Optimistic UI</span>
+          <span class="badge badge-gray">P3</span>
+          <span class="chevron" id="chevron-g21"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g21">Web Performance API marks, optimistic Zustand updates.</div>
+      </div>
+
+      <div class="goal-row" onclick="toggleExpand('g22')">
+        <div class="goal-header">
+          <span style="color:var(--gray-400);font-size:13px;font-weight:700;">&#9675;</span>
+          <span class="goal-title">CSV Export &amp; Offline Indicators</span>
+          <span class="badge badge-gray">P3</span>
+          <span class="chevron" id="chevron-g22"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+        </div>
+        <div class="goal-detail hidden" id="detail-g22">CSV export for trays, observations, and batch data.</div>
+      </div>
+
+      <div class="section-title">Completed (19)</div>
+
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Documentation Update &mdash; Planner &amp; A11y</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 30, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">UX/UI Accessibility &amp; Interaction</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 30, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Fix npm CVEs &amp; Update Deps</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 31, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Code Health IV</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 31, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Planner Module Foundation</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 9, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Test Coverage Expansion</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 8, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Code Health III &mdash; Stores &amp; Utils</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 7, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Security &amp; CI Hardening</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 7, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Performance &mdash; Bundle Splitting</span>
+          <span style="font-size:10px;color:var(--text-muted);">Mar 7, 2026</span>
+        </div>
+      </div>
+      <div class="goal-row">
+        <div class="goal-header">
+          <span style="color:var(--emerald-600);font-size:13px;font-weight:700;">&#10003;</span>
+          <span class="goal-title">Grow Module MVP</span>
+          <span style="font-size:10px;color:var(--text-muted);">Jan 13, 2026</span>
+        </div>
+      </div>
+      <div class="empty-state">+9 more completed goals</div>
+    </div>
+
+    <!-- Sprints Tab -->
+    <div class="tab-content" id="tab-sprints">
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Docs: Planner &amp; A11y</span>
+          <span class="badge badge-blue">Latest</span>
+        </div>
+        <div class="sprint-meta">Mar 30, 2026 &middot; goal-16</div>
+        <div class="handoff-stats"><span>2/2 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">UX Accessibility &amp; Interaction</span>
+        </div>
+        <div class="sprint-meta">Mar 30, 2026 &middot; goal-13</div>
+        <div class="handoff-stats"><span>12/12 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Fix npm CVEs</span>
+        </div>
+        <div class="sprint-meta">Mar 30, 2026 &middot; goal-14</div>
+        <div class="handoff-stats"><span>3/3 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Code Health IV</span>
+        </div>
+        <div class="sprint-meta">Mar 30, 2026 &middot; goal-15</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Planner Foundation</span>
+        </div>
+        <div class="sprint-meta">Mar 9, 2026 &middot; goal-4</div>
+        <div class="handoff-stats"><span>6/6 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Planner PRD</span>
+        </div>
+        <div class="sprint-meta">Mar 9, 2026 &middot; goal-4</div>
+        <div class="handoff-stats"><span>2/2 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Test Coverage Expansion</span>
+        </div>
+        <div class="sprint-meta">Mar 8, 2026 &middot; goal-12</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Code Health III &mdash; Stores</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-11</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Code Health II &mdash; Components</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-9</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Infrastructure Tests</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-10</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Security Hardening II</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-8</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Code Health &mdash; Complexity</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-7</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Performance &mdash; Bundle Split</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-6</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Security &amp; CI Hardening</span>
+        </div>
+        <div class="sprint-meta">Mar 7, 2026 &middot; goal-5</div>
+        <div class="handoff-stats"><span>4/4 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Planner Stability</span>
+        </div>
+        <div class="sprint-meta">Jan 20, 2026 &middot; goal-4</div>
+        <div class="handoff-stats"><span>3/3 handoffs</span></div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-header">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span class="sprint-name">Paddock Design Sprint</span>
+        </div>
+        <div class="sprint-meta">Jan 17, 2026 &middot; goal-3</div>
+        <div class="handoff-stats"><span>5/5 handoffs</span></div>
+      </div>
+    </div>
+
+    <!-- Health Tab -->
+    <div class="tab-content" id="tab-health">
+      <div class="quality-grid">
+        <div class="quality-item">
+          <div class="quality-label">Tests</div>
+          <div class="quality-value" style="color:var(--emerald-600);">1,285</div>
+          <div class="quality-trend" style="color:var(--emerald-600);">&#8593; improving</div>
+        </div>
+        <div class="quality-item">
+          <div class="quality-label">Pass Rate</div>
+          <div class="quality-value" style="color:var(--emerald-600);">100%</div>
+          <div class="quality-trend" style="color:var(--text-muted);">&#8594; stable</div>
+        </div>
+        <div class="quality-item">
+          <div class="quality-label">Type Errors</div>
+          <div class="quality-value">0</div>
+          <div class="quality-trend" style="color:var(--text-muted);">&#8594; stable</div>
+        </div>
+        <div class="quality-item">
+          <div class="quality-label">Build</div>
+          <div class="quality-value" style="color:var(--emerald-600);">&#10003;</div>
+          <div class="quality-trend" style="color:var(--text-muted);">&#8594; stable</div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:16px;">Tech Debt</div>
+      <div style="border-radius:6px;border:1px solid var(--border);padding:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;font-weight:600;">Debt Score</span>
+          <span style="font-size:20px;font-weight:700;">55<span style="font-size:12px;color:var(--text-muted);font-weight:400;">/100</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+          <div class="progress-track"><div class="progress-fill fill-amber" style="width:55%"></div></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">
+          Trend: <span style="color:var(--emerald-600);">&#8593; improving</span> &middot; 3 items tracked
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:16px;">Quality Trend</div>
+      <div style="border-radius:6px;border:1px solid var(--border);padding:12px;font-size:11px;color:var(--text-dim);line-height:1.8;">
+        <div>Tests: 906 &#8594; 929 &#8594; 1,080 &#8594; 1,139 &#8594; <strong>1,285</strong></div>
+        <div>Test files: 26 &#8594; 28 &#8594; 35 &#8594; 38 &#8594; <strong>59</strong></div>
+        <div>Goals completed: 8 &#8594; 11 &#8594; <strong>19</strong></div>
+        <div>Sprints completed: <strong>16</strong> (0 failed)</div>
+        <div style="margin-top:4px;">4 quality snapshots recorded</div>
+      </div>
+    </div>
+
+    <!-- Decisions Tab -->
+    <div class="tab-content" id="tab-decisions">
+      <div class="decision-row">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="decision-time">#6</span>
+          <span class="badge badge-emerald">success</span>
+        </div>
+        <div class="decision-action">Dispatched Security &amp; CI sprint</div>
+        <div class="decision-detail">MILESTONE: goal-5 completed. Gemini API key secured, CI build step added, encryption at rest.</div>
+      </div>
+      <div class="decision-row">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="decision-time">#5</span>
+          <span class="badge badge-emerald">success</span>
+        </div>
+        <div class="decision-action">Risk assessment</div>
+        <div class="decision-detail">Score 35/100 (Grade C, Elevated). 7 dimensions scored.</div>
+      </div>
+      <div class="decision-row">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="decision-time">#4</span>
+          <span class="badge badge-emerald">success</span>
+        </div>
+        <div class="decision-action">Sprint workshop: Security &amp; CI</div>
+        <div class="decision-detail">Created sprint with 4 handoffs (~2h)</div>
+      </div>
+      <div class="decision-row">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="decision-time">#3</span>
+          <span class="badge badge-emerald">success</span>
+        </div>
+        <div class="decision-action">Created 3 remediation goals</div>
+        <div class="decision-detail">goal-5 (Security P1), goal-6 (Performance P2), goal-7 (Code Health P2)</div>
+      </div>
+      <div class="decision-row">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="decision-time">#2</span>
+          <span class="badge badge-emerald">success</span>
+        </div>
+        <div class="decision-action">Full codebase review</div>
+        <div class="decision-detail">Score: 62/100 (Grade D). Code Health 26/100, Security 87/100, Test Coverage 62/100.</div>
+      </div>
+      <div class="decision-row">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="decision-time">#1</span>
+          <span class="badge badge-emerald">success</span>
+        </div>
+        <div class="decision-action">Updated goal-1 progress to 95%</div>
+        <div class="decision-detail">906 tests, 9 E2E, build passing. Remaining 5% requires real usage validation.</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Mobile FAB -->
+<button class="fab-btn" onclick="toggleMobileSidebar()" aria-label="Open sidebar">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="mobile-overlay hidden" id="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+<div class="mobile-sidebar" id="mobile-sidebar">
+  <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-weight:600;font-size:14px;">Dashboard</span>
+    <button onclick="toggleMobileSidebar()" style="border:none;background:none;cursor:pointer;color:var(--text);padding:4px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div style="padding:12px;">
+    <div class="section-title">Goals Summary</div>
+    <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">
+      <div>&#10003; 19 completed</div>
+      <div>&#9673; 2 in progress</div>
+      <div>&#9675; 4 not started</div>
+    </div>
+    <div class="section-title" style="margin-top:12px;">Quality</div>
+    <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">
+      <div>1,285 tests &middot; 100% pass rate</div>
+      <div>0 type errors &middot; Build passing</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab switching
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('tab-' + tabId).classList.add('active');
+  document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
+}
+
+// Narrative filter
+function filterCards(type) {
+  document.querySelectorAll('.narrative-card').forEach(function(el) {
+    el.style.display = (type === 'all' || el.dataset.type === type) ? '' : 'none';
+  });
+  document.querySelectorAll('.filter-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelector('[data-filter="' + type + '"]').classList.add('active');
+}
+
+// Toggle expand
+function toggleExpand(id) {
+  var el = document.getElementById('detail-' + id);
+  var chevron = document.getElementById('chevron-' + id);
+  if (el.classList.contains('hidden')) {
+    el.classList.remove('hidden');
+    if (chevron) chevron.classList.add('open');
+  } else {
+    el.classList.add('hidden');
+    if (chevron) chevron.classList.remove('open');
+  }
+}
+
+// Mobile sidebar
+function toggleMobileSidebar() {
+  var sidebar = document.getElementById('mobile-sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('hidden');
+}
+
+// Set generated time
+document.getElementById('header-generated').textContent = 'Generated ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+</script>
+</body>
+</html>

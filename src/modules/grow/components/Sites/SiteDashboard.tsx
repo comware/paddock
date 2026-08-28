@@ -12,6 +12,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContext } from './SiteContext';
 import { useTrays, useTimeEntries, useObservations, type TrayWithComputed } from '../../stores';
+import { Sprout, CircleCheck, Scale, Timer, type LucideIcon } from 'lucide-react';
 import { UpcomingWork } from './UpcomingWork';
 import { GettingStarted } from './GettingStarted';
 import { NewTrayForm } from '../Trays/NewTrayForm';
@@ -23,17 +24,29 @@ import { format, addDays, isAfter, startOfDay } from 'date-fns';
 // ============================================
 
 interface MetricCardProps {
-  icon: string;
+  /**
+   * Line icon rather than emoji.
+   *
+   * These were a seedling, a green tick box, a balance scale and a stopwatch: four
+   * different illustration styles, rendered differently on every platform, sitting above
+   * carefully set figures. A single-weight line set is quieter and lets the number lead,
+   * which is the point of the card.
+   */
+  icon: LucideIcon;
   value: string | number;
   label: string;
   subValue?: string;
 }
 
-function MetricCard({ icon, value, label, subValue }: MetricCardProps) {
+function MetricCard({ icon: Icon, value, label, subValue }: MetricCardProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-      <div className="text-2xl mb-1">{icon}</div>
-      <div className="text-2xl font-bold text-slate-900 dark:text-white">{value}</div>
+      <Icon
+        aria-hidden="true"
+        className="w-5 h-5 mb-2 text-slate-400 dark:text-slate-500"
+        strokeWidth={1.75}
+      />
+      <div className="stat-figure text-3xl text-slate-900 dark:text-white">{value}</div>
       <div className="text-sm text-slate-600 dark:text-slate-400">{label}</div>
       {subValue && (
         <div className="text-xs text-slate-500 dark:text-slate-500 mt-1">{subValue}</div>
@@ -170,25 +183,25 @@ export function SiteDashboard() {
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <MetricCard
-          icon="🌱"
+          icon={Sprout}
           value={metrics.totalActive}
           label="Active Trays"
           subValue={`${metrics.blackoutCount} blackout • ${metrics.lightCount} light`}
         />
         <MetricCard
-          icon="✅"
+          icon={CircleCheck}
           value={`${metrics.successRate}%`}
           label="Success Rate"
           subValue={`${metrics.harvestedCount} harvested`}
         />
         <MetricCard
-          icon="⚖️"
+          icon={Scale}
           value={metrics.avgYield ? `${metrics.avgYield}x` : '—'}
           label="Avg Yield"
           subValue="harvest/seed ratio"
         />
         <MetricCard
-          icon="⏱️"
+          icon={Timer}
           value={`${hoursThisWeek}h`}
           label="This Week"
           subValue="time logged"

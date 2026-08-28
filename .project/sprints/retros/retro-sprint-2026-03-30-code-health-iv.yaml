@@ -1,0 +1,94 @@
+id: retro-sprint-2026-03-30-code-health-iv
+sprint_id: sprint-2026-03-30-code-health-iv
+date: 2026-03-30
+project: paddock
+
+summary: |
+  All 6 handoffs completed. Guarded 56 console statements, split 5 files >500 LOC,
+  added 21 test files raising test-to-source ratio from 0.14 to 0.21. 1285 tests pass.
+  Build had 4 minor TS errors in new test files that the harness fixed post-dispatch.
+
+outcome:
+  handoffs_planned: 6
+  handoffs_completed: 6
+  completion_rate: 100%
+  tests_passing: 1285
+  console_statements_guarded: 56
+  files_split: 5
+  test_files_added: 21
+  test_ratio_before: 0.14
+  test_ratio_after: 0.21
+
+went_well:
+  - id: ww-1
+    title: "All three exit criteria met in a single session"
+    detail: |
+      Zero unguarded console statements, no source file >500 LOC, and test ratio
+      0.21 (above 0.20 target). Clean sweep of all success criteria.
+
+  - id: ww-2
+    title: "File split pattern is well-established"
+    detail: |
+      Fourth code health sprint using the same split-and-extract pattern (goal-7,
+      goal-9, goal-11, goal-15). The team executes these confidently now with
+      consistent results.
+
+  - id: ww-3
+    title: "Test ratio improvement exceeded target"
+    detail: |
+      21 new test files brought ratio from 0.14 to 0.21, clearing the 0.20 threshold.
+      Previous sprints struggled to move this metric; bundling test addition with
+      splits (testing newly extracted components) was effective.
+
+  - id: ww-4
+    title: "Parallelizable handoff structure"
+    detail: |
+      Console cleanup (CH4-001) and file splits (CH4-002/003/004) could run in
+      parallel, with tests (CH4-005) correctly gated on splits completing. This
+      dependency structure enabled fast execution.
+
+improve:
+  - id: imp-1
+    title: "TS errors in new test files should be caught pre-commit"
+    detail: |
+      4 minor TypeScript errors in new test files were only caught post-dispatch.
+      Running tsc --noEmit as part of each handoff's verification (not just build)
+      would catch these earlier.
+
+  - id: imp-2
+    title: "Console statement policy needs enforcement going forward"
+    detail: |
+      56 console statements accumulated across multiple sprints. An ESLint rule
+      (no-console) with env-guard exceptions would prevent re-accumulation.
+
+actions:
+  - id: act-1
+    title: "Add ESLint no-console rule to prevent re-accumulation"
+    detail: |
+      Configure eslint no-console rule for src/ (excluding __tests__) with an
+      allow list for guarded statements. Prevents future console sprawl.
+    owner: engineering
+    priority: P1
+
+  - id: act-2
+    title: "Add tsc --noEmit check to handoff verification steps"
+    detail: |
+      Include explicit TypeScript type-check in each handoff's verification
+      commands, not just npm run build which may skip some strictness.
+    owner: engineering
+    priority: P1
+
+  - id: act-3
+    title: "Set next test ratio target to 0.30"
+    detail: |
+      With 0.21 achieved, set the next milestone at 0.30. Continue pairing
+      test file creation with feature/refactor sprints for organic growth.
+    owner: engineering
+    priority: P2
+
+  - id: act-4
+    title: "Archive sprint to completed"
+    detail: |
+      Move sprint-2026-03-30-code-health-iv.yaml from active/ to completed/.
+    owner: project-ops
+    priority: P0

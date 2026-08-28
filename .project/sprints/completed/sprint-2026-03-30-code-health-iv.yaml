@@ -1,0 +1,169 @@
+id: sprint-2026-03-30-code-health-iv
+name: "Code Health IV — Console Cleanup & File Splits"
+project: paddock
+status: completed
+
+created: 2026-03-30
+target_start: 2026-03-30
+target_end: 2026-03-31
+
+goal_id: goal-15
+
+goal: |
+  Remove or guard all console.log/error statements in production source,
+  split 5 remaining files over 500 LOC, and raise test-to-source ratio above 0.20.
+  Exit criteria: Zero unguarded console statements, no source file >500 LOC,
+  test ratio >= 0.20.
+
+context: |
+  Cascade audit found 56 console.log/error statements in production source code.
+  5 source files still exceed 500 LOC: seed.ts (674), GraduationForm (583),
+  SupplyForm (567), StationDetail (538), GraduationModal (517).
+  Test-to-source ratio is 0.14 (below 0.20 target).
+  Previous sprints (goal-7, goal-9, goal-11) successfully split components and stores.
+  This sprint addresses the remaining code health items.
+
+success_criteria:
+  - "Zero console.log/error in production source or all guarded by env check (verified via: grep -rn 'console\\.' src/ --include='*.ts' --include='*.tsx' | grep -v '__tests__' | grep -v 'node_modules' | grep -v 'import.meta.env' returns 0 lines)"
+  - "No source file exceeds 500 LOC (verified via: find src/ -name '*.ts' -o -name '*.tsx' | grep -v __tests__ | grep -v node_modules | xargs wc -l | awk '$1 > 500' returns 0 lines)"
+  - "Test-to-source ratio above 0.20 (verified via: ratio of test files to source files >= 0.20)"
+
+handoffs:
+  - id: "CH4-001-console-cleanup"
+    title: "Remove or guard console.log/error statements in production source"
+    priority: P0
+    estimate_hours: 2
+    status: pending
+    description: |
+      Find all 56 console.log/error/warn statements in production source files
+      (src/**/*.ts, src/**/*.tsx, excluding __tests__).
+      For each:
+      - Remove if it's debug logging that serves no production purpose
+      - Guard with if (import.meta.env.DEV) if it's useful during development
+      - Replace with proper error handling if it's in a catch block
+      Do NOT touch test files.
+    acceptance_criteria:
+      - "Zero unguarded console.log/error/warn in src/ production files (verified via: grep -rn 'console\\.' src/ --include='*.ts' --include='*.tsx' | grep -v '__tests__' | grep -v 'import.meta.env' | wc -l returns 0)"
+      - "Build passes (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+    blocked_by: []
+
+  - id: "CH4-002-split-seed"
+    title: "Split seed.ts (674 LOC) into smaller modules"
+    priority: P0
+    estimate_hours: 1.5
+    status: pending
+    description: |
+      Split src/lib/db/seed.ts (674 LOC) into focused modules.
+      Suggested approach: extract seed data by domain (grow seeds, propagation seeds,
+      planner seeds) into separate files, keep seed.ts as orchestrator.
+      Each resulting file should be under 300 LOC.
+    acceptance_criteria:
+      - "seed.ts under 300 LOC (verified via: wc -l src/lib/db/seed.ts shows < 300)"
+      - "All seed functionality preserved (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+    blocked_by: []
+
+  - id: "CH4-003-split-graduation-form"
+    title: "Split GraduationForm.tsx (583 LOC) into sub-components"
+    priority: P0
+    estimate_hours: 1.5
+    status: pending
+    description: |
+      Split GraduationForm.tsx into focused sub-components.
+      Extract form sections, validation logic, or modal content into separate files.
+      Main file should be under 300 LOC with sub-components under 200 LOC each.
+    acceptance_criteria:
+      - "GraduationForm.tsx under 400 LOC (verified via: wc -l shows < 400)"
+      - "Build passes (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+    blocked_by: []
+
+  - id: "CH4-004-split-supply-station-graduation"
+    title: "Split SupplyForm (567), StationDetail (538), GraduationModal (517)"
+    priority: P0
+    estimate_hours: 2
+    status: pending
+    description: |
+      Split the remaining 3 files over 500 LOC:
+      - SupplyForm.tsx (567 LOC): extract form sections or field groups
+      - StationDetail.tsx (538 LOC): extract detail sections or panels
+      - GraduationModal.tsx (517 LOC): extract modal content sections
+      Each main file should be under 400 LOC.
+    acceptance_criteria:
+      - "SupplyForm.tsx under 400 LOC (verified via: wc -l shows < 400)"
+      - "StationDetail.tsx under 400 LOC (verified via: wc -l shows < 400)"
+      - "GraduationModal.tsx under 400 LOC (verified via: wc -l shows < 400)"
+      - "Build passes (verified via: npm run build exits 0)"
+      - "Tests pass (verified via: npm test exits 0)"
+    blocked_by: []
+
+  - id: "CH4-005-add-tests"
+    title: "Add test files to bring test-to-source ratio above 0.20"
+    priority: P0
+    estimate_hours: 3
+    status: pending
+    description: |
+      Current ratio is 0.14. Need to add enough test files to reach 0.20+.
+      Priority targets for new tests:
+      - Newly split sub-components from this sprint
+      - Untested stores or utility modules
+      - Components with complex logic but no tests
+      Each new test file should have at least 5 meaningful tests.
+    acceptance_criteria:
+      - "Test-to-source ratio >= 0.20 (verified via: count test files / count source files)"
+      - "All new tests pass (verified via: npm test exits 0)"
+      - "No empty or trivial test files"
+    blocked_by:
+      - "CH4-002-split-seed"
+      - "CH4-003-split-graduation-form"
+      - "CH4-004-split-supply-station-graduation"
+
+  - id: "CH4-999-commit-verify"
+    title: "Commit, Verify CI, Update Goal Progress"
+    priority: P0
+    estimate_hours: 0.5
+    status: pending
+    description: |
+      Final sprint handoff: commit all changes, verify CI, and update goal progress.
+
+      This handoff ensures:
+      1. All sprint work is committed with proper messages
+      2. Changes are pushed to remote
+      3. CI pipeline passes (wait for it and fix if needed)
+      4. Goal progress is updated in project.yaml
+
+      DO NOT skip this handoff. DO NOT mark sprint complete until CI is green.
+
+      CI VERIFICATION (MANDATORY after push):
+      1. Push changes: git push origin <branch>
+      2. Wait for CI to start: sleep 10 && gh run list --limit 1
+      3. Watch CI run: gh run watch --exit-status
+         - If CI passes: proceed to goal progress update
+         - If CI fails: read the failure logs with gh run view --log-failed
+         - Fix the failures, commit, push again, re-watch
+         - Repeat until CI is green
+
+      GOAL PROGRESS UPDATE:
+      - Open .project/project.yaml
+      - Find goal-15
+      - Mark satisfied success_criteria as completed: true
+      - Recalculate progress and update
+    acceptance_criteria:
+      - "All changes committed (verified via: git status --porcelain shows clean)"
+      - "Pushed to remote (verified via: git push exits 0)"
+      - "CI pipeline passes (verified via: gh run list --limit 1 shows success)"
+      - "Tests pass in CI (verified via: npm test exits 0)"
+      - "No uncommitted changes remain (verified via: git status --porcelain is empty)"
+      - "Goal progress updated (verified via: grep 'progress:' .project/project.yaml)"
+    blocked_by:
+      - "CH4-001-console-cleanup"
+      - "CH4-002-split-seed"
+      - "CH4-003-split-graduation-form"
+      - "CH4-004-split-supply-station-graduation"
+      - "CH4-005-add-tests"
+
+notes: |
+  Historical velocity: 5-9 handoffs per sprint. This sprint has 6 handoffs (5 work + 1 verify).
+  CH4-001 and CH4-002/003/004 can run in parallel. CH4-005 depends on splits completing.
+  Previous code health sprints (goal-7, goal-9, goal-11) used similar split patterns successfully.

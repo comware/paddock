@@ -1,0 +1,136 @@
+brainstorm:
+  title: "Pre-Field-Testing Engineering Improvements"
+  date: 2026-03-30
+  context: |
+    All actionable engineering goals (4-16) complete. 1285 tests, 59 test files, build clean.
+    Goals 1,2,3 blocked on real-world field testing. This brainstorm identifies engineering
+    improvements to maximize readiness before field testing begins.
+  idea_count: 10
+
+ideas:
+  - id: idea-1
+    title: "Planner Module E2E Tests"
+    category: testing
+    priority: high
+    effort: medium
+    description: |
+      The planner module has ZERO E2E tests while Grow has 3 specs and Propagation has 3 specs.
+      Add E2E coverage for: event creation, event list/filter, event detail view, and
+      integration links to Grow trays and Propagation batches.
+    evidence: "e2e/planner/ directory does not exist. 0 planner specs vs 6 for other modules."
+    impact: "Catches planner regressions before field use. Closes the biggest testing gap."
+
+  - id: idea-2
+    title: "PWA Offline Caching Strategy"
+    category: pwa
+    priority: high
+    effort: medium
+    description: |
+      The PWA config only has basic precaching via vite-plugin-pwa. No runtime caching
+      strategies (CacheFirst, NetworkFirst, StaleWhileRevalidate) exist in source code.
+      App shell, static assets, and API responses need explicit caching rules for true
+      24h offline operation (goal-3 key result).
+    evidence: "Zero serviceWorker/workbox/cacheFirst/networkFirst references in src/."
+    impact: "Critical for field use where connectivity is unreliable."
+
+  - id: idea-3
+    title: "Data Import Schema Validation"
+    category: resilience
+    priority: high
+    effort: small
+    description: |
+      The unifiedExporter importUnifiedBackup() accepts JSON without schema validation.
+      Add Zod or manual validation for backup schema version, required fields, and
+      data integrity checks before writing to IndexedDB.
+    evidence: "importUnifiedBackup in unifiedExporter.ts parses JSON directly into DB operations."
+    impact: "Prevents data corruption from malformed imports during field testing."
+
+  - id: idea-4
+    title: "Backup Schema Versioning"
+    category: data
+    priority: medium
+    effort: small
+    description: |
+      UnifiedPaddockBackup has no schema version field. When the data model evolves
+      during field testing, old backups become unrestorable. Add a schemaVersion field
+      and migration logic for forward compatibility.
+    evidence: "UnifiedPaddockBackup interface lacks version/schemaVersion field."
+    impact: "Ensures backups from early field testing remain importable as schema evolves."
+
+  - id: idea-5
+    title: "IndexedDB Auto-Backup on App Start"
+    category: resilience
+    priority: medium
+    effort: small
+    description: |
+      Add automatic periodic backup to localStorage or a second IDB database on app
+      initialization. If primary DB corrupts during field testing, auto-backup provides
+      a recovery point without manual export.
+    evidence: "ErrorBoundary detects IDB corruption but recovery depends on manual exports."
+    impact: "Zero-effort data safety net during field testing."
+
+  - id: idea-6
+    title: "Performance Monitoring & Metrics"
+    category: performance
+    priority: medium
+    effort: medium
+    description: |
+      Add lightweight performance marks (Web Performance API) for key user flows:
+      tray creation, batch stage transitions, planner event CRUD, and data export.
+      Log to console in dev, persist to IDB for field testing analysis.
+    evidence: "No performance instrumentation exists. Bundle splitting done but no runtime metrics."
+    impact: "Identifies real-world bottlenecks during field testing before they frustrate users."
+
+  - id: idea-7
+    title: "Optimistic UI for Store Mutations"
+    category: performance
+    priority: medium
+    effort: medium
+    description: |
+      Store mutations (tray updates, observation adds, batch stage transitions) currently
+      await IndexedDB writes before updating UI state. Add optimistic updates with
+      rollback on failure for snappier field interactions.
+    evidence: "Store actions use await db.put() before set() in Zustand."
+    impact: "Perceived performance improvement, especially on slower mobile devices in field."
+
+  - id: idea-8
+    title: "Stale Data Indicators"
+    category: ux
+    priority: low
+    effort: small
+    description: |
+      When offline, show visual indicators for data that was created/modified while
+      offline and hasn't been confirmed persisted. Use a subtle badge or timestamp
+      showing "last synced" state.
+    evidence: "No offline state indicators in UI components."
+    impact: "Prevents confusion during field use when connectivity drops."
+
+  - id: idea-9
+    title: "Developer Experience: Hot Module Replacement Stability"
+    category: dx
+    priority: low
+    effort: small
+    description: |
+      Audit Zustand stores for HMR compatibility. Stores using IndexedDB initialization
+      in module scope may not properly reinitialize on HMR, causing stale state during
+      development. Add HMR dispose handlers where needed.
+    evidence: "Vite HMR + Zustand + Dexie initialization interaction not explicitly handled."
+    impact: "Faster development iteration during field-testing-driven bug fixes."
+
+  - id: idea-10
+    title: "CSV/Spreadsheet Export Format"
+    category: data
+    priority: low
+    effort: medium
+    description: |
+      The unified exporter outputs JSON only. Add CSV export for tray history,
+      observation logs, and batch lifecycle data. Farmers and agronomists commonly
+      use spreadsheets for record-keeping and reporting.
+    evidence: "unifiedExporter.ts only has JSON export. No CSV generation anywhere in codebase."
+    impact: "Enables data sharing with non-technical stakeholders during field testing."
+
+recommended_sprint_candidates:
+  - idea-1  # Planner E2E - biggest testing gap
+  - idea-2  # PWA offline - critical for field use
+  - idea-3  # Import validation - data safety
+  - idea-4  # Schema versioning - future-proofing
