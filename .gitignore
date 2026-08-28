@@ -30,3 +30,8 @@ coverage/
 *.log
 npm-debug.log*
 .vercel
+
+# Local secrets and per-install config. .env.example is documentation and stays tracked.
+.env
+.env.*
+!.env.example
