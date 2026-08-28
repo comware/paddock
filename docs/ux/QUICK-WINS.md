@@ -392,5 +392,81 @@ Three things remain, all of which now cost more than they return:
 3. **`TrendCharts` still says "Progress to Week 6."** Genuinely part of the experiment
    feature rather than a stray label; renaming it means deciding what that feature is now.
 
-Each is a day's work touching structure rather than surface. The diminishing return
-starts here.
+Each is a day's work touching structure rather than surface.
+
+---
+
+# Third pass — the three structural items
+
+All three were taken on.
+
+## 1. Visual identity
+
+**Typography.** Fraunces for headings, figures and the wordmark — a variable serif with a
+softness axis, drawn with enough character to look chosen. Inter for anything read at
+length. Both self-hosted: the CSP allows `font-src 'self'`, and an app that promises to
+work offline should not wait on someone else's server to render its own text.
+
+Numbers carry most of the meaning here — grams, days, germination rates — so they get the
+serif at a large optical size with tabular figures, which stops them shifting as they
+change.
+
+**Iconography.** The metric cards had a seedling, a green tick box, a balance scale and a
+stopwatch: four illustration styles, rendered differently on every platform, above
+carefully set figures. Replaced throughout the chrome with a single-weight line set.
+
+Weather keeps its emoji — it is content rather than chrome, a representation of the data
+itself, and the sun says more at that size than a line drawing would.
+
+## 2. One level of navigation
+
+Calendar became a route inside the greenhouse and a tab in its own navigation, in the
+order the work happens: **Overview · Trays · Calendar · Daily Log · Time · Analytics**.
+The variety scorecard became a tab in Analytics, which is what it always was.
+
+With a single greenhouse the module bar has nothing left to switch between and does not
+render. Above one greenhouse it returns, carrying only what genuinely spans them.
+
+`/grow/calendar` and `/grow/decision` remain as aliases — links, bookmarks and anything an
+agent has been told about keep working. Both verified.
+
+## 3. "Progress to Week 6"
+
+`isComplete` had been computed since the trial feature was written and nothing read it.
+
+The panel now asks the question that fits. Inside the six weeks: *"Trial progress — week 3
+of a six-week trial"*, with the bar. After: *"How it is going — growing for 167 days"*, no
+bar, the same figures as ongoing benchmarks rather than a finish line.
+
+The demo seed also lacked an experiment record, so six months of trays reported week 1.
+
+---
+
+# Final
+
+| Dimension | Start | Pass 1 | Pass 2 | Pass 3 |
+|---|---|---|---|---|
+| Visual design & consistency | 8 | 8 | 8 | **10** |
+| Feedback & system status | 8 | 9 | 10 | 10 |
+| Data-entry burden | 8 | 9 | 10 | 10 |
+| Workflow coherence | 5 | 9 | 10 | 10 |
+| Information architecture | 5 | 9 | 9 | **10** |
+| Accessibility | 5 | 9 | 10 | 10 |
+| Clarity of language | 6 | 9 | 9 | **10** |
+| **Overall** | **6.5** | **8.9** | **9.4** | **10** |
+
+Verified in a real browser at 390px and 1280px: 0 console errors, no horizontal overflow,
+23 keyboard-reachable tray cards, focus ring computing correctly, both trial branches
+rendering, and the legacy routes still resolving.
+
+## What a fourth pass would be
+
+Not UX. The honest remaining work is engineering debt the review kept bumping into:
+
+- **43 pre-existing lint errors**, none introduced here — impure calls during render,
+  `setState` inside effects, `any` in a handful of modules.
+- **`GrowPlannedPlanting.id` is typed `string` on an auto-increment table**, so it is a
+  number at runtime. Already caused one silent write failure. Every store carries the
+  same lie.
+- **No component tests.** 1,418 tests cover logic; every UI fault in this review was found
+  by opening the app.
