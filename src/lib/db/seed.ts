@@ -11,10 +11,33 @@ import { defaultMediums } from './seed-mediums';
 import { seedDemoHistory } from './seed-demo-history';
 
 /**
+ * In-flight seed, shared by concurrent callers.
+ *
+ * React StrictMode invokes effects twice in development, so seedDatabase ran twice
+ * concurrently. Both calls saw an empty table, both wrote, and the second failed the
+ * unique index on variety name - surfacing as
+ * "growVarietyConfigs.bulkAdd(): 76 of 76 operations failed" in the error tracker on
+ * every fresh install.
+ *
+ * Checking a count and then writing is not atomic; sharing the promise makes the second
+ * caller await the first rather than race it.
+ */
+let seeding: Promise<void> | null = null;
+
+/**
  * Seeds the database with default configurations.
- * Only runs if tables are empty.
+ * Only runs if tables are empty. Safe to call concurrently.
  */
 export async function seedDatabase(): Promise<void> {
+  if (!seeding) {
+    seeding = runSeed().finally(() => {
+      seeding = null;
+    });
+  }
+  return seeding;
+}
+
+async function runSeed(): Promise<void> {
   // Seed varieties
   const varietyCount = await db.growVarietyConfigs.count();
   if (varietyCount === 0) {
@@ -48,6 +71,7 @@ export async function seedDatabase(): Promise<void> {
  * Resets all seed data (for development/testing)
  */
 export async function resetSeedData(): Promise<void> {
+  seeding = null;
   await db.growVarietyConfigs.clear();
   await db.growMediumConfigs.clear();
   await seedDatabase();

@@ -128,7 +128,9 @@ export function InstallPrompt() {
           </div>
           <button
             onClick={handleDismiss}
-            className="flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            // 20x44 measured on a phone; WCAG 2.5.8 wants at least 24x24. Padding
+            // rather than a bigger glyph, so the icon itself is unchanged.
+            className="flex-shrink-0 p-1.5 -m-1.5 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             aria-label="Dismiss"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
