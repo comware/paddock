@@ -303,7 +303,7 @@ export function WorkDetail({
                   >
                     {step.action}
                     {step.done && (
-                      <span className="ml-1.5 text-xs font-normal">done</span>
+                      <span className="ml-1.5 text-xs font-normal">{' '}done</span>
                     )}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">

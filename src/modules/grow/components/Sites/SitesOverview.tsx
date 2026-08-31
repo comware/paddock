@@ -247,13 +247,14 @@ export function SitesOverview() {
             Welcome to Paddock Grow
           </h2>
           <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            Start by adding your first growing site. Each site tracks its own trays, observations, and weather data.
+            Start by adding your first growing space. Each one tracks its own trays,
+            observations and weather.
           </p>
           <button
             onClick={() => setIsNewSiteOpen(true)}
             className="px-6 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
           >
-            Add Your First Site
+            Add a growing space
           </button>
         </div>
       ) : (

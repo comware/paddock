@@ -199,7 +199,7 @@ export function SiteDetailLayout() {
       <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
         <div className="text-4xl mb-4">🔍</div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Site Not Found
+          Growing space not found
         </h2>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
           This growing space doesn't exist, or may have been deleted.

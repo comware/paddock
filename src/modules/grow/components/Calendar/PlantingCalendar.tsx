@@ -5,9 +5,15 @@
  * - Planned sowings (from planned plantings)
  * - Expected harvests (from active trays)
  * - Click to add new planned planting
+ *
+ * Every entry opens the same dialog, whichever kind it is. An expected harvest and a
+ * scheduled sowing are different records, but from the grower's side they are the same
+ * question - what is this and what does it need. Only sowings used to be clickable, which
+ * meant the entries a grower sees most often were the ones that did nothing.
  */
 
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   format,
   startOfWeek,
@@ -26,7 +32,7 @@ import type { GrowPlannedPlanting } from '@/lib/db';
 import { useToastStore } from '@/stores/useToastStore';
 import { PlannedPlantingForm } from './PlannedPlantingForm';
 import { ProposalReview } from './ProposalReview';
-import { WorkDetail } from './WorkDetail';
+import { WorkDetail, type WorkSubject } from './WorkDetail';
 
 interface CalendarEvent {
   id: string;
@@ -46,12 +52,16 @@ export function PlantingCalendar() {
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [detailId, setDetailId] = useState<string | null>(null);
+  /** Which entry the dialog is describing. Sowings and trays are separate stores. */
+  const [detail, setDetail] = useState<{ kind: 'planting' | 'tray'; id: string } | null>(
+    null,
+  );
 
-  const { trays, loadTrays, addTray, getNextTrayNumber } = useTrays();
+  const { trays, loadTrays, addTray, getNextTrayNumber, moveToLight } = useTrays();
   const { getVariety, loadVarieties } = useVarieties();
   const { plantings, loadPlantings, convertToTray } = usePlannedPlantings();
   const { loadSites, getActiveSite } = useSites();
+  const navigate = useNavigate();
   const activeSite = getActiveSite();
 
   // Load data on mount
@@ -156,8 +166,52 @@ export function PlantingCalendar() {
   };
 
   const today = startOfDay(new Date());
-  const detailPlanting = plantings.find((p) => p.id === detailId) ?? null;
+
+  /**
+   * A tray's focus is its next unfinished step, not the step that was clicked. Someone
+   * opening a harvest still in blackout needs the light date and the light button.
+   */
+  const detailSubject: WorkSubject | null = useMemo(() => {
+    if (!detail) return null;
+    if (detail.kind === 'planting') {
+      const planting = plantings.find((p) => String(p.id) === detail.id);
+      return planting ? { kind: 'planting', planting } : null;
+    }
+    const tray = trays.find((t) => String(t.id) === detail.id);
+    if (!tray) return null;
+    return { kind: 'tray', tray, focus: tray.status === 'blackout' ? 'light' : 'harvest' };
+  }, [detail, plantings, trays]);
+
   const addToast = useToastStore((state) => state.add);
+
+  /**
+   * Do the work from the dialog rather than sending the grower to find the tray again.
+   * Moving to light is one step and happens here; harvesting needs weights, so it deep
+   * links to the form that collects them.
+   */
+  const handleMoveToLight = async (trayId: string) => {
+    try {
+      await moveToLight(trayId);
+      setDetail(null);
+      addToast('Moved to light', 'success');
+    } catch {
+      addToast('Could not move that tray. Nothing was changed.', 'error');
+    }
+  };
+
+  const traysPath = activeSite?.id
+    ? `/grow/site/${activeSite.id}/trays`
+    : '/grow/trays';
+
+  const handleHarvestTray = (trayId: string) => {
+    setDetail(null);
+    navigate(`${traysPath}?harvest=${trayId}`);
+  };
+
+  const handleOpenTray = (trayId: string) => {
+    setDetail(null);
+    navigate(`${traysPath}?tray=${trayId}`);
+  };
 
   /** Turn a scheduled sowing into a real tray. See UpcomingWork for why this matters. */
   const handleSowNow = async (planting: GrowPlannedPlanting) => {
@@ -181,7 +235,7 @@ export function PlantingCalendar() {
       });
 
       await convertToTray(planting.id!, trayId);
-      setDetailId(null);
+      setDetail(null);
       addToast(`Sown — ${planting.quantity}x ${planting.variety}`, 'success');
     } catch {
       addToast('Could not create that tray. Nothing was changed.', 'error');
@@ -300,11 +354,14 @@ export function PlantingCalendar() {
                       // These carry real detail now, so they have to be buttons.
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (event.plantingId) setDetailId(event.plantingId);
+                        if (event.plantingId)
+                          setDetail({ kind: 'planting', id: String(event.plantingId) });
+                        else if (event.trayId)
+                          setDetail({ kind: 'tray', id: String(event.trayId) });
                       }}
-                      disabled={!event.plantingId}
+                      disabled={!event.plantingId && !event.trayId}
                       title={
-                        event.plantingId
+                        event.plantingId || event.trayId
                           ? `${event.label} — click for details`
                           : event.label
                       }
@@ -315,10 +372,10 @@ export function PlantingCalendar() {
                           ? 'scheduled sowing'
                           : 'expected harvest'
                       } on ${format(event.date, 'd MMMM')}${
-                        event.plantingId ? '. Show details.' : ''
+                        event.plantingId || event.trayId ? '. Show details.' : ''
                       }`}
                       className={`w-full text-left p-2 rounded-lg text-xs ${
-                        event.plantingId
+                        event.plantingId || event.trayId
                           ? 'cursor-pointer hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500'
                           : 'cursor-default'
                       } ${
@@ -386,11 +443,22 @@ export function PlantingCalendar() {
 
       {/* Planned Planting Form Modal */}
       <WorkDetail
-        subject={detailPlanting ? { kind: 'planting', planting: detailPlanting } : null}
-        variety={detailPlanting ? getVariety(detailPlanting.variety) : undefined}
+        subject={detailSubject}
+        variety={
+          detailSubject
+            ? getVariety(
+                detailSubject.kind === 'planting'
+                  ? detailSubject.planting.variety
+                  : detailSubject.tray.variety,
+              )
+            : undefined
+        }
         trays={trays}
         onSowNow={handleSowNow}
-        onClose={() => setDetailId(null)}
+        onMoveToLight={handleMoveToLight}
+        onHarvest={handleHarvestTray}
+        onOpenTray={handleOpenTray}
+        onClose={() => setDetail(null)}
       />
 
       <PlannedPlantingForm

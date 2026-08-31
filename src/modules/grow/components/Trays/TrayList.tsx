@@ -58,11 +58,15 @@ export function TrayList() {
 
   // ?harvest=<id> opens straight onto the harvest form for that tray, so following
   // "Harvest now" from elsewhere does not land the grower in a list to search.
+  //
+  // Compared as strings: GrowTray.id is declared string but Dexie hands back the numeric
+  // auto-increment key, so `t.id === param` is always false and the link silently did
+  // nothing. Same reason the proposal approve/discard had to use .modify().
   const harvestParam = searchParams.get('harvest');
   useEffect(() => {
     if (!harvestParam) return;
 
-    const target = trays.find((t) => t.id === harvestParam);
+    const target = trays.find((t) => String(t.id) === harvestParam);
     if (!target) return;
 
     setHarvestingTray(target);
@@ -72,6 +76,22 @@ export function TrayList() {
     next.delete('harvest');
     setSearchParams(next, { replace: true });
   }, [harvestParam, trays, searchParams, setSearchParams]);
+
+  // ?tray=<id> is the same idea for the full record: the calendar dialog is a summary,
+  // and "View tray" from it should open that tray rather than a list to search.
+  const trayParam = searchParams.get('tray');
+  useEffect(() => {
+    if (!trayParam) return;
+
+    const target = trays.find((t) => String(t.id) === trayParam);
+    if (!target) return;
+
+    setEditingTray(target);
+
+    const next = new URLSearchParams(searchParams);
+    next.delete('tray');
+    setSearchParams(next, { replace: true });
+  }, [trayParam, trays, searchParams, setSearchParams]);
 
   // Get unique values for filter dropdowns
   const uniqueVarieties = getUniqueVarieties();
