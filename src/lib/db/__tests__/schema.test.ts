@@ -130,8 +130,9 @@ describe('PaddockDB Schema', () => {
 
 describe('Convenience Exports', () => {
   it('should export growDb with correct table references', () => {
-    expect(growDb.sites).toBe(db.growSites);
-    expect(growDb.weatherHistory).toBe(db.growWeatherHistory);
+    // sites/weatherHistory are deprecated aliases now pointed at the platform tables.
+    expect(growDb.sites).toBe(db.sites);
+    expect(growDb.weatherHistory).toBe(db.weatherHistory);
     expect(growDb.trays).toBe(db.growTrays);
     expect(growDb.observations).toBe(db.growObservations);
     expect(growDb.timeEntries).toBe(db.growTimeEntries);
@@ -185,5 +186,19 @@ describe('version 11 platform extraction', () => {
     const names = db.tables.map((t) => t.name);
     expect(names).toContain('growSites');
     expect(names).toContain('growWeatherHistory');
+  });
+});
+
+describe('platform facade', () => {
+  it('exposes sites and weather on platformDb', () => {
+    expect(platformDb.sites.name).toBe('sites');
+    expect(platformDb.weatherHistory.name).toBe('weatherHistory');
+  });
+
+  it('keeps growDb.sites working, pointed at the new table', () => {
+    // Existing call sites still say growDb.sites. They keep working, and they read the
+    // platform table - so there is exactly one source of truth during the transition.
+    expect(growDb.sites.name).toBe('sites');
+    expect(growDb.weatherHistory.name).toBe('weatherHistory');
   });
 });
