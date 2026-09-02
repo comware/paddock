@@ -30,7 +30,7 @@ it drove every call in this document:
 
 Applied four times:
 
-**1. Enterprise tag on time entries - build now.**
+**1. Enterprise tag on time entries - build now, in sub-project 1.**
 `GrowTimeEntry` holds a site, a date and a pile of minutes. Nothing links it to a tray or
 a crop. Run two enterprises at one site and "45 minutes harvesting on Tuesday" is
 ambiguous forever - it cannot be reconstructed from anything. Costs are recoverable from
@@ -39,6 +39,12 @@ migration plus unrecoverable history later.
 
 This does **not** mean per-enterprise books. No finance work, no reporting. Just don't
 discard the attribution while capturing it is free.
+
+It lands in sub-project 1 rather than 3 for a reason that expires: **every time entry in
+the database today is microgreens time**, because that is the only enterprise there is. So
+existing rows can be backfilled accurately rather than guessed. Ship vegetables first and
+that stops being true - entries logged in between become permanently ambiguous, which is
+the exact loss the field exists to prevent.
 
 **2. Beds are rows, not strings - build now.**
 Rotation history is derivable: with `bedId` and dates on plantings, "what was in bed 3
@@ -185,7 +191,7 @@ status and the WebMCP agent-proposal flow writes that row directly with `propose
 ### Indexes
 
 ```ts
-this.version(13).stores({
+this.version(14).stores({
   vegBeds:      '++id, siteId, name, isActive, [siteId+isActive]',
   vegPlantings: '++id, siteId, bedId, crop, status, dateSown, [siteId+status], [bedId+dateSown], [crop+status]',
   vegHarvests:  '++id, plantingId, date, [plantingId+date]',
@@ -235,9 +241,9 @@ single terminal `harvest` the grow events use).
 
 | # | Sub-project | Touches | Risk |
 |---|---|---|---|
-| 1 | Extract `platform` (sites + weather) | Dexie v11 rename, ~30 files outside grow | High - table rename with live data |
+| 1 | Extract `platform` (sites + weather), add `enterprise` to time entries | Dexie v11/v12, 9 files touching the DB directly | High - table rename with live data |
 | 2 | Rename `grow` -> `microgreens`, drop `required` | imports, routes, `useModulesStore` | Low - mechanical, no data |
-| 3 | Build `vegetables` | new tables v13, new module, planner events | Medium - all additive |
+| 3 | Build `vegetables` | new tables v14, new module, planner events | Medium - all additive |
 | 4 | `plantingId` on graduation | one optional field | Trivial |
 
 Strictly 1 -> 2 -> 3 -> 4.
@@ -279,7 +285,7 @@ in place. Version 11 creates `sites` and `weatherHistory` and copies rows across
 Splitting this across two versions is deliberate. Copying from a table that the same
 version is dropping is not reliable, and keeping the originals for a release means a bad
 copy is recoverable rather than terminal. A browser jumping straight from 10 to 12 runs
-both upgrades in order, so nothing is skipped. Vegetables tables move to version 13.
+both upgrades in order, so nothing is skipped. Vegetables tables move to version 14, since 13 backfills the enterprise tag.
 
 **Rollback.** IndexedDB has no downgrade path. Verify the copy count matches the source
 count before dropping the old table, and fail the upgrade if it does not - an app that
