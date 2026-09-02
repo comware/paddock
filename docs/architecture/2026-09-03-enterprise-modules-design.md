@@ -185,7 +185,7 @@ status and the WebMCP agent-proposal flow writes that row directly with `propose
 ### Indexes
 
 ```ts
-this.version(12).stores({
+this.version(13).stores({
   vegBeds:      '++id, siteId, name, isActive, [siteId+isActive]',
   vegPlantings: '++id, siteId, bedId, crop, status, dateSown, [siteId+status], [bedId+dateSown], [crop+status]',
   vegHarvests:  '++id, plantingId, date, [plantingId+date]',
@@ -237,7 +237,7 @@ single terminal `harvest` the grow events use).
 |---|---|---|---|
 | 1 | Extract `platform` (sites + weather) | Dexie v11 rename, ~30 files outside grow | High - table rename with live data |
 | 2 | Rename `grow` -> `microgreens`, drop `required` | imports, routes, `useModulesStore` | Low - mechanical, no data |
-| 3 | Build `vegetables` | new tables v12, new module, planner events | Medium - all additive |
+| 3 | Build `vegetables` | new tables v13, new module, planner events | Medium - all additive |
 | 4 | `plantingId` on graduation | one optional field | Trivial |
 
 Strictly 1 -> 2 -> 3 -> 4.
@@ -254,18 +254,32 @@ Each sub-project gets its own implementation plan. This document is the shared s
 
 Sub-project 1 is the only step that can lose data.
 
-**Established pattern.** The repo already has three migration hooks with tests -
-`useTrayMigration`, `useObservationMigration`, `useTimeEntryMigration`. Sub-project 1
-follows that pattern rather than inventing one.
+**The existing tests are not a template - do not follow them.** There are three
+migration hooks (`useTrayMigration`, `useObservationMigration`, `useTimeEntryMigration`)
+and each has a test file, but those files only assert that the module exports a function.
+They contain no behavioural coverage. Eight store test files are worse: they copy the
+store's logic into the test and assert against the copy, so they pass whether or not the
+store works. `src/test/mocks/db.ts` claims to use `fake-indexeddb`, which is not installed.
+
+Sub-project 1 must therefore start by making database behaviour testable at all -
+installing `fake-indexeddb` and wiring it into `src/test/setup.ts` - before any table is
+touched. This is the first task, not a nice-to-have: a rename with live data cannot be
+verified against mirrored logic.
 
 **Facade first.** `growDb` in `schema.ts` is a convenience export mapping friendly names
 onto tables. Point `growDb.sites` at the renamed table during the transition so
 sub-project 1 does not have to touch all ~30 call sites at once. Remove the facade in
 sub-project 2, where the rename is already touching those imports.
 
-**Renames are copy-then-delete.** Dexie cannot rename a store in place. The upgrade
-copies rows to the new table and only then drops the old one, in a single version
-transaction so a failure mid-way rolls back rather than leaving both half-populated.
+**Renames are copy-then-delete, across two versions.** Dexie cannot rename a store
+in place. Version 11 creates `sites` and `weatherHistory` and copies rows across in its
+`upgrade()`, leaving the originals alone. Version 12 sets `growSites: null` and
+`growWeatherHistory: null` to drop them.
+
+Splitting this across two versions is deliberate. Copying from a table that the same
+version is dropping is not reliable, and keeping the originals for a release means a bad
+copy is recoverable rather than terminal. A browser jumping straight from 10 to 12 runs
+both upgrades in order, so nothing is skipped. Vegetables tables move to version 13.
 
 **Rollback.** IndexedDB has no downgrade path. Verify the copy count matches the source
 count before dropping the old table, and fail the upgrade if it does not - an app that
@@ -292,9 +306,11 @@ refuses to start is recoverable, one that silently starts with half its sites is
 
 Mirrors the existing structure - `stores/__tests__`, `utils/__tests__`, `hooks/__tests__`.
 
-**Sub-project 1 (highest value).** Migration tests asserting row counts and field
-integrity across the rename, and that a database already at the new version is untouched
-on a second run. The three existing migration test files are the template.
+**Sub-project 1 (highest value).** First install `fake-indexeddb` so tests exercise
+a real database. Then: row counts and field integrity across the rename, a database
+already at the new version left untouched on a second run, and an upgrade from 10 straight
+to 12 landing the same result as 10 -> 11 -> 12. Write these against the real `db`, not a
+mirrored copy of its logic.
 
 **Sub-project 3.** Store tests for planting lifecycle transitions and succession linking.
 Util tests for the computed fields, specifically: totals summed from an empty harvest
