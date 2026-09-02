@@ -7,6 +7,12 @@
  * - Browser API mocks
  */
 
+// Dexie needs a real IndexedDB. happy-dom does not provide one, so tests that touch the
+// database silently had no way to run - which is why the migration hooks here are only
+// covered by tests asserting that they export a function. This makes database behaviour
+// testable for real.
+import 'fake-indexeddb/auto';
+
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';

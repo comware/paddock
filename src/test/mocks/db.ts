@@ -2,7 +2,9 @@
  * Database Mocks for Testing
  *
  * Provides mock implementations and test fixtures for Dexie tables.
- * Uses fake-indexeddb under the hood for realistic behavior.
+ * These are plain in-memory fixtures and fakes - they do not touch IndexedDB. For tests
+ * that need real database behaviour, use the `db` instance directly; `src/test/setup.ts`
+ * installs fake-indexeddb globally.
  */
 
 import { vi } from 'vitest';
