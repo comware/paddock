@@ -5,7 +5,7 @@
  */
 
 import type { GrowSite } from '@/lib/db';
-import { useWeather } from '../../hooks/useWeather';
+import { useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
 
 interface SiteCardProps {

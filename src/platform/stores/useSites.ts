@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowSite } from '@/lib/db';
+import { platformDb, type GrowSite } from '@/lib/db';
 
 const ACTIVE_SITE_KEY = 'paddock-active-site-id';
 
@@ -34,7 +34,7 @@ export const useSites = create<SitesState>((set, get) => ({
 
   loadSites: async () => {
     try {
-      const rawSites = await growDb.sites.toArray();
+      const rawSites = await platformDb.sites.toArray();
       // Normalize IDs to strings (Dexie auto-increment returns numbers)
       const sites = rawSites.map((s) => ({ ...s, id: String(s.id) }));
       const defaultSite = sites.find((s) => s.isDefault);
@@ -66,7 +66,7 @@ export const useSites = create<SitesState>((set, get) => ({
       if (isFirst || siteData.isDefault) {
         const currentDefault = get().sites.find((s) => s.isDefault);
         if (currentDefault?.id) {
-          await growDb.sites.update(currentDefault.id, { isDefault: false });
+          await platformDb.sites.update(currentDefault.id, { isDefault: false });
           set((state) => ({
             sites: state.sites.map((s) =>
               s.id === currentDefault.id ? { ...s, isDefault: false } : s
@@ -82,7 +82,7 @@ export const useSites = create<SitesState>((set, get) => ({
         updatedAt: now,
       };
 
-      const id = await growDb.sites.add(site as GrowSite);
+      const id = await platformDb.sites.add(site as GrowSite);
       const newSite = { ...site, id: String(id) } as GrowSite;
 
       set((state) => ({
@@ -108,7 +108,7 @@ export const useSites = create<SitesState>((set, get) => ({
       if (updates.isDefault) {
         const currentDefault = get().sites.find((s) => s.isDefault && s.id !== id);
         if (currentDefault?.id) {
-          await growDb.sites.update(currentDefault.id, { isDefault: false });
+          await platformDb.sites.update(currentDefault.id, { isDefault: false });
           set((state) => ({
             sites: state.sites.map((s) =>
               s.id === currentDefault.id ? { ...s, isDefault: false } : s
@@ -117,7 +117,7 @@ export const useSites = create<SitesState>((set, get) => ({
         }
       }
 
-      await growDb.sites.update(id, { ...updates, updatedAt: new Date() });
+      await platformDb.sites.update(id, { ...updates, updatedAt: new Date() });
       set((state) => ({
         sites: state.sites.map((s) => (s.id === id ? { ...s, ...updates, updatedAt: new Date() } : s)),
       }));
@@ -132,7 +132,7 @@ export const useSites = create<SitesState>((set, get) => ({
       const siteToDelete = get().sites.find((s) => s.id === id);
       const wasDefault = siteToDelete?.isDefault;
 
-      await growDb.sites.delete(id);
+      await platformDb.sites.delete(id);
 
       set((state) => {
         const remainingSites = state.sites.filter((s) => s.id !== id);
@@ -140,7 +140,7 @@ export const useSites = create<SitesState>((set, get) => ({
         // If we deleted the default, make first remaining site default
         if (wasDefault && remainingSites.length > 0) {
           const newDefault = remainingSites[0];
-          growDb.sites.update(newDefault.id!, { isDefault: true });
+          platformDb.sites.update(newDefault.id!, { isDefault: true });
           remainingSites[0] = { ...newDefault, isDefault: true };
         }
 

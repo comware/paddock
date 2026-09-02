@@ -23,7 +23,7 @@ import {
   usePlannedPlantings,
 } from '../../stores';
 import { deriveDaySummary, summariseActions } from '../../utils';
-import { useWeather } from '../../hooks/useWeather';
+import { useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
 import { useSiteContext } from '../Sites/SiteContext';
 

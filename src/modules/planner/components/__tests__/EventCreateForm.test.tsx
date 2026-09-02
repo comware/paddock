@@ -20,7 +20,7 @@ vi.mock('../../stores/usePlannerStore', () => ({
 
 // Mock useSites
 const mockLoadSites = vi.fn();
-vi.mock('@/modules/grow/stores/useSites', () => ({
+vi.mock('@/platform', () => ({
   useSites: () => ({
     sites: [
       { id: 'site-1', name: 'Main Garden' },

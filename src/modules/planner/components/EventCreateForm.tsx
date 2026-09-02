@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { usePlannerStore } from '../stores/usePlannerStore';
-import { useSites } from '@/modules/grow/stores/useSites';
+import { useSites } from '@/platform';
 import {
   ALL_EVENT_TYPES,
   EVENT_TYPE_METADATA,
