@@ -97,10 +97,10 @@ export function buildDemoWeather(
 
 /** Seed weather history. No-op unless the table is empty. */
 export async function seedDemoWeather(siteId: string, now = Date.now()): Promise<number> {
-  const existing = await db.growWeatherHistory.count();
+  const existing = await db.weatherHistory.count();
   if (existing > 0) return 0;
 
   const readings = buildDemoWeather(siteId, now);
-  await db.growWeatherHistory.bulkAdd(readings);
+  await db.weatherHistory.bulkAdd(readings);
   return readings.length;
 }

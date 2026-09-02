@@ -256,7 +256,7 @@ export async function seedDemoHistory(): Promise<number> {
   // A site to hang everything off. Sorted oldest-first so tray numbers read
   // chronologically, the way they would have accumulated in real use.
   let siteId: string;
-  const sites = await db.growSites.toArray();
+  const sites = await db.sites.toArray();
 
   if (sites.length > 0) {
     siteId = String((sites.find((s) => s.isDefault) ?? sites[0]).id);
@@ -275,7 +275,7 @@ export async function seedDemoHistory(): Promise<number> {
       createdAt: new Date(now - 200 * DAY),
       updatedAt: new Date(now - 200 * DAY),
     };
-    siteId = String(await db.growSites.add(site as GrowSite));
+    siteId = String(await db.sites.add(site as GrowSite));
   }
 
   const trays = buildDemoTrays(siteId, now);
