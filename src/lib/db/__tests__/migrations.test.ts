@@ -81,3 +81,80 @@ describe('copyTableRows', () => {
     await expect(copyTableRows(fakeTx, 'from', 'to')).rejects.toThrow(/copied 1 of 2/);
   });
 });
+
+describe('v10 to v11 upgrade', () => {
+  const NAME = 'upgrade-fixture';
+  afterEach(async () => { await Dexie.delete(NAME); });
+
+  it('carries sites across with their ids intact', async () => {
+    // Open at version 10 with the pre-extraction schema and seed it.
+    const old = new Dexie(NAME);
+    old.version(10).stores({
+      growSites: '++id, &name, isDefault',
+      growWeatherHistory: '++id, siteId, date, [siteId+date]',
+    });
+    await old.open();
+    await old.table('growSites').add({
+      id: 42, name: 'Home Greenhouse', latitude: -37.8, longitude: 144.9,
+      timezone: 'Australia/Melbourne', isDefault: true, isIndoor: true,
+      weatherEnabled: false, createdAt: new Date(0), updatedAt: new Date(0),
+    });
+    await old.table('growWeatherHistory').add({
+      id: 1, siteId: 42, date: new Date(0), temperature: 12, humidity: 70,
+      conditions: 'Clear', source: 'manual', fetchedAt: new Date(0), createdAt: new Date(0),
+    });
+    old.close();
+
+    // Reopen declaring version 11, which triggers the upgrade.
+    const next = new Dexie(NAME);
+    next.version(10).stores({
+      growSites: '++id, &name, isDefault',
+      growWeatherHistory: '++id, siteId, date, [siteId+date]',
+    });
+    next.version(11)
+      .stores({ sites: '++id, &name, isDefault', weatherHistory: '++id, siteId, date, [siteId+date]' })
+      .upgrade(async (tx) => {
+        await copyTableRows(tx, 'growSites', 'sites');
+        await copyTableRows(tx, 'growWeatherHistory', 'weatherHistory');
+      });
+    await next.open();
+
+    const sites = await next.table('sites').toArray();
+    expect(sites).toHaveLength(1);
+    // The id must survive: growTrays.siteId points at it.
+    expect(sites[0].id).toBe(42);
+    expect(sites[0].name).toBe('Home Greenhouse');
+
+    const weather = await next.table('weatherHistory').toArray();
+    expect(weather).toHaveLength(1);
+    expect(weather[0].siteId).toBe(42);
+
+    // Originals still present for the recovery window.
+    expect(await next.table('growSites').count()).toBe(1);
+    next.close();
+  });
+
+  it('is a no-op on a database already at version 11', async () => {
+    const build = () => {
+      const d = new Dexie(NAME);
+      d.version(10).stores({ growSites: '++id, &name, isDefault', growWeatherHistory: '++id, siteId, date, [siteId+date]' });
+      d.version(11)
+        .stores({ sites: '++id, &name, isDefault', weatherHistory: '++id, siteId, date, [siteId+date]' })
+        .upgrade(async (tx) => {
+          await copyTableRows(tx, 'growSites', 'sites');
+          await copyTableRows(tx, 'growWeatherHistory', 'weatherHistory');
+        });
+      return d;
+    };
+
+    const first = build();
+    await first.open();
+    await first.table('sites').add({ id: 1, name: 'Only', isDefault: true });
+    first.close();
+
+    const second = build();
+    await second.open();
+    expect(await second.table('sites').count()).toBe(1);
+    second.close();
+  });
+});

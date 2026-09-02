@@ -9,6 +9,8 @@
 
 import Dexie, { type Table } from 'dexie';
 
+import { copyTableRows } from './migrations';
+
 // Import propagation types
 import type {
   PropMotherPlant,
@@ -319,6 +321,8 @@ class PaddockDB extends Dexie {
 
   // Platform tables
   platformSettings!: Table<PlatformSetting>;
+  sites!: Table<GrowSite, string>;
+  weatherHistory!: Table<GrowWeatherHistory, string>;
 
   // Planner module tables
   plannerEvents!: Table<PlannerEvent>;
@@ -445,6 +449,22 @@ class PaddockDB extends Dexie {
       growPlannedPlantings:
         '++id, siteId, variety, plannedSowDate, status, proposalId, [siteId+plannedSowDate], [proposalId+status]',
     });
+
+    // Sites and weather belong to the platform, not to grow. Propagation and the planner
+    // already store `siteId` reaching through the grow prefix for them.
+    //
+    // Dexie has no in-place rename, so this creates the new tables and copies rows over.
+    // The originals are left in place and dropped in version 12, which keeps a release
+    // where both exist - a bad copy is then recoverable rather than terminal.
+    this.version(11)
+      .stores({
+        sites: '++id, &name, isDefault',
+        weatherHistory: '++id, siteId, date, [siteId+date]',
+      })
+      .upgrade(async (tx) => {
+        await copyTableRows(tx, 'growSites', 'sites');
+        await copyTableRows(tx, 'growWeatherHistory', 'weatherHistory');
+      });
   }
 }
 
