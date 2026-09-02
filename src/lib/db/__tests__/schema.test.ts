@@ -22,7 +22,7 @@ describe('PaddockDB Schema', () => {
     expect(db.verno).toBe(11);
   });
 
-  it('should have all 23 expected tables', () => {
+  it('should have all 27 expected tables', () => {
     const tableNames = db.tables.map((t) => t.name).sort();
     const expectedTables = [
       // Grow module (11 tables)
