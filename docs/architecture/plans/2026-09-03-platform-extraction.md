@@ -651,19 +651,21 @@ already editing those imports."
 Only start this once Task 5 is merged and the app has been run against real data at
 version 11. That release is the recovery window; dropping the originals closes it.
 
-- [ ] **Step 1: Update the remaining direct call sites first**
+- [ ] **Step 1: Confirm nothing outside the schema still names the old tables**
 
-These four files still name the old tables. Change `growSites` to `sites` and
-`growWeatherHistory` to `weatherHistory` in each:
+This step was mostly done during Task 4. Only the two demo-seed files reached past the
+`growDb` facade and named the tables directly, and leaving them until now would have meant
+seeded sites and weather written to tables nothing reads - so they were fixed then, in
+commit `19e09e6`. The other consumers listed in the original plan (`errorRecovery.ts`, the
+two `webmcp` files, `WeatherOutcome.tsx`) go through `growDb.sites`, which Task 4 already
+re-pointed, so they need no change at all.
 
-- `src/lib/db/seed-demo-weather.ts` (2 occurrences)
-- `src/lib/db/seed-demo-history.ts` (2 occurrences)
-- `src/lib/errorRecovery.ts` (1)
-- `src/lib/webmcp/context.ts` (1), `src/lib/webmcp/register.ts` (1)
-- `src/modules/grow/components/Analytics/WeatherOutcome.tsx` (1)
+Verify before proceeding:
 
 Run: `grep -rn "growSites\|growWeatherHistory" src --include=*.ts --include=*.tsx`
-Expected after the edits: matches only in `src/lib/db/schema.ts` and the test files.
+Expected: matches only in `src/lib/db/schema.ts` and test files. If anything else appears,
+fix it here before dropping the tables - a reference left behind becomes a runtime error
+the moment version 12 lands.
 
 - [ ] **Step 2: Write the failing test**
 
