@@ -303,8 +303,6 @@ export interface PlatformSetting {
 
 class PaddockDB extends Dexie {
   // Grow module tables
-  growSites!: Table<GrowSite>;
-  growWeatherHistory!: Table<GrowWeatherHistory>;
   growTrays!: Table<GrowTray>;
   growObservations!: Table<GrowObservation>;
   growTimeEntries!: Table<GrowTimeEntry>;
@@ -465,6 +463,15 @@ class PaddockDB extends Dexie {
         await copyTableRows(tx, 'growSites', 'sites');
         await copyTableRows(tx, 'growWeatherHistory', 'weatherHistory');
       });
+
+    // The copy has shipped and been exercised against real data. Drop the originals.
+    //
+    // A browser jumping straight from 10 to 12 runs both upgrades in order, so the copy
+    // still happens before this removes its source.
+    this.version(12).stores({
+      growSites: null,
+      growWeatherHistory: null,
+    });
   }
 }
 

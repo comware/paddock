@@ -157,4 +157,29 @@ describe('v10 to v11 upgrade', () => {
     expect(await second.table('sites').count()).toBe(1);
     second.close();
   });
+
+  it('carries data when a browser jumps from 10 straight to 12', async () => {
+    const NAME = 'jump-fixture';
+    const old = new Dexie(NAME);
+    old.version(10).stores({ growSites: '++id, &name, isDefault' });
+    await old.open();
+    await old.table('growSites').add({ id: 9, name: 'Jumped', isDefault: true });
+    old.close();
+
+    const next = new Dexie(NAME);
+    next.version(10).stores({ growSites: '++id, &name, isDefault' });
+    next.version(11)
+      .stores({ sites: '++id, &name, isDefault' })
+      .upgrade(async (tx) => { await copyTableRows(tx, 'growSites', 'sites'); });
+    next.version(12).stores({ growSites: null });
+    await next.open();
+
+    const sites = await next.table('sites').toArray();
+    expect(sites).toHaveLength(1);
+    expect(sites[0].id).toBe(9);
+    expect(next.tables.map((t) => t.name)).not.toContain('growSites');
+
+    next.close();
+    await Dexie.delete(NAME);
+  });
 });
