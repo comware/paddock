@@ -331,8 +331,8 @@ class PaddockDB extends Dexie {
 
   // Platform tables
   platformSettings!: Table<PlatformSetting>;
-  sites!: Table<GrowSite, string>;
-  weatherHistory!: Table<GrowWeatherHistory, string>;
+  sites!: Table<GrowSite>;
+  weatherHistory!: Table<GrowWeatherHistory>;
   growSites!: Table<GrowSite>;
   growWeatherHistory!: Table<GrowWeatherHistory>;
 
