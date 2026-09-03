@@ -183,3 +183,34 @@ describe('v10 to v11 upgrade', () => {
     await Dexie.delete(NAME);
   });
 });
+
+describe('v13 enterprise backfill', () => {
+  const NAME = 'enterprise-fixture';
+  afterEach(async () => { await Dexie.delete(NAME); });
+
+  it('marks existing time entries as microgreens', async () => {
+    const old = new Dexie(NAME);
+    old.version(12).stores({ growTimeEntries: '++id, date, week, siteId, [siteId+date]' });
+    await old.open();
+    await old.table('growTimeEntries').bulkAdd([
+      { id: 1, date: new Date(0), week: 1, sowing: 30, harvesting: 0, notes: '' },
+      { id: 2, date: new Date(0), week: 2, sowing: 0, harvesting: 45, notes: '' },
+    ]);
+    old.close();
+
+    const next = new Dexie(NAME);
+    next.version(12).stores({ growTimeEntries: '++id, date, week, siteId, [siteId+date]' });
+    next.version(13).upgrade(async (tx) => {
+      await tx.table('growTimeEntries').toCollection().modify((entry) => {
+        entry.enterprise = 'microgreens';
+      });
+    });
+    await next.open();
+
+    const entries = await next.table('growTimeEntries').orderBy('id').toArray();
+    expect(entries.map((e) => e.enterprise)).toEqual(['microgreens', 'microgreens']);
+    // The minutes must be untouched.
+    expect(entries[1].harvesting).toBe(45);
+    next.close();
+  });
+});

@@ -18,8 +18,8 @@ describe('PaddockDB Schema', () => {
     expect(db.name).toBe('Paddock');
   });
 
-  it('should be at schema version 12', () => {
-    expect(db.verno).toBe(12);
+  it('should be at schema version 13', () => {
+    expect(db.verno).toBe(13);
   });
 
   it('should have all 25 expected tables', () => {
@@ -170,8 +170,8 @@ describe('Convenience Exports', () => {
 });
 
 describe('version 11 platform extraction', () => {
-  it('is at schema version 12', () => {
-    expect(db.verno).toBe(12);
+  it('is at schema version 13', () => {
+    expect(db.verno).toBe(13);
   });
 
   it('exposes sites and weatherHistory as tables', () => {

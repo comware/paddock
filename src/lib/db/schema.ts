@@ -102,9 +102,21 @@ export interface GrowObservation {
   updatedAt: Date;
 }
 
+/**
+ * Which enterprise a record belongs to.
+ *
+ * Not a separate books-per-enterprise model - Paddock is one farm with one set of books.
+ * This exists on time entries alone, because hours are the one thing that cannot be
+ * reconstructed after the fact. Costs come off receipts and a tray's yield is on the
+ * tray, but "45 minutes harvesting on Tuesday" at a site running two enterprises is
+ * ambiguous forever if it was not captured at the time.
+ */
+export type EnterpriseId = 'microgreens' | 'vegetables' | 'propagation';
+
 export interface GrowTimeEntry {
   id?: string;
   siteId?: string;              // Foreign key to GrowSite (optional for migration)
+  enterprise?: EnterpriseId;    // Absent on rows predating vegetables; see version 13
   date: Date;
   week: number;
   wateringChecking: number;     // minutes
@@ -471,6 +483,19 @@ class PaddockDB extends Dexie {
     this.version(12).stores({
       growSites: null,
       growWeatherHistory: null,
+    });
+
+    // Backfill the enterprise tag while it can still be known.
+    //
+    // Every entry that exists at this point is microgreens time - it is the only
+    // enterprise there is. Doing this before vegetables ships means "absent" afterwards
+    // means "the grower did not say", rather than being indistinguishable from a
+    // pre-vegetables row. No stores() clause: the field is not indexed, so this is a data
+    // migration only.
+    this.version(13).upgrade(async (tx) => {
+      await tx.table('growTimeEntries').toCollection().modify((entry) => {
+        entry.enterprise = 'microgreens';
+      });
     });
   }
 }

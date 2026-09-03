@@ -12,6 +12,7 @@ export type {
   GrowTray,
   GrowObservation,
   GrowTimeEntry,
+  EnterpriseId,
   GrowVarietyConfig,
   GrowMediumConfig,
   GrowTrayComment,
