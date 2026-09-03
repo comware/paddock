@@ -9,8 +9,10 @@
  * test while silently destroying every user's sites on upgrade.
  *
  * This test seeds a real version-10 'Paddock' database (the pre-extraction shape), then
- * imports schema.ts fresh so that opening its `db` singleton runs the actual 11 -> 12 -> 13
- * upgrade chain against that data.
+ * imports schema.ts fresh so that opening its `db` singleton runs the actual 11 -> 12
+ * upgrade chain against that data. The drop of growSites/growWeatherHistory is a later
+ * release (see schema.ts), so this test asserts the originals SURVIVE - that is the
+ * recovery window the deferred drop exists to preserve.
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import Dexie from 'dexie';
@@ -91,7 +93,7 @@ describe('the real migration chain in schema.ts', () => {
     await Dexie.delete('Paddock');
   });
 
-  it('upgrades a version 10 database and carries its data through the real 11-12-13 chain', async () => {
+  it('upgrades a version 10 database and carries its data through the real 11-12 chain', async () => {
     // 1. Build a real v10 'Paddock' database with the pre-extraction tables and seed it.
     const seedDb = new Dexie('Paddock');
     declareV10Schema(seedDb);
@@ -151,8 +153,8 @@ describe('the real migration chain in schema.ts', () => {
     vi.resetModules();
     const { db } = await import('../schema');
 
-    // 4. Opening it runs schema.ts's OWN version(11) copy, version(12) drop, and
-    // version(13) backfill - the real upgrade bodies, not a reimplementation of them.
+    // 4. Opening it runs schema.ts's OWN version(11) copy and version(12) backfill -
+    // the real upgrade bodies, not a reimplementation of them.
     await db.open();
 
     // 5a. The site survived with its id intact.
@@ -174,12 +176,20 @@ describe('the real migration chain in schema.ts', () => {
     expect(weatherRows[0].siteId).toBe(42);
     expect(weatherRows[0].temperature).toBe(18.5);
 
-    // 5c. growSites and growWeatherHistory are gone.
+    // 5c. growSites and growWeatherHistory are still present - the drop is deferred to
+    // a later release, so this is the recovery window the deferral exists to preserve.
     const tableNames = db.tables.map((t) => t.name);
-    expect(tableNames).not.toContain('growSites');
-    expect(tableNames).not.toContain('growWeatherHistory');
+    expect(tableNames).toContain('growSites');
+    expect(tableNames).toContain('growWeatherHistory');
 
-    // 5d. The time entry is tagged microgreens by the version(13) backfill, with its
+    // 5c'. The original growSites row is still readable and still has id 42.
+    const rawGrowSites = db.table<GrowSite>('growSites');
+    const originalSite = await rawGrowSites.where('id').equals(42).first();
+    expect(originalSite).toBeDefined();
+    expect(originalSite?.id).toBe(42);
+    expect(originalSite?.name).toBe('Home Greenhouse');
+
+    // 5d. The time entry is tagged microgreens by the version(12) backfill, with its
     // minute values unchanged.
     const rawTimeEntries = db.table<GrowTimeEntry>('growTimeEntries');
     const timeEntry = await rawTimeEntries.where('id').equals(3).first();

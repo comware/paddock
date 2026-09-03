@@ -116,7 +116,7 @@ export type EnterpriseId = 'microgreens' | 'vegetables' | 'propagation';
 export interface GrowTimeEntry {
   id?: string;
   siteId?: string;              // Foreign key to GrowSite (optional for migration)
-  enterprise?: EnterpriseId;    // Absent on rows predating vegetables; see version 13
+  enterprise?: EnterpriseId;    // Absent on rows predating vegetables; see version 12
   date: Date;
   week: number;
   wateringChecking: number;     // minutes
@@ -333,6 +333,8 @@ class PaddockDB extends Dexie {
   platformSettings!: Table<PlatformSetting>;
   sites!: Table<GrowSite, string>;
   weatherHistory!: Table<GrowWeatherHistory, string>;
+  growSites!: Table<GrowSite>;
+  growWeatherHistory!: Table<GrowWeatherHistory>;
 
   // Planner module tables
   plannerEvents!: Table<PlannerEvent>;
@@ -476,14 +478,16 @@ class PaddockDB extends Dexie {
         await copyTableRows(tx, 'growWeatherHistory', 'weatherHistory');
       });
 
-    // The copy has shipped and been exercised against real data. Drop the originals.
+    // The drop of growSites and growWeatherHistory is deliberately NOT here.
     //
-    // A browser jumping straight from 10 to 12 runs both upgrades in order, so the copy
-    // still happens before this removes its source.
-    this.version(12).stores({
-      growSites: null,
-      growWeatherHistory: null,
-    });
+    // Version 11 copies rows into the platform tables and leaves the originals in place.
+    // Dropping them in the same release would mean every user goes 10 -> 12 in a single
+    // transaction, with the sources removed the moment their replacement is written - and
+    // IndexedDB has no downgrade path. Keeping both for one release means a copy that
+    // succeeded but is subtly wrong is still recoverable.
+    //
+    // The drop lands as version 13 in the release AFTER this one has run against real
+    // data. See docs/architecture/2026-09-03-enterprise-modules-design.md.
 
     // Backfill the enterprise tag while it can still be known.
     //
@@ -492,7 +496,7 @@ class PaddockDB extends Dexie {
     // means "the grower did not say", rather than being indistinguishable from a
     // pre-vegetables row. No stores() clause: the field is not indexed, so this is a data
     // migration only.
-    this.version(13).upgrade(async (tx) => {
+    this.version(12).upgrade(async (tx) => {
       await tx.table('growTimeEntries').toCollection().modify((entry) => {
         entry.enterprise = 'microgreens';
       });

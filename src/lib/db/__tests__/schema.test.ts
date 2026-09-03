@@ -18,14 +18,14 @@ describe('PaddockDB Schema', () => {
     expect(db.name).toBe('Paddock');
   });
 
-  it('should be at schema version 13', () => {
-    expect(db.verno).toBe(13);
+  it('should be at schema version 12', () => {
+    expect(db.verno).toBe(12);
   });
 
-  it('should have all 25 expected tables', () => {
+  it('should have all 27 expected tables', () => {
     const tableNames = db.tables.map((t) => t.name).sort();
     const expectedTables = [
-      // Grow module (9 tables)
+      // Grow module (11 tables)
       'growTrays',
       'growObservations',
       'growTimeEntries',
@@ -35,6 +35,8 @@ describe('PaddockDB Schema', () => {
       'growExperiments',
       'growDecisions',
       'growPlannedPlantings',
+      'growSites',
+      'growWeatherHistory',
       // AI module (2 tables)
       'aiConversations',
       'aiMessages',
@@ -58,7 +60,7 @@ describe('PaddockDB Schema', () => {
     ].sort();
 
     expect(tableNames).toEqual(expectedTables);
-    expect(tableNames).toHaveLength(25);
+    expect(tableNames).toHaveLength(27);
   });
 
   it('should have compound indexes on propBatches for common query patterns', () => {
@@ -170,8 +172,8 @@ describe('Convenience Exports', () => {
 });
 
 describe('version 11 platform extraction', () => {
-  it('is at schema version 13', () => {
-    expect(db.verno).toBe(13);
+  it('is at schema version 12', () => {
+    expect(db.verno).toBe(12);
   });
 
   it('exposes sites and weatherHistory as tables', () => {
@@ -180,10 +182,10 @@ describe('version 11 platform extraction', () => {
     expect(names).toContain('weatherHistory');
   });
 
-  it('has dropped the pre-extraction tables', () => {
+  it('keeps the originals so a bad copy stays recoverable', () => {
     const names = db.tables.map((t) => t.name);
-    expect(names).not.toContain('growSites');
-    expect(names).not.toContain('growWeatherHistory');
+    expect(names).toContain('growSites');
+    expect(names).toContain('growWeatherHistory');
   });
 });
 
