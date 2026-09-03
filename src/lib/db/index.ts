@@ -26,4 +26,4 @@ export type {
 } from './schema';
 
 export { seedDatabase, resetSeedData } from './seed';
-export { toKey, toId } from './keys';
+export { toKey, toId, withId } from './keys';

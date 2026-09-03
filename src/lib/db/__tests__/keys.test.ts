@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toKey, toId } from '../keys';
+import { toKey, toId, withId } from '../keys';
 
 describe('toKey', () => {
   it('converts a string id to a numeric key', () => {
@@ -31,5 +31,27 @@ describe('toId', () => {
 
   it('is idempotent on a string', () => {
     expect(toId('42')).toBe('42');
+  });
+});
+
+describe('withId', () => {
+  it('stringifies a numeric id', () => {
+    expect(withId({ id: 42, name: 'Bed 3' })).toEqual({ id: '42', name: 'Bed 3' });
+  });
+
+  it('leaves a string id alone', () => {
+    expect(withId({ id: '42', name: 'Bed 3' })).toEqual({ id: '42', name: 'Bed 3' });
+  });
+
+  it('does not mutate the row it was given', () => {
+    const row = { id: 42, name: 'Bed 3' };
+    withId(row);
+    expect(row.id).toBe(42);
+  });
+
+  it('throws on a row with no id rather than producing "undefined"', () => {
+    // A row without an id has not come from Dexie. Silently making it the string
+    // "undefined" would give it an id that matches nothing - the same silence again.
+    expect(() => withId({ name: 'Bed 3' } as { id?: number; name: string })).toThrow(/no id/);
   });
 });

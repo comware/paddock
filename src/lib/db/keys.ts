@@ -29,3 +29,18 @@ export function toKey(id: string | number | undefined | null): number {
 export function toId(key: number | string): string {
   return String(key);
 }
+
+/**
+ * Normalise a row's id to a string, for rows coming out of Dexie.
+ *
+ * Stores keep both a raw array and an enriched view. Loading fills the raw array with
+ * numeric ids while adding pushes a string one, so the array holds a mix and an id taken
+ * from it works or fails depending on where the row came from. Mapping every loaded row
+ * through this makes state uniformly string, which is what the interfaces already declare.
+ */
+export function withId<T extends { id?: unknown }>(row: T): T & { id: string } {
+  if (row.id === undefined || row.id === null) {
+    throw new Error('Row has no id; it did not come from the database');
+  }
+  return { ...row, id: toId(row.id as number | string) };
+}
