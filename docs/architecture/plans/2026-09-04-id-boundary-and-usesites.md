@@ -79,13 +79,14 @@ describe('toKey', () => {
   // Each of these would otherwise reach Dexie and match nothing, silently.
   it.each([
     ['undefined', undefined],
+    ['null', null],
     ['empty string', ''],
     ['non-numeric', 'abc'],
     ['a uuid', 'a3f9c1e2'],
     ['a float', 1.5],
     ['NaN', NaN],
   ])('throws on %s rather than passing a bad key down', (_label, input) => {
-    expect(() => toKey(input as string | number | undefined)).toThrow(/Not a database key/);
+    expect(() => toKey(input as string | number | undefined | null)).toThrow(/Not a database key/);
   });
 });
 
@@ -149,7 +150,7 @@ Note the explicit `id === null || id === ''` guard: `Number(null)` and `Number('
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `npx vitest run src/lib/db/__tests__/keys.test.ts`
-Expected: PASS, 9 tests.
+Expected: PASS, 11 tests (2 + 7 for `toKey`, 2 for `toId`).
 
 - [ ] **Step 5: Export from the db barrel**
 
@@ -341,7 +342,7 @@ Expected: PASS, 3 tests — the same three that failed in Task 2.
 - [ ] **Step 5: Run everything**
 
 Run: `npm test`
-Expected: PASS. Baseline is 1433; you added 9 in Task 1 and 3 in Task 2, so expect 1445.
+Expected: PASS. Baseline is 1433; you added 11 in Task 1 and 3 in Task 2, so expect 1447.
 Report the actual count and flag any test that changed status — particularly the existing
 `useSites.test.ts`, which should be unaffected because it never calls the real store.
 
