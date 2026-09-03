@@ -16,6 +16,10 @@ import type { Transaction } from 'dexie';
  * Throws if the destination did not receive every row, which aborts the surrounding
  * version transaction. An upgrade that refuses to finish is recoverable; one that half
  * succeeds and drops the source later is not.
+ *
+ * Measures rows ADDED (the count delta across the bulkAdd), not the destination's total
+ * row count - so this guard is correct even when pointed at a destination that already
+ * holds unrelated rows.
  */
 export async function copyTableRows(
   tx: Transaction,
@@ -25,9 +29,10 @@ export async function copyTableRows(
   const rows = await tx.table(from).toArray();
   if (rows.length === 0) return 0;
 
+  const before = await tx.table(to).count();
   await tx.table(to).bulkAdd(rows);
+  const copied = (await tx.table(to).count()) - before;
 
-  const copied = await tx.table(to).count();
   if (copied !== rows.length) {
     throw new Error(
       `Migration aborted: copied ${copied} of ${rows.length} rows from ${from} to ${to}`

@@ -69,16 +69,41 @@ describe('copyTableRows', () => {
     // bulkAdd cannot be made to silently drop a row under real IndexedDB semantics (a
     // collision throws immediately, per the test above), so this exercises the count-check
     // guard directly against a minimal fake Transaction rather than a real Dexie one.
+    // count() is called twice - once before bulkAdd, once after - so the delta is 1.
     const rows = [{ id: 1 }, { id: 2 }];
+    let callCount = 0;
+    const counts = [0, 1];
     const fakeTx = {
       table: (name: string) => {
         if (name === 'from') return { toArray: async () => rows };
-        if (name === 'to') return { bulkAdd: async () => undefined, count: async () => 1 };
+        if (name === 'to') {
+          return {
+            bulkAdd: async () => undefined,
+            count: async () => counts[callCount++],
+          };
+        }
         throw new Error(`unexpected table: ${name}`);
       },
     } as unknown as Transaction;
 
     await expect(copyTableRows(fakeTx, 'from', 'to')).rejects.toThrow(/copied 1 of 2/);
+  });
+
+  it('succeeds copying 2 rows into a destination that already holds 1 unrelated row', async () => {
+    const db = await makeDb('copy-nonempty-dest');
+    await db.table('from').bulkAdd([
+      { id: 1, name: 'alpha' },
+      { id: 2, name: 'beta' },
+    ]);
+    await db.table('to').add({ id: 99, name: 'preexisting' });
+
+    await expect(
+      db.transaction('rw', db.table('from'), db.table('to'), async (tx) => {
+        await copyTableRows(tx, 'from', 'to');
+      })
+    ).resolves.not.toThrow();
+
+    expect(await db.table('to').count()).toBe(3);
   });
 });
 
@@ -158,7 +183,11 @@ describe('v10 to v11 upgrade', () => {
     second.close();
   });
 
-  it('carries data when a browser jumps from 10 straight to 12', async () => {
+  it('carries data when a browser jumps from 10 straight past the future drop', async () => {
+    // The drop of growSites is NOT yet in schema.ts (see FIX 1 - it is deferred to the
+    // release AFTER this one). This test pins the intended behaviour for when it lands:
+    // a browser jumping straight from 10 to the drop version should still end up with
+    // the row safely copied into `sites`, with `growSites` gone.
     const NAME = 'jump-fixture';
     const old = new Dexie(NAME);
     old.version(10).stores({ growSites: '++id, &name, isDefault' });
@@ -184,13 +213,13 @@ describe('v10 to v11 upgrade', () => {
   });
 });
 
-describe('v13 enterprise backfill', () => {
+describe('v12 enterprise backfill', () => {
   const NAME = 'enterprise-fixture';
   afterEach(async () => { await Dexie.delete(NAME); });
 
   it('marks existing time entries as microgreens', async () => {
     const old = new Dexie(NAME);
-    old.version(12).stores({ growTimeEntries: '++id, date, week, siteId, [siteId+date]' });
+    old.version(11).stores({ growTimeEntries: '++id, date, week, siteId, [siteId+date]' });
     await old.open();
     await old.table('growTimeEntries').bulkAdd([
       { id: 1, date: new Date(0), week: 1, sowing: 30, harvesting: 0, notes: '' },
@@ -199,8 +228,8 @@ describe('v13 enterprise backfill', () => {
     old.close();
 
     const next = new Dexie(NAME);
-    next.version(12).stores({ growTimeEntries: '++id, date, week, siteId, [siteId+date]' });
-    next.version(13).upgrade(async (tx) => {
+    next.version(11).stores({ growTimeEntries: '++id, date, week, siteId, [siteId+date]' });
+    next.version(12).upgrade(async (tx) => {
       await tx.table('growTimeEntries').toCollection().modify((entry) => {
         entry.enterprise = 'microgreens';
       });
