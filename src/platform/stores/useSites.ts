@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { platformDb, type GrowSite } from '@/lib/db';
+import { platformDb, toKey, toId, type GrowSite } from '@/lib/db';
 
 const ACTIVE_SITE_KEY = 'paddock-active-site-id';
 
@@ -35,8 +35,8 @@ export const useSites = create<SitesState>((set, get) => ({
   loadSites: async () => {
     try {
       const rawSites = await platformDb.sites.toArray();
-      // Normalize IDs to strings (Dexie auto-increment returns numbers)
-      const sites = rawSites.map((s) => ({ ...s, id: String(s.id) }));
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const sites = rawSites.map((s) => ({ ...s, id: toId(s.id!) }));
       const defaultSite = sites.find((s) => s.isDefault);
       const storedActiveSiteId = localStorage.getItem(ACTIVE_SITE_KEY);
 
@@ -66,7 +66,7 @@ export const useSites = create<SitesState>((set, get) => ({
       if (isFirst || siteData.isDefault) {
         const currentDefault = get().sites.find((s) => s.isDefault);
         if (currentDefault?.id) {
-          await platformDb.sites.update(currentDefault.id, { isDefault: false });
+          await platformDb.sites.update(toKey(currentDefault.id), { isDefault: false });
           set((state) => ({
             sites: state.sites.map((s) =>
               s.id === currentDefault.id ? { ...s, isDefault: false } : s
@@ -108,7 +108,7 @@ export const useSites = create<SitesState>((set, get) => ({
       if (updates.isDefault) {
         const currentDefault = get().sites.find((s) => s.isDefault && s.id !== id);
         if (currentDefault?.id) {
-          await platformDb.sites.update(currentDefault.id, { isDefault: false });
+          await platformDb.sites.update(toKey(currentDefault.id), { isDefault: false });
           set((state) => ({
             sites: state.sites.map((s) =>
               s.id === currentDefault.id ? { ...s, isDefault: false } : s
@@ -117,7 +117,7 @@ export const useSites = create<SitesState>((set, get) => ({
         }
       }
 
-      await platformDb.sites.update(id, { ...updates, updatedAt: new Date() });
+      await platformDb.sites.update(toKey(id), { ...updates, updatedAt: new Date() });
       set((state) => ({
         sites: state.sites.map((s) => (s.id === id ? { ...s, ...updates, updatedAt: new Date() } : s)),
       }));
@@ -132,7 +132,7 @@ export const useSites = create<SitesState>((set, get) => ({
       const siteToDelete = get().sites.find((s) => s.id === id);
       const wasDefault = siteToDelete?.isDefault;
 
-      await platformDb.sites.delete(id);
+      await platformDb.sites.delete(toKey(id));
 
       set((state) => {
         const remainingSites = state.sites.filter((s) => s.id !== id);
@@ -140,7 +140,7 @@ export const useSites = create<SitesState>((set, get) => ({
         // If we deleted the default, make first remaining site default
         if (wasDefault && remainingSites.length > 0) {
           const newDefault = remainingSites[0];
-          platformDb.sites.update(newDefault.id!, { isDefault: true });
+          platformDb.sites.update(toKey(newDefault.id!), { isDefault: true });
           remainingSites[0] = { ...newDefault, isDefault: true };
         }
 
