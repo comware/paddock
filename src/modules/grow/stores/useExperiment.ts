@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowExperiment, type GrowDecision } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowExperiment, type GrowDecision } from '@/lib/db';
 import { differenceInDays } from 'date-fns';
 
 // ============================================
@@ -85,12 +85,13 @@ export const useExperiment = create<ExperimentState>((set, get) => ({
   // Load experiment config (create default if none exists)
   loadExperiment: async () => {
     try {
-      let experiments = await growDb.experiments.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      let experiments = (await growDb.experiments.toArray()).map(withId);
 
       if (experiments.length === 0) {
         // Create default experiment
         const id = await growDb.experiments.add(DEFAULT_EXPERIMENT as GrowExperiment);
-        experiments = [{ ...DEFAULT_EXPERIMENT, id: String(id) } as GrowExperiment];
+        experiments = [{ ...DEFAULT_EXPERIMENT, id: toId(id) } as GrowExperiment & { id: string }];
       }
 
       set({ experiment: experiments[0], isLoading: false, error: null });
@@ -105,11 +106,11 @@ export const useExperiment = create<ExperimentState>((set, get) => ({
 
     try {
       if (experiment?.id) {
-        await growDb.experiments.update(experiment.id, data);
+        await growDb.experiments.update(toKey(experiment.id), data);
         set({ experiment: { ...experiment, ...data } });
       } else {
         const id = await growDb.experiments.add({ ...DEFAULT_EXPERIMENT, ...data } as GrowExperiment);
-        set({ experiment: { ...DEFAULT_EXPERIMENT, ...data, id: String(id) } as GrowExperiment });
+        set({ experiment: { ...DEFAULT_EXPERIMENT, ...data, id: toId(id) } as GrowExperiment });
       }
     } catch (error) {
       set({ error: (error as Error).message });
@@ -120,7 +121,8 @@ export const useExperiment = create<ExperimentState>((set, get) => ({
   // Load decision data
   loadDecision: async () => {
     try {
-      const decisions = await growDb.decisions.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const decisions = (await growDb.decisions.toArray()).map(withId);
       set({ decision: decisions[0] || null });
     } catch (error) {
       set({ error: (error as Error).message });
@@ -135,7 +137,7 @@ export const useExperiment = create<ExperimentState>((set, get) => ({
     try {
       if (decision?.id) {
         const updated = { ...data, updatedAt: now };
-        await growDb.decisions.update(decision.id, updated);
+        await growDb.decisions.update(toKey(decision.id), updated);
         set({ decision: { ...decision, ...updated } });
       } else {
         const newDecision: Omit<GrowDecision, 'id'> = {
@@ -156,7 +158,7 @@ export const useExperiment = create<ExperimentState>((set, get) => ({
           updatedAt: now,
         };
         const id = await growDb.decisions.add(newDecision as GrowDecision);
-        set({ decision: { ...newDecision, id: String(id) } as GrowDecision });
+        set({ decision: { ...newDecision, id: toId(id) } as GrowDecision });
       }
     } catch (error) {
       set({ error: (error as Error).message });

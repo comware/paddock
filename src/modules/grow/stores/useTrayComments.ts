@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowTrayComment } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowTrayComment } from '@/lib/db';
 
 // ============================================
 // TYPES
@@ -42,10 +42,13 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
     set({ isLoading: true, currentTrayId: trayId });
 
     try {
-      const comments = await growDb.trayComments
-        .where('trayId')
-        .equals(trayId)
-        .sortBy('createdAt');
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const comments = (
+        await growDb.trayComments
+          .where('trayId')
+          .equals(trayId)
+          .sortBy('createdAt')
+      ).map(withId);
 
       set({ comments, isLoading: false, error: null });
     } catch (error) {
@@ -65,7 +68,7 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
 
     try {
       const id = await growDb.trayComments.add(comment as GrowTrayComment);
-      const newComment = { ...comment, id: String(id) } as GrowTrayComment;
+      const newComment = { ...comment, id: toId(id) } as GrowTrayComment;
 
       // Only update state if we're still viewing the same tray
       if (get().currentTrayId === trayId) {
@@ -86,7 +89,7 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
     const updatedData = { content, updatedAt: new Date() };
 
     try {
-      await growDb.trayComments.update(id, updatedData);
+      await growDb.trayComments.update(toKey(id), updatedData);
 
       set((state) => ({
         comments: state.comments.map((c) =>
@@ -102,7 +105,7 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
   // Delete a comment
   deleteComment: async (id: string) => {
     try {
-      await growDb.trayComments.delete(id);
+      await growDb.trayComments.delete(toKey(id));
 
       set((state) => ({
         comments: state.comments.filter((c) => c.id !== id),

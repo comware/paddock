@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowObservation } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowObservation } from '@/lib/db';
 import { startOfDay, format, isSameDay, getISOWeek, getDay } from 'date-fns';
 
 // ============================================
@@ -50,7 +50,8 @@ export const useObservations = create<ObservationsState>((set, get) => ({
   // Load observations from database
   loadObservations: async () => {
     try {
-      const observations = await growDb.observations.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const observations = (await growDb.observations.toArray()).map(withId);
       // Sort by date descending
       observations.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       set({ observations, isLoading: false, error: null });
@@ -110,7 +111,7 @@ export const useObservations = create<ObservationsState>((set, get) => ({
 
       try {
         const id = await growDb.observations.add(observation as GrowObservation);
-        const newObservation = { ...observation, id: String(id) } as GrowObservation;
+        const newObservation = { ...observation, id: toId(id) } as GrowObservation;
         set((state) => ({
           observations: [newObservation, ...state.observations],
         }));
@@ -127,7 +128,7 @@ export const useObservations = create<ObservationsState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await growDb.observations.update(id, updatedData);
+      await growDb.observations.update(toKey(id), updatedData);
       set((state) => ({
         observations: state.observations.map((o) =>
           o.id === id ? { ...o, ...updatedData } : o
@@ -142,7 +143,7 @@ export const useObservations = create<ObservationsState>((set, get) => ({
   // Delete observation
   deleteObservation: async (id) => {
     try {
-      await growDb.observations.delete(id);
+      await growDb.observations.delete(toKey(id));
       set((state) => ({
         observations: state.observations.filter((o) => o.id !== id),
       }));
@@ -163,7 +164,7 @@ export const useObservations = create<ObservationsState>((set, get) => ({
       // Update each orphan observation with the default site
       await Promise.all(
         orphans.map((obs) =>
-          growDb.observations.update(obs.id!, { siteId: defaultSiteId })
+          growDb.observations.update(toKey(obs.id!), { siteId: defaultSiteId })
         )
       );
 

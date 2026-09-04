@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowTray } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowTray } from '@/lib/db';
 
 // ============================================
 // TYPES
@@ -144,7 +144,8 @@ export const useTrays = create<TraysState>((set, get) => ({
   // Load trays from database
   loadTrays: async () => {
     try {
-      const rawTrays = await growDb.trays.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawTrays = (await growDb.trays.toArray()).map(withId);
       const trays = rawTrays.map(enrichTray);
       set({ rawTrays, trays, isLoading: false, error: null });
     } catch (error) {
@@ -163,7 +164,7 @@ export const useTrays = create<TraysState>((set, get) => ({
 
     try {
       const id = await growDb.trays.add(tray as GrowTray);
-      const newTray = { ...tray, id: String(id) } as GrowTray;
+      const newTray = { ...tray, id: toId(id) } as GrowTray;
       set((state) => ({
         rawTrays: [...state.rawTrays, newTray],
         trays: [...state.rawTrays, newTray].map(enrichTray),
@@ -180,7 +181,7 @@ export const useTrays = create<TraysState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await growDb.trays.update(id, updatedData);
+      await growDb.trays.update(toKey(id), updatedData);
       set((state) => {
         const newRawTrays = state.rawTrays.map((t) =>
           t.id === id ? { ...t, ...updatedData } : t
@@ -199,7 +200,7 @@ export const useTrays = create<TraysState>((set, get) => ({
   // Delete tray
   deleteTray: async (id) => {
     try {
-      await growDb.trays.delete(id);
+      await growDb.trays.delete(toKey(id));
       set((state) => {
         const newRawTrays = state.rawTrays.filter((t) => t.id !== id);
         return {
@@ -314,7 +315,7 @@ export const useTrays = create<TraysState>((set, get) => ({
 
     // Batch update all orphan trays
     const updates = orphanTrays.map((t) =>
-      growDb.trays.update(t.id!, { siteId: defaultSiteId, updatedAt: new Date() })
+      growDb.trays.update(toKey(t.id!), { siteId: defaultSiteId, updatedAt: new Date() })
     );
 
     await Promise.all(updates);

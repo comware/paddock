@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowPlannedPlanting } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowPlannedPlanting } from '@/lib/db';
 import { approveProposalOption, rejectProposal, reopenProposal } from '@/lib/webmcp';
 import {
   startOfDay,
@@ -108,7 +108,8 @@ export const usePlannedPlantings = create<PlannedPlantingsState>((set, get) => (
   // Load plantings from database
   loadPlantings: async () => {
     try {
-      const rawPlantings = await growDb.plannedPlantings.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawPlantings = (await growDb.plannedPlantings.toArray()).map(withId);
       const plantings = rawPlantings.map((p) => enrichPlanting(p));
       set({ rawPlantings, plantings, isLoading: false, error: null });
     } catch (error) {
@@ -127,7 +128,7 @@ export const usePlannedPlantings = create<PlannedPlantingsState>((set, get) => (
 
     try {
       const id = await growDb.plannedPlantings.add(planting as GrowPlannedPlanting);
-      const newPlanting = { ...planting, id: String(id) } as GrowPlannedPlanting;
+      const newPlanting = { ...planting, id: toId(id) } as GrowPlannedPlanting;
       set((state) => ({
         rawPlantings: [...state.rawPlantings, newPlanting],
         plantings: [...state.rawPlantings, newPlanting].map((p) => enrichPlanting(p)),
@@ -144,7 +145,7 @@ export const usePlannedPlantings = create<PlannedPlantingsState>((set, get) => (
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await growDb.plannedPlantings.update(id, updatedData);
+      await growDb.plannedPlantings.update(toKey(id), updatedData);
       set((state) => {
         const newRawPlantings = state.rawPlantings.map((p) =>
           p.id === id ? { ...p, ...updatedData } : p
@@ -163,7 +164,7 @@ export const usePlannedPlantings = create<PlannedPlantingsState>((set, get) => (
   // Delete planned planting
   deletePlanting: async (id) => {
     try {
-      await growDb.plannedPlantings.delete(id);
+      await growDb.plannedPlantings.delete(toKey(id));
       set((state) => {
         const newRawPlantings = state.rawPlantings.filter((p) => p.id !== id);
         return {

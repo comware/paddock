@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowTimeEntry } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowTimeEntry } from '@/lib/db';
 import { startOfDay, startOfWeek, endOfWeek, isWithinInterval, format, getISOWeek, isSameDay } from 'date-fns';
 
 // ============================================
@@ -98,7 +98,8 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
   // Load entries from database
   loadEntries: async () => {
     try {
-      const entries = await growDb.timeEntries.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const entries = (await growDb.timeEntries.toArray()).map(withId);
       // Sort by date descending
       entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       set({ entries, isLoading: false, error: null });
@@ -153,7 +154,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
 
       try {
         const id = await growDb.timeEntries.add(entry as GrowTimeEntry);
-        const newEntry = { ...entry, id: String(id) } as GrowTimeEntry;
+        const newEntry = { ...entry, id: toId(id) } as GrowTimeEntry;
         set((state) => ({
           entries: [newEntry, ...state.entries],
         }));
@@ -187,7 +188,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await growDb.timeEntries.update(id, updatedData);
+      await growDb.timeEntries.update(toKey(id), updatedData);
       set((state) => ({
         entries: state.entries.map((e) =>
           e.id === id ? { ...e, ...updatedData } : e
@@ -202,7 +203,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
   // Delete entry
   deleteEntry: async (id) => {
     try {
-      await growDb.timeEntries.delete(id);
+      await growDb.timeEntries.delete(toKey(id));
       set((state) => ({
         entries: state.entries.filter((e) => e.id !== id),
       }));
@@ -223,7 +224,7 @@ export const useTimeEntries = create<TimeEntriesState>((set, get) => ({
       // Update each orphan entry with the default site
       await Promise.all(
         orphans.map((entry) =>
-          growDb.timeEntries.update(entry.id!, { siteId: defaultSiteId })
+          growDb.timeEntries.update(toKey(entry.id!), { siteId: defaultSiteId })
         )
       );
 
