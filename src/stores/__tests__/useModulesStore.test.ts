@@ -37,16 +37,16 @@ const store = () => useModulesStore.getState();
 beforeEach(() => {
   settings = [];
   nextId = 1;
-  useModulesStore.setState({ enabled: ['grow'], isLoaded: false });
+  useModulesStore.setState({ enabled: ['microgreens'], isLoaded: false });
 });
 
 describe('module enablement', () => {
-  it('starts with Grow alone', async () => {
+  it('starts with Microgreens alone', async () => {
     await store().load();
 
     // A first-time grower is tracking trays. Everything else is something they may grow
     // into, and can switch on when they do.
-    expect(store().enabled).toEqual(['grow']);
+    expect(store().enabled).toEqual(['microgreens']);
   });
 
   it('turns a module on and persists it', async () => {
@@ -66,32 +66,25 @@ describe('module enablement', () => {
     expect(settings[0].value).not.toContain('propagation');
   });
 
-  it('refuses to turn off a required module', async () => {
+  it('lets microgreens be turned off, now that nothing is required', async () => {
     await store().load();
-    await store().setEnabled('grow', false);
+    await store().setEnabled('microgreens', false);
 
-    // Disabling every module would empty the navigation, including the route back to
-    // the settings screen that could undo it.
-    expect(store().isEnabled('grow')).toBe(true);
+    // Grow used to be required because every other module fed it. Vegetables is coming
+    // as a sibling rather than a dependent, so nothing is required any more.
+    expect(store().isEnabled('microgreens')).toBe(false);
   });
 
   it('restores a saved selection', async () => {
-    settings = [{ id: '1', key: 'enabled_modules', value: ['grow', 'finance'] }];
+    settings = [{ id: '1', key: 'enabled_modules', value: ['microgreens', 'finance'] }];
     await store().load();
 
-    expect(store().enabled).toEqual(expect.arrayContaining(['grow', 'finance']));
+    expect(store().enabled).toEqual(expect.arrayContaining(['microgreens', 'finance']));
     expect(store().isEnabled('propagation')).toBe(false);
   });
 
-  it('always includes required modules, even if storage omits them', async () => {
-    settings = [{ id: '1', key: 'enabled_modules', value: ['finance'] }];
-    await store().load();
-
-    expect(store().isEnabled('grow')).toBe(true);
-  });
-
   it('ignores unknown module ids in storage', async () => {
-    settings = [{ id: '1', key: 'enabled_modules', value: ['grow', 'nonsense'] }];
+    settings = [{ id: '1', key: 'enabled_modules', value: ['microgreens', 'nonsense'] }];
     await store().load();
 
     expect(store().enabled).not.toContain('nonsense');
@@ -101,7 +94,7 @@ describe('module enablement', () => {
     settings = [{ id: '1', key: 'enabled_modules', value: 'not an array' }];
     await store().load();
 
-    expect(store().isEnabled('grow')).toBe(true);
+    expect(store().isEnabled('microgreens')).toBe(true);
     expect(store().enabled.length).toBeGreaterThan(0);
   });
 
@@ -119,5 +112,43 @@ describe('module enablement', () => {
       expect(module.Icon).toBeTruthy();
       expect(module.description).toBeTruthy();
     }
+  });
+});
+
+describe('renaming grow to microgreens', () => {
+  it('carries an existing install forward', async () => {
+    // What every install created before the rename has stored.
+    settings = [{ id: '1', key: 'enabled_modules', value: ['grow', 'propagation'] } as PlatformSetting];
+
+    await store().load();
+
+    expect(store().enabled).toContain('microgreens');
+    expect(store().enabled).toContain('propagation');
+    expect(store().enabled).not.toContain('grow');
+  });
+
+  it('never leaves a user with an empty navigation', async () => {
+    // The failure this migration prevents: 'grow' no longer matches a module id, gets
+    // filtered out, and with `required` gone nothing puts it back.
+    settings = [{ id: '1', key: 'enabled_modules', value: ['grow'] } as PlatformSetting];
+
+    await store().load();
+
+    expect(store().enabled.length).toBeGreaterThan(0);
+  });
+
+  it('persists the migrated value, so it converts only once', async () => {
+    settings = [{ id: '1', key: 'enabled_modules', value: ['grow'] } as PlatformSetting];
+
+    await store().load();
+
+    expect(settings[0].value).toContain('microgreens');
+    expect(settings[0].value).not.toContain('grow');
+  });
+
+  it('lets microgreens be turned off, unlike grow', () => {
+    const microgreens = MODULE_DEFINITIONS.find((m) => m.id === 'microgreens');
+    expect(microgreens).toBeDefined();
+    expect(microgreens?.required).toBeUndefined();
   });
 });

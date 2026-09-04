@@ -8,8 +8,9 @@
  * Which modules are on is a per-install preference, stored alongside the rest of the
  * grower's data in IndexedDB.
  *
- * Grow cannot be turned off. Every other module either feeds it or reports on it, and an
- * install with nothing enabled has no way back to this screen.
+ * Nothing is required. Grow (microgreens) and the coming vegetables module are siblings,
+ * not a dependency chain - so there is no single module every other module feeds, and no
+ * reason to lock one on.
  */
 
 import { create } from 'zustand';
@@ -26,7 +27,7 @@ import {
 import { platformDb } from '@/lib/db';
 
 export type ModuleId =
-  | 'grow'
+  | 'microgreens'
   | 'propagation'
   | 'sales'
   | 'markets'
@@ -46,12 +47,11 @@ export interface ModuleDefinition {
 
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
-    id: 'grow',
-    name: 'Grow',
-    path: '/grow',
+    id: 'microgreens',
+    name: 'Microgreens',
+    path: '/microgreens',
     Icon: Sprout,
     description: 'Trays, sowing calendar, daily logs, and harvest records',
-    required: true,
   },
   {
     id: 'propagation',
@@ -100,14 +100,23 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
 const STORAGE_KEY = 'enabled_modules';
 
 /**
- * A fresh install starts with Grow alone. Someone running Paddock for the first time is
- * tracking trays; propagation, sales and the rest are things they may grow into. Starting
+ * A fresh install starts with Microgreens alone. Someone running Paddock for the first time
+ * is tracking trays; propagation, sales and the rest are things they may grow into. Starting
  * narrow and letting them switch modules on beats presenting seven sections and leaving
  * them to work out which two matter.
  */
-const DEFAULT_ENABLED: ModuleId[] = ['grow'];
+const DEFAULT_ENABLED: ModuleId[] = ['microgreens'];
 
 const REQUIRED: ModuleId[] = MODULE_DEFINITIONS.filter((m) => m.required).map((m) => m.id);
+
+/**
+ * Module ids that have been renamed, and what they became.
+ *
+ * The stored list is filtered against MODULE_DEFINITIONS, so an id that no longer exists is
+ * silently dropped - and with nothing required any more, nothing puts it back. A grower who
+ * had only this module would load into an empty navigation.
+ */
+const RENAMED: Record<string, ModuleId> = { grow: 'microgreens' };
 
 interface ModulesState {
   enabled: ModuleId[];
@@ -126,9 +135,13 @@ export const useModulesStore = create<ModulesState>((set, get) => ({
       const setting = await platformDb.settings.where('key').equals(STORAGE_KEY).first();
       const stored = setting?.value;
 
+      const migrated = Array.isArray(stored)
+        ? stored.map((id) => RENAMED[id as string] ?? id)
+        : stored;
+
       // Tolerate anything unexpected in storage rather than rendering an empty nav.
-      const enabled = Array.isArray(stored)
-        ? (stored.filter((id) =>
+      const enabled = Array.isArray(migrated)
+        ? (migrated.filter((id) =>
             MODULE_DEFINITIONS.some((m) => m.id === id),
           ) as ModuleId[])
         : DEFAULT_ENABLED;
@@ -137,6 +150,11 @@ export const useModulesStore = create<ModulesState>((set, get) => ({
         enabled: [...new Set([...REQUIRED, ...enabled])],
         isLoaded: true,
       });
+
+      // Persist the migration once, so future loads see the renamed id directly.
+      if (Array.isArray(stored) && setting?.id && stored.some((id) => id in RENAMED)) {
+        await platformDb.settings.update(setting.id, { value: migrated });
+      }
     } catch {
       set({ enabled: DEFAULT_ENABLED, isLoaded: true });
     }
