@@ -9,7 +9,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb, fkMatch, toKey } from '@/lib/db';
+import { propDb, fkMatch, toKey, toId, withId } from '@/lib/db';
 import type {
   PropBatchCost,
   PropBatchCostWithSupply,
@@ -158,7 +158,8 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const rawCosts = await propDb.batchCosts.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawCosts = (await propDb.batchCosts.toArray()).map(withId);
       const costsByBatch = groupCostsByBatch(rawCosts);
 
       // Get supplies for enrichment
@@ -176,10 +177,10 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
   // Load costs for a specific batch
   loadCostsForBatch: async (batchId: string) => {
     try {
-      const batchCosts = await propDb.batchCosts
-        .where('batchId')
-        .anyOf(fkMatch(batchId))
-        .toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const batchCosts = (
+        await propDb.batchCosts.where('batchId').anyOf(fkMatch(batchId)).toArray()
+      ).map(withId);
 
       const { rawCosts, costsByBatch: _costsByBatch } = get();
 
@@ -242,7 +243,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
       // Add cost entry
       // FK write: store batchId numeric, matching the primary-key type. See src/lib/db/keys.ts.
       const id = await propDb.batchCosts.add({ ...cost, batchId: toKey(batchId) } as unknown as PropBatchCost);
-      const newCost = { ...cost, id: String(id) } as PropBatchCost;
+      const newCost = { ...cost, id: toId(id) } as PropBatchCost;
 
       // Deduct from inventory
       await suppliesStore.deductInventory(supplyId, quantity);
@@ -263,7 +264,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
         };
       });
 
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -291,7 +292,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
     try {
       // FK write: store batchId numeric, matching the primary-key type. See src/lib/db/keys.ts.
       const id = await propDb.batchCosts.add({ ...cost, batchId: toKey(batchId) } as unknown as PropBatchCost);
-      const newCost = { ...cost, id: String(id) } as PropBatchCost;
+      const newCost = { ...cost, id: toId(id) } as PropBatchCost;
 
       // Update local state
       const supplies = useSupplies.getState().rawSupplies;
@@ -309,7 +310,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
         };
       });
 
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -333,7 +334,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
       }
 
       // Delete cost entry
-      await propDb.batchCosts.delete(costId);
+      await propDb.batchCosts.delete(toKey(costId));
 
       // Update local state
       const supplies = useSupplies.getState().rawSupplies;

@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb, toKey } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropBatch,
   PropBatchWithComputed,
@@ -86,7 +86,8 @@ export const useBatches = create<BatchesState>((set, get) => ({
   loadBatches: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawBatches = await propDb.batches.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawBatches = (await propDb.batches.toArray()).map(withId);
       const batches = rawBatches.map(enrichBatch);
       set({ rawBatches, batches, isLoading: false });
     } catch (error) {
@@ -118,12 +119,12 @@ export const useBatches = create<BatchesState>((set, get) => ({
         ...batch,
         motherPlantId: batch.motherPlantId ? (toKey(batch.motherPlantId) as unknown as string) : batch.motherPlantId,
       } as PropBatch);
-      const newBatch = { ...batch, id: String(id) } as PropBatch;
+      const newBatch = { ...batch, id: toId(id) } as PropBatch;
       set((state) => ({
         rawBatches: [...state.rawBatches, newBatch],
         batches: [...state.rawBatches, newBatch].map(enrichBatch),
       }));
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -134,7 +135,7 @@ export const useBatches = create<BatchesState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await propDb.batches.update(id, updatedData);
+      await propDb.batches.update(toKey(id), updatedData);
       set((state) => {
         const newRawBatches = state.rawBatches.map((b) =>
           b.id === id ? { ...b, ...updatedData } : b
@@ -152,7 +153,7 @@ export const useBatches = create<BatchesState>((set, get) => ({
 
   deleteBatch: async (id) => {
     try {
-      await propDb.batches.delete(id);
+      await propDb.batches.delete(toKey(id));
       set((state) => {
         const newRawBatches = state.rawBatches.filter((b) => b.id !== id);
         return {

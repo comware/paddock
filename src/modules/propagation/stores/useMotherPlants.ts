@@ -9,7 +9,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropMotherPlant,
   MotherPlantStatus,
@@ -170,7 +170,8 @@ export const useMotherPlants = create<MotherPlantsState>((set, get) => ({
   loadMotherPlants: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawMotherPlants = await propDb.motherPlants.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawMotherPlants = (await propDb.motherPlants.toArray()).map(withId);
       const motherPlants = rawMotherPlants.map(enrichMotherPlant);
       set({ rawMotherPlants, motherPlants, isLoading: false });
     } catch (error) {
@@ -191,12 +192,12 @@ export const useMotherPlants = create<MotherPlantsState>((set, get) => ({
 
     try {
       const id = await propDb.motherPlants.add(plant as PropMotherPlant);
-      const newPlant = { ...plant, id: String(id) } as PropMotherPlant;
+      const newPlant = { ...plant, id: toId(id) } as PropMotherPlant;
       set((state) => ({
         rawMotherPlants: [...state.rawMotherPlants, newPlant],
         motherPlants: [...state.rawMotherPlants, newPlant].map(enrichMotherPlant),
       }));
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -208,7 +209,7 @@ export const useMotherPlants = create<MotherPlantsState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await propDb.motherPlants.update(id, updatedData);
+      await propDb.motherPlants.update(toKey(id), updatedData);
       set((state) => {
         const newRawMotherPlants = state.rawMotherPlants.map((p) =>
           p.id === id ? { ...p, ...updatedData } : p
@@ -227,7 +228,7 @@ export const useMotherPlants = create<MotherPlantsState>((set, get) => ({
   // Delete mother plant
   deleteMotherPlant: async (id) => {
     try {
-      await propDb.motherPlants.delete(id);
+      await propDb.motherPlants.delete(toKey(id));
       set((state) => {
         const newRawMotherPlants = state.rawMotherPlants.filter((p) => p.id !== id);
         return {

@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropSupply,
   PropSupplyWithStatus,
@@ -114,7 +114,8 @@ export const useSupplies = create<SuppliesState>((set, get) => ({
   loadSupplies: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawSupplies = await propDb.supplies.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawSupplies = (await propDb.supplies.toArray()).map(withId);
       const supplies = rawSupplies.map(enrichSupply);
       set({ rawSupplies, supplies, isLoading: false });
     } catch (error) {
@@ -142,7 +143,7 @@ export const useSupplies = create<SuppliesState>((set, get) => ({
 
     try {
       const id = await propDb.supplies.add(supply as PropSupply);
-      const newSupply = { ...supply, id: String(id) } as PropSupply;
+      const newSupply = { ...supply, id: toId(id) } as PropSupply;
 
       set((state) => {
         const newRawSupplies = [...state.rawSupplies, newSupply];
@@ -151,7 +152,7 @@ export const useSupplies = create<SuppliesState>((set, get) => ({
           supplies: newRawSupplies.map(enrichSupply),
         };
       });
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -183,7 +184,7 @@ export const useSupplies = create<SuppliesState>((set, get) => ({
     };
 
     try {
-      await propDb.supplies.update(id, updatedData);
+      await propDb.supplies.update(toKey(id), updatedData);
 
       set((state) => {
         const newRawSupplies = state.rawSupplies.map((s) =>
@@ -203,7 +204,7 @@ export const useSupplies = create<SuppliesState>((set, get) => ({
   // Delete supply
   deleteSupply: async (id) => {
     try {
-      await propDb.supplies.delete(id);
+      await propDb.supplies.delete(toKey(id));
 
       set((state) => {
         const newRawSupplies = state.rawSupplies.filter((s) => s.id !== id);

@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropStation,
   CreateStationInput,
@@ -103,7 +103,8 @@ export const useStations = create<StationsState>((set, get) => ({
   loadStations: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawStations = await propDb.stations.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawStations = (await propDb.stations.toArray()).map(withId);
       const activeBatches = useBatches.getState().getActiveBatches();
       const stations = rawStations.map((s) => enrichStation(s, activeBatches));
       set({ rawStations, stations, isLoading: false });
@@ -140,7 +141,7 @@ export const useStations = create<StationsState>((set, get) => ({
 
     try {
       const id = await propDb.stations.add(station as PropStation);
-      const newStation = { ...station, id: String(id) } as PropStation;
+      const newStation = { ...station, id: toId(id) } as PropStation;
       const activeBatches = useBatches.getState().getActiveBatches();
 
       set((state) => {
@@ -150,7 +151,7 @@ export const useStations = create<StationsState>((set, get) => ({
           stations: newRawStations.map((s) => enrichStation(s, activeBatches)),
         };
       });
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -184,7 +185,7 @@ export const useStations = create<StationsState>((set, get) => ({
     }
 
     try {
-      await propDb.stations.update(id, updatedData);
+      await propDb.stations.update(toKey(id), updatedData);
       const activeBatches = useBatches.getState().getActiveBatches();
 
       set((state) => {
@@ -216,7 +217,7 @@ export const useStations = create<StationsState>((set, get) => ({
     }
 
     try {
-      await propDb.stations.delete(id);
+      await propDb.stations.delete(toKey(id));
       set((state) => {
         const newRawStations = state.rawStations.filter((s) => s.id !== id);
         return {

@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type { PropSpeciesConfig, PropagationMethod } from '../types';
 
 // ============================================
@@ -153,7 +153,8 @@ export const useSpeciesConfigs = create<SpeciesConfigsState>((set, get) => ({
   loadConfigs: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawConfigs = await propDb.speciesConfigs.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawConfigs = (await propDb.speciesConfigs.toArray()).map(withId);
       const configs = rawConfigs.map(enrichConfig);
       set({ rawConfigs, configs, isLoading: false });
     } catch (error) {
@@ -185,7 +186,7 @@ export const useSpeciesConfigs = create<SpeciesConfigsState>((set, get) => ({
 
     try {
       const id = await propDb.speciesConfigs.add(config as PropSpeciesConfig);
-      const newConfig = { ...config, id: String(id) } as PropSpeciesConfig;
+      const newConfig = { ...config, id: toId(id) } as PropSpeciesConfig;
 
       set((state) => {
         const newRawConfigs = [...state.rawConfigs, newConfig];
@@ -194,7 +195,7 @@ export const useSpeciesConfigs = create<SpeciesConfigsState>((set, get) => ({
           configs: newRawConfigs.map(enrichConfig),
         };
       });
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -229,7 +230,7 @@ export const useSpeciesConfigs = create<SpeciesConfigsState>((set, get) => ({
     };
 
     try {
-      await propDb.speciesConfigs.update(id, updatedData);
+      await propDb.speciesConfigs.update(toKey(id), updatedData);
 
       set((state) => {
         const newRawConfigs = state.rawConfigs.map((c) =>
@@ -249,7 +250,7 @@ export const useSpeciesConfigs = create<SpeciesConfigsState>((set, get) => ({
   // Delete config
   deleteConfig: async (id) => {
     try {
-      await propDb.speciesConfigs.delete(id);
+      await propDb.speciesConfigs.delete(toKey(id));
 
       set((state) => {
         const newRawConfigs = state.rawConfigs.filter((c) => c.id !== id);

@@ -9,7 +9,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropPropagule,
   PropBatch,
@@ -54,7 +54,8 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
   loadPropagules: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawPropagules = await propDb.propagules.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawPropagules = (await propDb.propagules.toArray()).map(withId);
       const propagules = rawPropagules.map(enrichPropagule);
       set({ rawPropagules, propagules, isLoading: false });
     } catch (error) {
@@ -66,7 +67,7 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
     const { rawPropagules } = get();
     const now = new Date();
 
-    const batch = await propDb.batches.get(input.batchId);
+    const batch = await propDb.batches.get(toKey(input.batchId));
     if (!batch) {
       throw new Error(`Batch not found: ${input.batchId}`);
     }
@@ -93,12 +94,12 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
 
     try {
       const id = await propDb.propagules.add(propagule as PropPropagule);
-      const newPropagule = { ...propagule, id: String(id) } as PropPropagule;
+      const newPropagule = { ...propagule, id: toId(id) } as PropPropagule;
       set((state) => ({
         rawPropagules: [...state.rawPropagules, newPropagule],
         propagules: [...state.rawPropagules, newPropagule].map(enrichPropagule),
       }));
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -109,7 +110,7 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await propDb.propagules.update(id, updatedData);
+      await propDb.propagules.update(toKey(id), updatedData);
       set((state) => {
         const newRawPropagules = state.rawPropagules.map((p) =>
           p.id === id ? { ...p, ...updatedData } : p
@@ -127,7 +128,7 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
 
   deletePropagule: async (id) => {
     try {
-      await propDb.propagules.delete(id);
+      await propDb.propagules.delete(toKey(id));
       set((state) => {
         const newRawPropagules = state.rawPropagules.filter((p) => p.id !== id);
         return {
@@ -173,7 +174,7 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
         createdIds.push(id);
       }
 
-      await propDb.batches.update(batch.id!, {
+      await propDb.batches.update(toKey(batch.id!), {
         isExploded: true,
         updatedAt: new Date(),
       });
@@ -181,7 +182,7 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
       return createdIds;
     } catch (error) {
       for (const id of createdIds) {
-        try { await propDb.propagules.delete(id); } catch { /* ignore */ }
+        try { await propDb.propagules.delete(toKey(id)); } catch { /* ignore */ }
       }
       set({ error: (error as Error).message });
       throw error;
@@ -232,7 +233,7 @@ export const usePropagules = create<PropagulesState>((set, get) => ({
       healthScore: 1,
     } as UpdatePropaguleInput & { stage: PropagationStage });
 
-    await propDb.propagules.update(id, { stage: 'failed', updatedAt: new Date() });
+    await propDb.propagules.update(toKey(id), { stage: 'failed', updatedAt: new Date() });
 
     set((state) => {
       const newRawPropagules = state.rawPropagules.map((p) =>

@@ -9,7 +9,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropGraduation,
   GraduationOutcome,
@@ -112,7 +112,8 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
   loadGraduations: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawGraduations = await propDb.graduations.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawGraduations = (await propDb.graduations.toArray()).map(withId);
       const graduationsByBatch = groupGraduationsByBatch(rawGraduations);
 
       const batches = useBatches.getState().rawBatches;
@@ -144,7 +145,7 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
 
     try {
       const id = await propDb.graduations.add(graduation as PropGraduation);
-      const newGraduation = { ...graduation, id: String(id) } as PropGraduation;
+      const newGraduation = { ...graduation, id: toId(id) } as PropGraduation;
 
       const batches = useBatches.getState().rawBatches;
       const batchesMap = new Map(batches.map((b) => [b.id as string, b]));
@@ -161,7 +162,7 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
         };
       });
 
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -239,7 +240,7 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
     }
 
     try {
-      await propDb.graduations.delete(id);
+      await propDb.graduations.delete(toKey(id));
 
       const batches = useBatches.getState().rawBatches;
       const batchesMap = new Map(batches.map((b) => [b.id as string, b]));
