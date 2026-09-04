@@ -10,14 +10,18 @@
 import { create } from 'zustand';
 import { db, vegDb, toKey, toId, withId, fkMatch, type VegPlanting } from '@/lib/db';
 
-type PlantingStatus = VegPlanting['status'];
+export type PlantingStatus = VegPlanting['status'];
 
 // The legal status graph. planned -> growing -> harvesting -> finished is the happy path;
 // failed is reachable from any non-terminal status because a crop can die at any point.
 // finished -> harvesting is the one exception to "terminal": real picking runs past when
 // you thought you were done, and refusing to reopen would just push people to falsify
 // dates instead of logging the late pick honestly.
-const LEGAL_TRANSITIONS: Record<PlantingStatus, PlantingStatus[]> = {
+//
+// Exported so useHarvests can reuse this exact table when a pick is logged, rather than
+// duplicating the transition rules there. There is no circular import: this module does
+// not import useHarvests.
+export const LEGAL_TRANSITIONS: Record<PlantingStatus, PlantingStatus[]> = {
   planned: ['growing', 'failed'],
   growing: ['harvesting', 'finished', 'failed'],
   harvesting: ['finished', 'failed'],
