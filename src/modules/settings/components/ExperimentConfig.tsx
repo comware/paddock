@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { useExperiment } from '@/modules/grow/stores';
+import { useExperiment } from '@/modules/microgreens/stores';
 
 const experimentSchema = z.object({
   startDate: z.string().min(1, 'Start date is required'),

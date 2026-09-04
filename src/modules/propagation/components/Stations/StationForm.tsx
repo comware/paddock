@@ -17,7 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui';
 import { useStations, DEFAULT_ENVIRONMENTAL_TARGETS } from '../../stores/useStations';
-import { useSites } from '@/modules/grow/stores';
+import { useSites } from '@/modules/microgreens/stores';
 import type { StationType, PropStation } from '../../types';
 import {
   RequiredTextField,

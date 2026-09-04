@@ -13,7 +13,7 @@ import { render, screen } from '@testing-library/react';
 // EXTRACTED CHART IMPLEMENTATIONS
 // ============================================
 // These mirror patterns from:
-// - src/modules/grow/components/Analytics/TrendCharts.tsx
+// - src/modules/microgreens/components/Analytics/TrendCharts.tsx
 // - src/modules/propagation/components/Analytics/AnalyticsDashboard.tsx
 
 interface BarChartProps {

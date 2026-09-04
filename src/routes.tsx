@@ -13,7 +13,7 @@ import { WelcomeModal } from '@/components/onboarding';
 
 // Lazy-loaded modules and pages
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
-const GrowModule = lazy(() => import('@/modules/grow'));
+const GrowModule = lazy(() => import('@/modules/microgreens'));
 const PropagationModule = lazy(() => import('@/modules/propagation'));
 const PlannerModule = lazy(() => import('@/modules/planner'));
 const SettingsModule = lazy(() => import('@/modules/settings'));

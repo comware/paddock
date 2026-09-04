@@ -12,8 +12,8 @@ import { render, screen } from '@testing-library/react';
 // EXTRACTED COMPONENT IMPLEMENTATIONS
 // ============================================
 // These mirror the actual implementations found in:
-// - src/modules/grow/components/Dashboard/GrowDashboard.tsx (MetricCard)
-// - src/modules/grow/components/Analytics/TrendCharts.tsx (StatCard)
+// - src/modules/microgreens/components/Dashboard/GrowDashboard.tsx (MetricCard)
+// - src/modules/microgreens/components/Analytics/TrendCharts.tsx (StatCard)
 // - src/modules/propagation/components/Dashboard/MetricsCards.tsx (MetricCard with trend)
 
 interface MetricCardProps {
