@@ -7,6 +7,7 @@
 
 import { create } from 'zustand';
 import { aiDb, type AIConversation, type AIMessage } from '@/lib/db/schema';
+import { toKey, toId, withId, fkMatch } from '@/lib/db/keys';
 import type { ChatMessage } from './types';
 
 interface ConversationsState {
@@ -39,10 +40,10 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   loadConversations: async () => {
     set({ isLoading: true, error: null });
     try {
-      const conversations = await aiDb.conversations
-        .orderBy('lastMessageAt')
-        .reverse()
-        .toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const conversations = (
+        await aiDb.conversations.orderBy('lastMessageAt').reverse().toArray()
+      ).map(withId);
       set({ conversations, isLoading: false });
     } catch (error) {
       set({
@@ -64,14 +65,14 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
     };
 
     const id = await aiDb.conversations.add(conversation);
-    const createdConversation = { ...conversation, id: String(id) };
+    const createdConversation = { ...conversation, id: toId(id) };
 
     set((state) => ({
       conversations: [createdConversation, ...state.conversations],
-      currentConversationId: String(id),
+      currentConversationId: toId(id),
     }));
 
-    return String(id);
+    return toId(id);
   },
 
   loadConversation: async (id: string) => {
@@ -80,8 +81,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   },
 
   updateConversationTitle: async (id: string, title: string) => {
-    const numericId = parseInt(id, 10);
-    await aiDb.conversations.update(numericId, {
+    await aiDb.conversations.update(toKey(id), {
       title,
       updatedAt: new Date(),
     });
@@ -94,11 +94,11 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   },
 
   deleteConversation: async (id: string) => {
-    // Delete all messages first
-    await aiDb.messages.where('conversationId').equals(id).delete();
-    // Then delete the conversation (use numeric ID for Dexie)
-    const numericId = parseInt(id, 10);
-    await aiDb.conversations.delete(numericId);
+    // Delete all messages first. FK read: conversationId may be stored numeric or
+    // string, see src/lib/db/keys.ts.
+    await aiDb.messages.where('conversationId').anyOf(fkMatch(id)).delete();
+    // Then delete the conversation (use numeric key for Dexie)
+    await aiDb.conversations.delete(toKey(id));
 
     set((state) => ({
       conversations: state.conversations.filter((c) => c.id !== id),
@@ -114,7 +114,9 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   addMessage: async (conversationId: string, message: ChatMessage) => {
     const now = new Date();
     const aiMessage: AIMessage = {
-      conversationId,
+      // FK write: store conversationId numeric, matching the primary-key type.
+      // See src/lib/db/keys.ts.
+      conversationId: toKey(conversationId) as unknown as string,
       role: message.role,
       content: message.content,
       createdAt: message.timestamp || now,
@@ -122,16 +124,14 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
 
     await aiDb.messages.add(aiMessage);
 
-    // Update conversation metadata
+    // Update conversation metadata. FK read: conversationId may be stored numeric
+    // or string, see src/lib/db/keys.ts.
     const messageCount = await aiDb.messages
       .where('conversationId')
-      .equals(conversationId)
+      .anyOf(fkMatch(conversationId))
       .count();
 
-    // Generate title from first user message if it's a new conversation
-    // Note: Dexie uses numeric IDs, so we need to handle both string and number
-    const numericId = parseInt(conversationId, 10);
-    const conversation = await aiDb.conversations.get(numericId);
+    const conversation = await aiDb.conversations.get(toKey(conversationId));
     let title = conversation?.title || 'New conversation';
 
     if (messageCount === 1 && message.role === 'user') {
@@ -139,7 +139,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
       title = message.content.slice(0, 50) + (message.content.length > 50 ? '...' : '');
     }
 
-    await aiDb.conversations.update(numericId, {
+    await aiDb.conversations.update(toKey(conversationId), {
       messageCount,
       lastMessageAt: now,
       updatedAt: now,
@@ -157,25 +157,29 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   },
 
   updateLastMessage: async (conversationId: string, content: string) => {
-    // Get the last message for this conversation
-    const messages = await aiDb.messages
-      .where('conversationId')
-      .equals(conversationId)
-      .reverse()
-      .limit(1)
-      .toArray();
+    // Get the last message for this conversation. FK read: conversationId may be
+    // stored numeric or string, see src/lib/db/keys.ts.
+    const messages = (
+      await aiDb.messages
+        .where('conversationId')
+        .anyOf(fkMatch(conversationId))
+        .reverse()
+        .limit(1)
+        .toArray()
+    ).map(withId);
 
     if (messages.length > 0 && messages[0].id) {
-      await aiDb.messages.update(messages[0].id, {
+      await aiDb.messages.update(toKey(messages[0].id), {
         content,
       });
     }
   },
 
   getMessages: async (conversationId: string) => {
+    // FK read: conversationId may be stored numeric or string, see src/lib/db/keys.ts.
     const messages = await aiDb.messages
       .where('conversationId')
-      .equals(conversationId)
+      .anyOf(fkMatch(conversationId))
       .sortBy('createdAt');
 
     return messages.map((m) => ({

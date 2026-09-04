@@ -8,7 +8,15 @@
  */
 
 import { create } from 'zustand';
-import { plannerDb, type PlannerEvent, type PlannerEventType, type PlannerEventStatus } from '@/lib/db';
+import {
+  plannerDb,
+  toKey,
+  toId,
+  withId,
+  type PlannerEvent,
+  type PlannerEventType,
+  type PlannerEventStatus,
+} from '@/lib/db';
 import {
   enrichEvent,
   isSameDay,
@@ -97,7 +105,8 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   loadEvents: async () => {
     try {
       set({ isLoading: true, error: null });
-      const rawEvents = await plannerDb.events.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const rawEvents = (await plannerDb.events.toArray()).map(withId);
       const events = rawEvents.map(enrichEvent);
       set({ rawEvents, events, isLoading: false });
     } catch (error) {
@@ -116,12 +125,12 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
     try {
       const id = await plannerDb.events.add(event as PlannerEvent);
-      const newEvent = { ...event, id: String(id) } as PlannerEvent;
+      const newEvent = { ...event, id: toId(id) } as PlannerEvent;
       set((state) => ({
         rawEvents: [...state.rawEvents, newEvent],
         events: [...state.rawEvents, newEvent].map(enrichEvent),
       }));
-      return String(id);
+      return toId(id);
     } catch (error) {
       set({ error: (error as Error).message });
       throw error;
@@ -132,7 +141,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     const updatedData = { ...updates, updatedAt: new Date() };
 
     try {
-      await plannerDb.events.update(id, updatedData);
+      await plannerDb.events.update(toKey(id), updatedData);
       set((state) => {
         const newRawEvents = state.rawEvents.map((e) =>
           e.id === id ? { ...e, ...updatedData } : e
@@ -150,7 +159,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
 
   deleteEvent: async (id) => {
     try {
-      await plannerDb.events.delete(id);
+      await plannerDb.events.delete(toKey(id));
       set((state) => {
         const newRawEvents = state.rawEvents.filter((e) => e.id !== id);
         return {
