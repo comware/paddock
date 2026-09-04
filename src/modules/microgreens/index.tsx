@@ -87,7 +87,7 @@ function GrowModuleContent() {
 export default function GrowModule() {
   return (
     <ErrorBoundary
-      section="Grow Module"
+      section="Microgreens Module"
       module="grow"
       showModuleNav
     >

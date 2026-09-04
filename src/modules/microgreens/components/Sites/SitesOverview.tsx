@@ -244,7 +244,7 @@ export function SitesOverview() {
         <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
           <div className="text-5xl mb-4">📍</div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            Welcome to Paddock Grow
+            Welcome to Paddock Microgreens
           </h2>
           <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
             Start by adding your first growing space. Each one tracks its own trays,

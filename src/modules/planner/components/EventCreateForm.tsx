@@ -162,7 +162,7 @@ export function EventCreateForm() {
             onChange={(e) => setEventType(e.target.value as PlannerEventType)}
             className="mt-1 block w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:border-green-500 focus:ring-1 focus:ring-green-500"
           >
-            <optgroup label="Grow">
+            <optgroup label="Microgreens">
               {groupedTypes.grow.map((type) => (
                 <option key={type} value={type}>
                   {EVENT_TYPE_METADATA[type].label}

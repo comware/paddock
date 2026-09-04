@@ -46,7 +46,7 @@ export function DataExport() {
     try {
       await downloadUnifiedBackup();
       setStatus('success');
-      setMessage('Full backup (Grow + Propagation) downloaded successfully');
+      setMessage('Full backup (Microgreens + Propagation) downloaded successfully');
       toast.add('Full backup downloaded successfully', 'success');
     } catch (error) {
       setStatus('error');
@@ -176,7 +176,7 @@ export function DataExport() {
             💾 Export All Data
           </div>
           <div className="text-sm text-green-600 dark:text-green-400">
-            Complete backup of Grow + Propagation modules (recommended)
+            Complete backup of Microgreens + Propagation modules (recommended)
           </div>
         </button>
 
@@ -188,10 +188,10 @@ export function DataExport() {
           className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
         >
           <div className="font-medium text-slate-900 dark:text-white">
-            📤 Export Grow Data
+            📤 Export Microgreens Data
           </div>
           <div className="text-sm text-slate-500 dark:text-slate-400">
-            Download Grow module data as JSON backup
+            Download Microgreens module data as JSON backup
           </div>
         </button>
 

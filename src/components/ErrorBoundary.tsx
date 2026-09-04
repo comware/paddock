@@ -36,7 +36,7 @@ interface ErrorBoundaryState {
 
 // Module navigation for graceful degradation
 const MODULE_NAV = [
-  { name: 'Grow', path: '/microgreens', icon: '🌱' },
+  { name: 'Microgreens', path: '/microgreens', icon: '🌱' },
   { name: 'Propagation', path: '/propagation', icon: '🌿' },
   { name: 'Planner', path: '/planner', icon: '📅' },
   { name: 'Settings', path: '/settings', icon: '⚙️' },

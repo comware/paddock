@@ -15,7 +15,7 @@ export function ComingSoon({ module }: ComingSoonProps) {
           {module} Module
         </h2>
         <p className="text-slate-600 dark:text-slate-400">
-          Coming soon! This module will be built after the Grow module is complete.
+          Coming soon! This module will be built after the Microgreens module is complete.
         </p>
       </div>
     </div>
