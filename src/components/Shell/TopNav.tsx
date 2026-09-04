@@ -75,7 +75,7 @@ export function TopNav() {
         {/* Secondary navigation - hidden on mobile (in BottomNav) */}
         <div className="hidden sm:flex items-center gap-2">
           <NavLink
-            to="/grow/guides"
+            to="/microgreens/guides"
             className={({ isActive }) =>
               `px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
                 isActive

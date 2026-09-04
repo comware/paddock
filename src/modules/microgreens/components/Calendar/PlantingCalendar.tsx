@@ -200,8 +200,8 @@ export function PlantingCalendar() {
   };
 
   const traysPath = activeSite?.id
-    ? `/grow/site/${activeSite.id}/trays`
-    : '/grow/trays';
+    ? `/microgreens/site/${activeSite.id}/trays`
+    : '/microgreens/trays';
 
   const handleHarvestTray = (trayId: string) => {
     setDetail(null);

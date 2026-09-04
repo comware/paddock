@@ -51,28 +51,28 @@ const learningPaths = [
     icon: '🌱',
     title: 'Growing Guides',
     description: 'Comprehensive guides for popular microherb varieties with care instructions.',
-    link: '/grow/guides',
+    link: '/microgreens/guides',
     color: 'from-green-500 to-emerald-600',
   },
   {
     icon: '📅',
     title: 'Planting Calendar',
     description: 'Plan your planting schedule and track optimal growing windows.',
-    link: '/grow/calendar',
+    link: '/microgreens/calendar',
     color: 'from-blue-500 to-cyan-600',
   },
   {
     icon: '📈',
     title: 'Analytics Dashboard',
     description: 'Track success rates, yields, and identify patterns across all your trays.',
-    link: '/grow/analytics',
+    link: '/microgreens/analytics',
     color: 'from-purple-500 to-violet-600',
   },
   {
     icon: '🏠',
     title: 'Manage growing spaces',
     description: 'Set up and organize your growing locations from windowsills to grow rooms.',
-    link: '/grow',
+    link: '/microgreens',
     color: 'from-amber-500 to-orange-600',
   },
 ];
@@ -176,14 +176,14 @@ export function LandingPage() {
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link
-                to="/grow"
+                to="/microgreens"
                 className="inline-flex items-center justify-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:scale-105 hover:shadow-xl"
               >
                 Start Learning
                 <span className="ml-2">→</span>
               </Link>
               <Link
-                to="/grow/guides"
+                to="/microgreens/guides"
                 className="inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-primary-300 dark:hover:border-primary-600 transition-all"
               >
                 Explore Guides
@@ -310,7 +310,7 @@ export function LandingPage() {
           {/* CTA */}
           <div className="mt-12 text-center">
             <Link
-              to="/grow"
+              to="/microgreens"
               className="inline-flex items-center justify-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:scale-105"
             >
               Begin Your Growing Journey
@@ -362,7 +362,7 @@ export function LandingPage() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    to="/grow"
+                    to="/microgreens"
                     className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     Dashboard
@@ -370,7 +370,7 @@ export function LandingPage() {
                 </li>
                 <li>
                   <Link
-                    to="/grow/guides"
+                    to="/microgreens/guides"
                     className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     Growing Guides
@@ -378,7 +378,7 @@ export function LandingPage() {
                 </li>
                 <li>
                   <Link
-                    to="/grow/calendar"
+                    to="/microgreens/calendar"
                     className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     Planting Calendar

@@ -51,7 +51,7 @@ const navItems = [
 
 function SiteSubNav({ siteId }: { siteId: string }) {
   const location = useLocation();
-  const basePath = `/grow/site/${siteId}`;
+  const basePath = `/microgreens/site/${siteId}`;
   // Proposals awaiting a decision, surfaced on the tab that shows them.
   const pendingProposals = usePendingProposals();
 
@@ -205,7 +205,7 @@ export function SiteDetailLayout() {
           This growing space doesn't exist, or may have been deleted.
         </p>
         <button
-          onClick={() => navigate('/grow')}
+          onClick={() => navigate('/microgreens')}
           className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
         >
           Back to growing spaces
@@ -218,14 +218,14 @@ export function SiteDetailLayout() {
     <SiteContext.Provider value={contextValue}>
       <div className="space-y-4">
         {/*
-          With one growing space there is no list to go back to - /grow redirects straight
+          With one growing space there is no list to go back to - /microgreens redirects straight
           back here, so "Back to growing spaces" was a link that visibly did nothing.
 
           It becomes the way to add a second instead, which otherwise had no route at all
           once the list stopped rendering.
         */}
         <Link
-          to={sites.length > 1 ? '/grow' : '/grow/sites/manage'}
+          to={sites.length > 1 ? '/microgreens' : '/microgreens/sites/manage'}
           className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           {sites.length > 1 ? (

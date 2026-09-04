@@ -181,7 +181,7 @@ export function SitesOverview() {
   // redirect.
   useEffect(() => {
     if (!sitesLoading && sites.length === 1 && sites[0].id) {
-      navigate(`/grow/site/${sites[0].id}`, { replace: true });
+      navigate(`/microgreens/site/${sites[0].id}`, { replace: true });
     }
   }, [sitesLoading, sites, navigate]);
 
@@ -272,7 +272,7 @@ export function SitesOverview() {
                   readyToHarvest: 0,
                   needsAttention: 0,
                 }}
-                onClick={() => navigate(`/grow/site/${site.id}`)}
+                onClick={() => navigate(`/microgreens/site/${site.id}`)}
               />
             ))}
           </div>
@@ -280,7 +280,7 @@ export function SitesOverview() {
           {/* Global Actions */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <button
-              onClick={() => navigate('/grow/analytics')}
+              onClick={() => navigate('/microgreens/analytics')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">📊</span>
@@ -288,7 +288,7 @@ export function SitesOverview() {
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare every growing space</span>
             </button>
             <button
-              onClick={() => navigate('/grow/analytics')}
+              onClick={() => navigate('/microgreens/analytics')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">🎯</span>
@@ -296,7 +296,7 @@ export function SitesOverview() {
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Evaluate progress</span>
             </button>
             <button
-              onClick={() => navigate('/grow/guides')}
+              onClick={() => navigate('/microgreens/guides')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">📚</span>
@@ -304,7 +304,7 @@ export function SitesOverview() {
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Reference material</span>
             </button>
             <button
-              onClick={() => navigate('/grow/sites/manage')}
+              onClick={() => navigate('/microgreens/sites/manage')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
               <span className="text-2xl mb-2 block">⚙️</span>

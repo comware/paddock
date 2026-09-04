@@ -381,7 +381,7 @@ export function TrayList() {
                 Add First Tray
               </button>
               <a
-                href="/grow/guides"
+                href="/microgreens/guides"
                 className="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 Browse Growing Guides

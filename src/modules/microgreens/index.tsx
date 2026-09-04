@@ -74,7 +74,7 @@ function GrowModuleContent() {
 
   return (
     <>
-      {navItems.length > 0 && <ModuleNav items={navItems} basePath="/grow" />}
+      {navItems.length > 0 && <ModuleNav items={navItems} basePath="/microgreens" />}
       <div className="flex-1 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           {routeElement}

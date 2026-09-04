@@ -32,7 +32,7 @@ const steps: Step[] = [
     icon: '📚',
     cta: {
       text: 'Browse Guides',
-      to: '/grow/guides',
+      to: '/microgreens/guides',
     },
   },
   {
@@ -41,7 +41,7 @@ const steps: Step[] = [
     icon: '🚀',
     cta: {
       text: 'Add First Tray',
-      to: '/grow/trays',
+      to: '/microgreens/trays',
     },
   },
 ];

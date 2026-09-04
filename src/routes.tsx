@@ -6,17 +6,28 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Outlet, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, useLocation, type RouteObject } from 'react-router-dom';
 import { AppShell } from '@/components/Shell';
 import { ComingSoon, ModuleLoader } from '@/components/shared';
 import { WelcomeModal } from '@/components/onboarding';
 
 // Lazy-loaded modules and pages
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
-const GrowModule = lazy(() => import('@/modules/microgreens'));
+const MicrogreensModule = lazy(() => import('@/modules/microgreens'));
 const PropagationModule = lazy(() => import('@/modules/propagation'));
 const PlannerModule = lazy(() => import('@/modules/planner'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
+
+/**
+ * Paddock's grow module became microgreens when vegetables arrived as a sibling rather
+ * than something feeding it. Links, bookmarks, keyboard shortcuts and the WebMCP tool
+ * descriptions all still say /grow, so redirect rather than 404 - the module's own routes
+ * file already keeps aliases for the same reason.
+ */
+function GrowRedirect() {
+  const { pathname, search, hash } = useLocation();
+  return <Navigate to={pathname.replace(/^\/grow/, '/microgreens') + search + hash} replace />;
+}
 
 // Root layout wrapper that provides router context for components like WelcomeModal
 function RootLayout() {
@@ -48,15 +59,18 @@ const routes: RouteObject[] = [
         path: '/',
         element: <AppShell />,
         children: [
-          // Grow module — wildcard delegates sub-routing to module
+          // Microgreens module (formerly "grow") — wildcard delegates sub-routing to module
           {
-            path: 'grow/*',
+            path: 'microgreens/*',
             element: (
               <Suspense fallback={<ModuleLoader />}>
-                <GrowModule />
+                <MicrogreensModule />
               </Suspense>
             ),
           },
+
+          // Redirect the old /grow path, preserving sub-path/query/hash
+          { path: 'grow/*', element: <GrowRedirect /> },
 
           // Propagation module — wildcard delegates sub-routing to module
           {

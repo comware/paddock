@@ -21,11 +21,11 @@ export function useKeyboardShortcuts() {
   const [showHelp, setShowHelp] = useState(false);
 
   const shortcuts: ShortcutConfig[] = [
-    { key: 'g d', label: 'g d', description: 'Go to Dashboard', action: () => navigate('/grow') },
-    { key: 'g t', label: 'g t', description: 'Go to Trays', action: () => navigate('/grow/trays') },
-    { key: 'g l', label: 'g l', description: 'Go to Daily Log', action: () => navigate('/grow/daily') },
-    { key: 'g m', label: 'g m', description: 'Go to Time Tracking', action: () => navigate('/grow/time') },
-    { key: 'g a', label: 'g a', description: 'Go to Analytics', action: () => navigate('/grow/analytics') },
+    { key: 'g d', label: 'g d', description: 'Go to Dashboard', action: () => navigate('/microgreens') },
+    { key: 'g t', label: 'g t', description: 'Go to Trays', action: () => navigate('/microgreens/trays') },
+    { key: 'g l', label: 'g l', description: 'Go to Daily Log', action: () => navigate('/microgreens/daily') },
+    { key: 'g m', label: 'g m', description: 'Go to Time Tracking', action: () => navigate('/microgreens/time') },
+    { key: 'g a', label: 'g a', description: 'Go to Analytics', action: () => navigate('/microgreens/analytics') },
     { key: 'g s', label: 'g s', description: 'Go to Settings', action: () => navigate('/settings') },
     { key: '?', label: '?', description: 'Show keyboard shortcuts', action: () => setShowHelp(true) },
   ];
