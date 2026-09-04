@@ -217,7 +217,7 @@ export async function exportDataForRecovery(): Promise<string> {
     const { growDb, propDb, platformDb } = await import('./db');
 
     exportData.grow = {
-      sites: await growDb.sites.toArray().catch(() => []),
+      sites: await platformDb.sites.toArray().catch(() => []),
       trays: await growDb.trays.toArray().catch(() => []),
       observations: await growDb.observations.toArray().catch(() => []),
       timeEntries: await growDb.timeEntries.toArray().catch(() => []),

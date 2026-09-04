@@ -12,7 +12,7 @@
 
 import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useSites } from '../../stores';
+import { useSites } from '@/platform';
 
 interface DefaultSiteRedirectProps {
   /** Path within the growing space, e.g. 'trays' or 'daily'. Empty for the dashboard. */

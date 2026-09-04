@@ -13,7 +13,8 @@ import { useRoutes } from 'react-router-dom';
 import { MapPin, ChartColumn } from 'lucide-react';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { useSites, useTrays, useVarieties } from './stores';
+import { useTrays, useVarieties } from './stores';
+import { useSites } from '@/platform';
 import { useTrayMigration, useLivePlantings } from './hooks';
 import { growRoutes } from './routes';
 

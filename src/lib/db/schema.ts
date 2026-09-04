@@ -511,11 +511,6 @@ export const db = new PaddockDB();
 // ============================================
 
 export const growDb = {
-  // Deprecated aliases. Sites and weather belong to platformDb now; these remain so the
-  // existing call sites keep working through the transition, and are removed in
-  // sub-project 2 where the rename is already touching those imports.
-  sites: db.sites,
-  weatherHistory: db.weatherHistory,
   trays: db.growTrays,
   observations: db.growObservations,
   timeEntries: db.growTimeEntries,

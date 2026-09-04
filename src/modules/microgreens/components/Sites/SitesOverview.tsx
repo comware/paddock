@@ -10,8 +10,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSites, useTrays } from '../../stores';
-import { useWeather } from '@/platform';
+import { useTrays } from '../../stores';
+import { useSites, useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
 import { NewSiteForm } from './NewSiteForm';
 import type { GrowSite } from '@/lib/db';

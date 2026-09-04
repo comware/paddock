@@ -5,8 +5,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { useSites } from '../../stores';
-import { useWeather } from '@/platform';
+import { useSites, useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
 
 interface SiteSelectorProps {

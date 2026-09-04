@@ -10,7 +10,8 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useTrays, useVarieties, useSites, useMediums, type TrayStatus, type TrayWithComputed } from '../../stores';
+import { useTrays, useVarieties, useMediums, type TrayStatus, type TrayWithComputed } from '../../stores';
+import { useSites } from '@/platform';
 import { TrayCard } from './TrayCard';
 import { NewTrayForm } from './NewTrayForm';
 import { HarvestForm } from './HarvestForm';

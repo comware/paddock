@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal } from '@/components/ui';
 import { useBatches } from '../../stores';
-import { useSites } from '@/modules/microgreens/stores';
+import { useSites } from '@/platform';
 import { propDb } from '@/lib/db';
 import type { PropStation, PropMotherPlant, PropSpeciesConfig } from '../../types';
 import { batchSchema, type BatchFormData } from './batchFormConstants';

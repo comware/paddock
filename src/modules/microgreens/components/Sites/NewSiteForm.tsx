@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui';
-import { useSites } from '../../stores';
+import { useSites } from '@/platform';
 import { getCurrentPosition, getTimezone } from '@/lib/weather';
 
 const siteSchema = z.object({

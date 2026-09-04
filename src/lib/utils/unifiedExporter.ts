@@ -39,6 +39,8 @@ export interface UnifiedPaddockBackup {
   version: number;
   exportedAt: string;
   modules: ['grow', 'propagation'];
+  // 'grow' is the on-disk backup format's key, not the module's current name (microgreens).
+  // It stays as-is so existing backup files a user already has keep importing correctly.
   grow: {
     trays: GrowTray[];
     observations: GrowObservation[];

@@ -7,7 +7,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useSites } from '../../stores';
+import { useSites } from '@/platform';
 import { SiteCard } from './SiteCard';
 import { NewSiteForm } from './NewSiteForm';
 import { EditSiteForm } from './EditSiteForm';

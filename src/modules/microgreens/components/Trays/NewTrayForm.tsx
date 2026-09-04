@@ -12,7 +12,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Modal } from '@/components/ui';
-import { useTrays, useVarieties, useMediums, useSites } from '../../stores';
+import { useTrays, useVarieties, useMediums } from '../../stores';
+import { useSites } from '@/platform';
 import { useEffect } from 'react';
 import { useSiteContext } from '../Sites/SiteContext';
 

@@ -12,7 +12,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal } from '@/components/ui';
-import { useSites } from '@/modules/microgreens/stores';
+import { useSites } from '@/platform';
 import { useMotherPlants, useBatches } from '../../stores';
 import type { PropMotherPlant } from '../../types';
 import { motherPlantSchema, type MotherPlantFormData } from './motherPlantConstants';

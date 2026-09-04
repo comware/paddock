@@ -5,7 +5,8 @@
  */
 
 import type { TrayWithComputed } from '../../stores';
-import { useVarieties, useSites } from '../../stores';
+import { useVarieties } from '../../stores';
+import { useSites } from '@/platform';
 import { format, addDays, isAfter, startOfDay } from 'date-fns';
 import { getHarvestForecast, getHarvestBadgeClasses } from '../../utils';
 

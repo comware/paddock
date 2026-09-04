@@ -21,7 +21,7 @@
 import { buildGrowingContext } from './context';
 import { buildPlanOptions, groundingStatement, type SuccessionRequest } from './planner';
 import { stageProposal, getProposal } from './proposals';
-import { growDb } from '@/lib/db';
+import { growDb, platformDb } from '@/lib/db';
 import {
   isWebMCPAvailable,
   type ToolDefinition,
@@ -204,7 +204,7 @@ const proposeSuccessionPlan: ToolDefinition<ProposeInput> = {
       };
     }
 
-    const sites = await growDb.sites.toArray();
+    const sites = await platformDb.sites.toArray();
     const siteId = (sites.find((s) => s.isDefault) ?? sites[0])?.id;
 
     const grounding = groundingStatement(request, observed?.plantings ?? 0);

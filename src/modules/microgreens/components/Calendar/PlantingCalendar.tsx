@@ -26,7 +26,8 @@ import {
   isBefore,
   startOfDay,
 } from 'date-fns';
-import { useTrays, useVarieties, usePlannedPlantings, useSites } from '../../stores';
+import { useTrays, useVarieties, usePlannedPlantings } from '../../stores';
+import { useSites } from '@/platform';
 import { getUpcomingHarvests } from '../../utils';
 import type { GrowPlannedPlanting } from '@/lib/db';
 import { useToastStore } from '@/stores/useToastStore';

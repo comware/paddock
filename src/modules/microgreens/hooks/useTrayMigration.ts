@@ -6,7 +6,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import { useTrays, useSites } from '../stores';
+import { useTrays } from '../stores';
+import { useSites } from '@/platform';
 
 interface MigrationStatus {
   isRunning: boolean;

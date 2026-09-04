@@ -13,7 +13,7 @@
  * has no server.
  */
 
-import { growDb } from '@/lib/db';
+import { growDb, platformDb } from '@/lib/db';
 import type { GrowTray, GrowSite } from '@/lib/db';
 
 // ============================================
@@ -200,7 +200,7 @@ function buildAdvisory(
 
 export async function buildGrowingContext(): Promise<GrowingContext> {
   const [sites, varietyConfigs, trays, plannedPlantings] = await Promise.all([
-    growDb.sites.toArray(),
+    platformDb.sites.toArray(),
     growDb.varietyConfigs.toArray(),
     growDb.trays.toArray(),
     growDb.plannedPlantings.toArray(),

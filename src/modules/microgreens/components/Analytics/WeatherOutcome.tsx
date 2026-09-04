@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { growDb } from '@/lib/db';
+import { platformDb } from '@/lib/db';
 import type { GrowWeatherHistory } from '@/lib/db';
 import { correlateAllVarieties, type WeatherCorrelation } from '../../utils';
 import { useTrays } from '../../stores';
@@ -23,7 +23,7 @@ export function WeatherOutcome() {
   useEffect(() => {
     let cancelled = false;
 
-    growDb.weatherHistory
+    platformDb.weatherHistory
       .toArray()
       .then((rows) => {
         if (!cancelled) setWeather(rows);

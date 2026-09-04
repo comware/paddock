@@ -23,8 +23,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { useSites } from '../../stores';
-import { useWeather } from '@/platform';
+import { useSites, useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
 import type { GrowSite } from '@/lib/db';
 import { SiteContext, type SiteContextValue } from './SiteContext';

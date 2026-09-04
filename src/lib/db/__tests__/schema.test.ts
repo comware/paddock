@@ -130,9 +130,10 @@ describe('PaddockDB Schema', () => {
 
 describe('Convenience Exports', () => {
   it('should export growDb with correct table references', () => {
-    // sites/weatherHistory are deprecated aliases now pointed at the platform tables.
-    expect(growDb.sites).toBe(db.sites);
-    expect(growDb.weatherHistory).toBe(db.weatherHistory);
+    // sites/weatherHistory used to be deprecated aliases on growDb; they now live only
+    // on platformDb, so growDb should not carry them at all.
+    expect(growDb).not.toHaveProperty('sites');
+    expect(growDb).not.toHaveProperty('weatherHistory');
     expect(growDb.trays).toBe(db.growTrays);
     expect(growDb.observations).toBe(db.growObservations);
     expect(growDb.timeEntries).toBe(db.growTimeEntries);
@@ -195,10 +196,12 @@ describe('platform facade', () => {
     expect(platformDb.weatherHistory.name).toBe('weatherHistory');
   });
 
-  it('keeps growDb.sites working, pointed at the new table', () => {
-    // Existing call sites still say growDb.sites. They keep working, and they read the
-    // platform table - so there is exactly one source of truth during the transition.
-    expect(growDb.sites.name).toBe('sites');
-    expect(growDb.weatherHistory.name).toBe('weatherHistory');
+  it('no longer carries the deprecated growDb.sites/weatherHistory aliases', () => {
+    // The rename finished touching every call site, so the aliases are gone: platformDb
+    // is the only way in now.
+    expect(growDb).not.toHaveProperty('sites');
+    expect(growDb).not.toHaveProperty('weatherHistory');
+    expect(platformDb.sites.name).toBe('sites');
+    expect(platformDb.weatherHistory.name).toBe('weatherHistory');
   });
 });

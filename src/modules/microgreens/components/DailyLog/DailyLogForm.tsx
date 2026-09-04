@@ -18,12 +18,11 @@ import { DaySummary } from './DaySummary';
 import {
   useObservations,
   useTrays,
-  useSites,
   useVarieties,
   usePlannedPlantings,
 } from '../../stores';
 import { deriveDaySummary, summariseActions } from '../../utils';
-import { useWeather } from '@/platform';
+import { useSites, useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
 import { useSiteContext } from '../Sites/SiteContext';
 
