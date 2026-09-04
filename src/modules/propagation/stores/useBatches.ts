@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb } from '@/lib/db';
+import { propDb, toKey } from '@/lib/db';
 import type {
   PropBatch,
   PropBatchWithComputed,
@@ -112,7 +112,12 @@ export const useBatches = create<BatchesState>((set, get) => ({
     };
 
     try {
-      const id = await propDb.batches.add(batch as PropBatch);
+      // FK write: store motherPlantId numeric when present, matching the primary-key type.
+      // Optional field - toKey would throw on undefined, so guard it. See src/lib/db/keys.ts.
+      const id = await propDb.batches.add({
+        ...batch,
+        motherPlantId: batch.motherPlantId ? (toKey(batch.motherPlantId) as unknown as string) : batch.motherPlantId,
+      } as PropBatch);
       const newBatch = { ...batch, id: String(id) } as PropBatch;
       set((state) => ({
         rawBatches: [...state.rawBatches, newBatch],

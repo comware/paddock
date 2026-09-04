@@ -13,17 +13,22 @@ const { mockBatchesTable } = vi.hoisted(() => {
   const fn = vi.fn;
   const table = {
     where: fn().mockReturnThis(),
-    equals: fn().mockReturnThis(),
+    anyOf: fn().mockReturnThis(),
     toArray: fn().mockResolvedValue([]),
     count: fn().mockResolvedValue(0),
   };
   return { mockBatchesTable: table };
 });
 
+// fkMatch is mocked rather than using the real implementation because this suite's
+// fixture ids (e.g. 'mother-1') are not valid database keys - toKey would throw. The
+// real query-tolerance behavior is covered by src/lib/db/__tests__/keys.test.ts; this
+// mock only needs to preserve the id passed through so assertions can check it.
 vi.mock('@/lib/db', () => ({
   propDb: {
     batches: mockBatchesTable,
   },
+  fkMatch: (id: string | number) => [id, id],
 }));
 
 import {
@@ -76,7 +81,7 @@ describe('getBatchesByMotherPlant', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockBatchesTable.where.mockReturnThis();
-    mockBatchesTable.equals.mockReturnThis();
+    mockBatchesTable.anyOf.mockReturnThis();
   });
 
   it('returns batches from db query', async () => {
@@ -85,7 +90,7 @@ describe('getBatchesByMotherPlant', () => {
     const result = await getBatchesByMotherPlant('mother-1');
     expect(result).toHaveLength(2);
     expect(mockBatchesTable.where).toHaveBeenCalledWith('motherPlantId');
-    expect(mockBatchesTable.equals).toHaveBeenCalledWith('mother-1');
+    expect(mockBatchesTable.anyOf).toHaveBeenCalledWith(['mother-1', 'mother-1']);
   });
 
   it('returns empty array when no batches exist', async () => {
@@ -99,7 +104,7 @@ describe('getTotalBatchesTaken', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockBatchesTable.where.mockReturnThis();
-    mockBatchesTable.equals.mockReturnThis();
+    mockBatchesTable.anyOf.mockReturnThis();
   });
 
   it('returns count from db', async () => {
@@ -117,7 +122,7 @@ describe('getSuccessRate', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockBatchesTable.where.mockReturnThis();
-    mockBatchesTable.equals.mockReturnThis();
+    mockBatchesTable.anyOf.mockReturnThis();
   });
 
   it('returns 0 when no completed batches', async () => {
@@ -157,7 +162,7 @@ describe('getMotherPlantMetrics', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockBatchesTable.where.mockReturnThis();
-    mockBatchesTable.equals.mockReturnThis();
+    mockBatchesTable.anyOf.mockReturnThis();
   });
 
   it('returns zeroed metrics for no batches', async () => {

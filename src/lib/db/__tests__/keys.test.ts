@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toKey, toId, withId } from '../keys';
+import { toKey, toId, withId, fkMatch } from '../keys';
 
 describe('toKey', () => {
   it('converts a string id to a numeric key', () => {
@@ -53,5 +53,16 @@ describe('withId', () => {
     // A row without an id has not come from Dexie. Silently making it the string
     // "undefined" would give it an id that matches nothing - the same silence again.
     expect(() => withId({ name: 'Bed 3' } as { id?: number; name: string })).toThrow(/no id/);
+  });
+});
+
+describe('fkMatch', () => {
+  it('returns both key forms', () => {
+    expect(fkMatch('7')).toEqual([7, '7']);
+    expect(fkMatch(7)).toEqual([7, '7']);
+  });
+
+  it('throws on an id that is not a key, like toKey does', () => {
+    expect(() => fkMatch('abc')).toThrow(/Not a database key/);
   });
 });

@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, toKey, toId, withId, type GrowTrayComment } from '@/lib/db';
+import { growDb, toKey, toId, withId, fkMatch, type GrowTrayComment } from '@/lib/db';
 
 // ============================================
 // TYPES
@@ -46,7 +46,7 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
       const comments = (
         await growDb.trayComments
           .where('trayId')
-          .equals(trayId)
+          .anyOf(fkMatch(trayId))
           .sortBy('createdAt')
       ).map(withId);
 
@@ -67,7 +67,11 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
     };
 
     try {
-      const id = await growDb.trayComments.add(comment as GrowTrayComment);
+      // FK write: store trayId numeric, matching the primary-key type. See src/lib/db/keys.ts.
+      const id = await growDb.trayComments.add({
+        ...comment,
+        trayId: toKey(trayId),
+      } as unknown as GrowTrayComment);
       const newComment = { ...comment, id: toId(id) } as GrowTrayComment;
 
       // Only update state if we're still viewing the same tray

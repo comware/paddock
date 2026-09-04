@@ -44,3 +44,21 @@ export function withId<T extends { id?: unknown }>(row: T): T & { id: string } {
   }
   return { ...row, id: toId(row.id as number | string) };
 }
+
+/**
+ * The key forms a foreign-key query must match while the database holds both.
+ *
+ * Foreign keys are stored values rather than keys, and they were written from whatever the
+ * caller held - a number for a row loaded from the database, a string for one added in the
+ * same session. Dexie does not coerce on `.equals()`, so querying with one form silently
+ * hides every row stored in the other.
+ *
+ * Writes now go through `toKey`, so new rows are numeric. Until the repair migration
+ * normalises the existing ones, reads have to accept both.
+ *
+ * When that migration has run, this can be deleted and its call sites become
+ * `.equals(toKey(id))`. Grep for `fkMatch` to find them.
+ */
+export function fkMatch(id: string | number): [number, string] {
+  return [toKey(id), toId(id)];
+}
