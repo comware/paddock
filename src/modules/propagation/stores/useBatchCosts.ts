@@ -241,8 +241,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
 
     try {
       // Add cost entry
-      // FK write: store batchId numeric, matching the primary-key type. See src/lib/db/keys.ts.
-      const id = await propDb.batchCosts.add({ ...cost, batchId: toKey(batchId) } as unknown as PropBatchCost);
+      const id = await propDb.batchCosts.add({ ...cost, batchId } as PropBatchCost);
       const newCost = { ...cost, id: toId(id) } as PropBatchCost;
 
       // Deduct from inventory
@@ -290,8 +289,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
     };
 
     try {
-      // FK write: store batchId numeric, matching the primary-key type. See src/lib/db/keys.ts.
-      const id = await propDb.batchCosts.add({ ...cost, batchId: toKey(batchId) } as unknown as PropBatchCost);
+      const id = await propDb.batchCosts.add({ ...cost, batchId } as PropBatchCost);
       const newCost = { ...cost, id: toId(id) } as PropBatchCost;
 
       // Update local state

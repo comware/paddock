@@ -13,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format } from 'date-fns';
 import { Modal } from '@/components/ui';
-import { propDb, toKey } from '@/lib/db';
+import { propDb } from '@/lib/db';
 import type { PropStation, PropStationLog } from '../../types';
 
 // ============================================
@@ -96,9 +96,8 @@ export function EnvironmentLogModal({
     setSubmitError(null);
 
     try {
-      // FK write: store stationId numeric, matching the primary-key type. See src/lib/db/keys.ts.
       const log: Omit<PropStationLog, 'id'> = {
-        stationId: toKey(station.id) as unknown as string,
+        stationId: station.id,
         date: data.date,
         temperature: data.temperature,
         humidity: data.humidity,

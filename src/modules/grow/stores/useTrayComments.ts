@@ -67,11 +67,10 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
     };
 
     try {
-      // FK write: store trayId numeric, matching the primary-key type. See src/lib/db/keys.ts.
       const id = await growDb.trayComments.add({
         ...comment,
-        trayId: toKey(trayId),
-      } as unknown as GrowTrayComment);
+        trayId,
+      } as GrowTrayComment);
       const newComment = { ...comment, id: toId(id) } as GrowTrayComment;
 
       // Only update state if we're still viewing the same tray

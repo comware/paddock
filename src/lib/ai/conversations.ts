@@ -114,9 +114,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   addMessage: async (conversationId: string, message: ChatMessage) => {
     const now = new Date();
     const aiMessage: AIMessage = {
-      // FK write: store conversationId numeric, matching the primary-key type.
-      // See src/lib/db/keys.ts.
-      conversationId: toKey(conversationId) as unknown as string,
+      conversationId,
       role: message.role,
       content: message.content,
       createdAt: message.timestamp || now,
