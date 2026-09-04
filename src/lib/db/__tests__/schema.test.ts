@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { db, growDb, platformDb, propDb, plannerDb } from '../schema';
+import { db, growDb, platformDb, propDb, plannerDb, vegDb } from '../schema';
 import Dexie from 'dexie';
 
 // Also import aiDb from schema (exported there but re-exported via index)
@@ -19,10 +19,10 @@ describe('PaddockDB Schema', () => {
   });
 
   it('should be at schema version 12', () => {
-    expect(db.verno).toBe(12);
+    expect(db.verno).toBe(13);
   });
 
-  it('should have all 27 expected tables', () => {
+  it('should have all 30 expected tables', () => {
     const tableNames = db.tables.map((t) => t.name).sort();
     const expectedTables = [
       // Grow module (11 tables)
@@ -57,10 +57,14 @@ describe('PaddockDB Schema', () => {
       'propSupplies',
       'propBatchCosts',
       'propSpeciesConfigs',
+      // Vegetables module (3 tables)
+      'vegBeds',
+      'vegPlantings',
+      'vegHarvests',
     ].sort();
 
     expect(tableNames).toEqual(expectedTables);
-    expect(tableNames).toHaveLength(27);
+    expect(tableNames).toHaveLength(30);
   });
 
   it('should have compound indexes on propBatches for common query patterns', () => {
@@ -174,7 +178,7 @@ describe('Convenience Exports', () => {
 
 describe('version 11 platform extraction', () => {
   it('is at schema version 12', () => {
-    expect(db.verno).toBe(12);
+    expect(db.verno).toBe(13);
   });
 
   it('exposes sites and weatherHistory as tables', () => {
@@ -203,5 +207,30 @@ describe('platform facade', () => {
     expect(growDb).not.toHaveProperty('weatherHistory');
     expect(platformDb.sites.name).toBe('sites');
     expect(platformDb.weatherHistory.name).toBe('weatherHistory');
+  });
+});
+
+describe('version 13 vegetables', () => {
+  it('is at schema version 13', () => {
+    expect(db.verno).toBe(13);
+  });
+
+  it('exposes the three vegetable tables', () => {
+    const names = db.tables.map((t) => t.name);
+    expect(names).toContain('vegBeds');
+    expect(names).toContain('vegPlantings');
+    expect(names).toContain('vegHarvests');
+  });
+
+  it('indexes a planting by bed and sow date, so rotation history is a query', () => {
+    // Beds stay thin precisely because "what was in bed 3 last season" is derivable.
+    const indexes = db.table('vegPlantings').schema.indexes.map((i) => i.name);
+    expect(indexes).toContain('[bedId+dateSown]');
+  });
+
+  it('exposes vegDb', () => {
+    expect(vegDb.beds.name).toBe('vegBeds');
+    expect(vegDb.plantings.name).toBe('vegPlantings');
+    expect(vegDb.harvests.name).toBe('vegHarvests');
   });
 });

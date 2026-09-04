@@ -207,6 +207,78 @@ export interface GrowPlannedPlanting {
 }
 
 // ============================================
+// VEGETABLES MODULE TYPES
+// ============================================
+
+/**
+ * A growing bed. Thin on purpose: a bed is a place, and what matters about it lives on the
+ * plantings that reference it. Rotation history is a query over those plantings rather than
+ * a field here - which is the whole reason a bed is a row and not a string on the planting.
+ * Soil tests and amendments hang off this id when they are needed.
+ */
+export interface VegBed {
+  id?: string;
+  siteId: string;
+  name: string;                 // "Bed 3", "North tunnel 2"
+  lengthM?: number;
+  widthM?: number;
+  isActive: boolean;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * A block of one crop in one bed, sown or transplanted on one date. The record you open and
+ * work in - the vegetable equivalent of a tray.
+ *
+ * Two plantings can share a bed at once, and a succession is just the next planting of the
+ * same crop, linked back so the interval can be measured against what it yielded.
+ *
+ * No harvest fields here. Vegetables are picked over weeks, so harvests are their own
+ * records and the totals are summed from them.
+ */
+export interface VegPlanting {
+  id?: string;
+  siteId: string;
+  bedId: string;
+  bedPortion?: string;          // "north half" - free text; beds get subdivided ad hoc
+  crop: string;
+  variety?: string;
+  method: 'direct_sown' | 'transplanted';
+  dateSown?: Date;
+  dateTransplanted?: Date;
+  plantCount?: number;
+  spacingCm?: number;
+  expectedFirstHarvest?: Date;
+  status: 'planned' | 'growing' | 'harvesting' | 'finished' | 'failed';
+  dateFinished?: Date;          // Pulled, tilled in, or written off
+  finishReason?: string;
+  previousPlantingId?: string;  // Succession link
+  proposedBy?: 'agent';         // Same provenance convention as growPlannedPlantings
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * One pick. A total can always be summed from events; events can never be recovered from a
+ * total - which is why this is a log and not two fields on the planting. It is also what
+ * makes a yield curve over the life of a planting possible at all.
+ */
+export interface VegHarvest {
+  id?: string;
+  plantingId: string;
+  date: Date;
+  quantity: number;
+  unit: 'kg' | 'g' | 'bunches' | 'count';
+  qualityGrade?: 'A' | 'B' | 'C';
+  sellable: boolean;
+  notes?: string;
+  createdAt: Date;
+}
+
+// ============================================
 // AI MODULE TYPES
 // ============================================
 
@@ -351,6 +423,11 @@ class PaddockDB extends Dexie {
   propBatchCosts!: Table<PropBatchCost>;
   propSpeciesConfigs!: Table<PropSpeciesConfig>;
 
+  // Vegetables module tables
+  vegBeds!: Table<VegBed>;
+  vegPlantings!: Table<VegPlanting>;
+  vegHarvests!: Table<VegHarvest>;
+
   constructor() {
     super('Paddock');
 
@@ -486,8 +563,8 @@ class PaddockDB extends Dexie {
     // IndexedDB has no downgrade path. Keeping both for one release means a copy that
     // succeeded but is subtly wrong is still recoverable.
     //
-    // The drop lands as version 13 in the release AFTER this one has run against real
-    // data. See docs/architecture/2026-09-03-enterprise-modules-design.md.
+    // The drop lands in a later version, in the release after this one has run against
+    // real data. See docs/architecture/2026-09-03-enterprise-modules-design.md.
 
     // Backfill the enterprise tag while it can still be known.
     //
@@ -500,6 +577,17 @@ class PaddockDB extends Dexie {
       await tx.table('growTimeEntries').toCollection().modify((entry) => {
         entry.enterprise = 'microgreens';
       });
+    });
+
+    // Vegetables: beds, plantings, and harvests as an append-only log.
+    //
+    // Purely additive - no upgrade() body, because there is nothing to migrate. A grower who
+    // never enables the module simply has three empty tables.
+    this.version(13).stores({
+      vegBeds: '++id, siteId, name, isActive, [siteId+isActive]',
+      vegPlantings:
+        '++id, siteId, bedId, crop, status, dateSown, [siteId+status], [bedId+dateSown], [crop+status]',
+      vegHarvests: '++id, plantingId, date, [plantingId+date]',
     });
   }
 }
@@ -548,6 +636,12 @@ export const propDb = {
 
 export const plannerDb = {
   events: db.plannerEvents,
+};
+
+export const vegDb = {
+  beds: db.vegBeds,
+  plantings: db.vegPlantings,
+  harvests: db.vegHarvests,
 };
 
 // Re-export propagation types for convenience
