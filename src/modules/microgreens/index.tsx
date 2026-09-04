@@ -89,7 +89,7 @@ export default function GrowModule() {
   return (
     <ErrorBoundary
       section="Microgreens Module"
-      module="grow"
+      module="microgreens"
       showModuleNav
     >
       <GrowModuleContent />

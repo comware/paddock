@@ -22,7 +22,7 @@ interface ErrorBoundaryProps {
   /** Section name for contextual error messages */
   section?: string;
   /** Module name for navigation (grow, propagation, planner) */
-  module?: 'grow' | 'propagation' | 'planner' | 'settings';
+  module?: 'microgreens' | 'propagation' | 'planner' | 'settings';
   /** Show navigation to other modules on error */
   showModuleNav?: boolean;
 }
