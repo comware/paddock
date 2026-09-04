@@ -6,7 +6,8 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Navigate, Outlet, useLocation, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Outlet, type RouteObject } from 'react-router-dom';
+import { GrowRedirect } from '@/components/GrowRedirect';
 import { AppShell } from '@/components/Shell';
 import { ComingSoon, ModuleLoader } from '@/components/shared';
 import { WelcomeModal } from '@/components/onboarding';
@@ -18,16 +19,6 @@ const PropagationModule = lazy(() => import('@/modules/propagation'));
 const PlannerModule = lazy(() => import('@/modules/planner'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
 
-/**
- * Paddock's grow module became microgreens when vegetables arrived as a sibling rather
- * than something feeding it. Links, bookmarks, keyboard shortcuts and the WebMCP tool
- * descriptions all still say /grow, so redirect rather than 404 - the module's own routes
- * file already keeps aliases for the same reason.
- */
-function GrowRedirect() {
-  const { pathname, search, hash } = useLocation();
-  return <Navigate to={pathname.replace(/^\/grow/, '/microgreens') + search + hash} replace />;
-}
 
 // Root layout wrapper that provides router context for components like WelcomeModal
 function RootLayout() {
