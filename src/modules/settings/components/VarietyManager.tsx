@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { growDb, type GrowVarietyConfig } from '@/lib/db';
+import { growDb, toKey, withId, type GrowVarietyConfig } from '@/lib/db';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 const varietySchema = z.object({
@@ -47,7 +47,8 @@ export function VarietyManager() {
 
   const loadVarieties = async () => {
     try {
-      const configs = await growDb.varietyConfigs.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const configs = (await growDb.varietyConfigs.toArray()).map(withId);
       setVarieties(configs);
     } finally {
       setIsLoading(false);
@@ -92,7 +93,7 @@ export function VarietyManager() {
     if (!deleteConfirmId) return;
 
     try {
-      await growDb.varietyConfigs.delete(deleteConfirmId);
+      await growDb.varietyConfigs.delete(toKey(deleteConfirmId));
       setMessage({ type: 'success', text: 'Variety deleted' });
       loadVarieties();
     } catch (error) {
@@ -111,7 +112,7 @@ export function VarietyManager() {
   const onSubmit = async (data: VarietyFormData) => {
     try {
       if (editingId) {
-        await growDb.varietyConfigs.update(editingId, data);
+        await growDb.varietyConfigs.update(toKey(editingId), data);
         setMessage({ type: 'success', text: 'Variety updated' });
       } else {
         // Check for duplicate name

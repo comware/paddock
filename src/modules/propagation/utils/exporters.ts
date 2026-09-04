@@ -6,7 +6,7 @@
  */
 
 import { format } from 'date-fns';
-import { db, propDb } from '@/lib/db';
+import { db, propDb, toId } from '@/lib/db';
 import type {
   PropMotherPlant,
   PropStation,
@@ -271,8 +271,10 @@ export async function exportBatchesAsCSV(): Promise<string> {
   const motherPlants = await propDb.motherPlants.toArray();
   const stations = await propDb.stations.toArray();
 
-  const motherPlantMap = new Map(motherPlants.map((m) => [m.id, m]));
-  const stationMap = new Map(stations.map((s) => [s.id, s]));
+  // batch.motherPlantId / batch.stationId are foreign keys held as strings; the maps
+  // must be keyed the same way. See src/lib/db/keys.ts.
+  const motherPlantMap = new Map(motherPlants.map((m) => [toId(m.id!), m]));
+  const stationMap = new Map(stations.map((s) => [toId(s.id!), s]));
 
   const headers = [
     'Batch Number',

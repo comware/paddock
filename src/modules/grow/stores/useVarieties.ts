@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, type GrowVarietyConfig } from '@/lib/db';
+import { growDb, withId, type GrowVarietyConfig } from '@/lib/db';
 
 export interface VarietiesState {
   varieties: GrowVarietyConfig[];
@@ -24,7 +24,8 @@ export const useVarieties = create<VarietiesState>((set, get) => ({
 
   loadVarieties: async () => {
     try {
-      const varieties = await growDb.varietyConfigs.toArray();
+      // Ids are strings above the database boundary; see src/lib/db/keys.ts.
+      const varieties = (await growDb.varietyConfigs.toArray()).map(withId);
       set({ varieties, isLoading: false, error: null });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });

@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { propDb } from '@/lib/db';
+import { propDb, toKey } from '@/lib/db';
 import type { PropStageTransition } from '../../types';
 import { STAGE_DISPLAY_NAMES, STAGE_COLORS } from '../../utils/stageHelpers';
 import { formatDistanceToNow } from 'date-fns';
@@ -41,7 +41,9 @@ export function RecentActivity({ maxItems = 10 }: RecentActivityProps) {
         const enriched: ActivityItem[] = [];
         for (const transition of transitions) {
           if (transition.batchId) {
-            const batch = await propDb.batches.get(transition.batchId);
+            // transition.batchId is a foreign key looking up the row it points at,
+            // so it goes through toKey. See src/lib/db/keys.ts.
+            const batch = await propDb.batches.get(toKey(transition.batchId));
             enriched.push({
               ...transition,
               batchNumber: batch?.batchNumber,
