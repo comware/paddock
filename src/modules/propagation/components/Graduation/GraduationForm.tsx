@@ -16,6 +16,7 @@ import { Modal } from '@/components/ui/Modal';
 import { useBatches } from '../../stores/useBatches';
 import { useGraduations } from '../../stores/useGraduations';
 import type { GraduationOutcome } from '../../types';
+import { PlantingPicker } from '../shared/PlantingPicker';
 import {
   BatchInfoHeader,
   OutcomeSelector,
@@ -58,6 +59,7 @@ export function GraduationForm({
   const [recipientName, setRecipientName] = useState('');
   const [recipientContact, setRecipientContact] = useState('');
   const [plantedLocation, setPlantedLocation] = useState('');
+  const [plantingId, setPlantingId] = useState<string | undefined>(undefined);
   const [salePrice, setSalePrice] = useState('');
   const [notes, setNotes] = useState('');
   const [graduationDate, setGraduationDate] = useState(
@@ -83,6 +85,7 @@ export function GraduationForm({
       setRecipientName('');
       setRecipientContact('');
       setPlantedLocation('');
+      setPlantingId(undefined);
       setSalePrice('');
       setNotes('');
       setGraduationDate(format(new Date(), 'yyyy-MM-dd'));
@@ -105,6 +108,8 @@ export function GraduationForm({
           outcome === 'gifted' ? recipientContact || undefined : undefined,
         plantedLocation:
           outcome === 'planted_garden' ? plantedLocation || undefined : undefined,
+        plantingId:
+          outcome === 'planted_garden' ? plantingId : undefined,
         salePrice:
           outcome === 'sold' && salePrice
             ? parseFloat(salePrice)
@@ -138,6 +143,7 @@ export function GraduationForm({
     recipientName,
     recipientContact,
     plantedLocation,
+    plantingId,
     salePrice,
     notes,
     graduationDate,
@@ -241,18 +247,25 @@ export function GraduationForm({
           )}
 
           {outcome === 'planted_garden' && (
-            <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
-              <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">
-                Planted Location{' '}
-                <span className="text-slate-400 font-normal">(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={plantedLocation}
-                onChange={(e) => setPlantedLocation(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="Where in the garden was it planted?"
+            <div className="space-y-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+              <PlantingPicker
+                siteId={batch.siteId}
+                value={plantingId}
+                onChange={setPlantingId}
               />
+              <div>
+                <label className="block text-sm text-slate-600 dark:text-slate-400 mb-1">
+                  Planted Location{' '}
+                  <span className="text-slate-400 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={plantedLocation}
+                  onChange={(e) => setPlantedLocation(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Where in the garden was it planted?"
+                />
+              </div>
             </div>
           )}
 

@@ -10,10 +10,12 @@
  * Uses the useGraduations store to fetch data.
  */
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import { useGraduations, type EnrichedGraduation } from '../../stores/useGraduations';
 import type { GraduationOutcome } from '../../types';
+import { usePlantings, useBeds } from '@/modules/vegetables/stores';
 
 // ============================================
 // TYPES
@@ -124,6 +126,18 @@ function GraduationEntry({
 }) {
   const config = OUTCOME_CONFIG[graduation.outcome];
 
+  // Resolve the linked planting, when there is one. A plantingId can point at a planting
+  // that has since been deleted - in that case we degrade to the free-text location (or
+  // nothing) rather than rendering a broken link.
+  const plantings = usePlantings((s) => s.plantings);
+  const beds = useBeds((s) => s.beds);
+  const linkedPlanting = graduation.plantingId
+    ? plantings.find((p) => p.id === graduation.plantingId)
+    : undefined;
+  const linkedBed = linkedPlanting
+    ? beds.find((b) => b.id === linkedPlanting.bedId)
+    : undefined;
+
   return (
     <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600">
       <div className="flex items-start justify-between gap-3">
@@ -158,11 +172,34 @@ function GraduationEntry({
                 To: {graduation.recipientName}
               </div>
             )}
-            {graduation.outcome === 'planted_garden' && graduation.plantedLocation && (
+            {graduation.outcome === 'planted_garden' && linkedPlanting && (
               <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Location: {graduation.plantedLocation}
+                Planted as{' '}
+                <Link
+                  to={`/vegetables/plantings/${linkedPlanting.id}`}
+                  className="text-primary-600 dark:text-primary-400 hover:underline"
+                >
+                  {[linkedPlanting.crop, linkedPlanting.variety, linkedBed?.name]
+                    .filter(Boolean)
+                    .join(', ')}
+                </Link>
               </div>
             )}
+            {graduation.outcome === 'planted_garden' &&
+              !linkedPlanting &&
+              graduation.plantedLocation && (
+                <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                  Location: {graduation.plantedLocation}
+                </div>
+              )}
+            {graduation.outcome === 'planted_garden' &&
+              !linkedPlanting &&
+              !graduation.plantedLocation &&
+              graduation.plantingId && (
+                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1 italic">
+                  Planted location no longer available
+                </div>
+              )}
             {graduation.outcome === 'sold' && graduation.salePrice !== undefined && (
               <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Price: ${graduation.salePrice.toFixed(2)}
@@ -267,6 +304,15 @@ function GraduationSummary({
 
 export function GraduationHistory({ batchId, compact = false }: GraduationHistoryProps) {
   const { getGraduationsByBatch, getTotalGraduatedForBatch } = useGraduations();
+  const loadPlantings = usePlantings((s) => s.loadPlantings);
+  const loadBeds = useBeds((s) => s.loadBeds);
+
+  // Resolve any linked plantings for display, when there are any to resolve. Harmless to
+  // load unconditionally - the store is a no-op cost if the grower never opens vegetables.
+  useEffect(() => {
+    loadPlantings();
+    loadBeds();
+  }, [loadPlantings, loadBeds]);
 
   // Get graduations for this batch
   const graduations = useMemo(

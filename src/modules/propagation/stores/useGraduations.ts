@@ -57,6 +57,7 @@ export interface GraduationsState {
       recipientName?: string;
       recipientContact?: string;
       plantedLocation?: string;
+      plantingId?: string;
       salePrice?: number;
       saleReferenceId?: string;
       notes?: string;
@@ -70,6 +71,7 @@ export interface GraduationsState {
       recipientName?: string;
       recipientContact?: string;
       plantedLocation?: string;
+      plantingId?: string;
       salePrice?: number;
       saleReferenceId?: string;
       notes?: string;
@@ -138,6 +140,7 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
       graduationDate,
       recipientName: input.recipientName,
       plantedLocation: input.plantedLocation,
+      plantingId: input.plantingId,
       salePrice: input.salePrice,
       notes: input.notes,
       createdAt: now,
@@ -197,6 +200,7 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
       outcome,
       recipientName: options.recipientName,
       plantedLocation: options.plantedLocation,
+      plantingId: options.plantingId,
       salePrice: options.salePrice,
       notes: options.notes,
       graduationDate: options.graduationDate,
@@ -225,6 +229,7 @@ export const useGraduations = create<GraduationsState>((set, get) => ({
       outcome,
       recipientName: options.recipientName,
       plantedLocation: options.plantedLocation,
+      plantingId: options.plantingId,
       salePrice: options.salePrice,
       notes: options.notes,
       graduationDate: options.graduationDate,

@@ -221,6 +221,19 @@ export interface PropGraduation {
   saleReferenceId?: string;
   salePrice?: number;
   plantedLocation?: string;
+  /**
+   * The vegetable planting this became, when it went into a bed you track.
+   *
+   * `sold` has always pointed at something structured via saleReferenceId while
+   * `planted_garden` pointed at free text. Now that a planting is a real row, this closes
+   * the loop from mother plant through to the picks that came off the bed.
+   *
+   * The link lives here rather than as a graduationId on the planting because a bed can be
+   * topped up from several graduations and can also be direct-sown - N to 1 is true where
+   * 1 to 1 is not - and because pointing propagation at vegetables keeps vegetables
+   * standalone for a grower who never opens propagation.
+   */
+  plantingId?: string;
   notes?: string;
   createdAt: Date;
 }
@@ -232,6 +245,7 @@ export interface GraduationInput {
   outcome: GraduationOutcome;
   recipientName?: string;
   plantedLocation?: string;
+  plantingId?: string;
   salePrice?: number;
   notes?: string;
 }

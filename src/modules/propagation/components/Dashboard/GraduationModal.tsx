@@ -14,6 +14,7 @@ import { Modal } from '@/components/ui/Modal';
 import { useBatches } from '../../stores/useBatches';
 import { useGraduations } from '../../stores/useGraduations';
 import type { GraduationOutcome } from '../../types';
+import { PlantingPicker } from '../shared/PlantingPicker';
 import {
   BatchInfoHeader,
   OutcomeSelector,
@@ -51,6 +52,7 @@ export function GraduationModal({
   const [quantity, setQuantity] = useState(1);
   const [recipientName, setRecipientName] = useState('');
   const [plantedLocation, setPlantedLocation] = useState('');
+  const [plantingId, setPlantingId] = useState<string | undefined>(undefined);
   const [salePrice, setSalePrice] = useState<string>('');
   const [notes, setNotes] = useState('');
 
@@ -69,6 +71,7 @@ export function GraduationModal({
       setQuantity(Math.min(1, batch.quantitySurviving));
       setRecipientName('');
       setPlantedLocation('');
+      setPlantingId(undefined);
       setSalePrice('');
       setNotes('');
       setStep('form');
@@ -87,6 +90,7 @@ export function GraduationModal({
       await recordBatchGraduation(batchId, quantity, selectedOutcome, {
         recipientName: recipientName || undefined,
         plantedLocation: plantedLocation || undefined,
+        plantingId: selectedOutcome === 'planted_garden' ? plantingId : undefined,
         salePrice: salePrice ? parseFloat(salePrice) : undefined,
         notes: notes || undefined,
       });
@@ -105,7 +109,7 @@ export function GraduationModal({
     }
   }, [
     batch, batchId, selectedOutcome, quantity,
-    recipientName, plantedLocation, salePrice, notes,
+    recipientName, plantedLocation, plantingId, salePrice, notes,
     recordBatchGraduation, loadGraduations, onSuccess, onClose,
   ]);
 
@@ -174,17 +178,24 @@ export function GraduationModal({
           )}
 
           {showLocationField && (
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                Planting Location
-              </label>
-              <input
-                type="text"
-                value={plantedLocation}
-                onChange={(e) => setPlantedLocation(e.target.value)}
-                placeholder="Where in your garden?"
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            <div className="space-y-4">
+              <PlantingPicker
+                siteId={batch.siteId}
+                value={plantingId}
+                onChange={setPlantingId}
               />
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  Planting Location
+                </label>
+                <input
+                  type="text"
+                  value={plantedLocation}
+                  onChange={(e) => setPlantedLocation(e.target.value)}
+                  placeholder="Where in your garden?"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
             </div>
           )}
 
