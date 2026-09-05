@@ -132,6 +132,49 @@ describe('PlantingDetail', () => {
     });
   });
 
+  it('shows the new status when a first pick moves a growing planting to harvesting', async () => {
+    // logHarvest writes the planting's status straight to the database, bypassing
+    // usePlantings' in-memory path. The reopen case reloads; this one is the same
+    // mechanism without the banner, so a badge still reading "Growing" after the first
+    // pick would be the UI disagreeing with the database it just wrote.
+    const siteId = await seedActiveSite();
+    const bedId = await useBeds.getState().addBed({ siteId, name: 'Bed 9', isActive: true });
+    const plantingId = await usePlantings.getState().addPlanting({
+      siteId,
+      bedId,
+      crop: 'Chard',
+      method: 'direct_sown',
+      status: 'growing',
+      dateSown: new Date('2026-01-05'),
+      notes: '',
+    });
+
+    const user = userEvent.setup();
+    renderDetail(plantingId);
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Chard' })).toBeInTheDocument();
+    });
+    expect(screen.getByText('Growing')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Log a pick' }));
+    const dialog = await screen.findByRole('dialog');
+    await user.clear(within(dialog).getByLabelText(/quantity/i));
+    await user.type(within(dialog).getByLabelText(/quantity/i), '3');
+    await user.click(within(dialog).getByRole('button', { name: 'Log Pick' }));
+
+    // The database moved on...
+    await waitFor(async () => {
+      const stored = await vegDb.plantings.get(Number(plantingId));
+      expect(stored?.status).toBe('harvesting');
+    });
+
+    // ...and so must the screen.
+    await waitFor(() => {
+      expect(screen.getByText('Harvesting')).toBeInTheDocument();
+    });
+  });
+
   it('logging a pick against a finished planting reopens it, in the database and in the UI', async () => {
     const siteId = await seedActiveSite();
     const bedId = await useBeds.getState().addBed({ siteId, name: 'Bed 2', isActive: true });

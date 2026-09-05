@@ -140,13 +140,15 @@ export function PlantingDetail() {
 
   const handleHarvestLogged = (result: { reopened: boolean }) => {
     setLogModalOpen(false);
-    if (result.reopened) {
-      setReopenedNotice(true);
-      // logHarvest writes the status change straight to the database, bypassing
-      // usePlantings' own update path - reload so the status shown here (and the
-      // transitions offered below it) reflect the reopening rather than lying stale.
-      loadPlantings();
-    }
+    if (result.reopened) setReopenedNotice(true);
+
+    // logHarvest writes the planting's status straight to the database, bypassing
+    // usePlantings' own update path, so this screen's copy is stale the moment a pick
+    // lands. Reload unconditionally rather than only on a reopen: the first pick on a
+    // growing planting moves it to harvesting by the same mechanism, just without the
+    // banner, and a badge still reading "Growing" would have this screen disagreeing
+    // with the database it had just written.
+    loadPlantings();
   };
 
   return (
