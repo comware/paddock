@@ -22,7 +22,7 @@ interface ErrorBoundaryProps {
   /** Section name for contextual error messages */
   section?: string;
   /** Module name for navigation (grow, propagation, planner) */
-  module?: 'microgreens' | 'propagation' | 'planner' | 'settings';
+  module?: 'microgreens' | 'propagation' | 'vegetables' | 'planner' | 'settings';
   /** Show navigation to other modules on error */
   showModuleNav?: boolean;
 }
@@ -38,6 +38,7 @@ interface ErrorBoundaryState {
 const MODULE_NAV = [
   { name: 'Microgreens', path: '/microgreens', icon: '🌱' },
   { name: 'Propagation', path: '/propagation', icon: '🌿' },
+  { name: 'Vegetables', path: '/vegetables', icon: '🥕' },
   { name: 'Planner', path: '/planner', icon: '📅' },
   { name: 'Settings', path: '/settings', icon: '⚙️' },
 ] as const;

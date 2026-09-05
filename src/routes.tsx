@@ -16,6 +16,7 @@ import { WelcomeModal } from '@/components/onboarding';
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const MicrogreensModule = lazy(() => import('@/modules/microgreens'));
 const PropagationModule = lazy(() => import('@/modules/propagation'));
+const VegetablesModule = lazy(() => import('@/modules/vegetables'));
 const PlannerModule = lazy(() => import('@/modules/planner'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
 
@@ -69,6 +70,16 @@ const routes: RouteObject[] = [
             element: (
               <Suspense fallback={<ModuleLoader />}>
                 <PropagationModule />
+              </Suspense>
+            ),
+          },
+
+          // Vegetables module — wildcard delegates sub-routing to module
+          {
+            path: 'vegetables/*',
+            element: (
+              <Suspense fallback={<ModuleLoader />}>
+                <VegetablesModule />
               </Suspense>
             ),
           },

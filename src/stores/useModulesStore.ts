@@ -17,6 +17,7 @@ import { create } from 'zustand';
 import {
   Sprout,
   Leaf,
+  Carrot,
   Banknote,
   Store,
   Users,
@@ -29,6 +30,7 @@ import { platformDb } from '@/lib/db';
 export type ModuleId =
   | 'microgreens'
   | 'propagation'
+  | 'vegetables'
   | 'sales'
   | 'markets'
   | 'crm'
@@ -59,6 +61,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     path: '/propagation',
     Icon: Leaf,
     description: 'Cuttings, rooting stations, and mother plants',
+  },
+  {
+    id: 'vegetables',
+    name: 'Vegetables',
+    path: '/vegetables',
+    Icon: Carrot,
+    description: 'Beds, successions, and harvests over weeks',
   },
   {
     id: 'sales',

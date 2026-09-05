@@ -152,3 +152,19 @@ describe('renaming grow to microgreens', () => {
     expect(microgreens?.required).toBeUndefined();
   });
 });
+
+describe('vegetables module', () => {
+  it('survives a round trip through load() when stored', async () => {
+    settings = [{ id: '1', key: 'enabled_modules', value: ['microgreens', 'vegetables'] } as PlatformSetting];
+
+    await store().load();
+
+    expect(store().isEnabled('vegetables')).toBe(true);
+  });
+
+  it('appears in MODULE_DEFINITIONS without being required', () => {
+    const vegetables = MODULE_DEFINITIONS.find((m) => m.id === 'vegetables');
+    expect(vegetables).toBeDefined();
+    expect(vegetables?.required).toBeUndefined();
+  });
+});
