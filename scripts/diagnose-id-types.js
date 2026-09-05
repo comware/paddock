@@ -1,10 +1,16 @@
 /**
  * Read-only diagnostic: what type are the ids and foreign keys in YOUR database?
  *
- * Paddock declares every store `++id`, so primary keys are numbers. But most stores
- * stringify ids when adding a row, and a foreign key is a stored VALUE rather than a key -
- * so a row written in one session can hold a string FK while its neighbours hold numbers.
- * A later `.where('siteId').equals(42)` then silently misses it.
+ * Paddock's settled convention: PRIMARY KEYS are numbers (every store is `++id`), and
+ * FOREIGN KEYS are strings, because they are compared in memory against state ids, which
+ * are strings above the database boundary. See src/lib/db/keys.ts.
+ *
+ * A foreign key is a stored VALUE rather than a key, written from whatever the caller held
+ * at the time. Before the boundary existed that was a number for a row loaded from the
+ * database and a string for one added in the same session - so a column can hold BOTH, and
+ * a later `.where('siteId').equals(x)` silently misses whichever form x is not.
+ *
+ * So a string foreign key is CORRECT. What this looks for is a column holding a MIX.
  *
  * Whether that has actually happened in your database is a question about your data, not
  * your code. This answers it. Nothing here writes, deletes, or migrates anything - it opens
@@ -16,8 +22,8 @@
  *   3. Paste this whole file and press Enter.
  *   4. Copy the printed report.
  *
- * If it reports zero string-typed values, the repair migration that was going to be
- * written is unnecessary and should not be written.
+ * If no column is MIXED, the repair migration that was going to be written is unnecessary
+ * and should not be written - `fkMatch` can be simplified away instead.
  */
 
 (async () => {
@@ -69,6 +75,7 @@
   const foreignKeys = [];
   let mixedColumns = 0;
   let stringValues = 0;
+  let nonNumericPrimaryKeys = 0;
 
   for (const name of storeNames) {
     const rows = await readAll(name);
@@ -78,7 +85,8 @@
     const pkTypes = {};
     for (const row of rows) pkTypes[typeOf(row.id)] = (pkTypes[typeOf(row.id)] || 0) + 1;
     primaryKeys.push({ table: name, rows: rows.length, ...pkTypes });
-    if (pkTypes.string) stringValues += pkTypes.string;
+    // A primary key should always be a number - the stores are `++id`.
+    if (pkTypes.string) nonNumericPrimaryKeys += pkTypes.string;
 
     // Foreign keys.
     for (const col of FOREIGN_KEYS[name] || []) {
@@ -112,20 +120,33 @@
   console.table(foreignKeys.filter((r) => r.rows > 0));
 
   console.log('%cVerdict', 'font-weight:bold');
-  if (stringValues === 0) {
+  console.log(
+    'Expected: primary keys all number, foreign keys all string, no column holding both.\n'
+  );
+
+  if (nonNumericPrimaryKeys > 0) {
     console.log(
-      '%cClean. Every id and foreign key is numeric.',
-      'color:green;font-weight:bold'
+      `%c${nonNumericPrimaryKeys} primary key(s) are not numbers. That is unexpected - report it.`,
+      'color:red;font-weight:bold'
     );
-    console.log('No repair migration is needed. The code fix alone prevents future pollution.');
-  } else {
-    console.log(
-      `%c${stringValues} string-typed value(s) found across ${mixedColumns} mixed column(s).`,
-      'color:orange;font-weight:bold'
-    );
-    console.log('A repair migration IS needed. Paste the two tables above back to Claude -');
-    console.log('which columns are affected determines what it has to convert.');
   }
 
-  return { primaryKeys, foreignKeys, stringValues, mixedColumns };
+  if (mixedColumns === 0) {
+    console.log(
+      '%cClean. No foreign-key column holds both forms.',
+      'color:green;font-weight:bold'
+    );
+    console.log('No repair migration is needed, and the fkMatch tolerance in the stores can');
+    console.log('be simplified to a plain .equals() - grep for fkMatch to find the call sites.');
+  } else {
+    console.log(
+      `%c${mixedColumns} foreign-key column(s) hold BOTH numbers and strings.`,
+      'color:orange;font-weight:bold'
+    );
+    console.log('Those rows are only reachable because the stores query with fkMatch, which');
+    console.log('tolerates both. A repair migration would normalise them to strings and let');
+    console.log('that tolerance go. Paste the foreign-key table above back to Claude.');
+  }
+
+  return { primaryKeys, foreignKeys, stringValues, mixedColumns, nonNumericPrimaryKeys };
 })();
