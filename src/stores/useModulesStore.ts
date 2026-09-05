@@ -109,12 +109,29 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
 const STORAGE_KEY = 'enabled_modules';
 
 /**
- * A fresh install starts with Microgreens alone. Someone running Paddock for the first time
- * is tracking trays; propagation, sales and the rest are things they may grow into. Starting
- * narrow and letting them switch modules on beats presenting seven sections and leaving
- * them to work out which two matter.
+ * A fresh install starts with the three growing modules on.
+ *
+ * They are the enterprises Paddock actually models - microgreens in trays, vegetables in
+ * beds, propagation from cuttings - and a grower arriving for the first time is doing at
+ * least one of them. Sales, markets and the rest stay off: they are placeholders, and a
+ * navigation full of "coming soon" teaches someone the app is mostly empty.
+ *
+ * Any of these can still be switched off in Settings. Nothing is required.
  */
-const DEFAULT_ENABLED: ModuleId[] = ['microgreens'];
+const DEFAULT_ENABLED: ModuleId[] = ['microgreens', 'propagation', 'vegetables'];
+
+/**
+ * Modules added to an install that predates them - once.
+ *
+ * An existing grower has a stored list that was written before vegetables existed, so the
+ * default above never reaches them. This backfills it on the next load.
+ *
+ * It runs ONCE, tracked by its own settings key, rather than being a floor applied on every
+ * load. The difference matters: a floor would switch a module back on every time the grower
+ * turned it off, which is not a default, it is an argument.
+ */
+const BACKFILL_KEY = 'enabled_modules_growing_backfill';
+const BACKFILLED: ModuleId[] = ['propagation', 'vegetables'];
 
 const REQUIRED: ModuleId[] = MODULE_DEFINITIONS.filter((m) => m.required).map((m) => m.id);
 
@@ -149,20 +166,38 @@ export const useModulesStore = create<ModulesState>((set, get) => ({
         : stored;
 
       // Tolerate anything unexpected in storage rather than rendering an empty nav.
-      const enabled = Array.isArray(migrated)
+      const known = Array.isArray(migrated)
         ? (migrated.filter((id) =>
             MODULE_DEFINITIONS.some((m) => m.id === id),
           ) as ModuleId[])
         : DEFAULT_ENABLED;
+
+      // Add the growing modules to an install that predates them, once. `backfillDone`
+      // is what stops this becoming a floor that overrides a deliberate switch-off.
+      const backfill = await platformDb.settings.where('key').equals(BACKFILL_KEY).first();
+      const backfillDone = Boolean(backfill);
+      const enabled = backfillDone ? known : [...new Set([...known, ...BACKFILLED])];
 
       set({
         enabled: [...new Set([...REQUIRED, ...enabled])],
         isLoaded: true,
       });
 
-      // Persist the migration once, so future loads see the renamed id directly.
-      if (Array.isArray(stored) && setting?.id && stored.some((id) => id in RENAMED)) {
-        await platformDb.settings.update(setting.id, { value: migrated });
+      const renamedAnything =
+        Array.isArray(stored) && stored.some((id) => id in RENAMED);
+      const addedAnything = !backfillDone && enabled.length !== known.length;
+
+      if (renamedAnything || addedAnything) {
+        if (setting?.id) {
+          await platformDb.settings.update(setting.id, { value: enabled });
+        } else {
+          await platformDb.settings.add({ key: STORAGE_KEY, value: enabled });
+        }
+      }
+
+      // Mark the backfill done even when it added nothing, so it never reconsiders.
+      if (!backfillDone) {
+        await platformDb.settings.add({ key: BACKFILL_KEY, value: true });
       }
     } catch {
       set({ enabled: DEFAULT_ENABLED, isLoaded: true });

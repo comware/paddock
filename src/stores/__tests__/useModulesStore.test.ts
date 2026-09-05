@@ -34,6 +34,13 @@ const { useModulesStore, MODULE_DEFINITIONS } = await import('../useModulesStore
 
 const store = () => useModulesStore.getState();
 
+/** The enabled-modules row, found by key rather than position. */
+const storedModules = () => settings.find((x) => x.key === 'enabled_modules');
+
+/** Pretend the one-time growing-module backfill has already run. */
+const backfillAlreadyDone = () =>
+  settings.push({ id: '99', key: 'enabled_modules_growing_backfill', value: true } as PlatformSetting);
+
 beforeEach(() => {
   settings = [];
   nextId = 1;
@@ -41,12 +48,16 @@ beforeEach(() => {
 });
 
 describe('module enablement', () => {
-  it('starts with Microgreens alone', async () => {
+  it('starts with the three growing modules', async () => {
     await store().load();
 
-    // A first-time grower is tracking trays. Everything else is something they may grow
-    // into, and can switch on when they do.
-    expect(store().enabled).toEqual(['microgreens']);
+    // Microgreens, vegetables and propagation are the enterprises Paddock models. Sales
+    // and the rest stay off - they are placeholders, and a nav full of "coming soon"
+    // teaches a new grower the app is mostly empty.
+    expect(store().enabled).toEqual(
+      expect.arrayContaining(['microgreens', 'propagation', 'vegetables'])
+    );
+    expect(store().isEnabled('sales')).toBe(false);
   });
 
   it('turns a module on and persists it', async () => {
@@ -54,7 +65,7 @@ describe('module enablement', () => {
     await store().setEnabled('sales', true);
 
     expect(store().isEnabled('sales')).toBe(true);
-    expect(settings[0].value).toContain('sales');
+    expect(storedModules()?.value).toContain('sales');
   });
 
   it('turns a module off and persists it', async () => {
@@ -63,7 +74,7 @@ describe('module enablement', () => {
     await store().setEnabled('propagation', false);
 
     expect(store().isEnabled('propagation')).toBe(false);
-    expect(settings[0].value).not.toContain('propagation');
+    expect(storedModules()?.value).not.toContain('propagation');
   });
 
   it('lets microgreens be turned off, now that nothing is required', async () => {
@@ -77,9 +88,12 @@ describe('module enablement', () => {
 
   it('restores a saved selection', async () => {
     settings = [{ id: '1', key: 'enabled_modules', value: ['microgreens', 'finance'] }];
+    backfillAlreadyDone();
     await store().load();
 
     expect(store().enabled).toEqual(expect.arrayContaining(['microgreens', 'finance']));
+    // Propagation stays off: the one-time backfill has already run for this install, so
+    // its absence is the grower's choice rather than a gap.
     expect(store().isEnabled('propagation')).toBe(false);
   });
 
@@ -103,7 +117,7 @@ describe('module enablement', () => {
     await store().setEnabled('sales', true);
     await store().setEnabled('markets', true);
 
-    expect(settings).toHaveLength(1);
+    expect(settings.filter((x) => x.key === 'enabled_modules')).toHaveLength(1);
   });
 
   it('defines a path, icon and description for every module', () => {
@@ -112,6 +126,55 @@ describe('module enablement', () => {
       expect(module.Icon).toBeTruthy();
       expect(module.description).toBeTruthy();
     }
+  });
+});
+
+describe('enabling the growing modules by default', () => {
+  it('gives a fresh install all three growing modules', async () => {
+    settings = [];
+
+    await store().load();
+
+    expect(store().enabled).toEqual(
+      expect.arrayContaining(['microgreens', 'propagation', 'vegetables'])
+    );
+  });
+
+  it('adds them to an install that predates them, and persists the addition', async () => {
+    settings = [{ id: '1', key: 'enabled_modules', value: ['microgreens'] } as PlatformSetting];
+
+    await store().load();
+
+    expect(store().enabled).toEqual(
+      expect.arrayContaining(['microgreens', 'propagation', 'vegetables'])
+    );
+    const stored = settings.find((x) => x.key === 'enabled_modules');
+    expect(stored?.value).toEqual(expect.arrayContaining(['propagation', 'vegetables']));
+  });
+
+  it('carries a renamed id forward and adds the new modules in the same pass', async () => {
+    settings = [{ id: '1', key: 'enabled_modules', value: ['grow'] } as PlatformSetting];
+
+    await store().load();
+
+    expect(store().enabled).toEqual(
+      expect.arrayContaining(['microgreens', 'propagation', 'vegetables'])
+    );
+    expect(store().enabled).not.toContain('grow');
+  });
+
+  it('only adds them once, so turning one off afterwards sticks', async () => {
+    // The whole reason this is a one-time backfill rather than a floor: a module the
+    // grower has deliberately switched off must stay off across reloads.
+    settings = [{ id: '1', key: 'enabled_modules', value: ['microgreens'] } as PlatformSetting];
+    await store().load();
+    expect(store().isEnabled('propagation')).toBe(true);
+
+    await store().setEnabled('propagation', false);
+    await store().load();
+
+    expect(store().isEnabled('propagation')).toBe(false);
+    expect(store().isEnabled('vegetables')).toBe(true);
   });
 });
 
