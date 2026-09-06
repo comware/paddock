@@ -23,6 +23,7 @@ import { usePlantings } from '../../stores/usePlantings';
 import { useBeds } from '../../stores/useBeds';
 import { useSites } from '@/platform';
 import type { VegPlanting } from '@/lib/db';
+import { CropGuidePanel } from './CropGuidePanel';
 
 // ============================================
 // VALIDATION SCHEMA
@@ -270,6 +271,9 @@ export function PlantingForm({ isOpen, onClose, onSuccess, editPlanting, sowNext
           />
           {errors.crop && <p className="mt-1 text-sm text-red-500">{errors.crop.message}</p>}
         </div>
+
+        {/* Crop guide - collapsed by default, silent when there's no match */}
+        <CropGuidePanel cropName={watch('crop')} />
 
         {/* Variety */}
         <div>
