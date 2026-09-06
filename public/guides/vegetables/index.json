@@ -1,60 +1,60 @@
 {
   "version": "1.0",
-  "lastUpdated": "2026-09-02",
+  "lastUpdated": "2026-09-06",
   "categories": [
     {
       "id": "leafy-greens",
       "name": "Leafy Greens",
       "description": "Fast, forgiving, and mostly cut-and-come-again",
-      "icon": "🥬"
+      "icon": "\ud83e\udd6c"
     },
     {
       "id": "brassicas",
       "name": "Brassicas",
       "description": "Slower and hungrier, but the backbone of a cool season",
-      "icon": "🥦"
+      "icon": "\ud83e\udd66"
     },
     {
       "id": "roots",
       "name": "Roots",
-      "description": "Sown where they will grow — they resent being moved",
-      "icon": "🥕"
+      "description": "Sown where they will grow \u2014 they resent being moved",
+      "icon": "\ud83e\udd55"
     },
     {
       "id": "alliums",
       "name": "Alliums",
       "description": "Long in the ground, little trouble once established",
-      "icon": "🧅"
+      "icon": "\ud83e\uddc5"
     },
     {
       "id": "legumes",
       "name": "Legumes",
       "description": "Fix their own nitrogen and leave the bed better than they found it",
-      "icon": "🫛"
+      "icon": "\ud83e\udedb"
     },
     {
       "id": "cucurbits",
       "name": "Cucurbits",
       "description": "Hungry, thirsty, and they will take all the room you give them",
-      "icon": "🎃"
+      "icon": "\ud83c\udf83"
     },
     {
       "id": "fruiting",
       "name": "Fruiting",
       "description": "Warm-season crops that need heat and time",
-      "icon": "🍅"
+      "icon": "\ud83c\udf45"
     },
     {
       "id": "herbs",
       "name": "Herbs",
       "description": "Small, quick, and worth having by the door",
-      "icon": "🌿"
+      "icon": "\ud83c\udf3f"
     },
     {
       "id": "perennials",
       "name": "Perennials",
       "description": "Planted once, cropped for years",
-      "icon": "🌾"
+      "icon": "\ud83c\udf3e"
     }
   ],
   "guides": [
@@ -71,7 +71,7 @@
       "soilTempC": "7-24",
       "successionDays": 14,
       "file": "leafy-greens/lettuce.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "spinach",
@@ -86,7 +86,7 @@
       "soilTempC": "7-24",
       "successionDays": 14,
       "file": "leafy-greens/spinach.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "chard",
@@ -101,7 +101,7 @@
       "soilTempC": "10-30",
       "successionDays": 21,
       "file": "leafy-greens/chard.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "rocket",
@@ -116,7 +116,7 @@
       "soilTempC": "8-25",
       "successionDays": 14,
       "file": "leafy-greens/rocket.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "mizuna",
@@ -131,7 +131,7 @@
       "soilTempC": "8-25",
       "successionDays": 14,
       "file": "leafy-greens/mizuna.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "tatsoi",
@@ -146,7 +146,7 @@
       "soilTempC": "8-25",
       "successionDays": 14,
       "file": "leafy-greens/tatsoi.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "pak-choi",
@@ -161,7 +161,7 @@
       "soilTempC": "10-25",
       "successionDays": 14,
       "file": "leafy-greens/pak-choi.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "mustard-greens",
@@ -176,7 +176,7 @@
       "soilTempC": "10-25",
       "successionDays": 14,
       "file": "leafy-greens/mustard-greens.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "endive",
@@ -191,7 +191,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "leafy-greens/endive.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "radicchio",
@@ -206,7 +206,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "leafy-greens/radicchio.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "corn-salad",
@@ -221,7 +221,7 @@
       "soilTempC": "5-20",
       "successionDays": 21,
       "file": "leafy-greens/corn-salad.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "broccoli",
@@ -236,7 +236,7 @@
       "soilTempC": "7-30",
       "successionDays": 21,
       "file": "brassicas/broccoli.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "cauliflower",
@@ -251,7 +251,7 @@
       "soilTempC": "10-30",
       "successionDays": 21,
       "file": "brassicas/cauliflower.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "cabbage",
@@ -266,7 +266,7 @@
       "soilTempC": "7-30",
       "successionDays": 21,
       "file": "brassicas/cabbage.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "brussels-sprouts",
@@ -281,7 +281,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "brassicas/brussels-sprouts.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "kohlrabi",
@@ -296,7 +296,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "brassicas/kohlrabi.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "romanesco",
@@ -311,7 +311,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "brassicas/romanesco.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "collards",
@@ -326,7 +326,7 @@
       "soilTempC": "10-30",
       "successionDays": 21,
       "file": "brassicas/collards.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "kale",
@@ -341,7 +341,7 @@
       "soilTempC": "7-30",
       "successionDays": 21,
       "file": "brassicas/kale.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "carrot",
@@ -356,7 +356,7 @@
       "soilTempC": "8-30",
       "successionDays": 21,
       "file": "roots/carrot.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "beetroot",
@@ -371,7 +371,7 @@
       "soilTempC": "10-30",
       "successionDays": 21,
       "file": "roots/beetroot.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "radish",
@@ -386,7 +386,7 @@
       "soilTempC": "8-30",
       "successionDays": 14,
       "file": "roots/radish.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "turnip",
@@ -401,7 +401,7 @@
       "soilTempC": "8-30",
       "successionDays": 21,
       "file": "roots/turnip.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "parsnip",
@@ -416,7 +416,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "roots/parsnip.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "swede",
@@ -431,7 +431,7 @@
       "soilTempC": "8-25",
       "successionDays": 30,
       "file": "roots/swede.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "daikon",
@@ -446,7 +446,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "roots/daikon.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "onion",
@@ -461,7 +461,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "alliums/onion.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "spring-onion",
@@ -476,7 +476,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "alliums/spring-onion.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "leek",
@@ -491,7 +491,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "alliums/leek.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "garlic",
@@ -499,14 +499,14 @@
       "category": "alliums",
       "difficulty": "moderate",
       "daysToMaturity": "180-240",
-      "sowingMethod": "direct",
+      "sowingMethod": "clove",
       "spacingCm": 10,
       "rowSpacingCm": 20,
       "sowingDepthMm": 50,
       "soilTempC": "10-20",
       "successionDays": null,
       "file": "alliums/garlic.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "shallot",
@@ -514,14 +514,14 @@
       "category": "alliums",
       "difficulty": "moderate",
       "daysToMaturity": "100-120",
-      "sowingMethod": "direct",
+      "sowingMethod": "clove",
       "spacingCm": 15,
       "rowSpacingCm": 25,
       "sowingDepthMm": 30,
       "soilTempC": "10-20",
       "successionDays": null,
       "file": "alliums/shallot.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "pea",
@@ -536,7 +536,7 @@
       "soilTempC": "5-20",
       "successionDays": 14,
       "file": "legumes/pea.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "snow-pea",
@@ -551,7 +551,7 @@
       "soilTempC": "5-20",
       "successionDays": 14,
       "file": "legumes/snow-pea.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "broad-bean",
@@ -566,7 +566,7 @@
       "soilTempC": "5-20",
       "successionDays": null,
       "file": "legumes/broad-bean.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "bush-bean",
@@ -581,7 +581,7 @@
       "soilTempC": "16-30",
       "successionDays": 14,
       "file": "legumes/bush-bean.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "climbing-bean",
@@ -596,7 +596,7 @@
       "soilTempC": "16-30",
       "successionDays": 21,
       "file": "legumes/climbing-bean.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "zucchini",
@@ -611,7 +611,7 @@
       "soilTempC": "16-35",
       "successionDays": null,
       "file": "cucurbits/zucchini.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "cucumber",
@@ -626,7 +626,7 @@
       "soilTempC": "16-35",
       "successionDays": null,
       "file": "cucurbits/cucumber.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "pumpkin",
@@ -641,7 +641,7 @@
       "soilTempC": "18-35",
       "successionDays": null,
       "file": "cucurbits/pumpkin.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "squash",
@@ -656,7 +656,7 @@
       "soilTempC": "18-35",
       "successionDays": null,
       "file": "cucurbits/squash.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "rockmelon",
@@ -671,7 +671,7 @@
       "soilTempC": "18-35",
       "successionDays": null,
       "file": "cucurbits/rockmelon.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "tomato",
@@ -686,7 +686,7 @@
       "soilTempC": "16-30",
       "successionDays": null,
       "file": "fruiting/tomato.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "capsicum",
@@ -701,7 +701,7 @@
       "soilTempC": "18-32",
       "successionDays": null,
       "file": "fruiting/capsicum.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "chilli",
@@ -716,7 +716,7 @@
       "soilTempC": "18-32",
       "successionDays": null,
       "file": "fruiting/chilli.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "eggplant",
@@ -731,7 +731,7 @@
       "soilTempC": "18-32",
       "successionDays": null,
       "file": "fruiting/eggplant.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "potato",
@@ -746,7 +746,7 @@
       "soilTempC": "10-25",
       "successionDays": 30,
       "file": "fruiting/potato.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "basil",
@@ -761,7 +761,7 @@
       "soilTempC": "18-30",
       "successionDays": 21,
       "file": "herbs/basil.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "coriander",
@@ -776,7 +776,7 @@
       "soilTempC": "10-25",
       "successionDays": 14,
       "file": "herbs/coriander.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "parsley",
@@ -791,7 +791,7 @@
       "soilTempC": "10-25",
       "successionDays": 30,
       "file": "herbs/parsley.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "dill",
@@ -806,7 +806,7 @@
       "soilTempC": "10-25",
       "successionDays": 21,
       "file": "herbs/dill.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "chives",
@@ -821,7 +821,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "herbs/chives.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "mint",
@@ -836,7 +836,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "herbs/mint.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "thyme",
@@ -851,7 +851,7 @@
       "soilTempC": "15-25",
       "successionDays": null,
       "file": "herbs/thyme.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "rosemary",
@@ -866,7 +866,7 @@
       "soilTempC": "15-25",
       "successionDays": null,
       "file": "herbs/rosemary.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "oregano",
@@ -881,7 +881,7 @@
       "soilTempC": "15-25",
       "successionDays": null,
       "file": "herbs/oregano.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "sage",
@@ -896,7 +896,7 @@
       "soilTempC": "15-25",
       "successionDays": null,
       "file": "herbs/sage.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "asparagus",
@@ -911,7 +911,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "perennials/asparagus.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "rhubarb",
@@ -926,7 +926,7 @@
       "soilTempC": "10-25",
       "successionDays": null,
       "file": "perennials/rhubarb.md",
-      "status": "stub"
+      "status": "complete"
     },
     {
       "id": "globe-artichoke",
@@ -941,7 +941,7 @@
       "soilTempC": "15-25",
       "successionDays": null,
       "file": "perennials/globe-artichoke.md",
-      "status": "stub"
+      "status": "complete"
     }
   ]
 }

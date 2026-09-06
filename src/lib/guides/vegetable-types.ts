@@ -22,7 +22,15 @@ export interface VegetableGuideMetadata {
   category: string;
   difficulty: 'easy' | 'moderate' | 'demanding';
   daysToMaturity: string; // "60-80" - a range, because it is one
-  sowingMethod: 'direct' | 'transplant' | 'either';
+  /**
+   * How the crop starts.
+   *
+   * `clove` exists because garlic and shallots are planted from a clove or bulb rather
+   * than sown from true seed. They do go straight into the ground, so `direct` was not
+   * wrong - but it reads as seed-sown, and a grower could reasonably go looking for
+   * garlic seed, which is not a thing you plant.
+   */
+  sowingMethod: 'direct' | 'transplant' | 'either' | 'clove';
   spacingCm: number; // between plants
   rowSpacingCm: number;
   sowingDepthMm: number;

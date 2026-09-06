@@ -6,7 +6,7 @@
 |-----------|-------|
 | **Difficulty** | Moderate |
 | **Days to Maturity** | 180-240 |
-| **Sowing Method** | Direct |
+| **Sowing Method** | Clove |
 | **Plant Spacing** | 10 cm |
 | **Row Spacing** | 20 cm |
 | **Sowing Depth** | 50 mm |
