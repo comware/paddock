@@ -1,12 +1,22 @@
 /**
- * GuideDetailModal - Full-screen modal for viewing propagation guide content
+ * GuideDetailModal - Modal for viewing propagation guide content
  *
  * Displays markdown guide content with metadata badges for species guides,
  * method guides, and getting started guides.
+ *
+ * Uses the shared Modal rather than a hand-rolled overlay. The previous version was a plain
+ * div, which meant no role, no aria-modal, no Escape handling and no focus trap - a keyboard
+ * or screen-reader user could tab straight out of it into the page behind, and had no way to
+ * dismiss it except finding the close button. The shared Modal is a native <dialog> using
+ * showModal(), which gets all of that for free.
+ *
+ * The badges moved from the header into the body, because Modal takes a plain string title.
+ * They read the same; they are just below the heading rather than beside it.
  */
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Modal } from '@/components/ui';
 import type { PropagationGuideMetadata, PropagationMethodMetadata } from '@/lib/guides/propagation-types';
 
 interface GettingStartedGuide {
@@ -27,6 +37,8 @@ interface GuideDetailModalProps {
   getDifficultyColor: (difficulty: string) => string;
 }
 
+const badge = 'inline-flex px-2 py-0.5 rounded-full text-xs font-medium';
+
 export function GuideDetailModal({
   selectedGuide,
   selectedMethod,
@@ -38,72 +50,48 @@ export function GuideDetailModal({
 }: GuideDetailModalProps) {
   if (!selectedGuide && !selectedMethod && !selectedGettingStarted) return null;
 
-  return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
-          <div>
-            {selectedGettingStarted ? (
-              <>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span>{selectedGettingStarted.icon}</span>
-                  {selectedGettingStarted.title}
-                </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  {selectedGettingStarted.description}
-                </p>
-              </>
-            ) : selectedMethod ? (
-              <>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedMethod.name}</h2>
-                <div className="flex gap-2 mt-1">
-                  <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(selectedMethod.difficulty)}`}>
-                    {selectedMethod.difficulty}
-                  </span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                    Method Guide
-                  </span>
-                </div>
-              </>
-            ) : selectedGuide && (
-              <>
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedGuide.name}</h2>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(selectedGuide.difficulty)}`}>
-                    {selectedGuide.difficulty}
-                  </span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                    {selectedGuide.bestMethod}
-                  </span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-                    {selectedGuide.timeToRoot}
-                  </span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                    {selectedGuide.successRate}
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
-          >
-            <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+  const title = selectedGettingStarted
+    ? `${selectedGettingStarted.icon} ${selectedGettingStarted.title}`
+    : (selectedMethod?.name ?? selectedGuide?.name ?? 'Guide');
 
-        {/* Modal Content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+  return (
+    <Modal isOpen onClose={onClose} title={title} size="3xl">
+      <div className="p-4">
+        {selectedGettingStarted && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            {selectedGettingStarted.description}
+          </p>
+        )}
+
+        {selectedMethod && (
+          <div className="flex gap-2 mb-4">
+            <span className={`${badge} ${getDifficultyColor(selectedMethod.difficulty)}`}>
+              {selectedMethod.difficulty}
+            </span>
+            <span className={`${badge} bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400`}>
+              Method Guide
+            </span>
+          </div>
+        )}
+
+        {selectedGuide && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className={`${badge} ${getDifficultyColor(selectedGuide.difficulty)}`}>
+              {selectedGuide.difficulty}
+            </span>
+            <span className={`${badge} bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400`}>
+              {selectedGuide.bestMethod}
+            </span>
+            <span className={`${badge} bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400`}>
+              {selectedGuide.timeToRoot}
+            </span>
+            <span className={`${badge} bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400`}>
+              {selectedGuide.successRate}
+            </span>
+          </div>
+        )}
+
+        <div className="overflow-y-auto">
           {loadingContent ? (
             <div className="flex items-center justify-center py-12">
               <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
@@ -117,7 +105,7 @@ export function GuideDetailModal({
           )}
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
 
