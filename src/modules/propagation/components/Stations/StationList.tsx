@@ -11,6 +11,8 @@
  * Follows the BatchList pattern from the propagation module.
  */
 
+import { LayoutGrid, SearchX } from 'lucide-react';
+import { EmptyState } from '@/components/shared';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useStations } from '../../stores/useStations';
@@ -226,7 +228,7 @@ export function StationList() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 p-4 card">
         {/* Type Filter */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Type:</label>
@@ -281,29 +283,18 @@ export function StationList() {
 
       {/* Station Grid */}
       {filteredStations.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">
-            {hasFilters ? '?' : '?'}
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            {stations.length === 0
-              ? 'No stations yet'
-              : 'No stations match filters'}
-          </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            {stations.length === 0
+        <EmptyState
+          Icon={hasFilters ? SearchX : LayoutGrid}
+          title={stations.length === 0 ? 'No stations yet' : 'No stations match filters'}
+          description={
+            stations.length === 0
               ? 'Create your first propagation station to start tracking where your batches grow.'
-              : 'Try adjusting your filters to see more stations.'}
-          </p>
-          {stations.length === 0 && (
-            <button
-              onClick={() => setIsNewStationOpen(true)}
-              className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-            >
-              Create First Station
-            </button>
-          )}
-        </div>
+              : 'Try adjusting your filters to see more stations.'
+          }
+          action={
+            stations.length === 0 ? { label: 'Create first station', onClick: () => setIsNewStationOpen(true) } : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredStations.map((station) => (

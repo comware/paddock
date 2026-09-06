@@ -215,7 +215,7 @@ function EventRow({
     <button
       type="button"
       onClick={onClick}
-      className="w-full text-left p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow flex items-center gap-4"
+      className="w-full text-left p-4 card hover:shadow-md transition-shadow flex items-center gap-4"
     >
       {/* Icon */}
       <span className="text-2xl flex-shrink-0">{icon}</span>

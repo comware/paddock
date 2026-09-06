@@ -6,6 +6,7 @@
  * than pre-empting it with a second copy of the same rule.
  */
 
+import { Grid2x2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useBeds } from '../../stores/useBeds';
 import { useSites } from '@/platform';
@@ -108,7 +109,7 @@ export function BedList() {
       </div>
 
       {/* Filter */}
-      <div className="flex items-center gap-2 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+      <div className="flex items-center gap-2 p-4 card">
         <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Status:</label>
         <select
           value={filter}
@@ -129,7 +130,7 @@ export function BedList() {
       {/* Bed Grid */}
       {filteredBeds.length === 0 ? (
         <EmptyState
-          icon="🌱"
+          Icon={Grid2x2}
           title={siteBeds.length === 0 ? 'No beds yet' : 'No beds match this filter'}
           description={
             siteBeds.length === 0

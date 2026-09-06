@@ -190,15 +190,82 @@ select {
   }
 }
 
-/* Card component class */
-.card {
-  background-color: var(--surface);
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-}
+/*
+ * Component classes.
+ *
+ * Wrapped in `@layer components` on purpose. Written outside a layer - as `.card` was - a
+ * plain rule beats every Tailwind utility regardless of specificity, because unlayered CSS
+ * always outranks layered CSS. That silently broke `card p-4 hover:bg-slate-50` on the
+ * daily log rows: the card's background-color won and the hover highlight never appeared.
+ * Inside the components layer, utilities override these, which is the whole point of being
+ * able to write `card` and then adjust one thing.
+ */
+@layer components {
+  .card {
+    background-color: var(--surface);
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
 
-.dark .card {
-  background-color: var(--surface);
+  .dark .card {
+    background-color: var(--surface);
+  }
+
+
+  /*
+   * Button component classes.
+   *
+   * Eight files across settings, onboarding, the PWA install prompt and three microgreens
+   * forms already wrote `className="btn btn-primary"`. Nothing defined it. Every one of those
+   * primary buttons rendered as bare unstyled text - including the call to action on an empty
+   * module, which is the first thing a new grower sees.
+   *
+   * The convention was clearly intended, and `.card` above showed a component layer was
+   * wanted, so the fix is to define the class rather than rewrite nine call sites.
+   */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 150ms;
+    cursor: pointer;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary-500);
+    color: #fff;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-600);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    background-color: var(--color-primary-700);
+  }
+
+  .btn-secondary {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+
+  .dark .btn-secondary {
+    background-color: color-mix(in srgb, var(--color-primary-900) 20%, transparent);
+    color: var(--color-primary-300);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-primary-100);
+  }
 }
 
 /* Safe area for PWA */
@@ -206,45 +273,4 @@ select {
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
-}
-
-/*
- * Button component classes.
- *
- * Eight files across settings, onboarding, the PWA install prompt and three microgreens
- * forms already wrote `className="btn btn-primary"`. Nothing defined it. Every one of those
- * primary buttons rendered as bare unstyled text - including the call to action on an empty
- * module, which is the first thing a new grower sees.
- *
- * The convention was clearly intended, and `.card` above shows the component layer exists,
- * so the fix is to define the class rather than rewrite nine call sites into utilities.
- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: background-color 150ms;
-  cursor: pointer;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background-color: var(--color-primary-500);
-  color: #fff;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--color-primary-600);
-}
-
-.btn-primary:active:not(:disabled) {
-  background-color: var(--color-primary-700);
 }

@@ -12,6 +12,7 @@ import { NewBatchForm } from '../Batches/NewBatchForm';
 import { SectionHeader, MotherPlantInfoSection, MotherPlantHealthSection } from './MotherPlantInfo';
 import { MotherPlantCuttings } from './MotherPlantCuttings';
 import { StatusChangeModalContent, ProductivityStats, STATUS_COLORS } from './MotherPlantHealth';
+import { NotFound } from '@/components/shared';
 
 export function MotherPlantDetail() {
   const { id } = useParams<{ id: string }>();
@@ -108,21 +109,10 @@ export function MotherPlantDetail() {
   // Plant not found (404 state)
   if (!plant) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">?</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Mother Plant Not Found
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This mother plant doesn't exist or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/propagation/mother-plants')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to Mother Plants
-        </button>
-      </div>
+      <NotFound
+        thing="Mother plant"
+        backTo={{ label: 'Back to mother plants', onClick: () => navigate('/propagation/mother-plants') }}
+      />
     );
   }
 
@@ -147,7 +137,7 @@ export function MotherPlantDetail() {
       )}
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -209,7 +199,7 @@ export function MotherPlantDetail() {
 
           {/* Propagation Notes */}
           {plant.propagationNotes && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+            <div className="card p-6">
               <SectionHeader title="Propagation Notes" />
               <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
                 {plant.propagationNotes}
@@ -230,7 +220,7 @@ export function MotherPlantDetail() {
 
           {/* Quick Actions */}
           {plant.status === 'active' && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+            <div className="card p-6">
               <SectionHeader title="Quick Actions" />
               <div className="space-y-2">
                 <button
@@ -250,7 +240,7 @@ export function MotherPlantDetail() {
           )}
 
           {/* Photo Placeholder */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Photos" />
             {plant.photoUrl ? (
               <img

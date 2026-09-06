@@ -11,6 +11,8 @@
  * Follows the BatchList pattern from the propagation module.
  */
 
+import { Leaf, SearchX } from 'lucide-react';
+import { EmptyState } from '@/components/shared';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useMotherPlants, type MotherPlantFilters, type MotherPlantSort, type PropMotherPlantWithComputed } from '../../stores';
@@ -213,7 +215,7 @@ export function MotherPlantList() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm space-y-4">
+      <div className="card p-4 space-y-4">
         <div className="flex flex-wrap gap-4">
           {/* Status Filter */}
           <div className="flex-1 min-w-[150px]">
@@ -298,29 +300,18 @@ export function MotherPlantList() {
 
       {/* Plant Grid */}
       {filteredPlants.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">
-            {filters.status !== 'all' || filters.species !== 'all' ? '?' : ':herb:'}
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            {motherPlants.length === 0
-              ? 'No mother plants yet'
-              : 'No matching plants found'}
-          </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            {motherPlants.length === 0
+        <EmptyState
+          Icon={filters.status !== 'all' || filters.species !== 'all' ? SearchX : Leaf}
+          title={motherPlants.length === 0 ? 'No mother plants yet' : 'No matching plants found'}
+          description={
+            motherPlants.length === 0
               ? 'Register your first mother plant to start tracking your stock plants and their propagation history.'
-              : 'Try adjusting your filters to see more plants.'}
-          </p>
-          {motherPlants.length === 0 && (
-            <button
-              onClick={() => setIsNewPlantOpen(true)}
-              className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-            >
-              Register First Mother Plant
-            </button>
-          )}
-        </div>
+              : 'Try adjusting your filters to see more plants.'
+          }
+          action={
+            motherPlants.length === 0 ? { label: 'Register first mother plant', onClick: () => setIsNewPlantOpen(true) } : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredPlants.map((plant) => (

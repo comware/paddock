@@ -29,6 +29,7 @@ import {
 import { PropaguleUpdateForm } from './PropaguleUpdateForm';
 import { MetadataRow, SectionHeader, HealthDisplay, PhotoGallery } from './PropaguleInfo';
 import { PropaguleTransitionHistory, PropaguleStageTimeline } from './PropaguleObservations';
+import { NotFound } from '@/components/shared';
 
 // ============================================
 // MAIN COMPONENT
@@ -89,21 +90,10 @@ export function PropaguleDetail() {
   // Propagule not found (404 state)
   if (!propagule) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">?</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Propagule Not Found
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This propagule doesn't exist or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/propagation/batches')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to Batches
-        </button>
-      </div>
+      <NotFound
+        thing="Propagule"
+        backTo={{ label: 'Back to batches', onClick: () => navigate('/propagation/batches') }}
+      />
     );
   }
 
@@ -123,7 +113,7 @@ export function PropaguleDetail() {
       )}
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -161,7 +151,7 @@ export function PropaguleDetail() {
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
           {/* Health and Measurements */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Health & Measurements" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
               <div>
@@ -178,7 +168,7 @@ export function PropaguleDetail() {
           </div>
 
           {/* Propagule Details */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Details" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
               <div>
@@ -214,13 +204,13 @@ export function PropaguleDetail() {
           </div>
 
           {/* Photo Gallery */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Photos" />
             <PhotoGallery photoUrls={propagule.photoUrls} />
           </div>
 
           {/* Transition History */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Transition History" />
             <PropaguleTransitionHistory propaguleId={id!} />
           </div>
@@ -229,13 +219,13 @@ export function PropaguleDetail() {
         {/* Right Column */}
         <div className="space-y-6">
           {/* Stage Timeline */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Stage Timeline" />
             <PropaguleStageTimeline currentStage={propagule.stage} createdAt={new Date(propagule.createdAt)} />
           </div>
 
           {/* Related Links */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Related" />
             <div className="space-y-3">
               {parentBatch && (
@@ -267,7 +257,7 @@ export function PropaguleDetail() {
           </div>
 
           {/* Quick Stats */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Quick Stats" />
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">

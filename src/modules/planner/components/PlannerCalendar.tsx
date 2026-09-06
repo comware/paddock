@@ -165,7 +165,7 @@ export function PlannerCalendar({ className = '' }: PlannerCalendarProps) {
       </div>
 
       {/* Calendar */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="card overflow-hidden">
         <Calendar
           localizer={localizer}
           events={calendarEvents}

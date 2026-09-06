@@ -19,7 +19,7 @@ import { useBeds } from '../../stores/useBeds';
 import { usePlantings } from '../../stores/usePlantings';
 import { useSites } from '@/platform';
 import { vegDb, withId, type VegHarvest, type VegPlanting } from '@/lib/db';
-import { Grid2x2, Sprout, ShoppingBasket, Scale } from 'lucide-react';
+import { Grid2x2, Scale, ShoppingBasket, Sprout } from 'lucide-react';
 import { EmptyState, StatCard, StatCardGrid } from '@/components/shared';
 
 const RECENT_PICKS_LIMIT = 10;
@@ -123,7 +123,7 @@ export function VegDashboard() {
     return (
       <DashboardFrame>
         <EmptyState
-          icon="🌱"
+          Icon={Grid2x2}
           title="No beds yet"
           description="Add your first bed to start tracking what's growing where."
           action={{ label: 'Add a bed', onClick: () => navigate('/vegetables/beds') }}
@@ -136,7 +136,7 @@ export function VegDashboard() {
     return (
       <DashboardFrame>
         <EmptyState
-          icon="🥬"
+          Icon={Sprout}
           title="No plantings yet"
           description="Your beds are ready. Sow or transplant something into one to start tracking it."
         />
@@ -206,7 +206,7 @@ export function VegDashboard() {
       </StatCardGrid>
 
       {/* Ready or nearly ready */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
+      <div className="card p-4 sm:p-6 space-y-4">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Ready or nearly ready</h2>
         {readyItems.length === 0 ? (
           <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -253,7 +253,7 @@ export function VegDashboard() {
 
       <div className="grid grid-cols-1 gap-6">
         {/* Recent picks */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4" data-testid="recent-picks-panel">
+        <div className="card p-4 sm:p-6 space-y-4" data-testid="recent-picks-panel">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent picks</h2>
           {recentHarvests.length === 0 ? (
             <p className="text-sm text-slate-500 dark:text-slate-400">No picks logged yet.</p>

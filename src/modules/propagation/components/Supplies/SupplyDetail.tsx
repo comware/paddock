@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { useSupplies } from '../../stores/useSupplies';
 import { SupplyForm } from './SupplyForm';
 import { CATEGORY_COLORS, getCategoryDisplay, formatCurrency } from './utils';
+import { NotFound } from '@/components/shared';
 
 // ============================================
 // SUB-COMPONENTS
@@ -141,21 +142,10 @@ export function SupplyDetail() {
   // Supply not found
   if (!supply) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">?</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Supply Not Found
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This supply doesn't exist or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/propagation/supplies')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to Supplies
-        </button>
-      </div>
+      <NotFound
+        thing="Supply"
+        backTo={{ label: 'Back to supplies', onClick: () => navigate('/propagation/supplies') }}
+      />
     );
   }
 
@@ -177,7 +167,7 @@ export function SupplyDetail() {
       </Link>
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -232,7 +222,7 @@ export function SupplyDetail() {
         {/* Left Column - Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Supply Details */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Supply Details" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
               <div>
@@ -290,7 +280,7 @@ export function SupplyDetail() {
         {/* Right Column - Inventory Status */}
         <div className="space-y-6">
           {/* Inventory Level */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Inventory" />
             <div className="space-y-4">
               {/* Current Stock */}
@@ -363,7 +353,7 @@ export function SupplyDetail() {
           </div>
 
           {/* Timestamps */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="History" />
             <div className="space-y-2 text-sm">
               <MetadataRow

@@ -11,6 +11,8 @@
  * Follows the TrayList pattern from the grow module.
  */
 
+import { Sprout, SearchX } from 'lucide-react';
+import { EmptyState } from '@/components/shared';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useBatches } from '../../stores';
@@ -202,29 +204,24 @@ export function BatchList() {
 
       {/* Batch Grid */}
       {filteredBatches.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">
-            {filters.stage !== 'all' ? '?' : ':seedling:'}
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            {batches.length === 0
+        <EmptyState
+          Icon={filters.stage !== 'all' ? SearchX : Sprout}
+          title={
+            batches.length === 0
               ? 'No batches yet'
-              : `No ${filters.stage === 'all' ? '' : filters.stage + ' '}batches found`}
-          </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            {batches.length === 0
+              : `No ${filters.stage === 'all' ? '' : filters.stage + ' '}batches found`
+          }
+          description={
+            batches.length === 0
               ? 'Start tracking your first propagation batch. Record cuttings, divisions, or other propagation methods.'
-              : 'Try adjusting your filters to see more batches.'}
-          </p>
-          {batches.length === 0 && (
-            <button
-              onClick={() => setIsNewBatchOpen(true)}
-              className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-            >
-              Create First Batch
-            </button>
-          )}
-        </div>
+              : 'Try adjusting your filters to see more batches.'
+          }
+          action={
+            batches.length === 0
+              ? { label: 'Create first batch', onClick: () => setIsNewBatchOpen(true) }
+              : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredBatches.map((batch) => (

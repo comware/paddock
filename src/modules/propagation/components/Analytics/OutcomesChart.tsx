@@ -55,7 +55,7 @@ export function OutcomesChart({ outcomes, totalGraduated }: OutcomesChartProps) 
 
   if (totalGraduated.count === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Graduation Outcomes
         </h2>
@@ -72,7 +72,7 @@ export function OutcomesChart({ outcomes, totalGraduated }: OutcomesChartProps) 
 
   return (
     <div
-      className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm"
+      className="card p-6"
       role="img"
       aria-label={`Propagation outcomes chart showing ${totalGraduated.quantity} graduated propagules across ${outcomes.length} outcome categories`}
     >

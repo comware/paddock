@@ -37,7 +37,7 @@ export function FailureAnalysis({
 
   if (totalFailures === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Failure Analysis
         </h2>
@@ -52,7 +52,7 @@ export function FailureAnalysis({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
+    <div className="card p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Failure Analysis

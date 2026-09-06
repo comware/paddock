@@ -8,6 +8,7 @@
  * - Outlet for nested routes
  */
 
+import { NotFound } from '@/components/shared';
 import { usePendingProposals } from '../../hooks';
 import {
   LayoutDashboard,
@@ -195,21 +196,10 @@ export function SiteDetailLayout() {
   // Site not found
   if (!site) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">🔍</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Growing space not found
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This growing space doesn't exist, or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/microgreens')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to growing spaces
-        </button>
-      </div>
+      <NotFound
+        thing="Growing space"
+        backTo={{ label: 'Back to growing spaces', onClick: () => navigate('/microgreens') }}
+      />
     );
   }
 

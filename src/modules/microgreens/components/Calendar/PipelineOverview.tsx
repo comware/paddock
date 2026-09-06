@@ -78,7 +78,7 @@ export function PipelineOverview({ daysAhead = 7 }: PipelineOverviewProps) {
   const maxHarvests = Math.max(...harvestForecast.map((d) => d.count), 1);
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm space-y-6">
+    <div className="card p-6 space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">

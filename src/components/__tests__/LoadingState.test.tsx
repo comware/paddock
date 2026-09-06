@@ -92,7 +92,7 @@ interface CardSkeletonProps {
 function CardSkeleton({ showIcon = true, showSubtitle = true, lines = 2 }: CardSkeletonProps) {
   return (
     <div
-      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm"
+      className="card p-4"
       data-testid="card-skeleton"
       role="status"
       aria-label="Loading card content"

@@ -4,6 +4,8 @@
  * Shows all sites in a grid with options to add, edit, and delete.
  */
 
+import { MapPin } from 'lucide-react';
+import { EmptyState } from '@/components/shared';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -77,22 +79,12 @@ export function SiteList() {
 
       {/* Empty State */}
       {sites.length === 0 ? (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-          <div className="text-4xl mb-4">📍</div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            No growing spaces yet
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            Add your first growing space to start tracking weather and organising your
-            trays by where they are.
-          </p>
-          <button
-            onClick={() => setIsNewSiteOpen(true)}
-            className="px-6 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-          >
-            Add a growing space
-          </button>
-        </div>
+        <EmptyState
+          Icon={MapPin}
+          title="No growing spaces yet"
+          description="Add your first growing space to start tracking weather and organising your trays by where they are."
+          action={{ label: 'Add a growing space', onClick: () => setIsNewSiteOpen(true) }}
+        />
       ) : (
         <>
           {/* Sites Grid */}

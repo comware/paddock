@@ -118,7 +118,7 @@ export function PropDashboard() {
       />
 
       {/* Quick Actions */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
+      <div className="card p-4 sm:p-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Quick Actions
         </h2>
@@ -169,7 +169,7 @@ export function PropDashboard() {
 
       {/* Empty state for new users */}
       {batches.length === 0 && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm text-center">
+        <div className="card p-8 text-center">
           <span className="text-6xl mb-4 block">🌱</span>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             Welcome to Propagation

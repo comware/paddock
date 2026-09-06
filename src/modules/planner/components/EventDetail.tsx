@@ -149,7 +149,7 @@ export function EventDetail() {
       </button>
 
       {/* Event Card */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 space-y-6">
+      <div className="card p-6 space-y-6">
         {/* Header */}
         <div className="flex items-start gap-4">
           <span className="text-4xl">{icon}</span>

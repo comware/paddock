@@ -8,8 +8,10 @@
  * - Quick actions for move to light / harvest
  */
 
+import { Sprout, SearchX } from 'lucide-react';
+import { EmptyState } from '@/components/shared';
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useTrays, useVarieties, useMediums, type TrayStatus, type TrayWithComputed } from '../../stores';
 import { useSites } from '@/platform';
 import { TrayCard } from './TrayCard';
@@ -40,6 +42,7 @@ export function TrayList() {
   const { sites, loadSites } = useSites();
   const { mediums, loadMediums } = useMediums();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // Check if we're inside a site context (SiteDetailLayout)
   const { siteId: contextSiteId } = useSiteContext();
@@ -363,33 +366,25 @@ export function TrayList() {
 
       {/* Tray Grid */}
       {filteredTrays.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🌱</div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            {statusFilter === 'all' ? 'No trays yet' : `No ${statusFilter} trays`}
-          </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            {statusFilter === 'all'
+        <EmptyState
+          Icon={statusFilter === 'all' ? Sprout : SearchX}
+          title={statusFilter === 'all' ? 'No trays yet' : `No ${statusFilter} trays`}
+          description={
+            statusFilter === 'all'
               ? 'Start tracking your first tray of microgreens. Not sure where to start? Browse our growing guides for variety-specific instructions.'
-              : 'Try selecting a different filter'}
-          </p>
-          {statusFilter === 'all' && (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button
-                onClick={() => setIsNewTrayOpen(true)}
-                className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-              >
-                Add First Tray
-              </button>
-              <a
-                href="/microgreens/guides"
-                className="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-              >
-                Browse Growing Guides
-              </a>
-            </div>
-          )}
-        </div>
+              : 'Try selecting a different filter'
+          }
+          action={
+            statusFilter === 'all'
+              ? { label: 'Add first tray', onClick: () => setIsNewTrayOpen(true) }
+              : undefined
+          }
+          secondaryAction={
+            statusFilter === 'all'
+              ? { label: 'Browse growing guides', onClick: () => navigate('/microgreens/guides') }
+              : undefined
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" aria-live="polite" aria-relevant="additions removals">
           {filteredTrays.map((tray) => (

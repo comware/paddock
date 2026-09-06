@@ -33,7 +33,7 @@ export function NeedingAttention({
 
   if (totalIssues === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Needing Attention
         </h2>
@@ -48,7 +48,7 @@ export function NeedingAttention({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="card p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">

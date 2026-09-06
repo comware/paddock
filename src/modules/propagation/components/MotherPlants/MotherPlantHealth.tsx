@@ -146,7 +146,7 @@ export function ProductivityStats({
   const productivityColor = getProductivityColor(productivityLevel);
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="card p-6">
       <SectionHeader title="Productivity" />
       {isLoadingMetrics ? (
         <div className="text-center py-4 text-slate-500 dark:text-slate-400">

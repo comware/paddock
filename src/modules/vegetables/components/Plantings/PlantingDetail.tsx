@@ -25,6 +25,7 @@ import { useHarvests } from '../../stores/useHarvests';
 import { Modal, ConfirmDialog } from '@/components/ui';
 import { HarvestLogModal, HarvestList } from '../Harvests';
 import { PlantingForm } from './PlantingForm';
+import { NotFound } from '@/components/shared';
 
 const STATUS_LABELS: Record<PlantingStatus, string> = {
   planned: 'Planned',
@@ -88,19 +89,10 @@ export function PlantingDetail() {
 
   if (!planting) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">?</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Planting not found</h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This planting doesn&apos;t exist or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/vegetables/plantings')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to plantings
-        </button>
-      </div>
+      <NotFound
+        thing="Planting"
+        backTo={{ label: 'Back to plantings', onClick: () => navigate('/vegetables/plantings') }}
+      />
     );
   }
 
@@ -177,7 +169,7 @@ export function PlantingDetail() {
       )}
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
+      <div className="card p-4 sm:p-6 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -245,7 +237,7 @@ export function PlantingDetail() {
       </div>
 
       {/* Harvests */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
+      <div className="card p-4 sm:p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Harvests</h2>
           <button
@@ -259,7 +251,7 @@ export function PlantingDetail() {
       </div>
 
       {/* Succession chain */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
+      <div className="card p-4 sm:p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Succession chain</h2>
           <button

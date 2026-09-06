@@ -157,7 +157,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
   // Loading state
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Station Overview
         </h2>
@@ -171,7 +171,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
   // Empty state - no stations configured
   if (activeStations.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
             Station Overview
@@ -200,7 +200,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="card p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">

@@ -109,7 +109,7 @@ export function AnalyticsDashboard() {
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
+      <div className="card p-4">
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
           {/* Time Period Filter */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -235,7 +235,7 @@ export function AnalyticsDashboard() {
 
       {/* Empty State */}
       {summaryStats.totalBatches === 0 && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm text-center">
+        <div className="card p-8 text-center">
           <span className="text-6xl mb-4 block">📊</span>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             No Analytics Data Yet
@@ -279,7 +279,7 @@ function MetricCard({ label, value, icon, subtitle, highlight = 'neutral' }: Met
 
   return (
     <div
-      className={`bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border-l-4 ${highlightColors[highlight]}`}
+      className={`card p-4 border-l-4 ${highlightColors[highlight]}`}
     >
       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-2">
         <span>{icon}</span>

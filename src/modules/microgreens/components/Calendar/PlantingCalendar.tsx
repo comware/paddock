@@ -304,7 +304,7 @@ export function PlantingCalendar() {
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="card overflow-hidden">
         {/* Day Headers */}
         <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-700">
           {weekDays.map((day) => (

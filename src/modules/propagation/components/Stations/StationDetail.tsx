@@ -19,6 +19,7 @@ import { propDb, fkMatch } from '@/lib/db';
 import type { PropStationLog } from '../../types';
 import { StationForm } from './StationForm';
 import { EnvironmentLogModal } from './EnvironmentLogModal';
+import { NotFound } from '@/components/shared';
 import {
   TYPE_DISPLAY_NAMES,
   MetadataRow,
@@ -131,21 +132,10 @@ export function StationDetail() {
   // Station not found
   if (!station) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">?</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Station Not Found
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This station doesn&apos;t exist or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/propagation/stations')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to Stations
-        </button>
-      </div>
+      <NotFound
+        thing="Station"
+        backTo={{ label: 'Back to stations', onClick: () => navigate('/propagation/stations') }}
+      />
     );
   }
 
@@ -168,7 +158,7 @@ export function StationDetail() {
       )}
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+      <div className="card p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -229,7 +219,7 @@ export function StationDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Station Details" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
               <div>
@@ -288,7 +278,7 @@ export function StationDetail() {
             )}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title={`Current Batches (${stationBatches.length})`} />
             {stationBatches.length === 0 ? (
               <div className="text-center py-8 text-slate-500 dark:text-slate-400">
@@ -306,7 +296,7 @@ export function StationDetail() {
 
         {/* Right Column */}
         <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Occupancy" />
             <div className="space-y-3">
               <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -332,7 +322,7 @@ export function StationDetail() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <div className="flex items-center justify-between mb-4">
               <SectionHeader title="Environment Logs" />
               {station.isActive && (
@@ -369,7 +359,7 @@ export function StationDetail() {
             )}
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Quick Stats" />
             <div className="space-y-3 text-sm">
               <MetadataRow

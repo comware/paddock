@@ -16,6 +16,7 @@ import { GraduationForm, GraduationHistory } from '../Graduation';
 import { usePropagules } from '../../stores/usePropagules';
 import { MetadataRow, SectionHeader, TransitionHistory, METHOD_DISPLAY_NAMES } from './BatchMetrics';
 import { BatchPropagulesList } from './BatchActions';
+import { NotFound } from '@/components/shared';
 
 export function BatchDetail() {
   const { id } = useParams<{ id: string }>();
@@ -92,21 +93,10 @@ export function BatchDetail() {
   // Batch not found (404 state)
   if (!batch) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-        <div className="text-4xl mb-4">?</div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Batch Not Found
-        </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6">
-          This batch doesn't exist or may have been deleted.
-        </p>
-        <button
-          onClick={() => navigate('/propagation/batches')}
-          className="px-6 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-        >
-          Back to Batches
-        </button>
-      </div>
+      <NotFound
+        thing="Batch"
+        backTo={{ label: 'Back to batches', onClick: () => navigate('/propagation/batches') }}
+      />
     );
   }
 
@@ -122,7 +112,7 @@ export function BatchDetail() {
       </Link>
 
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm">
+      <div className="card p-4 sm:p-6">
         <div className="flex flex-col gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -173,7 +163,7 @@ export function BatchDetail() {
         {/* Left Column - Metadata */}
         <div className="lg:col-span-2 space-y-6">
           {/* Batch Metadata */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Batch Details" icon="?" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
               <div>
@@ -195,7 +185,7 @@ export function BatchDetail() {
 
           {/* Preparation Notes */}
           {(batch.preparationNotes || batch.rootingMedium || batch.hormoneUsed) && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+            <div className="card p-6">
               <SectionHeader title="Preparation Details" icon="?" />
               {batch.rootingMedium && <MetadataRow label="Rooting Medium" value={batch.rootingMedium} />}
               {batch.hormoneUsed && <MetadataRow label="Hormone Used" value={batch.hormoneUsed} />}
@@ -209,19 +199,19 @@ export function BatchDetail() {
           )}
 
           {/* Transition History */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Transition History" icon="?" />
             <TransitionHistory batchId={id!} />
           </div>
 
           {/* Cost Breakdown */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Cost Breakdown" icon="$" />
             <CostBreakdown batchId={id!} />
           </div>
 
           {/* Graduation History */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <div className="flex items-center justify-between mb-4">
               <SectionHeader title="Graduation History" />
               {canGraduate && (
@@ -233,7 +223,7 @@ export function BatchDetail() {
 
           {/* Individual Propagules (if exploded) */}
           {batch.isExploded && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+            <div className="card p-6">
               <SectionHeader title="Individual Propagules" icon="*" />
               <BatchPropagulesList propagules={batchPropagules} />
             </div>
@@ -243,13 +233,13 @@ export function BatchDetail() {
         {/* Right Column - Timeline and Links */}
         <div className="space-y-6">
           {/* Stage Timeline */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Stage Timeline" icon="?" />
             <StageTimeline batch={batch} transitions={transitions} orientation="vertical" />
           </div>
 
           {/* Related Links */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Related" icon="?" />
             <div className="space-y-3">
               <Link to={`/propagation/stations/${batch.stationId}`} className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
@@ -277,7 +267,7 @@ export function BatchDetail() {
           </div>
 
           {/* Key Dates */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+          <div className="card p-6">
             <SectionHeader title="Key Dates" icon="?" />
             <div className="space-y-2 text-sm">
               <MetadataRow label="Taken" value={format(new Date(batch.dateTaken), 'MMM d, yyyy')} />

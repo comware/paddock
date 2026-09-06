@@ -4,31 +4,45 @@
  * Tests the reusable empty state component that displays friendly messages
  * when lists are empty, with optional action buttons.
  *
+ * Four tests were removed when the icon changed from an emoji string to a Lucide
+ * component: three fed it emoji, special characters and compound emoji to prove the string
+ * was rendered verbatim, and one asserted the opacity applied to that text. There is no
+ * longer a string to render verbatim - the prop is a component - so they were testing a
+ * capability that has deliberately gone rather than behaviour that regressed.
+ *
  * Component location: src/components/shared/EmptyState.tsx
  */
 
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { Sprout } from 'lucide-react';
 import { EmptyState } from '../shared/EmptyState';
 
 describe('EmptyState', () => {
   describe('renders correctly', () => {
-    it('displays icon', () => {
-      render(
+    /**
+     * The icon is decorative - it repeats what the heading already says - so it is
+     * aria-hidden and has no accessible name to query by. What matters is that it is
+     * present and hidden from assistive technology, not which glyph it is.
+     */
+    it('renders the icon, hidden from screen readers', () => {
+      const { container } = render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="No Trays"
           description="Start by planting your first tray"
         />
       );
 
-      expect(screen.getByText('🌱')).toBeInTheDocument();
+      const icon = container.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+      expect(icon).toHaveAttribute('aria-hidden', 'true');
     });
 
     it('displays title', () => {
       render(
         <EmptyState
-          icon="📋"
+          Icon={Sprout}
           title="No Batches Yet"
           description="Create your first batch"
         />
@@ -40,7 +54,7 @@ describe('EmptyState', () => {
     it('displays description', () => {
       render(
         <EmptyState
-          icon="📊"
+          Icon={Sprout}
           title="No Data"
           description="Harvest some trays to see analytics"
         />
@@ -56,7 +70,7 @@ describe('EmptyState', () => {
 
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Empty"
           description="No items"
           action={{
@@ -72,7 +86,7 @@ describe('EmptyState', () => {
     it('does not render action button when action prop is not provided', () => {
       render(
         <EmptyState
-          icon="📋"
+          Icon={Sprout}
           title="Empty"
           description="Nothing here"
         />
@@ -86,7 +100,7 @@ describe('EmptyState', () => {
 
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Empty"
           description="No items"
           action={{
@@ -109,7 +123,7 @@ describe('EmptyState', () => {
 
       render(
         <EmptyState
-          icon="📝"
+          Icon={Sprout}
           title="No Items"
           description={longDescription}
         />
@@ -118,48 +132,15 @@ describe('EmptyState', () => {
       expect(screen.getByText(longDescription)).toBeInTheDocument();
     });
 
-    it('handles emoji icons', () => {
-      render(
-        <EmptyState
-          icon="🌿"
-          title="Test"
-          description="Test description"
-        />
-      );
 
-      expect(screen.getByText('🌿')).toBeInTheDocument();
-    });
 
-    it('handles special character icons', () => {
-      render(
-        <EmptyState
-          icon="+"
-          title="Add Something"
-          description="Click to add"
-        />
-      );
-
-      expect(screen.getByText('+')).toBeInTheDocument();
-    });
-
-    it('handles compound emoji icons', () => {
-      render(
-        <EmptyState
-          icon="🌱✨"
-          title="Magic Plants"
-          description="No magic plants yet"
-        />
-      );
-
-      expect(screen.getByText('🌱✨')).toBeInTheDocument();
-    });
   });
 
   describe('different use cases in the app', () => {
     it('renders for empty tray list', () => {
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="No Trays Yet"
           description="Plant your first tray to get started on your microgreens journey!"
           action={{
@@ -176,7 +157,7 @@ describe('EmptyState', () => {
     it('renders for empty batch list', () => {
       render(
         <EmptyState
-          icon="📦"
+          Icon={Sprout}
           title="No Propagation Batches"
           description="Start a new batch to begin propagating plants."
           action={{
@@ -192,7 +173,7 @@ describe('EmptyState', () => {
     it('renders for empty analytics', () => {
       render(
         <EmptyState
-          icon="📊"
+          Icon={Sprout}
           title="No Analytics Data"
           description="Complete some harvests to see your analytics and trends."
         />
@@ -206,7 +187,7 @@ describe('EmptyState', () => {
     it('renders for empty mother plants', () => {
       render(
         <EmptyState
-          icon="🌿"
+          Icon={Sprout}
           title="No Mother Plants"
           description="Add your first mother plant to start taking cuttings."
           action={{
@@ -222,7 +203,7 @@ describe('EmptyState', () => {
     it('renders for empty search results', () => {
       render(
         <EmptyState
-          icon="🔍"
+          Icon={Sprout}
           title="No Results Found"
           description="Try adjusting your search terms or filters."
         />
@@ -234,7 +215,7 @@ describe('EmptyState', () => {
     it('renders for empty calendar events', () => {
       render(
         <EmptyState
-          icon="📅"
+          Icon={Sprout}
           title="No Events This Day"
           description="No trays need attention today. Enjoy the break!"
         />
@@ -248,7 +229,7 @@ describe('EmptyState', () => {
     it('centers content vertically and horizontally', () => {
       const { container } = render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Test"
           description="Description"
         />
@@ -261,7 +242,7 @@ describe('EmptyState', () => {
     it('applies text-center class for centered text', () => {
       const { container } = render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Test"
           description="Description"
         />
@@ -274,7 +255,7 @@ describe('EmptyState', () => {
     it('applies proper padding', () => {
       const { container } = render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Test"
           description="Description"
         />
@@ -284,25 +265,13 @@ describe('EmptyState', () => {
       expect(wrapper).toHaveClass('py-12', 'px-4');
     });
 
-    it('icon has reduced opacity', () => {
-      const { container } = render(
-        <EmptyState
-          icon="🌱"
-          title="Test"
-          description="Description"
-        />
-      );
-
-      const iconElement = container.querySelector('.text-5xl');
-      expect(iconElement).toHaveClass('opacity-60');
-    });
   });
 
   describe('accessibility', () => {
     it('title is an h3 heading', () => {
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Accessible Title"
           description="Description"
         />
@@ -315,7 +284,7 @@ describe('EmptyState', () => {
     it('description is in a paragraph element', () => {
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Title"
           description="This is the description"
         />
@@ -328,7 +297,7 @@ describe('EmptyState', () => {
     it('action button is a proper button element', () => {
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Title"
           description="Description"
           action={{
@@ -354,7 +323,7 @@ describe('EmptyState', () => {
     it('asks for the app primary button styling', () => {
       render(
         <EmptyState
-          icon="🌱"
+          Icon={Sprout}
           title="Title"
           description="Description"
           action={{ label: 'Click Me', onClick: vi.fn() }}

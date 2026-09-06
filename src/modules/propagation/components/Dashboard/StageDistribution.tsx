@@ -35,7 +35,7 @@ export function StageDistribution({ stageCounts, onStageClick }: StageDistributi
   const activeStages = STAGE_ORDER.filter((s) => s !== 'graduated');
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="card p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Stage Distribution

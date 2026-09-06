@@ -26,7 +26,7 @@ import { join } from 'node:path';
 const css = readFileSync(join(process.cwd(), 'src/index.css'), 'utf-8');
 
 /** Class names used as component classes in TSX, which therefore need a rule in index.css. */
-const COMPONENT_CLASSES = ['btn', 'btn-primary', 'card'];
+const COMPONENT_CLASSES = ['btn', 'btn-primary', 'btn-secondary', 'card'];
 
 describe('component classes in index.css', () => {
   it.each(COMPONENT_CLASSES)('defines .%s', (name) => {

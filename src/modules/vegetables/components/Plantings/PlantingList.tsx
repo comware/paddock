@@ -6,6 +6,7 @@
  * them back into view; the default is a convenience, not a data loss.
  */
 
+import { Sprout } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePlantings } from '../../stores/usePlantings';
@@ -102,7 +103,7 @@ export function PlantingList() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+      <div className="flex flex-wrap items-center gap-3 p-4 card">
         <div className="flex items-center gap-2">
           <label htmlFor="planting-status-filter" className="text-sm font-medium text-slate-500 dark:text-slate-400">
             Status:
@@ -167,7 +168,7 @@ export function PlantingList() {
       {/* Planting Grid */}
       {filteredPlantings.length === 0 ? (
         <EmptyState
-          icon="🥕"
+          Icon={Sprout}
           title={sitePlantings.length === 0 ? 'No plantings yet' : 'No plantings match this filter'}
           description={
             sitePlantings.length === 0

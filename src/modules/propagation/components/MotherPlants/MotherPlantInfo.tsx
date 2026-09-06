@@ -100,7 +100,7 @@ interface MotherPlantInfoSectionProps {
 
 export function MotherPlantInfoSection({ plant }: MotherPlantInfoSectionProps) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="card p-6">
       <SectionHeader title="Plant Details" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div>
@@ -144,7 +144,7 @@ export function MotherPlantInfoSection({ plant }: MotherPlantInfoSectionProps) {
 
 export function MotherPlantHealthSection({ plant }: MotherPlantInfoSectionProps) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm">
+    <div className="card p-6">
       <SectionHeader title="Health Status" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
         <div>

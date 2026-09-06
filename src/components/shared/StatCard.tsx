@@ -29,7 +29,7 @@ interface StatCardProps {
 
 export function StatCard({ Icon, value, label, subValue, testId }: StatCardProps) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+    <div className="card p-4 border border-slate-200 dark:border-slate-700">
       <Icon
         aria-hidden="true"
         className="w-5 h-5 mb-2 text-slate-400 dark:text-slate-500"

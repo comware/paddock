@@ -33,7 +33,7 @@ interface MetricCardProps {
 function MetricCard({ label, value, target, subtitle, icon, trend, isLoading, error }: MetricCardProps) {
   if (isLoading) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm" data-testid="metric-card-loading">
+      <div className="card p-4" data-testid="metric-card-loading">
         <div className="animate-pulse">
           <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-20 mb-2" />
           <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-16" />
@@ -44,7 +44,7 @@ function MetricCard({ label, value, target, subtitle, icon, trend, isLoading, er
 
   if (error) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border-red-200 dark:border-red-800" data-testid="metric-card-error">
+      <div className="card p-4 border-red-200 dark:border-red-800" data-testid="metric-card-error">
         <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-2">
           {icon && <span>{icon}</span>}
           <span className="text-sm">{label}</span>
@@ -57,7 +57,7 @@ function MetricCard({ label, value, target, subtitle, icon, trend, isLoading, er
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm" data-testid="metric-card">
+    <div className="card p-4" data-testid="metric-card">
       <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-2">
         {icon && <span aria-hidden="true">{icon}</span>}
         <span className="text-sm">{label}</span>

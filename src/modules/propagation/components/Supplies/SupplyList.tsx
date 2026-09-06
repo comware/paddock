@@ -12,6 +12,8 @@
  * Follows the StationList pattern from the propagation module.
  */
 
+import { Package, SearchX } from 'lucide-react';
+import { EmptyState } from '@/components/shared';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useSupplies } from '../../stores/useSupplies';
@@ -247,7 +249,7 @@ export function SupplyList() {
       )}
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 p-4 card">
         {/* Category Filter */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -302,27 +304,18 @@ export function SupplyList() {
 
       {/* Supply Grid - Grouped by Category */}
       {filteredSupplies.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">
-            {hasFilters ? '?' : '?'}
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-            {supplies.length === 0 ? 'No supplies yet' : 'No supplies match filters'}
-          </h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-            {supplies.length === 0
+        <EmptyState
+          Icon={hasFilters ? SearchX : Package}
+          title={supplies.length === 0 ? 'No supplies yet' : 'No supplies match filters'}
+          description={
+            supplies.length === 0
               ? 'Track your propagation supplies to monitor inventory and calculate costs.'
-              : 'Try adjusting your filters to see more supplies.'}
-          </p>
-          {supplies.length === 0 && (
-            <button
-              onClick={() => setIsNewSupplyOpen(true)}
-              className="px-6 py-3 rounded-xl bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
-            >
-              Add First Supply
-            </button>
-          )}
-        </div>
+              : 'Try adjusting your filters to see more supplies.'
+          }
+          action={
+            supplies.length === 0 ? { label: 'Add first supply', onClick: () => setIsNewSupplyOpen(true) } : undefined
+          }
+        />
       ) : (
         <div className="space-y-8">
           {nonEmptyCategories.map((category) => (
