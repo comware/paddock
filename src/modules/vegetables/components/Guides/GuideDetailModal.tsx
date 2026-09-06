@@ -2,8 +2,13 @@
  * GuideDetailModal - Full-screen modal for viewing a vegetable growing guide.
  *
  * Uses useVegetableGuide to fetch the markdown for the selected crop and
- * renders it with react-markdown + remark-gfm, matching the propagation
- * module's guide modal (src/modules/propagation/components/Guides/GuideDetailModal.tsx).
+ * renders it with react-markdown + remark-gfm.
+ *
+ * Uses the shared Modal rather than a hand-rolled overlay. Propagation's guide modal is a
+ * plain div, which means it is not announced as a dialog, cannot be dismissed with Escape,
+ * and does not trap focus - so a keyboard or screen-reader user can tab straight out of it
+ * into the page behind. The shared Modal is a native <dialog> with showModal(), which gets
+ * all three for free. Propagation's has the same gap and is worth the same change.
  *
  * Handles three states beyond the happy path: loading, fetch error, and a
  * guide whose index `status` is still `stub` — some crops may not have
@@ -13,6 +18,7 @@
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Modal } from '@/components/ui';
 import { useVegetableGuide } from '@/lib/guides/useVegetableGuide';
 
 interface GuideDetailModalProps {
@@ -28,46 +34,24 @@ export function GuideDetailModal({ cropName, onClose }: GuideDetailModalProps) {
   const isStub = metadata?.status === 'stub';
 
   return (
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-              {metadata?.name ?? cropName}
-            </h2>
-            {metadata && (
-              <div className="flex flex-wrap gap-2 mt-1">
-                <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                  {metadata.daysToMaturity} days to maturity
-                </span>
-                <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-                  {metadata.sowingMethod}
-                </span>
-                <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                  {metadata.difficulty}
-                </span>
-              </div>
-            )}
+    <Modal isOpen onClose={onClose} title={metadata?.name ?? cropName} size="3xl">
+      <div className="p-4">
+        {metadata && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+              {metadata.daysToMaturity} days to maturity
+            </span>
+            <span className="px-2 py-0.5 rounded-full text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 capitalize">
+              {metadata.sowingMethod}
+            </span>
+            <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300 capitalize">
+              {metadata.difficulty}
+            </span>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
-          >
-            <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        )}
 
         {/* Modal Content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+        <div className="overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
@@ -88,6 +72,6 @@ export function GuideDetailModal({ cropName, onClose }: GuideDetailModalProps) {
           )}
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
