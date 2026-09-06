@@ -11,7 +11,7 @@
 | **Row Spacing** | 60 cm |
 | **Sowing Depth** | 6 mm |
 | **Soil Temperature** | 10-30 °C |
-| **Succession Interval** | 21 days |
+| **Suggested succession** | Every 21 days |
 
 ## Overview
 
@@ -23,7 +23,7 @@ The one thing that does catch growers out is treating collards as completely ind
 
 ## When to Sow
 
-Sow or direct sow once soil temperature is in the 10-30°C range. In southern Australia, collards can go in from spring right through to autumn (September to April), which is a wider window than almost any other brassica in this family — they'll tolerate the heat of a mild summer better than broccoli or cauliflower, and a light frost doesn't trouble them either.
+Sow or direct sow once soil temperature is in the 10-30°C range. In temperate southern Australia the sourced advice is two windows rather than one continuous stretch: early spring, and again in early autumn. Collards are genuinely more heat-tolerant than broccoli or cauliflower and untroubled by a light frost, so a midsummer sowing is not the failure it would be for a heading brassica — but the leaves it produces are the tougher, more bitter kind, which is why the recommended windows sit either side of the hottest part of the year rather than through it.
 
 Sowing too early into cold, wet soil can lead to slow, patchy germination, but this is a minor risk compared to most brassicas since collards are broadly tolerant. Sowing into the height of summer heat can push leaves toward a tougher, more bitter flavour, and a hard frost will eventually damage the plant, so the main timing consideration is picking a window that avoids the very extremes rather than hitting a narrow ideal.
 

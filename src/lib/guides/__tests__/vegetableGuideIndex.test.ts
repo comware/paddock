@@ -59,8 +59,10 @@ describe('vegetable guide index', () => {
       'Row Spacing': `${guide.rowSpacingCm} cm`,
       'Sowing Depth': `${guide.sowingDepthMm} mm`,
       'Soil Temperature': `${guide.soilTempC} °C`,
-      'Succession Interval':
-        guide.successionDays === null ? 'Not a succession crop' : `${guide.successionDays} days`,
+      'Suggested succession':
+        guide.successionDays === null
+          ? 'Not a succession crop'
+          : `Every ${guide.successionDays} days`,
     };
 
     for (const [label, value] of Object.entries(expected)) {

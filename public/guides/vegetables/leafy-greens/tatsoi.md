@@ -11,7 +11,7 @@
 | **Row Spacing** | 40 cm |
 | **Sowing Depth** | 6 mm |
 | **Soil Temperature** | 8-25 °C |
-| **Succession Interval** | 21 days |
+| **Suggested succession** | Every 21 days |
 
 ## Overview
 

@@ -11,7 +11,7 @@
 | **Row Spacing** | 60 cm |
 | **Sowing Depth** | 10 mm |
 | **Soil Temperature** | 10-30 °C |
-| **Succession Interval** | 21 days |
+| **Suggested succession** | Every 21 days |
 
 ## Overview
 
@@ -23,7 +23,7 @@ The single thing that most often goes wrong is exactly the "check" problem descr
 
 ## When to Sow
 
-Sow into trays once soil temperature sits in the 10-30°C range; germination is most reliable in the middle of that band, around 20-25°C. In southern Australia this generally means an early spring sowing (September) for a late spring or early summer harvest, or a late summer to autumn sowing (February to April) for a winter harvest — many growers here find the autumn-sown, winter-maturing crop easier, since it avoids the risk of the curd forming right as heat arrives.
+Sow into trays once soil temperature sits in the 10-30°C range; germination is most reliable in the middle of that band, around 20-25°C. In cool-temperate southern Australia the sowing window is a continuous run from late winter through to early autumn rather than two separate blocks. What changes across it is the risk: an early spring sowing matures into rising heat, while a late summer to autumn sowing matures through winter, and most growers here find the winter-maturing crop much easier because it avoids the curd forming just as the heat arrives. Given how little cauliflower tolerates a check, that is the end of the run to favour.
 
 Sow or transplant too early and a cold snap while the plant is small can trigger "buttoning" — a tiny premature curd on an undersized plant that never develops properly. Transplant too late, or let maturity fall in a hot spell, and the curd can turn grainy and loose or bitter and discoloured from heat stress. Cauliflower has less tolerance for either mistake than broccoli does, which is most of why it has the harder reputation.
 
@@ -47,7 +47,7 @@ Unlike broccoli, cauliflower doesn't reliably produce useful side shoots after t
 
 ## Succession
 
-Succession sow every 21 days through whichever sowing window you're using. Because cauliflower is less forgiving of a mistimed harvest falling into heat, two sowings spaced three weeks apart in the same window is usually more reliable in this climate than trying to stretch a longer run, since it gives you a shorter overall harvest period to manage rather than a long tail exposed to more weather risk.
+Succession sow every 21 days through the part of the run you are using. Because cauliflower is less forgiving of a mistimed harvest falling into heat, two sowings spaced three weeks apart in the same window is usually more reliable in this climate than trying to stretch a longer run, since it gives you a shorter overall harvest period to manage rather than a long tail exposed to more weather risk.
 
 ## Common Problems
 

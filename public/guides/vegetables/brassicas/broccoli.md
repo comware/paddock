@@ -11,7 +11,7 @@
 | **Row Spacing** | 60 cm |
 | **Sowing Depth** | 6 mm |
 | **Soil Temperature** | 7-30 °C |
-| **Succession Interval** | 21 days |
+| **Suggested succession** | Every 21 days |
 
 ## Overview
 
@@ -23,7 +23,7 @@ The single thing that catches people out most is planting too late in spring and
 
 ## When to Sow
 
-Sow into trays once soil temperature is reliably in the 7-30°C range, though germination is fastest and most even in the 15-25°C band. In southern Australia that's a spring sowing (September to November) for a summer harvest, or an autumn sowing (March to May) for a cool-season harvest through winter into early spring — broccoli handles a light frost well once established, so the autumn window is often the more reliable one here.
+Sow into trays once soil temperature is reliably in the 7-30°C range, though germination is fastest and most even in the 15-25°C band. In cool-temperate southern Australia this is one long run rather than two separate seasons: from late winter, around August, through to early autumn. Where you sow within it decides what you are harvesting — August to November sowings mature through spring into summer, February and March sowings mature through winter into early spring, and broccoli handles a light frost well once established, so the autumn end is usually the more reliable one here. Midsummer is the awkward stretch rather than a wall: a December or January sowing will grow, but it asks the plant to form its head in the heat, so it is the sowing to skip if you only want one crop.
 
 Sow too early in spring and cold nights while the transplant is still small can trigger premature "buttoning" — a tiny head forms on an undersized plant instead of a proper crown. Sow too late and the plant matures into early summer heat, which causes the head to open loosely, bolt to flower, or turn bitter before it's worth eating. If you're not sure which side of the window you're on, err toward the cooler side.
 
@@ -47,7 +47,7 @@ Once the main head is off, watch the leaf axils for side shoots and keep harvest
 
 ## Succession
 
-Succession sow every 21 days through the sowing window to spread the harvest rather than getting one glut. In a typical southern Australian spring or autumn window you can usually fit in two to three sowings before the season turns against the crop (heat in late spring, hard frost in winter), which combined with the side-shoot habit gives a reasonably long harvest period from a modest number of plantings.
+Succession sow every 21 days through the sowing window to spread the harvest rather than getting one glut. Because the window is a continuous run rather than two short blocks, you can keep sowing for as long as the maturity date still lands somewhere you want it — in practice several sowings from late winter into autumn, pausing over midsummer if heat at heading is a concern. Combined with the side-shoot habit, that gives a long harvest period from a modest number of plantings.
 
 ## Common Problems
 

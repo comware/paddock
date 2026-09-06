@@ -11,7 +11,7 @@
 | **Row Spacing** | 30 cm |
 | **Sowing Depth** | 10 mm |
 | **Soil Temperature** | 7-30 °C |
-| **Succession Interval** | Not a succession crop |
+| **Suggested succession** | Not a succession crop |
 
 ## Overview
 

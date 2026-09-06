@@ -88,6 +88,12 @@ export function VegetableGuideLibrary() {
           signal — the month windows assume a cool-temperate climate with winter
           frosts, so adjust them to your own ground.
         </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
+          Days to maturity, spacing and soil temperature are drawn from Australian
+          sources. Suggested succession is not: it is a planning default, chosen from how
+          long one sowing holds before the next is wanted, and worth adjusting to how fast
+          your household actually eats the crop.
+        </p>
       </div>
 
       {/* Search */}

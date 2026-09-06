@@ -83,7 +83,7 @@ export function CropGuidePanel({ cropName }: CropGuidePanelProps) {
               <dd className="text-slate-900 dark:text-white font-medium">{metadata.soilTempC}&deg;C</dd>
             </div>
             <div className="col-span-2">
-              <dt className="text-slate-500 dark:text-slate-400">Succession interval</dt>
+              <dt className="text-slate-500 dark:text-slate-400">Suggested succession</dt>
               <dd className="text-slate-900 dark:text-white font-medium">
                 {metadata.successionDays === null ? 'Not a succession crop' : `Every ${metadata.successionDays} days`}
               </dd>

@@ -11,7 +11,7 @@
 | **Row Spacing** | 50 cm |
 | **Sowing Depth** | 10 mm |
 | **Soil Temperature** | 5-18 °C |
-| **Succession Interval** | 21 days |
+| **Suggested succession** | Every 21 days |
 
 ## Overview
 
@@ -23,7 +23,7 @@ The single thing that most often goes wrong is exactly that: an otherwise perfec
 
 ## When to Sow
 
-Sow into trays once soil temperature is reliably in the 7-30°C range, with the fastest even germination around 15-25°C. In southern Australia, sow in spring (September to November) for a summer harvest, or in late summer to autumn (February to April) for a harvest through winter into early spring. Cabbage tolerates a light frost well once established, and many growers find the cooler-season crop less prone to pest pressure and bolting than the summer one.
+Sow into trays once soil temperature is reliably in the 7-30°C range, with the fastest even germination around 15-25°C. In cool-temperate southern Australia the window is one continuous run from late winter to early autumn rather than two separate seasons. Sowings from late winter through spring mature into summer; sowings from late summer into autumn mature through winter into early spring. Cabbage tolerates a light frost well once established, and many growers find the cooler-season crop less prone to pest pressure and bolting than the summer one.
 
 Sow or transplant too early into cold soil and growth stalls, leaving a small, slow plant that's more vulnerable to pests before it can outgrow them. Leave the crop in the ground too long after the head has firmed up, especially into a spell of heavy rain, and heads split — once split, they don't reseal and are prone to rot, so they need to be used or harvested promptly. In hot weather, cabbage can also bolt to flower if it experiences a period of cold followed by a return to warmth, so timing the sowing window matters more than it might seem for a crop this tolerant.
 

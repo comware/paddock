@@ -40,7 +40,21 @@ export interface VegetableGuideMetadata {
   rowSpacingCm: number;
   sowingDepthMm: number;
   soilTempC: string; // germination range, e.g. "10-30"
-  successionDays: number | null; // null when it is not a succession crop
+  /**
+   * How often to sow again for a rolling harvest. null when the crop is not sown in
+   * succession at all - a perennial, or something that occupies its bed for a whole season.
+   *
+   * Unlike every other field here, this one is not sourced. Fact-checking against Australian
+   * horticultural sources found that none of them state a succession interval in days for
+   * any of these crops; the two exceptions are swede and the beans, where Yates says "every
+   * 3-4 weeks" without committing to a figure. So these are planning defaults - chosen from
+   * how long one sowing holds before the next is wanted - not measurements.
+   *
+   * That is why the label reads "Suggested succession" rather than sitting alongside days to
+   * maturity as though equally established, and why the guide library says so in as many
+   * words. Do not quietly promote it to a fact.
+   */
+  successionDays: number | null;
   file: string;
   status: string;
 }
