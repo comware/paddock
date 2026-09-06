@@ -9,18 +9,26 @@
  */
 
 import { useRoutes } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  BookOpen,
+  ClipboardList,
+  Sprout,
+  ChartLine,
+  Settings,
+} from 'lucide-react';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { propagationRoutes } from './routes';
 
 // Navigation items for the propagation module
 const propagationNavItems: ModuleNavItem[] = [
-  { name: 'Dashboard', path: '', icon: '📊' },              // Dashboard (landing)
-  { name: 'Guides', path: '/guides', icon: '📚' },          // Propagation guide library
-  { name: 'Batches', path: '/batches', icon: '📋' },        // Batch list
-  { name: 'Mother Plants', path: '/mother-plants', icon: '🌱' }, // Mother plant registry
-  { name: 'Analytics', path: '/analytics', icon: '📈' },    // Analytics dashboard
-  { name: 'Settings', path: '/settings', icon: '⚙️' },      // Species configurations
+  { name: 'Dashboard', path: '', Icon: LayoutDashboard },
+  { name: 'Guides', path: '/guides', Icon: BookOpen },
+  { name: 'Batches', path: '/batches', Icon: ClipboardList },
+  { name: 'Mother Plants', path: '/mother-plants', Icon: Sprout },
+  { name: 'Analytics', path: '/analytics', Icon: ChartLine },
+  { name: 'Settings', path: '/settings', Icon: Settings },
 ];
 
 function PropagationModuleContent() {

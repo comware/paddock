@@ -19,7 +19,8 @@ import { useBeds } from '../../stores/useBeds';
 import { usePlantings } from '../../stores/usePlantings';
 import { useSites } from '@/platform';
 import { vegDb, withId, type VegHarvest, type VegPlanting } from '@/lib/db';
-import { EmptyState } from '@/components/shared';
+import { Grid2x2, Sprout, ShoppingBasket, Scale } from 'lucide-react';
+import { EmptyState, StatCard, StatCardGrid } from '@/components/shared';
 
 const RECENT_PICKS_LIMIT = 10;
 
@@ -51,6 +52,23 @@ function overdueLabel(expected: Date, now: Date): string {
   if (days <= 0) return 'expected today';
   if (days === 1) return 'expected 1 day ago';
   return `expected ${days} days ago`;
+}
+
+/**
+ * The page title, kept outside the empty-state early returns.
+ *
+ * The dashboard used to return a bare EmptyState when a site had no beds, which took the
+ * heading with it - so the one screen a new grower lands on was the only screen in the app
+ * with no title at all. The frame keeps the page identifiable whether or not it has
+ * anything in it yet.
+ */
+function DashboardFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
+      {children}
+    </div>
+  );
 }
 
 export function VegDashboard() {
@@ -103,22 +121,26 @@ export function VegDashboard() {
 
   if (siteBeds.length === 0) {
     return (
-      <EmptyState
-        icon="🌱"
-        title="No beds yet"
-        description="Add your first bed to start tracking what's growing where."
-        action={{ label: 'Add a bed', onClick: () => navigate('/vegetables/beds') }}
-      />
+      <DashboardFrame>
+        <EmptyState
+          icon="🌱"
+          title="No beds yet"
+          description="Add your first bed to start tracking what's growing where."
+          action={{ label: 'Add a bed', onClick: () => navigate('/vegetables/beds') }}
+        />
+      </DashboardFrame>
     );
   }
 
   if (sitePlantings.length === 0) {
     return (
-      <EmptyState
-        icon="🥬"
-        title="No plantings yet"
-        description="Your beds are ready. Sow or transplant something into one to start tracking it."
-      />
+      <DashboardFrame>
+        <EmptyState
+          icon="🥬"
+          title="No plantings yet"
+          description="Your beds are ready. Sow or transplant something into one to start tracking it."
+        />
+      </DashboardFrame>
     );
   }
 
@@ -149,9 +171,39 @@ export function VegDashboard() {
 
   const plantingById = new Map(sitePlantings.map((p) => [p.id, p]));
 
+  const activePlantings = sitePlantings.filter(
+    (p) => p.status === 'growing' || p.status === 'harvesting'
+  );
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Dashboard</h1>
+    <DashboardFrame>
+      <StatCardGrid>
+        <StatCard
+          Icon={Grid2x2}
+          value={bedsInUse.length}
+          label="Beds In Use"
+          subValue={`${freeBedCount} free of ${siteActiveBeds.length}`}
+          testId="beds-in-use"
+        />
+        <StatCard
+          Icon={Sprout}
+          value={activePlantings.length}
+          label="Active Plantings"
+          subValue="growing or being picked"
+        />
+        <StatCard
+          Icon={ShoppingBasket}
+          value={readyItems.length}
+          label="Ready to Pick"
+          subValue="at or past first harvest"
+        />
+        <StatCard
+          Icon={Scale}
+          value={recentHarvests.length}
+          label="Recent Picks"
+          subValue={`last ${RECENT_PICKS_LIMIT} logged`}
+        />
+      </StatCardGrid>
 
       {/* Ready or nearly ready */}
       <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4">
@@ -199,32 +251,7 @@ export function VegDashboard() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Beds in use vs free */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4" data-testid="beds-panel">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Beds</h2>
-          <div className="flex items-center gap-6">
-            <div>
-              <div className="text-2xl font-bold text-slate-900 dark:text-white" data-testid="beds-in-use">
-                {bedsInUse.length}
-              </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400">in use</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-green-700 dark:text-green-300" data-testid="beds-free">
-                {freeBedCount}
-              </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400">free</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-500 dark:text-slate-400" data-testid="beds-active-total">
-                {siteActiveBeds.length}
-              </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400">active beds</div>
-            </div>
-          </div>
-        </div>
-
+      <div className="grid grid-cols-1 gap-6">
         {/* Recent picks */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-6 shadow-sm space-y-4" data-testid="recent-picks-panel">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent picks</h2>
@@ -255,6 +282,6 @@ export function VegDashboard() {
           )}
         </div>
       </div>
-    </div>
+    </DashboardFrame>
   );
 }

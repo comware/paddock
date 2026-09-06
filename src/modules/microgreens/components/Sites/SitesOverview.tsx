@@ -10,6 +10,21 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Home,
+  MapPin,
+  Sprout,
+  Moon,
+  Lightbulb,
+  TriangleAlert,
+  CircleCheck,
+  Inbox,
+  Plus,
+  ChartColumn,
+  Target,
+  BookOpen,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { useTrays } from '../../stores';
 import { useSites, useWeather } from '@/platform';
 import { getWeatherEmoji } from '@/lib/weather';
@@ -78,7 +93,11 @@ function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{site.isIndoor ? '🏠' : '📍'}</span>
+          {site.isIndoor ? (
+            <Home aria-hidden="true" className="w-6 h-6 shrink-0 text-primary-600 dark:text-primary-400" strokeWidth={1.75} />
+          ) : (
+            <MapPin aria-hidden="true" className="w-6 h-6 shrink-0 text-primary-600 dark:text-primary-400" strokeWidth={1.75} />
+          )}
           <div>
             <h3 className="font-bold text-slate-900 dark:text-white">{site.name}</h3>
             {site.isDefault && (
@@ -115,21 +134,21 @@ function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
       {/* Tray Stats */}
       <div className="flex items-center gap-4 mb-3 text-sm">
         <div className="flex items-center gap-1">
-          <span>🌱</span>
+          <Sprout aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
           <span className="font-medium text-slate-700 dark:text-slate-300">
             {totalActive} active
           </span>
         </div>
         {metrics.activeBlackout > 0 && (
           <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
-            <span>🌑</span>
-            <span>{metrics.activeBlackout}</span>
+            <Moon aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+            <span>{metrics.activeBlackout}<span className="sr-only"> in blackout</span></span>
           </div>
         )}
         {metrics.activeLight > 0 && (
           <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400">
-            <span>💡</span>
-            <span>{metrics.activeLight}</span>
+            <Lightbulb aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+            <span>{metrics.activeLight}<span className="sr-only"> under light</span></span>
           </div>
         )}
       </div>
@@ -137,7 +156,7 @@ function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
       {/* Attention Badge */}
       {metrics.needsAttention > 0 ? (
         <div className="px-3 py-2 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-medium flex items-center gap-2">
-          <span>⚠️</span>
+          <TriangleAlert aria-hidden="true" className="w-4 h-4 shrink-0" strokeWidth={1.75} />
           <span>
             {metrics.needsAttention} need{metrics.needsAttention > 1 ? '' : 's'} attention
           </span>
@@ -150,12 +169,12 @@ function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
         </div>
       ) : totalActive > 0 ? (
         <div className="px-3 py-2 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm font-medium flex items-center gap-2">
-          <span>✅</span>
+          <CircleCheck aria-hidden="true" className="w-4 h-4 shrink-0" strokeWidth={1.75} />
           <span>All good</span>
         </div>
       ) : (
         <div className="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-sm flex items-center gap-2">
-          <span>📭</span>
+          <Inbox aria-hidden="true" className="w-4 h-4 shrink-0" strokeWidth={1.75} />
           <span>No active trays</span>
         </div>
       )}
@@ -234,7 +253,7 @@ export function SitesOverview() {
           onClick={() => setIsNewSiteOpen(true)}
           className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
         >
-          <span>+</span>
+          <Plus aria-hidden="true" className="w-4 h-4" strokeWidth={2} />
           <span>Add a space</span>
         </button>
       </div>
@@ -242,7 +261,7 @@ export function SitesOverview() {
       {/* Empty State */}
       {sites.length === 0 ? (
         <div className="bg-white dark:bg-slate-800 rounded-xl p-8 text-center">
-          <div className="text-5xl mb-4">📍</div>
+          <MapPin aria-hidden="true" className="w-12 h-12 mx-auto mb-4 text-slate-400 dark:text-slate-500" strokeWidth={1.5} />
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             Welcome to Paddock Microgreens
           </h2>
@@ -283,7 +302,7 @@ export function SitesOverview() {
               onClick={() => navigate('/microgreens/analytics')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
-              <span className="text-2xl mb-2 block">📊</span>
+              <ChartColumn aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
               <span className="font-medium text-slate-900 dark:text-white">All spaces</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare every growing space</span>
             </button>
@@ -291,7 +310,7 @@ export function SitesOverview() {
               onClick={() => navigate('/microgreens/analytics')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
-              <span className="text-2xl mb-2 block">🎯</span>
+              <Target aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
               <span className="font-medium text-slate-900 dark:text-white">Compare varieties</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Evaluate progress</span>
             </button>
@@ -299,7 +318,7 @@ export function SitesOverview() {
               onClick={() => navigate('/microgreens/guides')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
-              <span className="text-2xl mb-2 block">📚</span>
+              <BookOpen aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
               <span className="font-medium text-slate-900 dark:text-white">Growing Guides</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Reference material</span>
             </button>
@@ -307,7 +326,7 @@ export function SitesOverview() {
               onClick={() => navigate('/microgreens/sites/manage')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
             >
-              <span className="text-2xl mb-2 block">⚙️</span>
+              <SlidersHorizontal aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
               <span className="font-medium text-slate-900 dark:text-white">Manage spaces</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Edit & configure</span>
             </button>

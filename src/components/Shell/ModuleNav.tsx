@@ -3,6 +3,12 @@
  *
  * Displays the navigation tabs for the current module.
  * Used as a secondary nav below the main content area.
+ *
+ * Matches the growing-space sub-nav in microgreens deliberately: the two sit at the same
+ * level on screen - the row of tabs under the header - so they should not be two different
+ * looking things. Both use a tinted active tab rather than a solid fill, because a solid
+ * green tab competes with the page's actual primary button (Harvest Now, New Batch) for the
+ * heaviest thing in view. Navigation should say where you are, not shout.
  */
 
 import type { LucideIcon } from 'lucide-react';
@@ -11,9 +17,11 @@ import { NavLink } from 'react-router-dom';
 export interface ModuleNavItem {
   name: string;
   path: string;
-  /** Line icon. Preferred over the emoji field, which remains for unconverted modules. */
-  Icon?: LucideIcon;
-  icon?: string;
+  /**
+   * Line icon. Lucide rather than emoji: emoji render differently on every platform, sit on
+   * an inconsistent baseline beside text, and cannot take the tab's colour.
+   */
+  Icon: LucideIcon;
   /** Count of items needing attention. Rendered as a badge; 0 or undefined shows nothing. */
   badge?: number;
   /** What the badge means, for screen readers. */
@@ -36,19 +44,15 @@ export function ModuleNav({ items, basePath }: ModuleNavProps) {
               to={`${basePath}${item.path}`}
               end={item.path === ''}
               className={({ isActive }) =>
-                `flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                `flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'bg-primary-500 text-white'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`
               }
             >
-              {item.Icon ? (
-                <item.Icon aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
-              ) : (
-                item.icon && <span aria-hidden="true">{item.icon}</span>
-              )}
-              {item.name}
+              <item.Icon aria-hidden="true" className="w-4 h-4" strokeWidth={1.75} />
+              <span>{item.name}</span>
               {item.badge !== undefined && item.badge > 0 && (
                 <span
                   // Announced politely rather than assertively: something arrived, but it

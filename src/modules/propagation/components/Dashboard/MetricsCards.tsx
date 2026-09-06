@@ -1,55 +1,17 @@
 /**
- * MetricsCards - Summary metrics for propagation dashboard
+ * MetricsCards - Summary metrics for the propagation dashboard.
  *
- * Displays at-a-glance statistics:
- * - Active batches count
- * - Propagules in progress
- * - Overall success rate
+ * Uses the shared StatCard so this row reads the same as the equivalent row in microgreens
+ * and vegetables. It used to have its own card: emoji beside the label on the first line,
+ * figure underneath. Same four numbers, a different shape to read.
+ *
+ * The local card also carried a `trend` prop that no caller ever passed. It went with the
+ * card rather than being carried over - if a trend is wanted here later, it belongs on the
+ * shared StatCard where every module gets it.
  */
 
-interface MetricCardProps {
-  label: string;
-  value: string;
-  subtitle?: string;
-  icon: string;
-  trend?: {
-    direction: 'up' | 'down' | 'neutral';
-    label: string;
-  };
-}
-
-function MetricCard({ label, value, subtitle, icon, trend }: MetricCardProps) {
-  return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm">
-      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-2">
-        <span>{icon}</span>
-        <span className="text-sm">{label}</span>
-      </div>
-      <div className="text-2xl font-bold text-slate-900 dark:text-white">
-        {value}
-      </div>
-      {subtitle && (
-        <div className="text-sm text-slate-500 dark:text-slate-400">
-          {subtitle}
-        </div>
-      )}
-      {trend && (
-        <div
-          className={`text-sm mt-1 ${
-            trend.direction === 'up'
-              ? 'text-green-600 dark:text-green-400'
-              : trend.direction === 'down'
-              ? 'text-red-600 dark:text-red-400'
-              : 'text-slate-500 dark:text-slate-400'
-          }`}
-        >
-          {trend.direction === 'up' && '+'}
-          {trend.label}
-        </div>
-      )}
-    </div>
-  );
-}
+import { Boxes, Sprout, CircleCheck, TrendingUp } from 'lucide-react';
+import { StatCard, StatCardGrid } from '@/components/shared';
 
 interface MetricsCardsProps {
   activeBatches: number;
@@ -65,31 +27,31 @@ export function MetricsCards({
   averageSurvivalRate,
 }: MetricsCardsProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <MetricCard
+    <StatCardGrid>
+      <StatCard
+        Icon={Boxes}
+        value={activeBatches}
         label="Active Batches"
-        value={String(activeBatches)}
-        icon="📦"
-        subtitle="in progress"
+        subValue="in progress"
       />
-      <MetricCard
+      <StatCard
+        Icon={Sprout}
+        value={totalPropagules}
         label="Propagules"
-        value={String(totalPropagules)}
-        icon="🌱"
-        subtitle="in active batches"
+        subValue="in active batches"
       />
-      <MetricCard
-        label="Success Rate"
+      <StatCard
+        Icon={CircleCheck}
         value={successRate > 0 ? `${successRate}%` : '--'}
-        icon="✅"
-        subtitle="graduated vs failed"
+        label="Success Rate"
+        subValue="graduated vs failed"
       />
-      <MetricCard
-        label="Survival Rate"
+      <StatCard
+        Icon={TrendingUp}
         value={averageSurvivalRate > 0 ? `${averageSurvivalRate}%` : '--'}
-        icon="💪"
-        subtitle="average across batches"
+        label="Survival Rate"
+        subValue="average across batches"
       />
-    </div>
+    </StatCardGrid>
   );
 }

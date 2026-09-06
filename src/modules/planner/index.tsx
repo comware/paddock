@@ -11,15 +11,13 @@ import { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { CalendarDays } from 'lucide-react';
 import { usePlannerStore } from './stores/usePlannerStore';
 import { plannerRoutes } from './routes';
 
 // Navigation items for the planner module
 const plannerNavItems: ModuleNavItem[] = [
-  { name: 'Calendar', path: '', icon: '📅' },           // Calendar (landing)
-  // Future nav items:
-  // { name: 'Events', path: '/events', icon: '📋' },   // Event list
-  // { name: 'Upcoming', path: '/upcoming', icon: '⏰' }, // Upcoming events
+  { name: 'Calendar', path: '', Icon: CalendarDays },
 ];
 
 function PlannerModuleContent() {

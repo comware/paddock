@@ -341,5 +341,27 @@ describe('EmptyState', () => {
       const button = screen.getByRole('button');
       expect(button.tagName).toBe('BUTTON');
     });
+
+    /**
+     * The action carries the app's primary button classes rather than rendering as bare
+     * text. It looked like a paragraph for as long as `.btn-primary` went undefined, and
+     * the test above still passed throughout, because it was a <button> the whole time.
+     *
+     * happy-dom applies no stylesheet, so this can only assert that the contract is asked
+     * for. That the classes are actually defined is asserted in buttonClasses.test.ts,
+     * which reads index.css - the two together are what cover the original bug.
+     */
+    it('asks for the app primary button styling', () => {
+      render(
+        <EmptyState
+          icon="🌱"
+          title="Title"
+          description="Description"
+          action={{ label: 'Click Me', onClick: vi.fn() }}
+        />
+      );
+
+      expect(screen.getByRole('button').className).toContain('btn btn-primary');
+    });
   });
 });

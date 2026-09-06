@@ -2,6 +2,11 @@
  * EmptyState - Reusable empty state component
  *
  * Shows a friendly message when lists are empty with an optional action button.
+ *
+ * The action is styled `btn btn-primary`. Those class names were used here and in seven
+ * other files but were defined nowhere, so this button rendered as a line of plain text.
+ * They are now defined in index.css alongside `.card`. See the test in
+ * __tests__/buttonClasses.test.ts, which fails if they go missing again.
  */
 
 interface EmptyStateProps {

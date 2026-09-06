@@ -9,16 +9,17 @@
  */
 
 import { useRoutes } from 'react-router-dom';
+import { LayoutDashboard, Grid2x2, Sprout, BookOpen } from 'lucide-react';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { vegetablesRoutes } from './routes';
 
 // Navigation items for the vegetables module
 const vegetablesNavItems: ModuleNavItem[] = [
-  { name: 'Dashboard', path: '', icon: '📊' },        // Dashboard (landing)
-  { name: 'Beds', path: '/beds', icon: '🛏️' },        // Bed list
-  { name: 'Plantings', path: '/plantings', icon: '🥕' }, // Planting list
-  { name: 'Guides', path: '/guides', icon: '📚' },       // Guide library
+  { name: 'Dashboard', path: '', Icon: LayoutDashboard },
+  { name: 'Beds', path: '/beds', Icon: Grid2x2 },
+  { name: 'Plantings', path: '/plantings', Icon: Sprout },
+  { name: 'Guides', path: '/guides', Icon: BookOpen },
 ];
 
 function VegetablesModuleContent() {

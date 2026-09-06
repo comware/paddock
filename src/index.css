@@ -207,3 +207,44 @@ select {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/*
+ * Button component classes.
+ *
+ * Eight files across settings, onboarding, the PWA install prompt and three microgreens
+ * forms already wrote `className="btn btn-primary"`. Nothing defined it. Every one of those
+ * primary buttons rendered as bare unstyled text - including the call to action on an empty
+ * module, which is the first thing a new grower sees.
+ *
+ * The convention was clearly intended, and `.card` above shows the component layer exists,
+ * so the fix is to define the class rather than rewrite nine call sites into utilities.
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 150ms;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--color-primary-500);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-600);
+}
+
+.btn-primary:active:not(:disabled) {
+  background-color: var(--color-primary-700);
+}

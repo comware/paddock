@@ -145,12 +145,15 @@ describe('VegDashboard', () => {
 
     // Two active beds (Bed A, Bed B); one holds a growing planting, one is free. The
     // inactive bed doesn't count either way.
+    //
+    // The three figures used to be a bespoke panel of their own. They are now one shared
+    // StatCard - the count in use as the figure, free and total as its qualifier - so the
+    // same three numbers are asserted here in the shape they are now rendered.
     await waitFor(() => {
-      expect(screen.getByTestId('beds-panel')).toBeInTheDocument();
+      expect(screen.getByTestId('beds-in-use')).toHaveTextContent('1');
     });
-    expect(screen.getByTestId('beds-in-use')).toHaveTextContent('1');
-    expect(screen.getByTestId('beds-free')).toHaveTextContent('1');
-    expect(screen.getByTestId('beds-active-total')).toHaveTextContent('2');
+    expect(screen.getByText('Beds In Use')).toBeInTheDocument();
+    expect(screen.getByText('1 free of 2')).toBeInTheDocument();
   });
 
   it('shows a logged harvest in recent picks with its crop and quantity', async () => {

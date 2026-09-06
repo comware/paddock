@@ -5,7 +5,11 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    // "node" is here for test files under src/ that read project files off disk - see
+    // src/components/__tests__/buttonClasses.test.ts, which asserts that component class
+    // names used in TSX are actually defined in index.css. Application code should not be
+    // reaching for node builtins; if it does, it will fail the moment it runs in a browser.
+    "types": ["vite/client", "node"],
     "skipLibCheck": true,
 
     /* Bundler mode */

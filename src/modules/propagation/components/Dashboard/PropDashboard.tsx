@@ -11,6 +11,14 @@
 
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Plus,
+  ClipboardList,
+  LayoutGrid,
+  Package,
+  Sprout,
+  type LucideIcon,
+} from 'lucide-react';
 import { useBatches } from '../../stores';
 import { MetricsCards } from './MetricsCards';
 import { StageDistribution } from './StageDistribution';
@@ -116,28 +124,28 @@ export function PropDashboard() {
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           <QuickActionButton
-            icon="+"
+            Icon={Plus}
             label="New Batch"
             onClick={() => navigate('/propagation/batches/new')}
             primary
           />
           <QuickActionButton
-            icon="*"
+            Icon={ClipboardList}
             label="View Batches"
             onClick={() => navigate('/propagation/batches')}
           />
           <QuickActionButton
-            icon="#"
+            Icon={LayoutGrid}
             label="Stations"
             onClick={() => navigate('/propagation/stations')}
           />
           <QuickActionButton
-            icon="$"
+            Icon={Package}
             label="Supplies"
             onClick={() => navigate('/propagation/supplies')}
           />
           <QuickActionButton
-            icon="@"
+            Icon={Sprout}
             label="Mother Plants"
             onClick={() => navigate('/propagation/mother-plants')}
           />
@@ -187,7 +195,12 @@ export function PropDashboard() {
 // ============================================
 
 interface QuickActionButtonProps {
-  icon: string;
+  /**
+   * These were single ASCII characters - `*` for View Batches, `#` for Stations, `$` for
+   * Supplies, `@` for Mother Plants. They read as leftover placeholders rather than icons,
+   * and a dollar sign beside "Supplies" actively suggested the button was about cost.
+   */
+  Icon: LucideIcon;
   label: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -195,7 +208,7 @@ interface QuickActionButtonProps {
 }
 
 function QuickActionButton({
-  icon,
+  Icon,
   label,
   onClick,
   disabled,
@@ -213,7 +226,7 @@ function QuickActionButton({
           : 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 active:bg-primary-200 dark:active:bg-primary-900/40'
       }`}
     >
-      <span className="text-lg sm:text-xl">{icon}</span>
+      <Icon aria-hidden="true" className="w-5 h-5 shrink-0" strokeWidth={1.75} />
       <span className="text-center leading-tight">{label}</span>
     </button>
   );
