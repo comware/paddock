@@ -18,6 +18,7 @@ const vegetablesNavItems: ModuleNavItem[] = [
   { name: 'Dashboard', path: '', icon: '📊' },        // Dashboard (landing)
   { name: 'Beds', path: '/beds', icon: '🛏️' },        // Bed list
   { name: 'Plantings', path: '/plantings', icon: '🥕' }, // Planting list
+  { name: 'Guides', path: '/guides', icon: '📚' },       // Guide library
 ];
 
 function VegetablesModuleContent() {
