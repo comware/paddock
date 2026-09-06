@@ -183,7 +183,7 @@ export function AIChatView({
           <button
             type="submit"
             disabled={noModels || !input.trim() || isStreaming}
-            className="px-4 py-2 bg-primary-500 text-white rounded-lg font-medium hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn btn-primary"
           >
             {isStreaming ? (
               <BouncingDots />

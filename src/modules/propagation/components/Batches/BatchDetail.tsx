@@ -143,7 +143,7 @@ export function BatchDetail() {
               <button onClick={() => setGraduationModalOpen(true)} className="min-h-[44px] px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 active:bg-green-700 transition-colors text-sm sm:text-base">Graduate</button>
             )}
             {canAdvance && (
-              <button onClick={handleOpenAdvanceModal} className="min-h-[44px] px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 active:bg-primary-700 transition-colors text-sm sm:text-base">Advance Stage</button>
+              <button onClick={handleOpenAdvanceModal} className="min-h-[44px] btn btn-primary text-sm sm:text-base">Advance Stage</button>
             )}
             {canRecordFailure && (
               <button onClick={handleOpenFailureModal} className="min-h-[44px] px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 active:bg-red-300 transition-colors text-sm sm:text-base">Record Failure</button>

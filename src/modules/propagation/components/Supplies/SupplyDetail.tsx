@@ -196,7 +196,7 @@ export function SupplyDetail() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setShowRestockModal(true)}
-              className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+              className="btn btn-primary"
             >
               + Restock
             </button>

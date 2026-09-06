@@ -151,7 +151,7 @@ export function SupplyCard({
               e.stopPropagation();
               onRecordPurchase(supply.id!);
             }}
-            className="flex-1 px-3 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+            className="flex-1 btn btn-primary btn-sm"
           >
             + Restock
           </button>

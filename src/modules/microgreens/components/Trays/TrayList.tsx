@@ -241,7 +241,7 @@ export function TrayList() {
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Trays</h1>
         <button
           onClick={() => setIsNewTrayOpen(true)}
-          className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
+          className="btn btn-primary"
         >
           <span className="text-lg">+</span>
           New Tray

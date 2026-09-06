@@ -107,7 +107,7 @@ export function SpeciesConfigList() {
 
         <button
           onClick={handleAdd}
-          className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2 self-start"
+          className="btn btn-primary self-start"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -162,7 +162,7 @@ export function SpeciesConfigList() {
               </p>
               <button
                 onClick={handleAdd}
-                className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+                className="btn btn-primary"
               >
                 Add Your First Species
               </button>

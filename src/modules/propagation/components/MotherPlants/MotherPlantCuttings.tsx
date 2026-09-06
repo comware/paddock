@@ -31,7 +31,7 @@ export function MotherPlantCuttings({
             <div className="mt-4">
               <button
                 onClick={onTakeCutting}
-                className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+                className="btn btn-primary"
               >
                 Take First Cutting
               </button>

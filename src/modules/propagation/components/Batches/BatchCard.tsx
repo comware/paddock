@@ -186,7 +186,7 @@ export function BatchCard({
                 e.stopPropagation();
                 onAdvanceStage(batch.id!);
               }}
-              className="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 active:bg-primary-700 transition-colors"
+              className="flex-1 min-h-[44px] btn btn-primary btn-sm"
             >
               Advance Stage
             </button>

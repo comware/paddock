@@ -168,7 +168,7 @@ export function MotherPlantDetail() {
               <>
                 <button
                   onClick={() => setShowTakeCuttingModal(true)}
-                  className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+                  className="btn btn-primary"
                 >
                   Take Cutting
                 </button>
@@ -225,7 +225,7 @@ export function MotherPlantDetail() {
               <div className="space-y-2">
                 <button
                   onClick={() => setShowTakeCuttingModal(true)}
-                  className="w-full px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+                  className="w-full btn btn-primary btn-lg"
                 >
                   Take Cutting
                 </button>

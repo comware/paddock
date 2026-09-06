@@ -468,7 +468,7 @@ export function PlantingForm({ isOpen, onClose, onSuccess, editPlanting, sowNext
           <button
             type="submit"
             disabled={isSubmitting || (!isEditMode && (!activeSite || noBedsAvailable))}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-primary-500 text-white hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn btn-primary text-sm"
           >
             {isSubmitting ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Planting'}
           </button>

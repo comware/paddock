@@ -190,7 +190,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
           </p>
           <button
             onClick={() => navigate('/propagation/stations/new')}
-            className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+            className="btn btn-primary"
           >
             Add First Station
           </button>

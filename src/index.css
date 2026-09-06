@@ -223,16 +223,38 @@ select {
    * The convention was clearly intended, and `.card` above showed a component layer was
    * wanted, so the fix is to define the class rather than rewrite nine call sites.
    */
+  /*
+   * Padding is px-4 py-2, which is what 25 of the inline buttons already used - the most
+   * common of six different sizes the same button had drifted into. `.btn` itself was
+   * px-6 py-2 and matched none of them, so the nine call sites already using it were a
+   * seventh size.
+   *
+   * The flex box, the gap, and the disabled treatment are here because nearly every call
+   * site was repeating them: `flex items-center gap-2` and
+   * `disabled:opacity-50 disabled:cursor-not-allowed` collapse into the class.
+   */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.5rem 1.5rem;
+    padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-weight: 500;
     transition: background-color 150ms;
     cursor: pointer;
+  }
+
+  /* For dense rows - inline actions beside a list item, filter bars. */
+  .btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  /* For the single call to action on an otherwise empty screen. */
+  .btn-lg {
+    padding: 0.75rem 1.5rem;
   }
 
   .btn:disabled {

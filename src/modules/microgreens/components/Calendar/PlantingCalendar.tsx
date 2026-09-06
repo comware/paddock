@@ -272,7 +272,7 @@ export function PlantingCalendar() {
           </button>
           <button
             onClick={goToToday}
-            className="px-3 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+            className="btn btn-primary btn-sm"
           >
             Today
           </button>

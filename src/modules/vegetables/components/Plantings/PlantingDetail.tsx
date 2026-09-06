@@ -242,7 +242,7 @@ export function PlantingDetail() {
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Harvests</h2>
           <button
             onClick={() => setLogModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+            className="btn btn-primary btn-sm"
           >
             Log a pick
           </button>
@@ -326,7 +326,7 @@ export function PlantingDetail() {
             </button>
             <button
               onClick={handleFinishSubmit}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+              className="btn btn-primary text-sm"
             >
               Finish
             </button>

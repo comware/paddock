@@ -120,7 +120,7 @@ export function StatusChangeModalContent({
         <button
           type="submit"
           disabled={selectedStatus === plant.status}
-          className="flex-1 px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 disabled:opacity-50"
+          className="flex-1 btn btn-primary"
         >
           Update Status
         </button>

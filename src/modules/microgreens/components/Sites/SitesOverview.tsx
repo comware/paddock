@@ -251,7 +251,7 @@ export function SitesOverview() {
         </div>
         <button
           onClick={() => setIsNewSiteOpen(true)}
-          className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors flex items-center gap-2"
+          className="btn btn-primary"
         >
           <Plus aria-hidden="true" className="w-4 h-4" strokeWidth={2} />
           <span>Add a space</span>
@@ -271,7 +271,7 @@ export function SitesOverview() {
           </p>
           <button
             onClick={() => setIsNewSiteOpen(true)}
-            className="px-6 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+            className="btn btn-primary btn-lg"
           >
             Add a growing space
           </button>

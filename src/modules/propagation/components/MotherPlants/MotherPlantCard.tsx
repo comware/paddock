@@ -184,7 +184,7 @@ export function MotherPlantCard({
                 e.stopPropagation();
                 onTakeCutting(plant.id!);
               }}
-              className="flex-1 px-3 py-2 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+              className="flex-1 btn btn-primary btn-sm"
             >
               Take Cutting
             </button>

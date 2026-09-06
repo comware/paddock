@@ -420,7 +420,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors disabled:opacity-50"
+            className="flex-1 btn btn-primary"
           >
             {isSubmitting ? 'Adding...' : 'Add Site'}
           </button>

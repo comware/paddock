@@ -180,7 +180,7 @@ export function PropDashboard() {
           </p>
           <button
             onClick={() => navigate('/propagation/batches/new')}
-            className="px-6 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+            className="btn btn-primary btn-lg"
           >
             Create First Batch
           </button>

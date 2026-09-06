@@ -202,7 +202,7 @@ export function CostBreakdown({ batchId, onCostsUpdated }: CostBreakdownProps) {
           </p>
           <button
             onClick={() => setShowAddForm(true)}
-            className="px-4 py-2 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 transition-colors"
+            className="btn btn-primary"
           >
             + Add First Cost
           </button>
@@ -229,7 +229,7 @@ export function CostBreakdown({ batchId, onCostsUpdated }: CostBreakdownProps) {
         </div>
         <button
           onClick={() => setShowAddForm(true)}
-          className="px-3 py-1.5 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors"
+          className="btn btn-primary btn-sm"
         >
           + Add Cost
         </button>
