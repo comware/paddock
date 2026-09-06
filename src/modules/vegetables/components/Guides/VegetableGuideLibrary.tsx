@@ -13,6 +13,7 @@
  * adapted to vegetables' category-grouped index rather than a flat table.
  */
 
+import { Spinner } from '@/components/shared';
 import { useState, useEffect } from 'react';
 import type { VegetableGuideIndex } from '@/lib/guides/vegetable-types';
 import { GuideDetailModal } from './GuideDetailModal';
@@ -49,7 +50,7 @@ export function VegetableGuideLibrary() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+        <Spinner />
       </div>
     );
   }

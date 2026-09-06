@@ -9,6 +9,7 @@
  * - Show configuration summary
  */
 
+import { Spinner } from '@/components/shared';
 import { useState, useMemo } from 'react';
 import { useSpeciesConfigs } from '../../stores/useSpeciesConfigs';
 import { SpeciesConfigForm } from './SpeciesConfigForm';
@@ -87,7 +88,7 @@ export function SpeciesConfigList() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+        <Spinner />
       </div>
     );
   }

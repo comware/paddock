@@ -6,6 +6,7 @@
  * Includes Getting Started section for beginners and Method guides.
  */
 
+import { Spinner } from '@/components/shared';
 import { useState, useEffect, useMemo } from 'react';
 import type { PropagationGuideIndex, PropagationGuideMetadata, PropagationMethodMetadata } from '@/lib/guides/propagation-types';
 import { GuideSpeciesTable } from './GuideSpeciesTable';
@@ -110,7 +111,7 @@ export function PropagationGuideLibrary() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
+        <Spinner />
       </div>
     );
   }

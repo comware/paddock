@@ -10,6 +10,7 @@
  * not support a claim, none is made.
  */
 
+import { LoadingState } from '@/components/shared';
 import { useEffect, useState } from 'react';
 import { platformDb } from '@/lib/db';
 import type { GrowWeatherHistory } from '@/lib/db';
@@ -39,9 +40,7 @@ export function WeatherOutcome() {
 
   if (weather === null) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-      </div>
+      <LoadingState />
     );
   }
 

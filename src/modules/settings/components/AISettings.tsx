@@ -5,6 +5,7 @@
  * Supports GPT-5.2, Claude 4.5+, and Gemini 3 models.
  */
 
+import { Spinner } from '@/components/shared';
 import { useState, useEffect, useCallback } from 'react';
 import { aiService, type LLMProvider, getModelsForProvider, parseApiError, type AIErrorType } from '@/lib/ai';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -291,7 +292,7 @@ function ProviderCard({
             >
               {validationStatus === 'validating' ? (
                 <span className="flex items-center gap-1">
-                  <span className="animate-spin">⟳</span> Validating...
+                  <Spinner className="w-4 h-4" /> Validating…
                 </span>
               ) : validationStatus === 'valid' ? (
                 '✓ Saved'

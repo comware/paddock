@@ -171,31 +171,31 @@ function LoadingOverlay({ isLoading, message = 'Loading...', children }: Loading
 // ============================================
 
 describe('ModuleLoader', () => {
-  it('renders loading state', () => {
+  /*
+   * These tests used to assert on a pulsing seedling emoji and the literal text
+   * "Loading...". Both are gone: the module loader now shows the same spinner as every
+   * other wait in the app, and its label is read by screen readers rather than displayed.
+   * The assertions moved to what the component is actually for - announcing that something
+   * is loading, and filling the space while it does.
+   */
+  it('announces that something is loading', () => {
     render(<ModuleLoader />);
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveAttribute('aria-busy', 'true');
+    expect(screen.getByText('Loading module')).toHaveClass('sr-only');
   });
 
-  it('displays seedling emoji as loading indicator', () => {
-    render(<ModuleLoader />);
-
-    expect(screen.getByText('🌱')).toBeInTheDocument();
-  });
-
-  it('centers content vertically and horizontally', () => {
+  it('centers content and fills the available space', () => {
     const { container } = render(<ModuleLoader />);
 
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper).toHaveClass('flex-1', 'flex', 'items-center', 'justify-center');
   });
 
-  it('has animate-pulse class on icon for animation', () => {
+  it('shows a spinner', () => {
     const { container } = render(<ModuleLoader />);
 
-    const icon = container.querySelector('.animate-pulse');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveTextContent('🌱');
+    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
   });
 });
 

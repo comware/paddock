@@ -6,6 +6,7 @@
  * Includes decision selector and reflection fields.
  */
 
+import { LoadingState } from '@/components/shared';
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { useTrays, useTimeEntries, useExperiment } from '../../stores';
@@ -133,9 +134,7 @@ export function Scorecard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-      </div>
+      <LoadingState />
     );
   }
 

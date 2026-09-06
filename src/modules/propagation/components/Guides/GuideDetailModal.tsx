@@ -14,6 +14,7 @@
  * They read the same; they are just below the heading rather than beside it.
  */
 
+import { LoadingState } from '@/components/shared';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Modal } from '@/components/ui';
@@ -93,9 +94,7 @@ export function GuideDetailModal({
 
         <div className="overflow-y-auto">
           {loadingContent ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-            </div>
+            <LoadingState className="py-12" />
           ) : guideContent ? (
             <article className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-sm prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-table:text-xs prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{guideContent}</ReactMarkdown>

@@ -16,6 +16,7 @@
  * and the modal should say so plainly rather than rendering an empty article.
  */
 
+import { LoadingState } from '@/components/shared';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Modal } from '@/components/ui';
@@ -53,9 +54,7 @@ export function GuideDetailModal({ cropName, onClose }: GuideDetailModalProps) {
         {/* Modal Content */}
         <div className="overflow-y-auto">
           {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
-            </div>
+            <LoadingState className="py-12" />
           ) : error ? (
             <p className="text-center text-slate-500 py-8">Failed to load guide: {error}</p>
           ) : isStub ? (

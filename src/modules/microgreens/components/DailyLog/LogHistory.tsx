@@ -4,6 +4,7 @@
  * Shows mood trend, key learnings, and allows viewing past entries.
  */
 
+import { LoadingState } from '@/components/shared';
 import { useEffect } from 'react';
 import { format } from 'date-fns';
 import { useObservations } from '../../stores';
@@ -26,9 +27,7 @@ export function LogHistory() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-      </div>
+      <LoadingState />
     );
   }
 

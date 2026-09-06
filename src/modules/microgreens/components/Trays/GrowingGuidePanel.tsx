@@ -4,6 +4,7 @@
  * Renders markdown guide content with metadata quick facts.
  */
 
+import { Spinner } from '@/components/shared';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useGrowingGuide } from '@/lib/guides/useGrowingGuide';
@@ -19,7 +20,7 @@ export function GrowingGuidePanel({ varietyName }: GrowingGuidePanelProps) {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-slate-500 dark:text-slate-400">
-        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-3" />
+        <Spinner className="w-8 h-8 mb-3" />
         <p className="text-sm">Loading growing guide...</p>
       </div>
     );

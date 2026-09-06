@@ -9,6 +9,7 @@
  * Otherwise falls back to active site for backwards compatibility.
  */
 
+import { LoadingState } from '@/components/shared';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -196,9 +197,7 @@ export function DailyLogForm() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-      </div>
+      <LoadingState />
     );
   }
 
