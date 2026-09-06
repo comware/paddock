@@ -4,12 +4,12 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | demanding |
-| **Days to Maturity** | 75-100 |
-| **Sowing Method** | transplant |
-| **Plant Spacing** | 50 cm |
-| **Row Spacing** | 60 cm |
-| **Sowing Depth** | 10 mm |
+| **Difficulty** | Demanding |
+| **Days to Maturity** | 75-112 |
+| **Sowing Method** | Transplant |
+| **Plant Spacing** | 60 cm |
+| **Row Spacing** | 75 cm |
+| **Sowing Depth** | 6 mm |
 | **Soil Temperature** | 10-25 °C |
 | **Succession Interval** | 21 days |
 

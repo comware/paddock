@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | **Difficulty** | Easy |
-| **Days to Maturity** | 50-60 |
+| **Days to Maturity** | 50-84 |
 | **Sowing Method** | Either |
 | **Plant Spacing** | 25 cm |
 | **Row Spacing** | 30 cm |

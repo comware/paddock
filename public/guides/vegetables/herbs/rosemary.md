@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | **Difficulty** | Moderate |
-| **Days to Maturity** | 80-100 |
+| **Days to Maturity** | 90-365 |
 | **Sowing Method** | Transplant |
 | **Plant Spacing** | 60 cm |
 | **Row Spacing** | 80 cm |

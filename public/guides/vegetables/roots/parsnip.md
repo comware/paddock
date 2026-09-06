@@ -5,7 +5,7 @@
 | Attribute | Value |
 |-----------|-------|
 | **Difficulty** | Demanding |
-| **Days to Maturity** | 100-120 |
+| **Days to Maturity** | 120-170 |
 | **Sowing Method** | Direct |
 | **Plant Spacing** | 10 cm |
 | **Row Spacing** | 30 cm |
@@ -26,7 +26,7 @@ correct mistakes over its long time in the ground.
 Parsnip germinates from about 10°C, but slowly and unevenly even in ideal conditions — three to four
 weeks is normal, and it can be patchier still if the seed is more than a year old, since parsnip
 seed loses viability faster than most. In temperate southern Australia, sow from early spring once
-soil has warmed past 10°C, roughly September into November, giving the crop the full 100-120 days it
+soil has warmed past 10°C, roughly September into November, giving the crop the full 120-170 days it
 needs to mature before the following winter or the heat of a following summer sets in.
 
 Sow too early into cold, wet soil and seed rots before it germinates. Sow too late and the long
@@ -95,7 +95,7 @@ recurring problem.
 
 Parsnip belongs to the umbellifer family alongside carrot, celery, and dill for rotation purposes —
 avoid following those crops with parsnip and leave several years before returning umbellifers to the
-same ground. Its very long occupancy, 100-120 days and often longer if left for frost-sweetening,
+same ground. Its very long occupancy, 120-170 days and often longer if left for frost-sweetening,
 means it ties up a bed for most of a season, so plan around it rather than trying to fit other crops
 in afterwards; a hungry follow-on crop benefits from the deep cultivation the parsnip bed was given.
 

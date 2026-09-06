@@ -4,14 +4,14 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | easy |
-| **Days to Maturity** | 35-45 |
-| **Sowing Method** | either |
-| **Plant Spacing** | 15 cm |
-| **Row Spacing** | 25 cm |
-| **Sowing Depth** | 5 mm |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 35-56 |
+| **Sowing Method** | Either |
+| **Plant Spacing** | 25 cm |
+| **Row Spacing** | 40 cm |
+| **Sowing Depth** | 6 mm |
 | **Soil Temperature** | 8-25 °C |
-| **Succession Interval** | 14 days |
+| **Succession Interval** | 21 days |
 
 ## Overview
 
@@ -37,7 +37,7 @@ Tatsoi is low-maintenance through the cool season it's suited to — consistent 
 
 ## Harvest
 
-Baby tatsoi can be picked from around three weeks; full rosettes are ready by 35-45 days, at which point they've formed the characteristic flat, dense spoon-leaf shape. You can harvest the whole rosette by cutting at the base, or take outer leaves individually and let the centre keep producing — the second approach turns it into a genuine cut-and-come-again crop, though regrowth is slower in the cold months it's usually grown in. Once the centre of the rosette starts to lift and elongate, that's the first sign of bolting; harvest the whole plant at that point rather than waiting, since flavour and texture decline quickly once flowering starts.
+Baby tatsoi can be picked from around three weeks; full rosettes are ready by 35-56 days, at which point they've formed the characteristic flat, dense spoon-leaf shape. You can harvest the whole rosette by cutting at the base, or take outer leaves individually and let the centre keep producing — the second approach turns it into a genuine cut-and-come-again crop, though regrowth is slower in the cold months it's usually grown in. Once the centre of the rosette starts to lift and elongate, that's the first sign of bolting; harvest the whole plant at that point rather than waiting, since flavour and texture decline quickly once flowering starts.
 
 ## Succession
 

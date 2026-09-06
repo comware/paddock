@@ -4,9 +4,9 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | moderate |
-| **Days to Maturity** | 45-65 |
-| **Sowing Method** | either |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 45-77 |
+| **Sowing Method** | Either |
 | **Plant Spacing** | 25 cm |
 | **Row Spacing** | 35 cm |
 | **Sowing Depth** | 5 mm |
@@ -37,7 +37,7 @@ Even, consistent moisture keeps growth steady and helps limit excess bitterness,
 
 ## Harvest
 
-Endive is ready from about 45-65 days, sooner if you're picking outer leaves as a loose-leaf crop rather than waiting for a full head. If blanching, check under the tie or cover after a week or two — the inner leaves should have paled and softened in bitterness. Cut the whole head at the base once it's reached a useful size; unlike some looser greens, endive doesn't regrow strongly from a cut crown, so treat it as a single harvest per plant. Left too long, especially once warm weather sets in, the head will bolt and the leaves turn markedly more bitter and tough.
+Endive is ready from about 45-77 days, sooner if you're picking outer leaves as a loose-leaf crop rather than waiting for a full head. If blanching, check under the tie or cover after a week or two — the inner leaves should have paled and softened in bitterness. Cut the whole head at the base once it's reached a useful size; unlike some looser greens, endive doesn't regrow strongly from a cut crown, so treat it as a single harvest per plant. Left too long, especially once warm weather sets in, the head will bolt and the leaves turn markedly more bitter and tough.
 
 ## Succession
 

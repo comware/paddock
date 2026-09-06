@@ -4,12 +4,12 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | easy |
-| **Days to Maturity** | 45-65 |
-| **Sowing Method** | either |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 45-85 |
+| **Sowing Method** | Either |
 | **Plant Spacing** | 25 cm |
 | **Row Spacing** | 30 cm |
-| **Sowing Depth** | 5 mm |
+| **Sowing Depth** | 3 mm |
 | **Soil Temperature** | 7-24 °C |
 | **Succession Interval** | 14 days |
 
@@ -39,7 +39,7 @@ Even moisture is the single biggest thing lettuce needs. Inconsistent watering �
 
 ## Harvest
 
-Loose-leaf varieties are ready to pick from about 6 weeks, taking outer leaves as needed. Heading types take the full 45-65 days and are ready when the head feels firm when gently squeezed. For cut-and-come-again leaf types, take only the outer third of the plant at each pick and leave the growing centre intact — strip it back too hard and it won't recover in time for the next cut. A head left too long in warm weather will start pushing up a central flower stalk; once that starts, the leaves turn bitter fast and there's no reversing it.
+Loose-leaf varieties are ready to pick from about 6 weeks, taking outer leaves as needed. Heading types take the full 45-85 days and are ready when the head feels firm when gently squeezed. For cut-and-come-again leaf types, take only the outer third of the plant at each pick and leave the growing centre intact — strip it back too hard and it won't recover in time for the next cut. A head left too long in warm weather will start pushing up a central flower stalk; once that starts, the leaves turn bitter fast and there's no reversing it.
 
 ## Succession
 

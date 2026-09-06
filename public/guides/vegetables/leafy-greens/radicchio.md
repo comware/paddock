@@ -4,9 +4,9 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | moderate |
+| **Difficulty** | Easy |
 | **Days to Maturity** | 60-80 |
-| **Sowing Method** | either |
+| **Sowing Method** | Either |
 | **Plant Spacing** | 25 cm |
 | **Row Spacing** | 35 cm |
 | **Sowing Depth** | 5 mm |

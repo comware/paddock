@@ -4,13 +4,13 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | easy |
-| **Days to Maturity** | 40-50 |
-| **Sowing Method** | either |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 40-70 |
+| **Sowing Method** | Either |
 | **Plant Spacing** | 20 cm |
 | **Row Spacing** | 30 cm |
 | **Sowing Depth** | 5 mm |
-| **Soil Temperature** | 10-25 °C |
+| **Soil Temperature** | 15-30 °C |
 | **Succession Interval** | 14 days |
 
 ## Overview
@@ -37,7 +37,7 @@ Consistent moisture is the priority — pak choi's crisp stems are mostly water,
 
 ## Harvest
 
-Baby pak choi can be cut whole from around three weeks for a quick stir-fry-sized cluster; full-size plants take the full 40-50 days to form a proper rosette of thick stems. Harvest by cutting the whole plant at the base just above the roots — pak choi doesn't regrow well from a partial cut the way looser-leafed greens do, so most growers treat it as a single-harvest crop per plant rather than cut-and-come-again. If left too long, the centre of the cluster starts to elongate and push up a flower stalk, and the stems that were crisp and mild turn tougher and more bitter.
+Baby pak choi can be cut whole from around three weeks for a quick stir-fry-sized cluster; full-size plants take the full 40-70 days to form a proper rosette of thick stems. Harvest by cutting the whole plant at the base just above the roots — pak choi doesn't regrow well from a partial cut the way looser-leafed greens do, so most growers treat it as a single-harvest crop per plant rather than cut-and-come-again. If left too long, the centre of the cluster starts to elongate and push up a flower stalk, and the stems that were crisp and mild turn tougher and more bitter.
 
 ## Succession
 

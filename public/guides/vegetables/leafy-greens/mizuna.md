@@ -4,14 +4,14 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | easy |
-| **Days to Maturity** | 35-45 |
-| **Sowing Method** | either |
-| **Plant Spacing** | 15 cm |
-| **Row Spacing** | 25 cm |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 35-60 |
+| **Sowing Method** | Either |
+| **Plant Spacing** | 30 cm |
+| **Row Spacing** | 45 cm |
 | **Sowing Depth** | 5 mm |
-| **Soil Temperature** | 8-25 °C |
-| **Succession Interval** | 14 days |
+| **Soil Temperature** | 8-30 °C |
+| **Succession Interval** | 21 days |
 
 ## Overview
 
@@ -37,7 +37,7 @@ Mizuna is undemanding — regular watering to keep growth steady is the main req
 
 ## Harvest
 
-Mizuna is ready for baby-leaf picking from around three weeks, or left to size up for full-rosette harvest closer to 35-45 days. It's a strong cut-and-come-again performer: cut leaves an inch or two above the crown, leaving the centre intact, and it regrows reliably for several cuts. The finely cut leaves bruise more easily than a solid leaf like pak choi, so handle it gently at harvest and rinse rather than scrub. Left unpicked for too long the leaves get noticeably coarser and the plant eventually bolts, at which point the flavour turns sharper and less pleasant raw.
+Mizuna is ready for baby-leaf picking from around three weeks, or left to size up for full-rosette harvest closer to 35-60 days. It's a strong cut-and-come-again performer: cut leaves an inch or two above the crown, leaving the centre intact, and it regrows reliably for several cuts. The finely cut leaves bruise more easily than a solid leaf like pak choi, so handle it gently at harvest and rinse rather than scrub. Left unpicked for too long the leaves get noticeably coarser and the plant eventually bolts, at which point the flavour turns sharper and less pleasant raw.
 
 ## Succession
 

@@ -25,12 +25,17 @@ export interface VegetableGuideMetadata {
   /**
    * How the crop starts.
    *
-   * `clove` exists because garlic and shallots are planted from a clove or bulb rather
-   * than sown from true seed. They do go straight into the ground, so `direct` was not
-   * wrong - but it reads as seed-sown, and a grower could reasonably go looking for
-   * garlic seed, which is not a thing you plant.
+   * `clove` and `bulb` exist because garlic and shallots are planted from vegetative
+   * material rather than sown from true seed. They do go straight into the ground, so
+   * `direct` was not wrong - but it reads as seed-sown, and a grower could reasonably go
+   * looking for garlic seed, which is not a thing you plant.
+   *
+   * The two are kept apart because the anatomy differs and growers use the words
+   * precisely: garlic divides into cloves within a single bulb, while shallots multiply
+   * into a cluster of separate offset bulbs. Calling a shallot a clove is wrong in the
+   * same way calling garlic a seed is.
    */
-  sowingMethod: 'direct' | 'transplant' | 'either' | 'clove';
+  sowingMethod: 'direct' | 'transplant' | 'either' | 'clove' | 'bulb';
   spacingCm: number; // between plants
   rowSpacingCm: number;
   sowingDepthMm: number;

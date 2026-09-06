@@ -4,11 +4,11 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | moderate |
-| **Days to Maturity** | 50-60 |
-| **Sowing Method** | either |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 50-84 |
+| **Sowing Method** | Either |
 | **Plant Spacing** | 25 cm |
-| **Row Spacing** | 40 cm |
+| **Row Spacing** | 50 cm |
 | **Sowing Depth** | 15 mm |
 | **Soil Temperature** | 10-30 °C |
 | **Succession Interval** | 21 days |

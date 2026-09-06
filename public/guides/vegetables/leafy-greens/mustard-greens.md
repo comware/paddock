@@ -4,13 +4,13 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | easy |
-| **Days to Maturity** | 30-45 |
-| **Sowing Method** | direct |
-| **Plant Spacing** | 15 cm |
+| **Difficulty** | Easy |
+| **Days to Maturity** | 30-56 |
+| **Sowing Method** | Direct |
+| **Plant Spacing** | 30 cm |
 | **Row Spacing** | 25 cm |
 | **Sowing Depth** | 5 mm |
-| **Soil Temperature** | 10-25 °C |
+| **Soil Temperature** | 10-30 °C |
 | **Succession Interval** | 14 days |
 
 ## Overview
@@ -37,7 +37,7 @@ Mustard greens need less cosseting than most of the greens in this guide — the
 
 ## Harvest
 
-Baby leaves can be picked from around three weeks for a milder, salad-ready green; left to the full 30-45 days, leaves are larger, more strongly flavoured, and generally best cooked. It's a solid cut-and-come-again crop — take outer leaves and leave the centre to keep producing, and expect several pickings from one sowing before quality declines or the plant bolts. The older and larger a leaf gets, the hotter and more bitter it becomes, so for a mild harvest pick often and pick young rather than letting the planting build up size.
+Baby leaves can be picked from around three weeks for a milder, salad-ready green; left to the full 30-56 days, leaves are larger, more strongly flavoured, and generally best cooked. It's a solid cut-and-come-again crop — take outer leaves and leave the centre to keep producing, and expect several pickings from one sowing before quality declines or the plant bolts. The older and larger a leaf gets, the hotter and more bitter it becomes, so for a mild harvest pick often and pick young rather than letting the planting build up size.
 
 ## Succession
 

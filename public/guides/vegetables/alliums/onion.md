@@ -5,12 +5,12 @@
 | Attribute | Value |
 |-----------|-------|
 | **Difficulty** | Demanding |
-| **Days to Maturity** | 90-175 |
+| **Days to Maturity** | 90-240 |
 | **Sowing Method** | Either |
 | **Plant Spacing** | 10 cm |
 | **Row Spacing** | 30 cm |
 | **Sowing Depth** | 10 mm |
-| **Soil Temperature** | 10-25°C |
+| **Soil Temperature** | 7-30 °C |
 | **Succession Interval** | Not a succession crop |
 
 ## Overview
