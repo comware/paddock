@@ -4,6 +4,7 @@
  * Displays conversation titles with timestamps, supports selection and deletion.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import type { AIConversation } from '@/lib/db/schema';
 
 export interface ConversationHistoryProps {
@@ -72,10 +73,7 @@ export function ConversationHistory({
       {conversations.map((conv) => (
         <div
           key={conv.id}
-          onClick={() => conv.id && onSelect(conv.id)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && conv.id && onSelect(conv.id)}
+          {...clickable(() => conv.id && onSelect(conv.id))}
           className={`w-full text-left px-4 py-3 border-b border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group cursor-pointer ${
             conv.id === currentId ? 'bg-primary-50 dark:bg-primary-900/20' : ''
           }`}

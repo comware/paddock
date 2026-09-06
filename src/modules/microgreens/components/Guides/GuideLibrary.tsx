@@ -6,8 +6,9 @@
  * Includes Getting Started section for novice growers.
  */
 
-import { clickable, clickableWithEvent } from '@/lib/a11y/clickable';
-import { Spinner } from '@/components/shared';
+import { Modal } from '@/components/ui';
+import { clickable } from '@/lib/a11y/clickable';
+import { Spinner, LoadingState } from '@/components/shared';
 import { useState, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -399,78 +400,63 @@ export function GuideLibrary() {
       </div>
       </section>
 
-      {/* Guide Detail Modal - handles both variety and getting-started guides */}
-      {(selectedGuide || selectedGettingStarted) && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-          {...clickable(closeModal)}
-        >
-          <div
-            className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
-            {...clickableWithEvent((e) => e.stopPropagation())}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
-              <div>
-                {selectedGettingStarted ? (
-                  <>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                      <span>{selectedGettingStarted.icon}</span>
-                      {selectedGettingStarted.title}
-                    </h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      {selectedGettingStarted.description}
-                    </p>
-                  </>
-                ) : selectedGuide && (
-                  <>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedGuide.name}</h2>
-                    <div className="flex gap-2 mt-1">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(selectedGuide.difficulty)}`}>
-                        {selectedGuide.difficulty}
-                      </span>
-                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                        {selectedGuide.daysToHarvest} days
-                      </span>
-                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                        {selectedGuide.blackoutDays}d blackout
-                      </span>
-                      {selectedGuide.preSoak && (
-                        <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
-                          Pre-soak
-                        </span>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-              <button
-                onClick={closeModal}
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      {/*
+        * Was a hand-rolled overlay: a plain div with a backdrop click handler, no dialog
+        * role, no Escape, no focus trap. The equivalent modals in vegetables and
+        * propagation were moved onto the shared Modal earlier; this one was missed, so the
+        * same guide opened as an accessible dialog in two modules and as an inert div in
+        * the third.
+        *
+        * The badges moved from the header into the body, because Modal takes a plain string
+        * title. They read the same, just below the heading rather than beside it.
+        */}
+      <Modal
+        isOpen={!!(selectedGuide || selectedGettingStarted)}
+        onClose={closeModal}
+        title={
+          selectedGettingStarted
+            ? `${selectedGettingStarted.icon} ${selectedGettingStarted.title}`
+            : (selectedGuide?.name ?? 'Guide')
+        }
+        size="3xl"
+      >
+        {selectedGettingStarted && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            {selectedGettingStarted.description}
+          </p>
+        )}
 
-            {/* Modal Content */}
-            <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
-              {loadingContent ? (
-                <div className="flex items-center justify-center py-12">
-                  <Spinner />
-                </div>
-              ) : guideContent ? (
-                <article className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-sm prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-table:text-xs prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{guideContent}</ReactMarkdown>
-                </article>
-              ) : (
-                <p className="text-center text-slate-500 py-8">Failed to load guide content</p>
-              )}
-            </div>
+        {selectedGuide && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(selectedGuide.difficulty)}`}>
+              {selectedGuide.difficulty}
+            </span>
+            <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+              {selectedGuide.daysToHarvest} days
+            </span>
+            <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+              {selectedGuide.blackoutDays}d blackout
+            </span>
+            {selectedGuide.preSoak && (
+              <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">
+                Pre-soak
+              </span>
+            )}
           </div>
+        )}
+
+        <div className="overflow-y-auto">
+          {loadingContent ? (
+            <LoadingState className="py-12" />
+          ) : guideContent ? (
+            <article className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-sm prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-table:text-xs prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{guideContent}</ReactMarkdown>
+            </article>
+          ) : (
+            <p className="text-center text-slate-500 py-8">Failed to load guide content</p>
+          )}
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

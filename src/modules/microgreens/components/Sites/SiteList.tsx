@@ -4,6 +4,7 @@
  * Shows all sites in a grid with options to add, edit, and delete.
  */
 
+import { ConfirmDialog } from '@/components/ui';
 import { MapPin } from 'lucide-react';
 import { EmptyState } from '@/components/shared';
 import { Link, useNavigate } from 'react-router-dom';
@@ -129,33 +130,20 @@ export function SiteList() {
         </>
       )}
 
-      {/* Delete Confirmation */}
-      {deleteConfirmId && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-              Delete Site?
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">
-              This will remove the site. Trays associated with this site will no longer have a site assigned.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete(deleteConfirmId)}
-                className="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/*
+        * Was a hand-rolled overlay with no dialog role, no Escape and no focus management -
+        * a destructive confirmation that a keyboard user could neither reach nor dismiss.
+        * ConfirmDialog was already in the codebase doing this properly.
+        */}
+      <ConfirmDialog
+        isOpen={!!deleteConfirmId}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={() => deleteConfirmId && handleDelete(deleteConfirmId)}
+        title="Delete growing space?"
+        message="This will remove the growing space. Trays assigned to it will no longer have one."
+        confirmLabel="Delete"
+        variant="danger"
+      />
 
       {/* Forms */}
       <NewSiteForm isOpen={isNewSiteOpen} onClose={() => setIsNewSiteOpen(false)} />

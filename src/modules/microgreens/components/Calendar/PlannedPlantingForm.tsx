@@ -7,6 +7,7 @@
  * - Set quantity and optional notes
  */
 
+import { Modal } from '@/components/ui';
 import { useState, useEffect } from 'react';
 import { format, addDays, subDays } from 'date-fns';
 import { useVarieties, usePlannedPlantings } from '../../stores';
@@ -137,26 +138,20 @@ export function PlannedPlantingForm({
     }
   };
 
-  if (!isOpen) return null;
-
+  /*
+   * Was a hand-rolled overlay - no dialog role, no Escape, no focus trap, and a close
+   * button whose label was the character ✕ rather than any accessible name. The shared
+   * Modal is a native <dialog>, which supplies all of that, and it renders the heading and
+   * close button itself.
+   */
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="w-full max-w-md bg-white dark:bg-slate-800 rounded-xl shadow-xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-            {editingId ? 'Edit Planned Planting' : 'Plan a Planting'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={editingId ? 'Edit planned planting' : 'Plan a planting'}
+      size="md"
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
           {/* Variety Selection */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -307,8 +302,7 @@ export function PlannedPlantingForm({
               {isSubmitting ? 'Saving...' : editingId ? 'Update' : 'Add to Calendar'}
             </button>
           </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 }

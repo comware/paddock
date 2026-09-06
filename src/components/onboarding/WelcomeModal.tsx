@@ -3,9 +3,20 @@
  *
  * Shows a 3-step modal to introduce new users to Paddock.
  * Uses localStorage to track completion and prevent showing again.
+ *
+ * This is a native <dialog> opened with showModal(), rather than the shared Modal, because
+ * its chrome is deliberately different - progress dots and a Skip link where the shared
+ * Modal puts a title and a close button - and routing it through the generic shell would
+ * flatten the design.
+ *
+ * It was a plain div before, which is the part that mattered: no dialog role, nothing
+ * listening for Escape, and no focus management, on the very first screen a new grower
+ * meets. Focus could tab straight out into the page behind it, which is still there and
+ * still interactive. showModal() supplies the role, the Escape handling, the focus trap and
+ * an inert background from the platform; none of it is reimplemented here.
  */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const STORAGE_KEY = 'paddock_onboarding_complete';
@@ -53,6 +64,7 @@ export function WelcomeModal() {
     return !hasCompleted;
   });
   const [currentStep, setCurrentStep] = useState(0);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -79,6 +91,25 @@ export function WelcomeModal() {
     }
   };
 
+  useEffect(() => {
+    if (isOpen) dialogRef.current?.showModal();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    // Escape fires 'cancel'. Treat it as Skip rather than a silent dismissal, so the
+    // "don't show again" flag is written and the grower is not met with this every load.
+    const handleCancel = (event: Event) => {
+      event.preventDefault();
+      handleSkip();
+    };
+
+    dialog.addEventListener('cancel', handleCancel);
+    return () => dialog.removeEventListener('cancel', handleCancel);
+  });
+
   if (!isOpen) {
     return null;
   }
@@ -88,8 +119,12 @@ export function WelcomeModal() {
   const isLastStep = currentStep === steps.length - 1;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-md w-full animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="welcome-heading"
+      className="max-w-md w-full bg-transparent backdrop:bg-black/50 backdrop:backdrop-blur-sm"
+    >
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full animate-in fade-in slide-in-from-bottom-4 duration-300">
         {/* Header */}
         <div className="p-6 pb-4">
           <div className="flex items-center justify-between">
@@ -121,7 +156,7 @@ export function WelcomeModal() {
         <div className="px-6 pb-6">
           <div className="text-center mb-6">
             <div className="text-6xl mb-4">{step.icon}</div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            <h2 id="welcome-heading" className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
               {step.title}
             </h2>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -164,6 +199,6 @@ export function WelcomeModal() {
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }

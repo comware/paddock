@@ -92,22 +92,35 @@ export function WorkDetail({
   onOpenTray,
   onClose,
 }: WorkDetailProps) {
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [busy, setBusy] = useState(false);
 
-  // Move focus into the dialog so a keyboard user is not left behind, and let Escape
-  // dismiss it.
+  /*
+   * This was already the best-behaved of the app's hand-rolled dialogs: it moved focus to
+   * the close button and listened for Escape on the document. What it could not do was keep
+   * focus inside - tab far enough and you were out in the page behind, which was still
+   * fully interactive.
+   *
+   * showModal() on a native <dialog> supplies the focus trap, the inert background, the
+   * Escape handling and the dialog role, so all of the manual work above is gone. Escape
+   * arrives as a 'cancel' event.
+   */
   useEffect(() => {
-    if (!subject) return;
+    if (subject) dialogRef.current?.showModal();
+  }, [subject]);
 
-    closeRef.current?.focus();
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const handleCancel = (event: Event) => {
+      event.preventDefault();
+      onClose();
     };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [subject, onClose]);
+
+    dialog.addEventListener('cancel', handleCancel);
+    return () => dialog.removeEventListener('cancel', handleCancel);
+  }, [onClose]);
 
   if (!subject) return null;
 
@@ -229,17 +242,16 @@ export function WorkDetail({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-      onClick={onClose}
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="work-detail-heading"
+      onClick={(e) => {
+        // Clicking the backdrop lands on the dialog element itself, not its contents.
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="max-w-md w-full bg-transparent backdrop:bg-black/50"
     >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="work-detail-heading"
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-xl bg-white dark:bg-slate-800 shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto"
-      >
+      <div className="w-full rounded-xl bg-white dark:bg-slate-800 shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Lead with the action, not the record. */}
         <div
           className={`px-4 py-3 border-b ${
@@ -408,7 +420,6 @@ export function WorkDetail({
             </button>
           )}
           <button
-            ref={closeRef}
             onClick={onClose}
             className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 text-slate-800 dark:text-white text-sm font-medium transition-colors"
           >
@@ -416,6 +427,6 @@ export function WorkDetail({
           </button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
