@@ -5,6 +5,7 @@
  * Follows the TrayCard pattern from the grow module.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import type { PropBatchWithComputed } from '../../types';
 import {
   getStageDisplayName,
@@ -77,8 +78,8 @@ export function BatchCard({
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 cursor-pointer hover:shadow-md transition-shadow ${getCardBackground()}`}
-      onClick={() => onClick?.(batch.id!)}
+      className={`rounded-xl p-4 shadow-sm border-2 transition-shadow ${onClick ? 'cursor-pointer hover:shadow-md' : ''} ${getCardBackground()}`}
+      {...clickable(onClick && (() => onClick(batch.id!)))}
     >
       {/* Header: Batch Number and Stage Badge */}
       <div className="flex items-center justify-between mb-3">

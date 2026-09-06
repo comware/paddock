@@ -9,6 +9,7 @@
  * - Recent activity feed
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -88,7 +89,7 @@ export function PropDashboard() {
       {overdueBatches.length > 0 && (
         <div
           className="bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-300 dark:border-orange-700 rounded-xl p-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
-          onClick={() => navigate('/propagation/batches?filter=overdue')}
+          {...clickable(() => navigate('/propagation/batches?filter=overdue'))}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

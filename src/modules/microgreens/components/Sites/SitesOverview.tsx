@@ -8,6 +8,7 @@
  * - Click to drill down to site detail
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -83,7 +84,7 @@ function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
 
   return (
     <div
-      onClick={onClick}
+      {...clickable(onClick)}
       className={`rounded-xl p-5 shadow-sm border-2 cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] ${
         metrics.needsAttention > 0
           ? 'border-orange-300 dark:border-orange-600 bg-orange-50 dark:bg-orange-900/10'

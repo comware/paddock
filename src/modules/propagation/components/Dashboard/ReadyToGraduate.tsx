@@ -13,6 +13,7 @@
  * - Collapse if no items ready
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { PropBatchWithComputed } from '../../types';
@@ -132,7 +133,7 @@ export function ReadyToGraduate({
         {/* Summary Banner */}
         <div
           className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-3 mb-4 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
-          onClick={() => navigate('/propagation/batches?stage=ready')}
+          {...clickable(() => navigate('/propagation/batches?stage=ready'))}
         >
           <div className="flex items-center gap-2">
             <span className="text-xl">^</span>
@@ -153,7 +154,7 @@ export function ReadyToGraduate({
             <div
               key={batch.id}
               className="flex items-center justify-between p-3 rounded-lg border bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 cursor-pointer hover:shadow-sm transition-shadow"
-              onClick={() => navigate(`/propagation/batches/${batch.id}`)}
+              {...clickable(() => navigate(`/propagation/batches/${batch.id}`))}
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="text-lg shrink-0">^</span>

@@ -12,6 +12,7 @@
  * meant the entries a grower sees most often were the ones that did nothing.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -341,7 +342,7 @@ export function PlantingCalendar() {
             return (
               <div
                 key={day.toISOString()}
-                onClick={() => handleDayClick(day)}
+                {...clickable(() => handleDayClick(day))}
                 className={`p-2 border-r last:border-r-0 border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${
                   isToday(day) ? 'bg-primary-50/50 dark:bg-primary-900/10' : ''
                 } ${isPast ? 'opacity-60' : ''}`}

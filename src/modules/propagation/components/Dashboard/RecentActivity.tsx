@@ -5,6 +5,7 @@
  * and links to affected batches.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { propDb, toKey } from '@/lib/db';
@@ -111,9 +112,8 @@ export function RecentActivity({ maxItems = 10 }: RecentActivityProps) {
             <div
               key={activity.id}
               className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
-              onClick={() =>
-                activity.batchId && navigate(`/propagation/batches/${activity.batchId}`)
-              }
+              {...clickable(() =>
+                activity.batchId && navigate(`/propagation/batches/${activity.batchId}`))}
             >
               {/* Stage transition icon */}
               <div className="shrink-0">

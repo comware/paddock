@@ -5,6 +5,7 @@
  * Follows the BatchCard pattern from the propagation module.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import type { StationWithOccupancy } from '../../stores/useStations';
 
 interface StationCardProps {
@@ -87,8 +88,8 @@ export function StationCard({
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 cursor-pointer hover:shadow-md transition-shadow ${getCardBackground()}`}
-      onClick={() => onClick?.(station.id!)}
+      className={`rounded-xl p-4 shadow-sm border-2 transition-shadow ${onClick ? 'cursor-pointer hover:shadow-md' : ''} ${getCardBackground()}`}
+      {...clickable(onClick && (() => onClick(station.id!)))}
     >
       {/* Header: Name and Type Badge */}
       <div className="flex items-center justify-between mb-3">

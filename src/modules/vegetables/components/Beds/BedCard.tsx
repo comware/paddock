@@ -6,6 +6,7 @@
  * afterthought.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { usePlantings } from '../../stores/usePlantings';
 import type { VegBed } from '@/lib/db';
 
@@ -31,8 +32,8 @@ export function BedCard({ bed, onEdit, onDelete, onClick }: BedCardProps) {
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 cursor-pointer hover:shadow-md transition-shadow ${cardBackground}`}
-      onClick={() => bed.id && onClick?.(bed.id)}
+      className={`rounded-xl p-4 shadow-sm border-2 transition-shadow ${onClick ? 'cursor-pointer hover:shadow-md' : ''} ${cardBackground}`}
+      {...clickable(onClick && (() => bed.id && onClick(bed.id)))}
     >
       {/* Header: Name and status */}
       <div className="flex items-center justify-between mb-3">

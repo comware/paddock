@@ -9,6 +9,7 @@
  * - Link to manage all stations
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStations } from '../../stores';
@@ -70,7 +71,7 @@ function StationCard({ station, onClick }: StationCardProps) {
   return (
     <div
       className="flex flex-col p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 cursor-pointer hover:shadow-sm hover:border-slate-300 dark:hover:border-slate-600 transition-all"
-      onClick={onClick}
+      {...clickable(onClick)}
     >
       {/* Header with name and warning badge */}
       <div className="flex items-start justify-between mb-2">
@@ -225,7 +226,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
       {stationsAtCapacity.length > 0 && (
         <div
           className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-          onClick={() => navigate('/propagation/stations?filter=at-capacity')}
+          {...clickable(() => navigate('/propagation/stations?filter=at-capacity'))}
         >
           <div className="flex items-center gap-2">
             <span className="text-xl">⚠️</span>

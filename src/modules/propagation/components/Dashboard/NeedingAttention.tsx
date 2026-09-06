@@ -7,6 +7,7 @@
  * - Low survival warnings
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useNavigate } from 'react-router-dom';
 import type { PropBatchWithComputed } from '../../types';
 import {
@@ -65,7 +66,7 @@ export function NeedingAttention({
       {overdueBatches.length > 0 && (
         <div
           className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3 mb-4 cursor-pointer hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
-          onClick={() => navigate('/propagation/batches?filter=overdue')}
+          {...clickable(() => navigate('/propagation/batches?filter=overdue'))}
         >
           <div className="flex items-center gap-2">
             <span className="text-xl">⚠️</span>
@@ -98,7 +99,7 @@ export function NeedingAttention({
                   ? 'bg-orange-50 dark:bg-orange-900/10 border-orange-200 dark:border-orange-800'
                   : 'bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600'
               }`}
-              onClick={() => navigate(`/propagation/batches/${batch.id}`)}
+              {...clickable(() => navigate(`/propagation/batches/${batch.id}`))}
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="text-lg shrink-0">🌱</span>

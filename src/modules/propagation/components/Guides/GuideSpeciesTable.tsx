@@ -4,6 +4,7 @@
  * Extracted from PropagationGuideLibrary to reduce component size.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useState, useMemo } from 'react';
 import type { PropagationGuideMetadata, PropagationGuideIndex } from '@/lib/guides/propagation-types';
 
@@ -149,7 +150,7 @@ export function GuideSpeciesTable({
               {filteredGuides.map((guide) => (
                 <tr
                   key={guide.id}
-                  onClick={() => onSelectGuide(guide)}
+                  {...clickable(() => onSelectGuide(guide))}
                   className="hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
                 >
                   <td className="px-4 py-3">

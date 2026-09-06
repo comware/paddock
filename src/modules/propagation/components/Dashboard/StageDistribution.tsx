@@ -4,6 +4,7 @@
  * Shows counts for each stage with clickable badges that can filter the batch list.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useNavigate } from 'react-router-dom';
 import type { PropagationStage } from '../../types';
 import { STAGE_DISPLAY_NAMES, STAGE_COLORS, STAGE_ORDER } from '../../utils/stageHelpers';
@@ -59,7 +60,7 @@ export function StageDistribution({ stageCounts, onStageClick }: StageDistributi
             <div
               key={stage}
               className="cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => handleStageClick(stage)}
+              {...clickable(() => handleStageClick(stage))}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">

@@ -288,6 +288,19 @@ select {
   .btn-secondary:hover:not(:disabled) {
     background-color: var(--color-primary-100);
   }
+
+  /*
+   * Focus ring for the cards and rows made keyboard-reachable by lib/a11y/clickable.
+   *
+   * They are divs, so nothing in the browser's default styling marks them out when focused
+   * the way it would a button. Being focusable but showing no sign of it is arguably worse
+   * than not being focusable at all - the keyboard user is somewhere, with no way to tell
+   * where. Defined once here rather than repeated at eighteen call sites.
+   */
+  [role='button'][tabindex='0']:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
 }
 
 /* Safe area for PWA */

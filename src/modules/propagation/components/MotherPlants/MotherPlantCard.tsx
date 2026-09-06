@@ -5,6 +5,7 @@
  * Follows the BatchCard pattern from the propagation module.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import type { PropMotherPlantWithComputed } from '../../stores/useMotherPlants';
 import type { MotherPlantStatus } from '../../types';
 import { format } from 'date-fns';
@@ -88,8 +89,8 @@ export function MotherPlantCard({
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 cursor-pointer hover:shadow-md transition-shadow ${getCardBackground()}`}
-      onClick={() => onClick?.(plant.id!)}
+      className={`rounded-xl p-4 shadow-sm border-2 transition-shadow ${onClick ? 'cursor-pointer hover:shadow-md' : ''} ${getCardBackground()}`}
+      {...clickable(onClick && (() => onClick(plant.id!)))}
     >
       {/* Header: Label and Status Badge */}
       <div className="flex items-center justify-between mb-3">

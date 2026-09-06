@@ -8,6 +8,7 @@
  * number someone will act on.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import { useBeds } from '../../stores/useBeds';
 import { useHarvests } from '../../stores/useHarvests';
 import type { VegPlanting } from '@/lib/db';
@@ -53,8 +54,8 @@ export function PlantingCard({ planting, onClick }: PlantingCardProps) {
 
   return (
     <div
-      className="rounded-xl p-4 shadow-sm border-2 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-md transition-shadow"
-      onClick={() => planting.id && onClick?.(planting.id)}
+      className={`rounded-xl p-4 shadow-sm border-2 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 transition-shadow ${onClick ? 'cursor-pointer hover:shadow-md' : ''}`}
+      {...clickable(onClick && (() => planting.id && onClick(planting.id)))}
     >
       {/* Header: crop / variety and status */}
       <div className="flex items-start justify-between mb-3 gap-2">

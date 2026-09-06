@@ -6,6 +6,7 @@
  * Includes Getting Started section for novice growers.
  */
 
+import { clickable, clickableWithEvent } from '@/lib/a11y/clickable';
 import { Spinner } from '@/components/shared';
 import { useState, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -361,7 +362,7 @@ export function GuideLibrary() {
               {filteredGuides.map((guide) => (
                 <tr
                   key={guide.id}
-                  onClick={() => setSelectedGuide(guide)}
+                  {...clickable(() => setSelectedGuide(guide))}
                   className="hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
                 >
                   <td className="px-4 py-3">
@@ -402,11 +403,11 @@ export function GuideLibrary() {
       {(selectedGuide || selectedGettingStarted) && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-          onClick={closeModal}
+          {...clickable(closeModal)}
         >
           <div
             className="bg-white dark:bg-slate-800 rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+            {...clickableWithEvent((e) => e.stopPropagation())}
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">

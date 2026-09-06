@@ -5,6 +5,7 @@
  * Follows the StationCard pattern from the propagation module.
  */
 
+import { clickable } from '@/lib/a11y/clickable';
 import type { PropSupplyWithStatus } from '../../types';
 import { CATEGORY_COLORS, getCategoryDisplay, formatCurrency } from './utils';
 
@@ -75,8 +76,8 @@ export function SupplyCard({
 
   return (
     <div
-      className={`rounded-xl p-4 shadow-sm border-2 cursor-pointer hover:shadow-md transition-shadow ${getCardBackground()}`}
-      onClick={() => onClick?.(supply.id!)}
+      className={`rounded-xl p-4 shadow-sm border-2 transition-shadow ${onClick ? 'cursor-pointer hover:shadow-md' : ''} ${getCardBackground()}`}
+      {...clickable(onClick && (() => onClick(supply.id!)))}
     >
       {/* Header: Name and Category Badge */}
       <div className="flex items-start justify-between mb-3">
