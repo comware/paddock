@@ -1,14 +1,17 @@
 /**
  * LandingPage - Compelling entry point for Paddock
  *
- * A beginner-friendly landing page that introduces the microherb farming
- * education portal. Designed to be welcoming, informative, and encouraging
- * for users with no prior microherb experience.
+ * A beginner-friendly landing page introducing the three enterprises Paddock models -
+ * microgreens in trays, vegetables in beds, propagation from cuttings. Designed to be
+ * welcoming to someone with no growing experience at all.
+ *
+ * The enterprise cards are the point of the page: they are genuinely different jobs, not
+ * three views of one, and a visitor should be able to tell which one they are here for.
  *
  * Sections:
  * - Hero: Value proposition with primary CTA
  * - Features: 4 key benefits with icons
- * - Learning Paths: Visual navigation cards for educational content
+ * - Three ways to grow: A card per enterprise, plus quick links into the guides
  * - Getting Started: 3-step beginner guide
  * - Encouragement: Motivational message
  * - Footer: Navigation and mission statement
@@ -41,40 +44,52 @@ const features = [
     icon: '🌡️',
     title: 'Environment Awareness',
     description:
-      'Learn how temperature, humidity, and light affect your microherbs for consistent success.',
+      'Learn how temperature, humidity and light affect what you grow, whatever you are growing.',
   },
 ];
 
-// Learning paths - visual navigation cards
-const learningPaths = [
+/**
+ * The three enterprises Paddock models.
+ *
+ * They are genuinely different jobs, not three views of one: microgreens are sown in trays
+ * and cut once, vegetables go in the ground and get picked over weeks, propagation turns one
+ * plant into many. Someone arriving should be able to tell which one they are here for.
+ */
+const enterprises = [
   {
     icon: '🌱',
-    title: 'Growing Guides',
-    description: 'Comprehensive guides for popular microherb varieties with care instructions.',
-    link: '/microgreens/guides',
+    title: 'Microgreens',
+    tagline: 'Trays, sown and cut',
+    description:
+      'Sow a tray, keep it in blackout, move it to light, cut it once. A first harvest in a week or two, and the fastest way to learn what a seed needs.',
+    link: '/microgreens',
     color: 'from-green-500 to-emerald-600',
   },
   {
-    icon: '📅',
-    title: 'Planting Calendar',
-    description: 'Plan your planting schedule and track optimal growing windows.',
-    link: '/microgreens/calendar',
-    color: 'from-blue-500 to-cyan-600',
-  },
-  {
-    icon: '📈',
-    title: 'Analytics Dashboard',
-    description: 'Track success rates, yields, and identify patterns across all your trays.',
-    link: '/microgreens/analytics',
-    color: 'from-purple-500 to-violet-600',
-  },
-  {
-    icon: '🏠',
-    title: 'Manage growing spaces',
-    description: 'Set up and organize your growing locations from windowsills to grow rooms.',
-    link: '/microgreens',
+    icon: '🥕',
+    title: 'Vegetables',
+    tagline: 'Beds, picked over weeks',
+    description:
+      'Plan beds and successions, then log every pick. A planting is not finished when you first harvest it — it keeps giving for weeks, and the record shows you how much.',
+    link: '/vegetables',
     color: 'from-amber-500 to-orange-600',
   },
+  {
+    icon: '🌿',
+    title: 'Propagation',
+    tagline: 'One plant into many',
+    description:
+      'Take cuttings from mother plants, root them, and follow each batch to the day it graduates — sold, gifted, or planted straight into one of your own beds.',
+    link: '/propagation',
+    color: 'from-purple-500 to-violet-600',
+  },
+];
+
+// Quick links into the microgreens module, which is where the guides live.
+const quickLinks = [
+  { icon: '📚', title: 'Growing Guides', link: '/microgreens/guides' },
+  { icon: '📅', title: 'Planting Calendar', link: '/microgreens/calendar' },
+  { icon: '📈', title: 'Analytics', link: '/microgreens/analytics' },
 ];
 
 // Getting started steps
@@ -87,15 +102,15 @@ const steps = [
   },
   {
     number: '2',
-    title: 'Start Your First Tray',
+    title: 'Pick where to start',
     description:
-      'Choose a beginner-friendly variety like pea shoots or sunflower, and plant your first tray.',
+      'Sow a tray of pea shoots, mark out a bed of salad, or take your first cuttings — whichever suits what you have.',
   },
   {
     number: '3',
     title: 'Learn As You Grow',
     description:
-      'Follow daily care guides, log your observations, and watch your microherbs flourish.',
+      'Follow the daily guides, log what you see, and let the records show you what works.',
   },
 ];
 
@@ -149,16 +164,16 @@ export function LandingPage() {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white leading-tight">
               Learn to Grow
-              <span className="text-primary-600 dark:text-primary-400"> Microherbs</span>
+              <span className="text-primary-600 dark:text-primary-400"> Anything</span>
               <br />
               <span className="text-3xl md:text-4xl lg:text-5xl text-slate-600 dark:text-slate-400">
-                From Seed to Harvest
+                Microgreens, Vegetables, Propagation
               </span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong className="text-slate-800 dark:text-slate-100">One place to learn everything</strong> about
-              microherb farming. Step-by-step guides, progress tracking, and smart recommendations —
-              designed for complete beginners with zero experience.
+              <strong className="text-slate-800 dark:text-slate-100">One place for everything you grow.</strong>{' '}
+              Trays on a windowsill, beds in the ground, cuttings on a bench — each tracked properly,
+              with guides and records that suit the way it actually grows.
             </p>
 
             {/* Trust indicators */}
@@ -167,7 +182,7 @@ export function LandingPage() {
                 <span className="text-primary-500">✓</span> No experience needed
               </span>
               <span className="flex items-center gap-1">
-                <span className="text-primary-500">✓</span> First harvest in 7-14 days
+                <span className="text-primary-500">✓</span> Your data stays on your device
               </span>
               <span className="flex items-center gap-1">
                 <span className="text-primary-500">✓</span> Works offline
@@ -183,11 +198,11 @@ export function LandingPage() {
                 <span className="ml-2">→</span>
               </Link>
               <Link
-                to="/microgreens/guides"
+                to="/vegetables"
                 className="inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-primary-300 dark:hover:border-primary-600 transition-all"
               >
-                Explore Guides
-                <span className="ml-2">📖</span>
+                Plan a Bed
+                <span className="ml-2">🥕</span>
               </Link>
             </div>
           </div>
@@ -202,8 +217,8 @@ export function LandingPage() {
               Everything You Need to Succeed
             </h2>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Paddock combines education, tracking, and smart guidance to help you become
-              a confident microherb grower.
+              Paddock combines education, tracking and smart guidance — across trays, beds
+              and cuttings alike.
             </p>
           </div>
 
@@ -226,44 +241,60 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Learning Paths Section - Quick Navigation */}
+      {/* Three ways to grow - one card per enterprise, then quick links */}
       <section className="py-16 md:py-24">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
-              Choose Your Learning Path
+              Three Ways to Grow
             </h2>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Jump into any area that interests you. Each section is designed for beginners
-              and guides you step-by-step.
+              Different jobs, not three views of the same one. Start with whichever you have
+              room for — you can switch the others on later, or leave them off entirely.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {learningPaths.map((path) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {enterprises.map((enterprise) => (
               <Link
-                key={path.title}
-                to={path.link}
+                key={enterprise.title}
+                to={enterprise.link}
                 className="group relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-transparent transition-all hover:shadow-xl hover:scale-[1.02]"
               >
                 {/* Gradient overlay on hover */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${path.color} opacity-0 group-hover:opacity-10 transition-opacity`}
+                  className={`absolute inset-0 bg-gradient-to-br ${enterprise.color} opacity-0 group-hover:opacity-10 transition-opacity`}
                 />
 
                 <div className="p-6 relative">
-                  <div className="text-4xl mb-4">{path.icon}</div>
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                    {path.title}
+                  <div className="text-4xl mb-4">{enterprise.icon}</div>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    {enterprise.title}
                   </h3>
+                  <p className="text-sm font-medium text-primary-600 dark:text-primary-400 mb-3">
+                    {enterprise.tagline}
+                  </p>
                   <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
-                    {path.description}
+                    {enterprise.description}
                   </p>
                   <span className="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-400 group-hover:gap-2 transition-all">
-                    Explore
+                    Open
                     <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
                   </span>
                 </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            {quickLinks.map((link) => (
+              <Link
+                key={link.title}
+                to={link.link}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300 hover:border-primary-300 dark:hover:border-primary-600 transition-colors"
+              >
+                <span aria-hidden="true">{link.icon}</span>
+                {link.title}
               </Link>
             ))}
           </div>
@@ -278,8 +309,8 @@ export function LandingPage() {
               Getting Started is Easy
             </h2>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              You don't need a green thumb or fancy equipment. Here's how to begin
-              your microherb journey.
+              You don't need a green thumb or fancy equipment. Here's how to begin,
+              whichever of the three you start with.
             </p>
           </div>
 
@@ -328,9 +359,9 @@ export function LandingPage() {
             Everyone Starts Somewhere
           </h2>
           <p className="text-primary-100 text-lg leading-relaxed max-w-2xl mx-auto">
-            Microherbs are forgiving plants perfect for beginners. With Paddock guiding you,
-            you'll be harvesting your first crop in just 7-14 days. Your journey to fresh,
-            home-grown nutrition starts today.
+            Microgreens are forgiving, and a tray gives you a harvest in a week or two — which
+            makes it a good first thing to grow. Beds and cuttings take longer and teach you more.
+            Paddock keeps the record either way.
           </p>
         </div>
       </section>
@@ -348,9 +379,9 @@ export function LandingPage() {
                 </span>
               </div>
               <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-md">
-                Our mission is to make microherb farming accessible to everyone. Whether you're
-                growing on a windowsill or in a dedicated space, Paddock provides the knowledge
-                and tools to help you succeed — one tray at a time.
+                Our mission is to make growing your own food accessible to everyone. A windowsill
+                tray, a market garden bed, a bench of cuttings — Paddock keeps the knowledge and
+                the records in one place, and everything stays on your own device.
               </p>
             </div>
 
@@ -365,7 +396,23 @@ export function LandingPage() {
                     to="/microgreens"
                     className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
-                    Dashboard
+                    Microgreens
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/vegetables"
+                    className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    Vegetables
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/propagation"
+                    className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                  >
+                    Propagation
                   </Link>
                 </li>
                 <li>
@@ -374,14 +421,6 @@ export function LandingPage() {
                     className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     Growing Guides
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/microgreens/calendar"
-                    className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                  >
-                    Planting Calendar
                   </Link>
                 </li>
                 <li>
@@ -399,7 +438,7 @@ export function LandingPage() {
           {/* Bottom bar */}
           <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
             <p className="text-center text-sm text-slate-500 dark:text-slate-500">
-              Learn. Grow. Thrive. — A personal education portal for microherb farming.
+              Learn. Grow. Thrive. — A personal record for everything you grow.
             </p>
           </div>
         </div>
