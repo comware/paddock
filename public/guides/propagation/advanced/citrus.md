@@ -7,7 +7,7 @@
 | **Difficulty** | Advanced |
 | **Best Method** | Grafting (T-budding) |
 | **Alternative Methods** | Cuttings, air layering, seed (rootstock only) |
-| **Time to Root** | 4-12 weeks (cuttings), 3-6 months (air layers) |
+| **Time to Root** | Grafted, not rooted (4-12 weeks from cuttings) |
 | **Best Season** | Spring to early summer (grafting), year-round (protected cuttings) |
 | **Success Rate** | 80-95% (grafting), 30-50% (cuttings) |
 | **Rooting Hormone** | Essential for cuttings |
@@ -248,7 +248,7 @@ Choose material that displays:
 
 ## Related Resources
 
-- **Method guide:** [Grafting](/guides/propagation/methods/grafting)
+- **Method guide:** [Grafting](/guides/propagation/methods/grafting/whip-tongue)
 - **Similar species:** [Avocado](/guides/propagation/advanced/avocado), [Apple](/guides/propagation/advanced/apple)
 
 ---

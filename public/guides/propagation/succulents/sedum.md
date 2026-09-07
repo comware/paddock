@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Very Easy |
+| **Difficulty** | Very-easy |
 | **Best Method** | Stem cuttings |
 | **Alternative Methods** | Division, leaf cuttings |
 | **Time to Root** | 1-3 weeks |

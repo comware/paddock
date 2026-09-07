@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Easy-Intermediate |
+| **Difficulty** | Intermediate |
 | **Best Method** | Semi-hardwood cuttings |
 | **Alternative Methods** | Layering, seed (slow) |
 | **Time to Root** | 3-6 weeks |

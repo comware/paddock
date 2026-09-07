@@ -7,7 +7,7 @@
 | **Difficulty** | Advanced |
 | **Best Method** | Grafting (whip and tongue) |
 | **Alternative Methods** | Budding, hardwood cuttings (rare) |
-| **Time to Root** | N/A (grafting), 6-12 months (cuttings) |
+| **Time to Root** | Grafted, not rooted (6-12 months from cuttings) |
 | **Best Season** | Late winter (grafting), summer (budding) |
 | **Success Rate** | 80-95% (grafting), 10-30% (cuttings) |
 | **Rooting Hormone** | Not needed for grafting |
@@ -243,7 +243,7 @@ Choose material that displays:
 
 ## Related Resources
 
-- **Method guide:** [Grafting](/guides/propagation/methods/grafting)
+- **Method guide:** [Grafting](/guides/propagation/methods/grafting/whip-tongue)
 - **Similar species:** [Cherry](/guides/propagation/advanced/cherry), [Citrus](/guides/propagation/advanced/citrus)
 
 ---

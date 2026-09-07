@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Beginner |
+| **Difficulty** | Easy |
 | **Best Method** | Slips (sprouts from tuber) |
 | **Alternative Methods** | Vine cuttings |
 | **Time to Root** | 1-2 weeks |

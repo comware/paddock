@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Very Easy |
+| **Difficulty** | Very-easy |
 | **Best Method** | Offsets (chicks) |
 | **Alternative Methods** | Seed |
 | **Time to Root** | 1-3 weeks |

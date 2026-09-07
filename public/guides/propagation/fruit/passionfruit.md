@@ -237,7 +237,7 @@ Choose material that displays:
 ## Related Resources
 
 - **Method guide:** [Semi-Hardwood Cuttings](/guides/propagation/methods/cuttings/semi-hardwood)
-- **Similar species:** [Grape](/guides/propagation/intermediate/grape), [Kiwifruit](/guides/propagation/fruit/kiwifruit)
+- **Similar species:** [Grape](/guides/propagation/intermediate/grape), [Passionfruit](/guides/propagation/fruit/passionfruit)
 
 ---
 

@@ -40,11 +40,74 @@ function isSpeciesGuide(key: string): boolean {
   return !rel.startsWith('methods/') && !rel.startsWith('getting-started/');
 }
 
+/**
+ * The headline figures in index.json must be the ones the guide itself states.
+ *
+ * 134 of 304 facts disagreed. Some was vocabulary - the index said "easy" where the guide
+ * said "Beginner" - but plenty was substantive: willow at 3-6 weeks in the index and 2-4 in
+ * the guide, grape at 6-10 weeks against 3-6 months, citrus recommending semi-hardwood
+ * cuttings in the index and grafting in the guide. The index was also systematically more
+ * optimistic about difficulty than the guides it summarises; realigning moved twelve crops
+ * out of "easy".
+ *
+ * Containment rather than equality, because the two are not the same kind of statement. The
+ * guide may give a figure per method - "4-8 weeks (softwood), 3-6 months (hardwood)" - while
+ * the index carries only the one for the method it recommends. So the index value must
+ * appear in the guide's, not equal it.
+ */
+const FACTS = [
+  ['difficulty', 'Difficulty'],
+  ['bestMethod', 'Best Method'],
+  ['timeToRoot', 'Time to Root'],
+  ['successRate', 'Success Rate'],
+] as const;
+
+function quickFact(markdown: string, label: string): string | null {
+  const row = new RegExp(`\\|\\s*\\*\\*${label}\\*\\*\\s*\\|([^|]*)\\|`).exec(markdown);
+  // "80-95% typical" and "80-95%" are the same claim.
+  return row ? row[1].trim().replace(' typical', '').trim() : null;
+}
+
 describe('propagation guide index', () => {
   it.each(index.guides.map((g) => [g.id, g.file] as const))(
     '%s points at a file that exists',
     (_id, file) => {
       expect(pathFor(file), `index lists ${file}, which is not on disk`).toBeDefined();
+    }
+  );
+
+  it.each(index.guides.map((g) => [g.id, g] as const))(
+    '%s states the same facts as its guide',
+    (_id, guide) => {
+      const key = pathFor(guide.file);
+      expect(key, `${guide.file} is not on disk`).toBeDefined();
+      const markdown = markdownByPath[key!];
+
+      for (const [field, label] of FACTS) {
+        const stated = quickFact(markdown, label);
+        expect(stated, `${guide.file}: no "${label}" row`).not.toBeNull();
+        expect(
+          stated!.toLowerCase(),
+          `${guide.file}: index says ${label} is "${guide[field]}"`
+        ).toContain(String(guide[field]).toLowerCase());
+      }
+    }
+  );
+
+  /**
+   * Guides link to each other at the bottom. Two of the guides written today pointed at
+   * species this library does not have - fruit/grape and succulents/snake-plant - and
+   * neither of the checks above noticed, because they only look at the index. A dead
+   * cross-link is the same failure as a dead index entry, one layer down.
+   */
+  it.each(index.guides.map((g) => [g.id, g] as const))(
+    '%s only links to guides that exist',
+    (_id, guide) => {
+      const markdown = markdownByPath[pathFor(guide.file)!];
+      const links = [...markdown.matchAll(/\(\/guides\/propagation\/([^)]+)\)/g)].map((m) => m[1]);
+      const dead = links.filter((l) => !pathFor(`${l}.md`));
+
+      expect(dead, `${guide.file} links to guides that are not there`).toEqual([]);
     }
   );
 

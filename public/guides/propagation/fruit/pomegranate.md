@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Easy-Intermediate |
+| **Difficulty** | Intermediate |
 | **Best Method** | Hardwood cuttings |
 | **Alternative Methods** | Softwood cuttings, seed, air layering |
 | **Time to Root** | 4-8 weeks (softwood), 3-4 months (hardwood) |

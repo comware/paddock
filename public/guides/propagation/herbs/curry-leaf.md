@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Intermediate-Advanced |
+| **Difficulty** | Advanced |
 | **Best Method** | Seed |
 | **Alternative Methods** | Semi-hardwood cuttings, root suckers |
 | **Time to Root** | 4-8 weeks (cuttings), 2-4 weeks (seed germination) |
@@ -221,7 +221,7 @@ For cuttings, choose:
 
 ## Related Resources
 
-- **Method guide:** [Seed](/guides/propagation/methods/seed)
+- **Method guide:** [Seed](/guides/propagation/methods/seed-saving)
 - **Similar species:** [Bay Laurel](/guides/propagation/herbs/bay-laurel)
 
 ---

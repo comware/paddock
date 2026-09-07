@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Beginner |
+| **Difficulty** | Easy |
 | **Best Method** | Softwood cuttings |
 | **Alternative Methods** | Semi-hardwood cuttings |
 | **Time to Root** | 2-4 weeks |

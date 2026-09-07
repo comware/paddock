@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Beginner |
+| **Difficulty** | Easy |
 | **Best Method** | Plantlet division |
 | **Alternative Methods** | Division of parent, water rooting |
 | **Time to Root** | 1-2 weeks (plantlets often pre-rooted) |

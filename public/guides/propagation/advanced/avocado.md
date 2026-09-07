@@ -7,7 +7,7 @@
 | **Difficulty** | Advanced |
 | **Best Method** | Grafting (cleft or wedge graft) |
 | **Alternative Methods** | Seed (rootstock only), air layering |
-| **Time to Root** | N/A (grafting), 3-8 weeks (seed) |
+| **Time to Root** | Grafted, not rooted (3-8 weeks from seed) |
 | **Best Season** | Spring to early summer (grafting) |
 | **Success Rate** | 70-90% (grafting), varies (cuttings - rarely attempted) |
 | **Rooting Hormone** | Not typically used |
@@ -288,8 +288,8 @@ Choose material that displays:
 
 ## Related Resources
 
-- **Method guide:** [Grafting](/guides/propagation/methods/grafting)
-- **Similar species:** [Citrus](/guides/propagation/advanced/citrus), [Mango](/guides/propagation/fruit/mango)
+- **Method guide:** [Grafting](/guides/propagation/methods/grafting/whip-tongue)
+- **Similar species:** [Citrus](/guides/propagation/advanced/citrus), [Feijoa](/guides/propagation/fruit/feijoa)
 
 ---
 

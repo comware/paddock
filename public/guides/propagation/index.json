@@ -149,16 +149,16 @@
       "name": "Coleus",
       "category": "beginner",
       "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
+      "bestMethod": "Softwood cuttings in water",
       "timeToRoot": "1-2 weeks",
-      "successRate": "90-95%",
+      "successRate": "90-98%",
       "file": "beginner/coleus.md"
     },
     {
       "id": "fig",
       "name": "Fig",
       "category": "beginner",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Hardwood cuttings",
       "timeToRoot": "4-8 weeks",
       "successRate": "80-95%",
@@ -169,8 +169,8 @@
       "name": "Geranium",
       "category": "beginner",
       "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
-      "timeToRoot": "3-4 weeks",
+      "bestMethod": "Softwood cuttings",
+      "timeToRoot": "2-4 weeks",
       "successRate": "85-95%",
       "file": "beginner/geranium.md"
     },
@@ -191,7 +191,7 @@
       "difficulty": "easy",
       "bestMethod": "Stem cuttings",
       "timeToRoot": "2-4 weeks",
-      "successRate": "95-100%",
+      "successRate": "90-98%",
       "file": "beginner/pothos.md"
     },
     {
@@ -199,7 +199,7 @@
       "name": "Spider Plant",
       "category": "beginner",
       "difficulty": "easy",
-      "bestMethod": "Plantlets",
+      "bestMethod": "Plantlet division",
       "timeToRoot": "1-2 weeks",
       "successRate": "95-100%",
       "file": "beginner/spider-plant.md"
@@ -230,7 +230,7 @@
       "category": "beginner",
       "difficulty": "easy",
       "bestMethod": "Hardwood cuttings",
-      "timeToRoot": "3-6 weeks",
+      "timeToRoot": "2-4 weeks",
       "successRate": "90-100%",
       "file": "beginner/willow.md"
     },
@@ -248,20 +248,20 @@
       "id": "camellia",
       "name": "Camellia",
       "category": "intermediate",
-      "difficulty": "intermediate",
+      "difficulty": "advanced",
       "bestMethod": "Semi-hardwood cuttings",
       "timeToRoot": "8-16 weeks",
-      "successRate": "50-70%",
+      "successRate": "50-80%",
       "file": "advanced/camellia.md"
     },
     {
       "id": "citrus",
       "name": "Citrus",
       "category": "intermediate",
-      "difficulty": "intermediate",
-      "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "8-12 weeks",
-      "successRate": "50-70%",
+      "difficulty": "advanced",
+      "bestMethod": "Grafting (T-budding)",
+      "timeToRoot": "Grafted, not rooted",
+      "successRate": "80-95%",
       "file": "advanced/citrus.md"
     },
     {
@@ -270,7 +270,7 @@
       "category": "intermediate",
       "difficulty": "intermediate",
       "bestMethod": "Division",
-      "timeToRoot": "Immediate (division)",
+      "timeToRoot": "Immediate",
       "successRate": "95-100%",
       "file": "intermediate/daylily.md"
     },
@@ -280,15 +280,15 @@
       "category": "intermediate",
       "difficulty": "intermediate",
       "bestMethod": "Hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
-      "successRate": "70-85%",
+      "timeToRoot": "3-6 months",
+      "successRate": "70-90%",
       "file": "intermediate/grape.md"
     },
     {
       "id": "hosta",
       "name": "Hosta",
       "category": "intermediate",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Division",
       "timeToRoot": "Immediate",
       "successRate": "95-100%",
@@ -299,8 +299,8 @@
       "name": "Hydrangea",
       "category": "intermediate",
       "difficulty": "intermediate",
-      "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "4-8 weeks",
+      "bestMethod": "Softwood cuttings",
+      "timeToRoot": "3-6 weeks",
       "successRate": "70-85%",
       "file": "intermediate/hydrangea.md"
     },
@@ -310,7 +310,7 @@
       "category": "intermediate",
       "difficulty": "intermediate",
       "bestMethod": "Rhizome division",
-      "timeToRoot": "Immediate (division)",
+      "timeToRoot": "Immediate",
       "successRate": "90-98%",
       "file": "intermediate/iris.md"
     },
@@ -320,8 +320,8 @@
       "category": "intermediate",
       "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "4-8 weeks",
-      "successRate": "65-85%",
+      "timeToRoot": "3-6 weeks",
+      "successRate": "60-80%",
       "file": "herbs/lavender.md"
     },
     {
@@ -329,8 +329,8 @@
       "name": "Pepper",
       "category": "intermediate",
       "difficulty": "intermediate",
-      "bestMethod": "Stem cuttings",
-      "timeToRoot": "3-5 weeks",
+      "bestMethod": "Softwood cuttings",
+      "timeToRoot": "3-4 weeks",
       "successRate": "70-85%",
       "file": "intermediate/pepper.md"
     },
@@ -339,8 +339,8 @@
       "name": "Rose",
       "category": "intermediate",
       "difficulty": "intermediate",
-      "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "bestMethod": "Hardwood cuttings",
+      "timeToRoot": "3-6 months",
       "successRate": "60-80%",
       "file": "intermediate/rose.md"
     },
@@ -348,10 +348,10 @@
       "id": "tomato",
       "name": "Tomato",
       "category": "intermediate",
-      "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
+      "difficulty": "intermediate",
+      "bestMethod": "Sucker cuttings",
       "timeToRoot": "1-2 weeks",
-      "successRate": "90-95%",
+      "successRate": "85-95%",
       "file": "intermediate/tomato.md"
     },
     {
@@ -360,8 +360,8 @@
       "category": "advanced",
       "difficulty": "advanced",
       "bestMethod": "Grafting",
-      "timeToRoot": "4-8 weeks",
-      "successRate": "70-90%",
+      "timeToRoot": "Grafted, not rooted",
+      "successRate": "80-95%",
       "file": "advanced/apple.md"
     },
     {
@@ -370,8 +370,8 @@
       "category": "advanced",
       "difficulty": "advanced",
       "bestMethod": "Grafting",
-      "timeToRoot": "4-8 weeks",
-      "successRate": "60-80%",
+      "timeToRoot": "Grafted, not rooted",
+      "successRate": "70-90%",
       "file": "advanced/avocado.md"
     },
     {
@@ -379,9 +379,9 @@
       "name": "Cherry",
       "category": "advanced",
       "difficulty": "advanced",
-      "bestMethod": "Grafting (whip and tongue, chip budding)",
+      "bestMethod": "Grafting",
       "timeToRoot": "Grafted, not rooted",
-      "successRate": "70-90% grafted",
+      "successRate": "70-90%",
       "file": "advanced/cherry.md"
     },
     {
@@ -399,9 +399,9 @@
       "name": "Japanese Maple",
       "category": "advanced",
       "difficulty": "advanced",
-      "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "8-16 weeks",
-      "successRate": "40-70%",
+      "bestMethod": "Grafting",
+      "timeToRoot": "Grafted, not rooted",
+      "successRate": "80-95%",
       "file": "advanced/japanese-maple.md"
     },
     {
@@ -430,7 +430,7 @@
       "category": "advanced",
       "difficulty": "advanced",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "8-16 weeks",
+      "timeToRoot": "8-20 weeks",
       "successRate": "40-70%",
       "file": "advanced/rhododendron.md"
     },
@@ -448,10 +448,10 @@
       "id": "basil",
       "name": "Basil",
       "category": "herbs",
-      "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
+      "difficulty": "intermediate",
+      "bestMethod": "Softwood cuttings in water",
       "timeToRoot": "1-2 weeks",
-      "successRate": "90-95%",
+      "successRate": "80-90%",
       "file": "intermediate/basil.md"
     },
     {
@@ -460,8 +460,8 @@
       "category": "herbs",
       "difficulty": "advanced",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "8-16 weeks",
-      "successRate": "40-60%",
+      "timeToRoot": "3-6 months",
+      "successRate": "30-50%",
       "file": "herbs/bay-laurel.md"
     },
     {
@@ -478,10 +478,10 @@
       "id": "curry-leaf",
       "name": "Curry Leaf",
       "category": "herbs",
-      "difficulty": "intermediate",
+      "difficulty": "advanced",
       "bestMethod": "Seed",
       "timeToRoot": "2-4 weeks",
-      "successRate": "70-85%",
+      "successRate": "60-80%",
       "file": "herbs/curry-leaf.md"
     },
     {
@@ -500,7 +500,7 @@
       "category": "herbs",
       "difficulty": "intermediate",
       "bestMethod": "Softwood cuttings",
-      "timeToRoot": "4-6 weeks",
+      "timeToRoot": "3-6 weeks",
       "successRate": "60-80%",
       "file": "herbs/lemon-verbena.md"
     },
@@ -519,9 +519,9 @@
       "name": "Oregano",
       "category": "herbs",
       "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
+      "bestMethod": "Division or softwood cuttings",
       "timeToRoot": "2-4 weeks",
-      "successRate": "80-95%",
+      "successRate": "85-95%",
       "file": "herbs/oregano.md"
     },
     {
@@ -530,28 +530,28 @@
       "category": "herbs",
       "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "4-8 weeks",
-      "successRate": "65-85%",
+      "timeToRoot": "3-6 weeks",
+      "successRate": "70-85%",
       "file": "herbs/rosemary.md"
     },
     {
       "id": "sage",
       "name": "Sage",
       "category": "herbs",
-      "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
-      "timeToRoot": "3-5 weeks",
-      "successRate": "75-90%",
+      "difficulty": "intermediate",
+      "bestMethod": "Semi-hardwood cuttings",
+      "timeToRoot": "3-6 weeks",
+      "successRate": "70-85%",
       "file": "herbs/sage.md"
     },
     {
       "id": "stevia",
       "name": "Stevia",
       "category": "herbs",
-      "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
+      "difficulty": "intermediate",
+      "bestMethod": "Softwood cuttings",
       "timeToRoot": "2-3 weeks",
-      "successRate": "80-90%",
+      "successRate": "70-85%",
       "file": "herbs/stevia.md"
     },
     {
@@ -560,8 +560,8 @@
       "category": "herbs",
       "difficulty": "intermediate",
       "bestMethod": "Division",
-      "timeToRoot": "3-5 weeks",
-      "successRate": "70-85%",
+      "timeToRoot": "immediate",
+      "successRate": "80-90%",
       "file": "herbs/tarragon.md"
     },
     {
@@ -569,9 +569,9 @@
       "name": "Thyme",
       "category": "herbs",
       "difficulty": "easy",
-      "bestMethod": "Stem cuttings",
-      "timeToRoot": "3-5 weeks",
-      "successRate": "75-90%",
+      "bestMethod": "Softwood cuttings or layering",
+      "timeToRoot": "2-4 weeks",
+      "successRate": "80-95%",
       "file": "herbs/thyme.md"
     },
     {
@@ -580,8 +580,8 @@
       "category": "fruit",
       "difficulty": "easy",
       "bestMethod": "Tip layering",
-      "timeToRoot": "3-6 weeks",
-      "successRate": "85-95%",
+      "timeToRoot": "2-4 months (tip layers)",
+      "successRate": "90-100%",
       "file": "fruit/blackberry.md"
     },
     {
@@ -600,7 +600,7 @@
       "category": "fruit",
       "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "timeToRoot": "6-12 weeks",
       "successRate": "50-70%",
       "file": "fruit/feijoa.md"
     },
@@ -620,18 +620,18 @@
       "category": "fruit",
       "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
-      "successRate": "50-70%",
+      "timeToRoot": "4-8 weeks",
+      "successRate": "70-85%",
       "file": "fruit/guava.md"
     },
     {
       "id": "mulberry",
       "name": "Mulberry",
       "category": "fruit",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
-      "successRate": "75-90%",
+      "timeToRoot": "3-6 months",
+      "successRate": "70-90%",
       "file": "fruit/mulberry.md"
     },
     {
@@ -649,7 +649,7 @@
       "name": "Passionfruit",
       "category": "fruit",
       "difficulty": "intermediate",
-      "bestMethod": "Semi-hardwood cuttings",
+      "bestMethod": "Cuttings",
       "timeToRoot": "4-8 weeks",
       "successRate": "60-80%",
       "file": "fruit/passionfruit.md"
@@ -658,10 +658,10 @@
       "id": "pomegranate",
       "name": "Pomegranate",
       "category": "fruit",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
-      "successRate": "70-85%",
+      "timeToRoot": "3-4 months",
+      "successRate": "80-95%",
       "file": "fruit/pomegranate.md"
     },
     {
@@ -671,7 +671,7 @@
       "difficulty": "easy",
       "bestMethod": "Suckers",
       "timeToRoot": "Immediate",
-      "successRate": "90-100%",
+      "successRate": "90-95%",
       "file": "fruit/raspberry.md"
     },
     {
@@ -681,7 +681,7 @@
       "difficulty": "easy",
       "bestMethod": "Runners",
       "timeToRoot": "2-4 weeks",
-      "successRate": "90-98%",
+      "successRate": "95-100%",
       "file": "fruit/strawberry.md"
     },
     {
@@ -700,7 +700,7 @@
       "category": "ornamentals",
       "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "timeToRoot": "4-8 weeks",
       "successRate": "70-90%",
       "file": "ornamentals/bougainvillea.md"
     },
@@ -730,7 +730,7 @@
       "category": "ornamentals",
       "difficulty": "easy",
       "bestMethod": "Hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "timeToRoot": "4-8 weeks (after callusing)",
       "successRate": "85-95%",
       "file": "ornamentals/frangipani.md"
     },
@@ -738,9 +738,9 @@
       "id": "gardenia",
       "name": "Gardenia",
       "category": "ornamentals",
-      "difficulty": "intermediate",
+      "difficulty": "advanced",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "8-12 weeks",
+      "timeToRoot": "6-10 weeks",
       "successRate": "50-70%",
       "file": "ornamentals/gardenia.md"
     },
@@ -748,9 +748,9 @@
       "id": "hibiscus",
       "name": "Hibiscus",
       "category": "ornamentals",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "timeToRoot": "4-8 weeks",
       "successRate": "70-85%",
       "file": "ornamentals/hibiscus.md"
     },
@@ -758,7 +758,7 @@
       "id": "jasmine",
       "name": "Jasmine",
       "category": "ornamentals",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
       "timeToRoot": "4-8 weeks",
       "successRate": "70-85%",
@@ -770,7 +770,7 @@
       "category": "ornamentals",
       "difficulty": "advanced",
       "bestMethod": "Softwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "timeToRoot": "4-8 weeks",
       "successRate": "40-70%",
       "file": "ornamentals/lilac.md"
     },
@@ -800,7 +800,7 @@
       "category": "ornamentals",
       "difficulty": "intermediate",
       "bestMethod": "Layering",
-      "timeToRoot": "12-18 months",
+      "timeToRoot": "6-12 months",
       "successRate": "70-90%",
       "file": "ornamentals/wisteria.md"
     },
@@ -810,7 +810,7 @@
       "category": "natives-au",
       "difficulty": "easy",
       "bestMethod": "Seed",
-      "timeToRoot": "2-4 weeks",
+      "timeToRoot": "6-10 weeks (cuttings)",
       "successRate": "80-95%",
       "file": "natives-au/acacia.md"
     },
@@ -820,7 +820,7 @@
       "category": "natives-au",
       "difficulty": "advanced",
       "bestMethod": "Seed",
-      "timeToRoot": "4-8 weeks",
+      "timeToRoot": "8-16 weeks (cuttings)",
       "successRate": "50-80%",
       "file": "natives-au/banksia.md"
     },
@@ -828,7 +828,7 @@
       "id": "callistemon",
       "name": "Callistemon",
       "category": "natives-au",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
       "timeToRoot": "6-10 weeks",
       "successRate": "70-85%",
@@ -838,9 +838,9 @@
       "id": "correa",
       "name": "Correa",
       "category": "natives-au",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
-      "timeToRoot": "6-10 weeks",
+      "timeToRoot": "4-8 weeks",
       "successRate": "75-90%",
       "file": "natives-au/correa.md"
     },
@@ -850,7 +850,7 @@
       "category": "natives-au",
       "difficulty": "intermediate",
       "bestMethod": "Seed",
-      "timeToRoot": "2-4 weeks",
+      "timeToRoot": "8-16+ weeks (cuttings)",
       "successRate": "70-90%",
       "file": "natives-au/eucalyptus.md"
     },
@@ -878,7 +878,7 @@
       "id": "leptospermum",
       "name": "Leptospermum",
       "category": "natives-au",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
       "timeToRoot": "6-10 weeks",
       "successRate": "70-85%",
@@ -888,7 +888,7 @@
       "id": "melaleuca",
       "name": "Melaleuca",
       "category": "natives-au",
-      "difficulty": "easy",
+      "difficulty": "intermediate",
       "bestMethod": "Semi-hardwood cuttings",
       "timeToRoot": "6-10 weeks",
       "successRate": "70-85%",
@@ -930,7 +930,7 @@
       "category": "succulents",
       "difficulty": "easy",
       "bestMethod": "Leaf cuttings",
-      "timeToRoot": "3-8 weeks",
+      "timeToRoot": "2-4 weeks",
       "successRate": "85-95%",
       "file": "succulents/echeveria.md"
     },
@@ -950,7 +950,7 @@
       "category": "succulents",
       "difficulty": "easy",
       "bestMethod": "Stem cuttings",
-      "timeToRoot": "3-5 weeks",
+      "timeToRoot": "2-4 weeks",
       "successRate": "90-95%",
       "file": "succulents/jade.md"
     },
@@ -1019,7 +1019,7 @@
       "name": "Dracaena",
       "category": "houseplants",
       "difficulty": "easy",
-      "bestMethod": "Stem sections",
+      "bestMethod": "Stem cuttings (cane sections)",
       "timeToRoot": "4-8 weeks",
       "successRate": "80-90%",
       "file": "houseplants/dracaena.md"
@@ -1050,7 +1050,7 @@
       "category": "houseplants",
       "difficulty": "easy",
       "bestMethod": "Division",
-      "timeToRoot": "Immediate",
+      "timeToRoot": "Already rooted (division)",
       "successRate": "95-100%",
       "file": "houseplants/peace-lily.md"
     },

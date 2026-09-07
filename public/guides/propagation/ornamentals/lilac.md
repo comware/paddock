@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Intermediate-Advanced |
+| **Difficulty** | Advanced |
 | **Best Method** | Softwood cuttings |
 | **Alternative Methods** | Suckers, layering, grafting |
 | **Time to Root** | 4-8 weeks |

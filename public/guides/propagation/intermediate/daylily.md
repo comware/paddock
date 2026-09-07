@@ -7,7 +7,7 @@
 | **Difficulty** | Intermediate |
 | **Best Method** | Division |
 | **Alternative Methods** | Proliferations, seed (for hybridising) |
-| **Time to Root** | Instant (divisions already rooted) |
+| **Time to Root** | Immediate — divisions are already rooted |
 | **Best Season** | Early spring or after flowering |
 | **Success Rate** | 95-100% typical |
 | **Rooting Hormone** | Not needed |

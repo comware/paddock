@@ -7,7 +7,7 @@
 | **Difficulty** | Advanced |
 | **Best Method** | Grafting |
 | **Alternative Methods** | Softwood cuttings, seed (species only), air layering |
-| **Time to Root** | 4-8 weeks (cuttings), varies (grafting) |
+| **Time to Root** | Grafted, not rooted (4-8 weeks from cuttings) |
 | **Best Season** | Late winter (grafting), early summer (cuttings) |
 | **Success Rate** | 80-95% (grafting), 30-60% (cuttings) |
 | **Rooting Hormone** | Essential for cuttings |
@@ -261,7 +261,7 @@ Choose material that displays:
 
 ## Related Resources
 
-- **Method guide:** [Grafting](/guides/propagation/methods/grafting)
+- **Method guide:** [Grafting](/guides/propagation/methods/grafting/whip-tongue)
 - **Similar species:** [Cherry](/guides/propagation/advanced/cherry), [Magnolia](/guides/propagation/advanced/magnolia)
 
 ---

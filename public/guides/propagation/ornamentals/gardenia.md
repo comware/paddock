@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Intermediate-Advanced |
+| **Difficulty** | Advanced |
 | **Best Method** | Semi-hardwood cuttings |
 | **Alternative Methods** | Softwood cuttings, air layering |
 | **Time to Root** | 6-10 weeks |

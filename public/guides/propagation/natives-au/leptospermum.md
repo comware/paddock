@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Easy-Intermediate |
+| **Difficulty** | Intermediate |
 | **Best Method** | Semi-hardwood cuttings |
 | **Alternative Methods** | Seed |
 | **Time to Root** | 6-10 weeks |
@@ -220,7 +220,7 @@ Choose material that displays:
 ## Related Resources
 
 - **Method guide:** [Semi-Hardwood Cuttings](/guides/propagation/methods/cuttings/semi-hardwood)
-- **Similar species:** [Melaleuca](/guides/propagation/natives-au/melaleuca), [Kunzea](/guides/propagation/natives-au/kunzea)
+- **Similar species:** [Melaleuca](/guides/propagation/natives-au/melaleuca), [Leptospermum](/guides/propagation/natives-au/leptospermum)
 
 ---
 

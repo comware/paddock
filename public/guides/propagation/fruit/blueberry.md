@@ -235,7 +235,7 @@ Choose material that displays:
 ## Related Resources
 
 - **Method guide:** [Softwood Cuttings](/guides/propagation/methods/cuttings/softwood)
-- **Similar species:** [Raspberry](/guides/propagation/fruit/raspberry), [Cranberry](/guides/propagation/fruit/cranberry)
+- **Similar species:** [Raspberry](/guides/propagation/fruit/raspberry), [Blackberry](/guides/propagation/fruit/blackberry)
 
 ---
 

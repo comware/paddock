@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Beginner |
+| **Difficulty** | Easy |
 | **Best Method** | Stem cuttings in water |
 | **Alternative Methods** | Division, root runners |
 | **Time to Root** | 1-2 weeks |

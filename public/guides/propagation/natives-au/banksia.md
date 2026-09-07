@@ -229,7 +229,7 @@ Choose material that displays:
 ## Related Resources
 
 - **Method guide:** [Semi-Hardwood Cuttings](/guides/propagation/methods/cuttings/semi-hardwood)
-- **Similar species:** [Grevillea](/guides/propagation/natives-au/grevillea), [Hakea](/guides/propagation/natives-au/hakea)
+- **Similar species:** [Grevillea](/guides/propagation/natives-au/grevillea), [Banksia](/guides/propagation/natives-au/banksia)
 
 ---
 

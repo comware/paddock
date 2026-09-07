@@ -209,7 +209,7 @@ Choose stems that display:
 ## Related Resources
 
 - **Method guide:** [Softwood Cuttings](/guides/propagation/methods/cuttings/softwood)
-- **Similar species:** [Sedum](/guides/propagation/succulents/sedum), [String of Hearts](/guides/propagation/houseplants/string-of-hearts)
+- **Similar species:** [Sedum](/guides/propagation/succulents/sedum), [String of Pearls](/guides/propagation/succulents/string-of-pearls)
 
 ---
 

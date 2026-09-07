@@ -7,7 +7,7 @@
 | **Difficulty** | Advanced |
 | **Best Method** | Grafting (whip and tongue, chip budding) |
 | **Alternative Methods** | Hardwood cuttings (limited success) |
-| **Time to Root** | N/A (grafting), unreliable (cuttings) |
+| **Time to Root** | Grafted, not rooted (cuttings unreliable) |
 | **Best Season** | Late winter (grafting), late summer (budding) |
 | **Success Rate** | 70-90% (grafting), 10-30% (cuttings) |
 | **Rooting Hormone** | Essential for cuttings |
@@ -247,7 +247,7 @@ Choose material that displays:
 
 ## Related Resources
 
-- **Method guide:** [Grafting](/guides/propagation/methods/grafting)
+- **Method guide:** [Grafting](/guides/propagation/methods/grafting/whip-tongue)
 - **Similar species:** [Apple](/guides/propagation/advanced/apple), [Japanese Maple](/guides/propagation/advanced/japanese-maple)
 
 ---

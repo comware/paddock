@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Beginner |
+| **Difficulty** | Easy |
 | **Best Method** | Softwood cuttings in water |
 | **Alternative Methods** | Softwood cuttings in soil |
 | **Time to Root** | 1-2 weeks |
@@ -222,7 +222,7 @@ Choose mother plants that display:
 ## Related Resources
 
 - **Method guide:** [Softwood Cuttings](/guides/propagation/methods/cuttings/softwood)
-- **Similar species:** [Basil](/guides/propagation/herbs/basil), easy water-rooting herbs
+- **Similar species:** [Basil](/guides/propagation/intermediate/basil), easy water-rooting herbs
 
 ---
 

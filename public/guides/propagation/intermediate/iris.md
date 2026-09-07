@@ -7,7 +7,7 @@
 | **Difficulty** | Intermediate |
 | **Best Method** | Rhizome division |
 | **Alternative Methods** | Seed (for hybridising) |
-| **Time to Root** | Instant (divisions already rooted) |
+| **Time to Root** | Immediate — divisions are already rooted |
 | **Best Season** | Summer (after flowering) |
 | **Success Rate** | 90-98% typical |
 | **Rooting Hormone** | Not needed |

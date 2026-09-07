@@ -4,7 +4,7 @@
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Easy-Intermediate |
+| **Difficulty** | Intermediate |
 | **Best Method** | Softwood or semi-hardwood cuttings |
 | **Alternative Methods** | Layering, division, seed (common sage) |
 | **Time to Root** | 3-6 weeks |
