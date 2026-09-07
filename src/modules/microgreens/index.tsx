@@ -10,7 +10,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { useRoutes } from 'react-router-dom';
-import { MapPin, ChartColumn } from 'lucide-react';
+import { MapPin, ChartColumn, BookOpen } from 'lucide-react';
 import { ModuleNav, type ModuleNavItem } from '@/components/Shell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useTrays, useVarieties } from './stores';
@@ -23,23 +23,30 @@ import { growRoutes } from './routes';
 // - Site-specific nav is handled by SiteDetailLayout's SiteSubNav
 // - These are global/cross-site views
 /**
- * Module navigation exists only to move between growing spaces.
+ * Module navigation: where you are in microgreens, and the guides.
  *
- * Everything a grower does happens to one growing space, so it all lives in that
- * growing space's own navigation - including the calendar, which used to sit a level up and
- * split one job across two bars. The variety scorecard moved into Analytics, where it
- * belongs.
+ * Everything a grower does happens to one growing space, so the working navigation lives in
+ * that space's own bar - including the calendar, which used to sit a level up and split one
+ * job across two bars. The variety scorecard moved into Analytics, where it belongs.
  *
- * With a single growing space there is nothing left to switch between, so this bar does not
- * render at all: one level of navigation instead of two, for the common case.
+ * This bar used to disappear entirely with a single growing space, on the grounds that there
+ * was nothing left to switch between. That was true, and it made microgreens the one module
+ * with no bar under the top nav while the other two always had one - so the same row of the
+ * screen meant different things depending on which module you were in.
+ *
+ * Guides gives it a reason to always be there, and it is the last item here as it is in every
+ * module.
  */
 function buildNavItems(siteCount: number): ModuleNavItem[] {
-  if (siteCount <= 1) return [];
+  const items: ModuleNavItem[] = [{ name: 'Spaces', path: '', Icon: MapPin }];
 
-  return [
-    { name: 'Spaces', path: '', Icon: MapPin },
-    { name: 'All spaces', path: '/analytics', Icon: ChartColumn },
-  ];
+  // Only worth offering a cross-space comparison when there is more than one space.
+  if (siteCount > 1) {
+    items.push({ name: 'All spaces', path: '/analytics', Icon: ChartColumn });
+  }
+
+  items.push({ name: 'Guides', path: '/guides', Icon: BookOpen });
+  return items;
 }
 
 function GrowModuleContent() {
@@ -75,7 +82,7 @@ function GrowModuleContent() {
 
   return (
     <>
-      {navItems.length > 0 && <ModuleNav items={navItems} basePath="/microgreens" />}
+      <ModuleNav items={navItems} basePath="/microgreens" />
       <div className="flex-1 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           {routeElement}

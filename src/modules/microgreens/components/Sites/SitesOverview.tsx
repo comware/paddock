@@ -21,9 +21,7 @@ import {
   CircleCheck,
   Inbox,
   Plus,
-  ChartColumn,
   Target,
-  BookOpen,
   SlidersHorizontal,
 } from 'lucide-react';
 import { useTrays } from '../../stores';
@@ -297,16 +295,12 @@ export function SitesOverview() {
             ))}
           </div>
 
-          {/* Global Actions */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <button
-              onClick={() => navigate('/microgreens/analytics')}
-              className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
-            >
-              <ChartColumn aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
-              <span className="font-medium text-slate-900 dark:text-white">All spaces</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 block">Compare every growing space</span>
-            </button>
+          {/*
+            * Two cards used to sit at the front of this row: "All spaces" and "Growing
+            * Guides". Both are now items in the module bar directly above, so they were
+            * offering a second route to somewhere already on screen a few pixels higher.
+            */}
+          <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate('/microgreens/analytics')}
               className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
@@ -314,14 +308,6 @@ export function SitesOverview() {
               <Target aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
               <span className="font-medium text-slate-900 dark:text-white">Compare varieties</span>
               <span className="text-xs text-slate-500 dark:text-slate-400 block">Evaluate progress</span>
-            </button>
-            <button
-              onClick={() => navigate('/microgreens/guides')}
-              className="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-left"
-            >
-              <BookOpen aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
-              <span className="font-medium text-slate-900 dark:text-white">Growing Guides</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 block">Reference material</span>
             </button>
             <button
               onClick={() => navigate('/microgreens/sites/manage')}

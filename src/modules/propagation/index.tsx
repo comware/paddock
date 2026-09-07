@@ -24,11 +24,13 @@ import { propagationRoutes } from './routes';
 // Navigation items for the propagation module
 const propagationNavItems: ModuleNavItem[] = [
   { name: 'Dashboard', path: '', Icon: LayoutDashboard },
-  { name: 'Guides', path: '/guides', Icon: BookOpen },
   { name: 'Batches', path: '/batches', Icon: ClipboardList },
   { name: 'Mother Plants', path: '/mother-plants', Icon: Sprout },
   { name: 'Analytics', path: '/analytics', Icon: ChartLine },
   { name: 'Settings', path: '/settings', Icon: Settings },
+  // Guides last, in every module. It is reference material rather than somewhere you work,
+  // so it sits at the end rather than second, where it used to push Batches down the row.
+  { name: 'Guides', path: '/guides', Icon: BookOpen },
 ];
 
 function PropagationModuleContent() {
