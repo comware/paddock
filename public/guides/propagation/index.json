@@ -385,6 +385,16 @@
       "file": "advanced/cherry.md"
     },
     {
+      "id": "conifer",
+      "name": "Conifer",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "bestMethod": "Hardwood cuttings",
+      "timeToRoot": "12-24 weeks",
+      "successRate": "40-70%",
+      "file": "advanced/conifer.md"
+    },
+    {
       "id": "japanese-maple",
       "name": "Japanese Maple",
       "category": "advanced",
@@ -405,6 +415,16 @@
       "file": "advanced/magnolia.md"
     },
     {
+      "id": "protea",
+      "name": "Protea",
+      "category": "advanced",
+      "difficulty": "advanced",
+      "bestMethod": "Semi-hardwood cuttings",
+      "timeToRoot": "8-16 weeks",
+      "successRate": "30-60%",
+      "file": "advanced/protea.md"
+    },
+    {
       "id": "rhododendron",
       "name": "Rhododendron",
       "category": "advanced",
@@ -413,6 +433,16 @@
       "timeToRoot": "8-16 weeks",
       "successRate": "40-70%",
       "file": "advanced/rhododendron.md"
+    },
+    {
+      "id": "yucca",
+      "name": "Yucca",
+      "category": "advanced",
+      "difficulty": "intermediate",
+      "bestMethod": "Stem sections",
+      "timeToRoot": "4-8 weeks",
+      "successRate": "70-85%",
+      "file": "advanced/yucca.md"
     },
     {
       "id": "basil",
@@ -473,6 +503,16 @@
       "timeToRoot": "4-6 weeks",
       "successRate": "60-80%",
       "file": "herbs/lemon-verbena.md"
+    },
+    {
+      "id": "lemongrass",
+      "name": "Lemongrass",
+      "category": "herbs",
+      "difficulty": "easy",
+      "bestMethod": "Division",
+      "timeToRoot": "2-4 weeks",
+      "successRate": "90-95%",
+      "file": "herbs/lemongrass.md"
     },
     {
       "id": "oregano",
@@ -545,6 +585,16 @@
       "file": "fruit/blackberry.md"
     },
     {
+      "id": "currant",
+      "name": "Currant",
+      "category": "fruit",
+      "difficulty": "easy",
+      "bestMethod": "Hardwood cuttings",
+      "timeToRoot": "8-12 weeks",
+      "successRate": "80-95%",
+      "file": "fruit/currant.md"
+    },
+    {
       "id": "feijoa",
       "name": "Feijoa",
       "category": "fruit",
@@ -553,6 +603,16 @@
       "timeToRoot": "6-10 weeks",
       "successRate": "50-70%",
       "file": "fruit/feijoa.md"
+    },
+    {
+      "id": "gooseberry",
+      "name": "Gooseberry",
+      "category": "fruit",
+      "difficulty": "easy",
+      "bestMethod": "Hardwood cuttings",
+      "timeToRoot": "8-16 weeks",
+      "successRate": "60-85%",
+      "file": "fruit/gooseberry.md"
     },
     {
       "id": "guava",
