@@ -21,8 +21,8 @@ interface ErrorBoundaryProps {
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
   /** Section name for contextual error messages */
   section?: string;
-  /** Module name for navigation (grow, propagation, planner) */
-  module?: 'microgreens' | 'propagation' | 'vegetables' | 'planner' | 'settings';
+  /** Module name for navigation, so the error page does not link back to what crashed. */
+  module?: 'microgreens' | 'propagation' | 'vegetables' | 'settings';
   /** Show navigation to other modules on error */
   showModuleNav?: boolean;
 }
@@ -39,7 +39,6 @@ const MODULE_NAV = [
   { name: 'Microgreens', path: '/microgreens', icon: '🌱' },
   { name: 'Propagation', path: '/propagation', icon: '🌿' },
   { name: 'Vegetables', path: '/vegetables', icon: '🥕' },
-  { name: 'Planner', path: '/planner', icon: '📅' },
   { name: 'Settings', path: '/settings', icon: '⚙️' },
 ] as const;
 

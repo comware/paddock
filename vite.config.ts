@@ -124,8 +124,6 @@ export default defineConfig({
           'vendor-db': ['dexie'],
           // Split state management
           'vendor-state': ['zustand'],
-          // Split calendar widget (large, only used in planner)
-          'vendor-calendar': ['react-big-calendar'],
         },
       },
     },

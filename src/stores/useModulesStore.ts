@@ -22,7 +22,6 @@ import {
   Store,
   Users,
   ChartColumn,
-  CalendarDays,
   type LucideIcon,
 } from 'lucide-react';
 import { platformDb } from '@/lib/db';
@@ -34,8 +33,7 @@ export type ModuleId =
   | 'sales'
   | 'markets'
   | 'crm'
-  | 'finance'
-  | 'planner';
+  | 'finance';
 
 export interface ModuleDefinition {
   id: ModuleId;
@@ -96,13 +94,6 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     path: '/finance',
     Icon: ChartColumn,
     description: 'Costs, margins, and reporting',
-  },
-  {
-    id: 'planner',
-    name: 'Planner',
-    path: '/planner',
-    Icon: CalendarDays,
-    description: 'Cross-module scheduling and succession planning',
   },
 ];
 

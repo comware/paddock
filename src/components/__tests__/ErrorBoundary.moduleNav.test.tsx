@@ -25,13 +25,12 @@ function Explode(): never {
   throw new Error('boom');
 }
 
-type ModuleProp = 'microgreens' | 'propagation' | 'vegetables' | 'planner' | 'settings';
+type ModuleProp = 'microgreens' | 'propagation' | 'vegetables' | 'settings';
 
 const MODULE_PATHS: Record<ModuleProp, string> = {
   microgreens: '/microgreens',
   propagation: '/propagation',
   vegetables: '/vegetables',
-  planner: '/planner',
   settings: '/settings',
 };
 
