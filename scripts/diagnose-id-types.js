@@ -17,10 +17,14 @@
  * the database read-only and counts.
  *
  * HOW TO RUN
- *   1. Open Paddock in the browser (the real one, with your data in it).
+ *   1. Open Paddock in the browser you actually use it in. IndexedDB is scoped to an
+ *      origin, so run this on the origin holding the data you care about - the live site
+ *      and a local dev server are two different databases.
  *   2. Open DevTools -> Console.
- *   3. Paste this whole file and press Enter.
- *   4. Copy the printed report.
+ *   3. Paste this whole file and press Enter. Chrome asks you to type "allow pasting"
+ *      the first time you ever paste into a console; that is Chrome, not this script.
+ *   4. Read the verdict at the bottom. The full report is also put on your clipboard and
+ *      left on `window.paddockDiagnostic`, so you can paste it straight back.
  *
  * If no column is MIXED, the repair migration that was going to be written is unnecessary
  * and should not be written - `fkMatch` can be simplified away instead.
@@ -148,5 +152,17 @@
     console.log('that tolerance go. Paste the foreign-key table above back to Claude.');
   }
 
-  return { primaryKeys, foreignKeys, stringValues, mixedColumns, nonNumericPrimaryKeys };
+  const report = { primaryKeys, foreignKeys, stringValues, mixedColumns, nonNumericPrimaryKeys };
+
+  // console.table is easy to read and impossible to copy. Leave the same data somewhere it
+  // can be handed back without retyping it out of a screenshot.
+  window.paddockDiagnostic = report;
+  if (typeof copy === 'function') {
+    copy(JSON.stringify(report, null, 2));
+    console.log('\nFull report copied to your clipboard, and left on window.paddockDiagnostic.');
+  } else {
+    console.log('\nFull report on window.paddockDiagnostic - run copy(window.paddockDiagnostic) to grab it.');
+  }
+
+  return report;
 })();
