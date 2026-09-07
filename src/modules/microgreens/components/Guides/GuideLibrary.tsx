@@ -6,13 +6,10 @@
  * Includes Getting Started section for novice growers.
  */
 
-import { stripLeadingHeading } from '@/lib/guides/guideContent';
 import { Modal } from '@/components/ui';
 import { clickable } from '@/lib/a11y/clickable';
-import { Spinner, LoadingState } from '@/components/shared';
+import { Spinner, LoadingState, GuideMarkdown } from '@/components/shared';
 import { useState, useEffect, useMemo } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import type { GuideIndex, GuideMetadata } from '@/lib/guides/types';
 
 type SortField = 'name' | 'difficulty' | 'daysToHarvest' | 'blackoutDays' | 'category';
@@ -450,9 +447,7 @@ export function GuideLibrary() {
           {loadingContent ? (
             <LoadingState className="py-12" />
           ) : guideContent ? (
-            <article className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-sm prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-table:text-xs prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{stripLeadingHeading(guideContent)}</ReactMarkdown>
-            </article>
+            <GuideMarkdown content={guideContent} />
           ) : (
             <p className="text-center text-slate-500 py-8">Failed to load guide content</p>
           )}

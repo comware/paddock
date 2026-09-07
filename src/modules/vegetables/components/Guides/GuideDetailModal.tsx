@@ -16,10 +16,7 @@
  * and the modal should say so plainly rather than rendering an empty article.
  */
 
-import { stripLeadingHeading } from '@/lib/guides/guideContent';
-import { LoadingState } from '@/components/shared';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { LoadingState, GuideMarkdown } from '@/components/shared';
 import { Modal } from '@/components/ui';
 import { useVegetableGuide } from '@/lib/guides/useVegetableGuide';
 
@@ -64,9 +61,7 @@ export function GuideDetailModal({ cropName, onClose }: GuideDetailModalProps) {
               {metadata?.name ?? cropName} is still on its way.
             </p>
           ) : content ? (
-            <article className="prose prose-sm prose-slate dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h2:mt-4 prose-h2:mb-2 prose-h3:text-sm prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm prose-table:text-xs prose-th:px-2 prose-th:py-1 prose-td:px-2 prose-td:py-1">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{stripLeadingHeading(content)}</ReactMarkdown>
-            </article>
+            <GuideMarkdown content={content} />
           ) : (
             <p className="text-center text-slate-500 py-8">Failed to load guide content</p>
           )}

@@ -2,7 +2,8 @@
  * Planner Components - Barrel exports
  */
 
-export { CalendarEvent, getEventProps, type CalendarEventData } from './CalendarEvent';
+export { CalendarEvent, type CalendarEventData } from './CalendarEvent';
+export { getEventProps } from './eventProps';
 export { EventCreateForm } from './EventCreateForm';
 export { EventDetail } from './EventDetail';
 export { EventDetailModal } from './EventDetailModal';

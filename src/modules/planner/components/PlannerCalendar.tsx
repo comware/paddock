@@ -12,7 +12,8 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enAU } from 'date-fns/locale';
 
 import { usePlannerStore, type PlannerEventWithComputed } from '../stores/usePlannerStore';
-import { CalendarEvent, getEventProps, type CalendarEventData } from './CalendarEvent';
+import { CalendarEvent, type CalendarEventData } from './CalendarEvent';
+import { getEventProps } from './eventProps';
 import { EventDetailModal } from './EventDetailModal';
 
 // Import calendar styles
