@@ -223,6 +223,7 @@ export function MotherPlantList() {
               Status
             </label>
             <select
+          aria-label="Filter by status"
               value={filters.status}
               onChange={(e) => handleFiltersChange({ status: e.target.value as MotherPlantFilters['status'] })}
               className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -242,6 +243,7 @@ export function MotherPlantList() {
               Species
             </label>
             <select
+          aria-label="Filter by species"
               value={filters.species}
               onChange={(e) => handleFiltersChange({ species: e.target.value })}
               className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -261,6 +263,7 @@ export function MotherPlantList() {
               Sort By
             </label>
             <select
+          aria-label="Sort mother plants"
               value={sort.field}
               onChange={(e) => handleSortChange({ ...sort, field: e.target.value as MotherPlantSort['field'] })}
               className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"

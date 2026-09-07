@@ -336,15 +336,22 @@ interface ReflectionFieldProps {
 function ReflectionField({ label, value, onChange }: ReflectionFieldProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-        {label}
+      {/*
+        * The control sits inside the label rather than beside it. It was beside it, with no
+        * htmlFor and no id - which looks correct in the markup and names nothing, so every
+        * one of these five fields announced as "edit text, blank".
+        */}
+      <label className="block">
+        <span className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          {label}
+        </span>
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="input w-full h-20 resize-none"
+          placeholder="Your thoughts..."
+        />
       </label>
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="input w-full h-20 resize-none"
-        placeholder="Your thoughts..."
-      />
     </div>
   );
 }

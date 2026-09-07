@@ -211,6 +211,7 @@ function FitSlider({ question, lowLabel, highLabel, value, onChange, onBlur }: F
 
       <div className="relative">
         <input
+          aria-label={question}
           type="range"
           min={1}
           max={10}

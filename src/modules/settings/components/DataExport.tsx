@@ -211,7 +211,8 @@ export function DataExport() {
         </button>
         <input
           ref={fileInputRef}
-          type="file"
+          aria-label="Choose a backup file to restore"
+            type="file"
           accept=".json"
           onChange={handleFileSelect}
           className="hidden"

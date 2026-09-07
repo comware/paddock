@@ -113,6 +113,7 @@ export function ExperimentConfig() {
             Experiment Start Date
           </label>
           <input
+            aria-label="Experiment start date"
             type="date"
             {...register('startDate')}
             className="input w-full"
@@ -131,6 +132,7 @@ export function ExperimentConfig() {
             Target Trays to Complete
           </label>
           <input
+            aria-label="Target number of trays"
             type="number"
             {...register('targetTrays', { valueAsNumber: true })}
             className="input w-full"
@@ -151,6 +153,7 @@ export function ExperimentConfig() {
             Target Success Rate (%)
           </label>
           <input
+            aria-label="Target success rate, percent"
             type="number"
             {...register('targetSuccessRate', { valueAsNumber: true })}
             className="input w-full"
@@ -171,6 +174,7 @@ export function ExperimentConfig() {
             Target Hours Per Week
           </label>
           <input
+            aria-label="Target hours per week"
             type="number"
             {...register('targetHoursPerWeek', { valueAsNumber: true })}
             className="input w-full"

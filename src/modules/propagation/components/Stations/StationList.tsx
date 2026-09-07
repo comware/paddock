@@ -233,6 +233,7 @@ export function StationList() {
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Type:</label>
           <select
+          aria-label="Filter by station type"
             value={filters.type}
             onChange={(e) => handleTypeChange(e.target.value as StationType | 'all')}
             className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -249,6 +250,7 @@ export function StationList() {
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Status:</label>
           <select
+          aria-label="Filter by active status"
             value={String(filters.isActive)}
             onChange={(e) => {
               const val = e.target.value;

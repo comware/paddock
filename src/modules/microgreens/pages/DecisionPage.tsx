@@ -5,8 +5,17 @@
  * in has no week 6, and the label said nothing about what the page does.
  */
 
+import { PageHeader } from '@/components/shared';
 import { Scorecard } from '../components/Decision';
 
 export function DecisionPage() {
-  return <Scorecard />;
+  return (
+    <>
+      <PageHeader
+        title="Variety scorecard"
+        description="What each variety has actually returned, so the next sowing is an informed one."
+      />
+      <Scorecard />
+    </>
+  );
 }

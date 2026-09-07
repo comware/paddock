@@ -238,7 +238,7 @@ export function TrayList() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Trays</h1>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Trays</h2>
         <button
           onClick={() => setIsNewTrayOpen(true)}
           className="btn btn-primary"
@@ -277,6 +277,7 @@ export function TrayList() {
           <div className="ml-auto flex items-center gap-2">
             <span className="text-sm text-slate-500 dark:text-slate-400">Sort:</span>
             <select
+          aria-label="Sort trays"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
               className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -297,6 +298,7 @@ export function TrayList() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-slate-500 dark:text-slate-400">Site:</span>
               <select
+          aria-label="Filter by growing space"
                 value={siteFilter}
                 onChange={(e) => setSiteFilter(e.target.value)}
                 className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -316,6 +318,7 @@ export function TrayList() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-slate-500 dark:text-slate-400">Variety:</span>
               <select
+          aria-label="Filter by variety"
                 value={varietyFilter}
                 onChange={(e) => setVarietyFilter(e.target.value)}
                 className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -335,6 +338,7 @@ export function TrayList() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-slate-500 dark:text-slate-400">Medium:</span>
               <select
+          aria-label="Filter by growing medium"
                 value={mediumFilter}
                 onChange={(e) => setMediumFilter(e.target.value)}
                 className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"

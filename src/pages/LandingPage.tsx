@@ -387,9 +387,9 @@ export function LandingPage() {
 
             {/* Quick Links */}
             <nav aria-label="Footer navigation">
-              <h4 className="font-semibold text-slate-800 dark:text-white mb-3">
+              <h3 className="font-semibold text-slate-800 dark:text-white mb-3">
                 Quick Links
-              </h4>
+              </h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link

@@ -342,6 +342,7 @@ export function DailyLogForm() {
               })}
               className="input w-full"
               placeholder="e.g. 22.5"
+            aria-label="Temperature in degrees Celsius"
             />
             {errors.temperature && (
               <p className="text-red-500 text-xs mt-1">{errors.temperature.message}</p>
@@ -359,6 +360,7 @@ export function DailyLogForm() {
               })}
               className="input w-full"
               placeholder="e.g. 65"
+            aria-label="Humidity percentage"
             />
             {errors.humidity && (
               <p className="text-red-500 text-xs mt-1">{errors.humidity.message}</p>
@@ -381,6 +383,7 @@ export function DailyLogForm() {
               {...register('problemsSpotted')}
               className="input w-full h-24 resize-none"
               placeholder="Any issues noticed today? Mold, pests, yellowing, slow growth..."
+            aria-label="Problems observed today"
             />
           </div>
           <div>
@@ -391,6 +394,7 @@ export function DailyLogForm() {
               {...register('actionsTaken')}
               className="input w-full h-24 resize-none"
               placeholder="What did you do about it? Adjusted watering, moved trays..."
+            aria-label="Adjustments made"
             />
           </div>
         </div>
@@ -411,6 +415,7 @@ export function DailyLogForm() {
               {...register('keyLearning')}
               className="input w-full"
               placeholder="One thing you learned or noticed today..."
+            aria-label="What you learned today"
             />
           </div>
           <div>
@@ -422,6 +427,7 @@ export function DailyLogForm() {
               {...register('tomorrowPriority')}
               className="input w-full"
               placeholder="Most important thing to do tomorrow..."
+            aria-label="Most important thing for tomorrow"
             />
           </div>
         </div>

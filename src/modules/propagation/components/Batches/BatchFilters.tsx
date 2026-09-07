@@ -187,6 +187,7 @@ export function BatchFilters({
         <div className="flex items-center gap-2 sm:ml-auto shrink-0">
           <span className="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline">Sort:</span>
           <select
+          aria-label="Sort batches"
             value={sort.field}
             onChange={(e) => handleSortFieldChange(e.target.value as BatchSort['field'])}
             className="min-h-[44px] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent flex-1 sm:flex-none"
@@ -251,6 +252,7 @@ export function BatchFilters({
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
               <label className="text-sm text-slate-500 dark:text-slate-400">Species:</label>
               <select
+          aria-label="Filter by species"
                 value={filters.species}
                 onChange={(e) => handleSpeciesChange(e.target.value)}
                 className="min-h-[44px] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -269,6 +271,7 @@ export function BatchFilters({
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
             <label className="text-sm text-slate-500 dark:text-slate-400">Method:</label>
             <select
+          aria-label="Filter by method"
               value={filters.method}
               onChange={(e) => handleMethodChange(e.target.value as PropagationMethod | 'all')}
               className="min-h-[44px] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -286,6 +289,7 @@ export function BatchFilters({
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
               <label className="text-sm text-slate-500 dark:text-slate-400">Station:</label>
               <select
+          aria-label="Filter by station"
                 value={filters.stationId}
                 onChange={(e) => handleStationChange(e.target.value)}
                 className="min-h-[44px] px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"

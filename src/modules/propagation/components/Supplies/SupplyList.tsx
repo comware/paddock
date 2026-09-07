@@ -256,6 +256,7 @@ export function SupplyList() {
             Category:
           </label>
           <select
+          aria-label="Filter by category"
             value={filters.category}
             onChange={(e) => handleCategoryChange(e.target.value as SupplyCategory | 'all')}
             className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"

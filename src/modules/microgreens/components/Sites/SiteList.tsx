@@ -115,9 +115,9 @@ export function SiteList() {
             <div className="flex items-start gap-3">
               <span className="text-xl">💡</span>
               <div>
-                <h3 className="font-medium text-blue-900 dark:text-blue-100">
+                <h2 className="font-medium text-blue-900 dark:text-blue-100">
                   Tips
-                </h3>
+                </h2>
                 <ul className="text-sm text-blue-800 dark:text-blue-200 mt-1 space-y-1">
                   <li>• Click a space to open it</li>
                   <li>• New trays and daily logs go to whichever space you opened last</li>

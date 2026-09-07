@@ -67,7 +67,7 @@ export function ModuleSettings() {
                 checked={on}
                 disabled={module.required}
                 onChange={(e) => void setEnabled(module.id, e.target.checked)}
-                className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer accent-primary-600"
               />
             </li>
           );

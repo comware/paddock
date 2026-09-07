@@ -216,6 +216,7 @@ function CustomTimeEntry({ siteId, onAdd }: CustomTimeEntryProps) {
       </h3>
       <div className="flex flex-wrap gap-3">
         <select
+          aria-label="Task category"
           value={category}
           onChange={(e) => setCategory(e.target.value as TimeCategory)}
           className="input flex-1 min-w-[150px]"
@@ -228,6 +229,7 @@ function CustomTimeEntry({ siteId, onAdd }: CustomTimeEntryProps) {
         </select>
         <div className="flex items-center gap-2">
           <input
+            aria-label="Minutes spent"
             type="number"
             value={minutes}
             onChange={(e) => setMinutes(Math.max(0, parseInt(e.target.value) || 0))}

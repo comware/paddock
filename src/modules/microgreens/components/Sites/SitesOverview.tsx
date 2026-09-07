@@ -98,7 +98,7 @@ function SiteOverviewCard({ site, metrics, onClick }: SiteOverviewCardProps) {
             <MapPin aria-hidden="true" className="w-6 h-6 shrink-0 text-primary-600 dark:text-primary-400" strokeWidth={1.75} />
           )}
           <div>
-            <h3 className="font-bold text-slate-900 dark:text-white">{site.name}</h3>
+            <h2 className="font-bold text-slate-900 dark:text-white">{site.name}</h2>
             {site.isDefault && (
               <span className="text-xs text-primary-600 dark:text-primary-400">Default</span>
             )}

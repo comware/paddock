@@ -333,7 +333,8 @@ export function DataManagement() {
         )}
         <input
           ref={fileInputRef}
-          type="file"
+          aria-label="Choose a file to import"
+            type="file"
           accept=".json"
           onChange={handleFileSelect}
           className="hidden"

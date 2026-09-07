@@ -47,7 +47,7 @@ export function EmptyState({
         className="w-12 h-12 mb-4 text-slate-400 dark:text-slate-500"
         strokeWidth={1.5}
       />
-      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{title}</h3>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{title}</h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-4">{description}</p>
       {(action || secondaryAction) && (
         <div className="flex flex-col sm:flex-row items-center gap-3">

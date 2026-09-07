@@ -112,6 +112,7 @@ export function BedList() {
       <div className="flex items-center gap-2 p-4 card">
         <label className="text-sm font-medium text-slate-500 dark:text-slate-400">Status:</label>
         <select
+          aria-label="Filter beds by status"
           value={filter}
           onChange={(e) => setFilter(e.target.value as ActiveFilter)}
           className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"

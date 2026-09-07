@@ -31,7 +31,7 @@ export const growRoutes: RouteObject[] = [
       { path: 'trays/:id', element: <TrayList /> },
       { path: 'daily', element: <DailyLogPage /> },
       { path: 'time', element: <TimeTrackingPage /> },
-      { path: 'analytics', element: <AnalyticsPage /> },
+      { path: 'analytics', element: <AnalyticsPage withinSite /> },
       // Calendar is site-scoped in the navigation now, so the module-level tab can go.
       // The /grow/calendar route below stays as an alias: links, bookmarks and anything
       // an agent has been told about must keep working.

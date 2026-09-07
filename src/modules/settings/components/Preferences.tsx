@@ -5,6 +5,7 @@
  * Uses the global useTheme hook for theme management.
  */
 
+import { Sun, Moon, Monitor, type LucideIcon } from 'lucide-react';
 import { useTheme, type Theme } from '@/hooks';
 
 export function Preferences() {
@@ -41,19 +42,19 @@ export function Preferences() {
             <ThemeButton
               active={theme === 'light'}
               onClick={() => handleThemeChange('light')}
-              icon="☀️"
+              Icon={Sun}
               label="Light"
             />
             <ThemeButton
               active={theme === 'dark'}
               onClick={() => handleThemeChange('dark')}
-              icon="🌙"
+              Icon={Moon}
               label="Dark"
             />
             <ThemeButton
               active={theme === 'system'}
               onClick={() => handleThemeChange('system')}
-              icon="💻"
+              Icon={Monitor}
               label="System"
             />
           </div>
@@ -69,11 +70,11 @@ export function Preferences() {
 interface ThemeButtonProps {
   active: boolean;
   onClick: () => void;
-  icon: string;
+  Icon: LucideIcon;
   label: string;
 }
 
-function ThemeButton({ active, onClick, icon, label }: ThemeButtonProps) {
+function ThemeButton({ active, onClick, Icon, label }: ThemeButtonProps) {
   return (
     <button
       type="button"
@@ -84,7 +85,11 @@ function ThemeButton({ active, onClick, icon, label }: ThemeButtonProps) {
           : 'border-slate-200 dark:border-slate-700 hover:border-primary-300'
       }`}
     >
-      <div className="text-2xl mb-1">{icon}</div>
+      <Icon
+        aria-hidden="true"
+        className="w-6 h-6 mx-auto mb-1 text-slate-500 dark:text-slate-400"
+        strokeWidth={1.75}
+      />
       <div className="text-sm font-medium text-slate-900 dark:text-white">
         {label}
       </div>

@@ -50,6 +50,7 @@ export function MoodSlider({ value, onChange, label = 'Mood & Energy' }: MoodSli
       {/* Slider */}
       <div className="relative">
         <input
+          aria-label={label ?? 'How the day went, 1 to 10'}
           type="range"
           min={1}
           max={10}

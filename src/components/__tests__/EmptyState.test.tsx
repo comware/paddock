@@ -268,17 +268,20 @@ describe('EmptyState', () => {
   });
 
   describe('accessibility', () => {
-    it('title is an h3 heading', () => {
+    /**
+     * An h2, not an h3. Pages title themselves with an h1, so an h3 here skipped a level -
+     * which a site-wide audit found on six pages, all of them tracing back to this one line.
+     */
+    it('title is an h2 heading', () => {
       render(
         <EmptyState
           Icon={Sprout}
-          title="Accessible Title"
+          title="No Data"
           description="Description"
         />
       );
 
-      const heading = screen.getByRole('heading', { level: 3 });
-      expect(heading).toHaveTextContent('Accessible Title');
+      expect(screen.getByRole('heading', { level: 2, name: 'No Data' })).toBeInTheDocument();
     });
 
     it('description is in a paragraph element', () => {

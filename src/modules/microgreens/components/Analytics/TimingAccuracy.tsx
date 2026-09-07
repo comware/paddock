@@ -52,9 +52,9 @@ export function TimingAccuracy() {
     return (
       <div className="card p-8 text-center">
         <div className="text-4xl mb-3">⏱️</div>
-        <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">
+        <h2 className="text-lg font-medium text-slate-900 dark:text-white mb-1">
           Nothing harvested yet
-        </h3>
+        </h2>
         <p className="text-sm text-slate-600 dark:text-slate-400">
           Once you have harvested a few trays, this will show how long each variety
           actually takes on your bench.
@@ -69,9 +69,9 @@ export function TimingAccuracy() {
 
   return (
     <section className="card p-6">
-      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">
+      <h2 className="text-lg font-medium text-slate-900 dark:text-white mb-1">
         How long things actually take
-      </h3>
+      </h2>
       <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
         Your own harvests against the days-to-harvest configured for each variety.
       </p>
@@ -156,9 +156,9 @@ export function TimingAccuracy() {
 
       {rows.some((r) => r.commonProblems.length > 0) && (
         <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-          <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-2">
             What you recorded going wrong
-          </h4>
+          </h3>
           <ul className="space-y-1.5">
             {rows
               .filter((r) => r.commonProblems.length > 0)
