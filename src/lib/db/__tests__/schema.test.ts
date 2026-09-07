@@ -18,11 +18,11 @@ describe('PaddockDB Schema', () => {
     expect(db.name).toBe('Paddock');
   });
 
-  it('should be at schema version 12', () => {
-    expect(db.verno).toBe(13);
+  it('should be at schema version 15', () => {
+    expect(db.verno).toBe(15);
   });
 
-  it('should have all 30 expected tables', () => {
+  it('should have all 28 expected tables', () => {
     const tableNames = db.tables.map((t) => t.name).sort();
     const expectedTables = [
       // Grow module (11 tables)
@@ -35,8 +35,6 @@ describe('PaddockDB Schema', () => {
       'growExperiments',
       'growDecisions',
       'growPlannedPlantings',
-      'growSites',
-      'growWeatherHistory',
       // AI module (2 tables)
       'aiConversations',
       'aiMessages',
@@ -64,7 +62,7 @@ describe('PaddockDB Schema', () => {
     ].sort();
 
     expect(tableNames).toEqual(expectedTables);
-    expect(tableNames).toHaveLength(30);
+    expect(tableNames).toHaveLength(28);
   });
 
   it('should have compound indexes on propBatches for common query patterns', () => {
@@ -177,8 +175,8 @@ describe('Convenience Exports', () => {
 });
 
 describe('version 11 platform extraction', () => {
-  it('is at schema version 12', () => {
-    expect(db.verno).toBe(13);
+  it('is at schema version 15', () => {
+    expect(db.verno).toBe(15);
   });
 
   it('exposes sites and weatherHistory as tables', () => {
@@ -187,10 +185,16 @@ describe('version 11 platform extraction', () => {
     expect(names).toContain('weatherHistory');
   });
 
-  it('keeps the originals so a bad copy stays recoverable', () => {
+  /**
+   * This assertion used to be the opposite - that growSites and growWeatherHistory were
+   * still present, keeping a bad copy recoverable. Versions 14 and 15 close that window
+   * now the copy has been verified against real data, so the originals are gone and
+   * nothing can accidentally read from them again.
+   */
+  it('has dropped the originals now the copy is verified', () => {
     const names = db.tables.map((t) => t.name);
-    expect(names).toContain('growSites');
-    expect(names).toContain('growWeatherHistory');
+    expect(names).not.toContain('growSites');
+    expect(names).not.toContain('growWeatherHistory');
   });
 });
 
@@ -211,8 +215,8 @@ describe('platform facade', () => {
 });
 
 describe('version 13 vegetables', () => {
-  it('is at schema version 13', () => {
-    expect(db.verno).toBe(13);
+  it('is at schema version 15', () => {
+    expect(db.verno).toBe(15);
   });
 
   it('exposes the three vegetable tables', () => {

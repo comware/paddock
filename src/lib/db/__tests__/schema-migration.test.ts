@@ -9,10 +9,9 @@
  * test while silently destroying every user's sites on upgrade.
  *
  * This test seeds a real version-10 'Paddock' database (the pre-extraction shape), then
- * imports schema.ts fresh so that opening its `db` singleton runs the actual 11 -> 12
- * upgrade chain against that data. The drop of growSites/growWeatherHistory is a later
- * release (see schema.ts), so this test asserts the originals SURVIVE - that is the
- * recovery window the deferred drop exists to preserve.
+ * imports schema.ts fresh so that opening its `db` singleton runs the actual 11 -> 15
+ * upgrade chain against that data. So this test now asserts the originals are GONE,
+ * dropped by versions 14 and 15 once the copy had been verified against real data.
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import Dexie from 'dexie';
@@ -93,7 +92,7 @@ describe('the real migration chain in schema.ts', () => {
     await Dexie.delete('Paddock');
   });
 
-  it('upgrades a version 10 database and carries its data through the real 11-12 chain', async () => {
+  it('upgrades a version 10 database and carries its data through the real 11-15 chain', async () => {
     // 1. Build a real v10 'Paddock' database with the pre-extraction tables and seed it.
     const seedDb = new Dexie('Paddock');
     declareV10Schema(seedDb);
@@ -176,18 +175,16 @@ describe('the real migration chain in schema.ts', () => {
     expect(weatherRows[0].siteId).toBe(42);
     expect(weatherRows[0].temperature).toBe(18.5);
 
-    // 5c. growSites and growWeatherHistory are still present - the drop is deferred to
-    // a later release, so this is the recovery window the deferral exists to preserve.
+    // 5c. growSites and growWeatherHistory are GONE.
+    //
+    // This assertion used to be the opposite: it checked that the originals survived,
+    // because the drop was deferred to keep a recovery window open in case the version 11
+    // copy was subtly wrong. That window has served its purpose - the copy has been
+    // verified against real data - and versions 14 and 15 close it. What matters now is
+    // that the data above came through, and that the old stores are no longer here.
     const tableNames = db.tables.map((t) => t.name);
-    expect(tableNames).toContain('growSites');
-    expect(tableNames).toContain('growWeatherHistory');
-
-    // 5c'. The original growSites row is still readable and still has id 42.
-    const rawGrowSites = db.table<GrowSite>('growSites');
-    const originalSite = await rawGrowSites.where('id').equals(42).first();
-    expect(originalSite).toBeDefined();
-    expect(originalSite?.id).toBe(42);
-    expect(originalSite?.name).toBe('Home Greenhouse');
+    expect(tableNames).not.toContain('growSites');
+    expect(tableNames).not.toContain('growWeatherHistory');
 
     // 5d. The time entry is tagged microgreens by the version(12) backfill, with its
     // minute values unchanged.
@@ -202,5 +199,63 @@ describe('the real migration chain in schema.ts', () => {
     expect(timeEntry?.cleanup).toBe(5);
 
     db.close();
+  });
+
+  /**
+   * The guard that makes the drop safe.
+   *
+   * Versions 14 and 15 remove growSites and growWeatherHistory, and IndexedDB has no
+   * downgrade path - so if the version 11 copy had somehow not completed, dropping would
+   * destroy rows with no way back. Version 14 refuses to proceed unless every source row is
+   * already in its destination.
+   *
+   * This seeds a database that has reached version 13 WITHOUT the copy having happened: the
+   * old tables hold data and the platform tables are empty. That is not a state version 11
+   * can produce - it is the state we are insuring against, and the only honest way to test
+   * the insurance is to construct it.
+   */
+  it('refuses to drop the old tables when the copy did not happen, and leaves them intact', async () => {
+    const seedDb = new Dexie('Paddock');
+    declareV10Schema(seedDb);
+    // Versions 11-13 as schema.ts declares them, but with NO upgrade bodies, so the copy
+    // never runs and `sites` is left empty while `growSites` holds a row.
+    seedDb.version(11).stores({
+      sites: '++id, &name, isDefault',
+      weatherHistory: '++id, siteId, date, [siteId+date]',
+    });
+    seedDb.version(12);
+    seedDb.version(13).stores({
+      vegBeds: '++id, siteId, name, isActive, [siteId+isActive]',
+      vegPlantings:
+        '++id, siteId, bedId, crop, status, dateSown, [siteId+status], [bedId+dateSown], [crop+status]',
+      vegHarvests: '++id, plantingId, date, [plantingId+date]',
+    });
+    await seedDb.open();
+
+    await seedDb.table('growSites').add({
+      id: 42,
+      name: 'Home Greenhouse',
+      isDefault: true,
+      isIndoor: false,
+      weatherEnabled: true,
+      createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-01'),
+    });
+    expect(await seedDb.table('sites').count()).toBe(0);
+    seedDb.close();
+
+    // Opening the real schema now runs version 14's check, which should refuse.
+    const { db } = await import('../schema');
+    await expect(db.open()).rejects.toThrow(/are not in sites/);
+    db.close();
+
+    // And the data is still there, in both tables, on the version it was already on.
+    const after = new Dexie('Paddock');
+    await after.open();
+    const names = after.tables.map((t) => t.name);
+    expect(names).toContain('growSites');
+    expect(names).toContain('growWeatherHistory');
+    expect(await after.table('growSites').count()).toBe(1);
+    after.close();
   });
 });

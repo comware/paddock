@@ -41,3 +41,37 @@ export async function copyTableRows(
 
   return copied;
 }
+
+/**
+ * Throw unless every row in `from` is already present in `to`, by primary key.
+ *
+ * The guard that runs immediately before a table is dropped. The copy happened a release
+ * earlier, in a transaction that could not have half-succeeded - but "could not have" is a
+ * claim about code, and this is a claim about the database actually in front of us. There
+ * is no downgrade path in IndexedDB, so the only safe order is prove, then drop.
+ *
+ * A failure aborts the version transaction and leaves both tables in place. The grower is
+ * stuck on the old version, which is recoverable; dropping rows that were never copied is
+ * not.
+ */
+export async function assertRowsCopied(
+  tx: Transaction,
+  from: string,
+  to: string
+): Promise<void> {
+  const source = await tx.table(from).toArray();
+  if (source.length === 0) return;
+
+  const present = new Set(await tx.table(to).toCollection().primaryKeys());
+  const missing = source.filter((row) => !present.has(row.id));
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Migration aborted: ${missing.length} of ${source.length} rows in ${from} are not in ` +
+        `${to}. Both tables have been left in place. Ids: ${missing
+          .slice(0, 10)
+          .map((r) => r.id)
+          .join(', ')}`
+    );
+  }
+}

@@ -9,7 +9,7 @@
 
 import Dexie, { type Table } from 'dexie';
 
-import { copyTableRows } from './migrations';
+import { copyTableRows, assertRowsCopied } from './migrations';
 
 // Import propagation types
 import type {
@@ -405,8 +405,9 @@ class PaddockDB extends Dexie {
   platformSettings!: Table<PlatformSetting>;
   sites!: Table<GrowSite>;
   weatherHistory!: Table<GrowWeatherHistory>;
-  growSites!: Table<GrowSite>;
-  growWeatherHistory!: Table<GrowWeatherHistory>;
+  // growSites and growWeatherHistory are gone as of version 15. The types stay - GrowSite
+  // and GrowWeatherHistory still describe the rows, they just live in the platform tables
+  // now - but the accessors go, so nothing can reach for a store that is not there.
 
   // Planner module tables
   plannerEvents!: Table<PlannerEvent>;
@@ -555,16 +556,10 @@ class PaddockDB extends Dexie {
         await copyTableRows(tx, 'growWeatherHistory', 'weatherHistory');
       });
 
-    // The drop of growSites and growWeatherHistory is deliberately NOT here.
-    //
-    // Version 11 copies rows into the platform tables and leaves the originals in place.
-    // Dropping them in the same release would mean every user goes 10 -> 12 in a single
-    // transaction, with the sources removed the moment their replacement is written - and
-    // IndexedDB has no downgrade path. Keeping both for one release means a copy that
-    // succeeded but is subtly wrong is still recoverable.
-    //
-    // The drop lands in a later version, in the release after this one has run against
-    // real data. See docs/architecture/2026-09-03-enterprise-modules-design.md.
+    // Version 11 copied rows into the platform tables and deliberately left the originals
+    // in place, so that a copy which succeeded but was subtly wrong stayed recoverable.
+    // That window has now been open across several releases and the copy has been verified
+    // against real data, so versions 14 and 15 below close it.
 
     // Backfill the enterprise tag while it can still be known.
     //
@@ -588,6 +583,26 @@ class PaddockDB extends Dexie {
       vegPlantings:
         '++id, siteId, bedId, crop, status, dateSown, [siteId+status], [bedId+dateSown], [crop+status]',
       vegHarvests: '++id, plantingId, date, [plantingId+date]',
+    });
+
+    // Closing the recovery window opened in version 11, in two steps.
+    //
+    // The check and the drop cannot share a version. Dexie applies a version's schema
+    // changes before running that version's upgrade(), so a table deleted in version 15's
+    // stores() is already gone by the time version 15's upgrade() could look at it. The
+    // proof has to run while the tables still exist, which is what version 14 is for.
+    //
+    // If the check throws, the transaction aborts, both tables survive, and the grower stays
+    // on version 13 with their data intact. That is the failure we want: IndexedDB has no
+    // downgrade path, so dropping first and discovering a problem afterwards has no remedy.
+    this.version(14).upgrade(async (tx) => {
+      await assertRowsCopied(tx, 'growSites', 'sites');
+      await assertRowsCopied(tx, 'growWeatherHistory', 'weatherHistory');
+    });
+
+    this.version(15).stores({
+      growSites: null,
+      growWeatherHistory: null,
     });
   }
 }
