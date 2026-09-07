@@ -126,7 +126,7 @@ export function PropDashboard() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           <QuickActionButton
             Icon={Plus}
-            label="New Batch"
+            label="New batch"
             onClick={() => navigate('/propagation/batches/new')}
             primary
           />
@@ -183,7 +183,7 @@ export function PropDashboard() {
             onClick={() => navigate('/propagation/batches/new')}
             className="btn btn-primary btn-lg"
           >
-            Create First Batch
+            Create first batch
           </button>
         </div>
       )}

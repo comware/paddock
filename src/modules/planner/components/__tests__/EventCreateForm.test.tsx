@@ -57,7 +57,7 @@ describe('EventCreateForm', () => {
   describe('rendering', () => {
     it('renders the form heading', () => {
       renderForm();
-      expect(screen.getByText('New Event')).toBeInTheDocument();
+      expect(screen.getByText('New event')).toBeInTheDocument();
     });
 
     it('renders all required form fields', () => {
@@ -88,7 +88,7 @@ describe('EventCreateForm', () => {
       expect(select).toBeInTheDocument();
       // Check optgroups exist via their labels in the rendered output
       expect(screen.getByText('Sow')).toBeInTheDocument();
-      expect(screen.getByText('Take Cuttings')).toBeInTheDocument();
+      expect(screen.getByText('Take cuttings')).toBeInTheDocument();
       expect(screen.getByText('Maintenance')).toBeInTheDocument();
     });
 

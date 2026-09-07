@@ -40,7 +40,7 @@ export function SpeciesConfigSeasonality({
             onClick={onSelectAll}
             className="px-2 py-1 text-xs rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
           >
-            All Year
+            All year
           </button>
           <button
             type="button"

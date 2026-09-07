@@ -194,14 +194,14 @@ export function LandingPage() {
                 to="/microgreens"
                 className="inline-flex items-center justify-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:scale-105 hover:shadow-xl"
               >
-                Start Learning
+                Start learning
                 <span className="ml-2">→</span>
               </Link>
               <Link
                 to="/vegetables"
                 className="inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-primary-300 dark:hover:border-primary-600 transition-all"
               >
-                Plan a Bed
+                Plan a bed
                 <span className="ml-2">🥕</span>
               </Link>
             </div>

@@ -175,7 +175,7 @@ export function StationCard({
             }}
             className="flex-1 btn btn-primary btn-sm"
           >
-            Log Env
+            Log env
           </button>
         )}
         {onEdit && (

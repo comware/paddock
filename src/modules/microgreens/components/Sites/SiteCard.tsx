@@ -128,7 +128,7 @@ export function SiteCard({
             }}
             className="flex-1 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
           >
-            Set Default
+            Set default
           </button>
         )}
         {onEdit && (

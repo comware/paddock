@@ -75,7 +75,7 @@ export function LowStockAlert({
           onClick={() => navigate('/propagation/supplies?lowStock=true')}
           className="text-sm font-medium text-orange-700 dark:text-orange-300 hover:text-orange-800 dark:hover:text-orange-200"
         >
-          View All
+          View all
         </button>
       </div>
 

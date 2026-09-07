@@ -143,16 +143,16 @@ export function BatchDetail() {
               <button onClick={() => setGraduationModalOpen(true)} className="min-h-[44px] px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 active:bg-green-700 transition-colors text-sm sm:text-base">Graduate</button>
             )}
             {canAdvance && (
-              <button onClick={handleOpenAdvanceModal} className="min-h-[44px] btn btn-primary text-sm sm:text-base">Advance Stage</button>
+              <button onClick={handleOpenAdvanceModal} className="min-h-[44px] btn btn-primary text-sm sm:text-base">Advance stage</button>
             )}
             {canRecordFailure && (
-              <button onClick={handleOpenFailureModal} className="min-h-[44px] px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 active:bg-red-300 transition-colors text-sm sm:text-base">Record Failure</button>
+              <button onClick={handleOpenFailureModal} className="min-h-[44px] px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 active:bg-red-300 transition-colors text-sm sm:text-base">Record failure</button>
             )}
             {canExplode && (
               <button onClick={() => setExplodeModalOpen(true)} className="min-h-[44px] px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:hover:bg-purple-900/50 active:bg-purple-300 transition-colors text-sm sm:text-base col-span-2 sm:col-span-1">Explode to Individuals</button>
             )}
             {!batch.isExploded && (
-              <button onClick={() => navigate(`/propagation/batches/${id}/edit`)} className="min-h-[44px] px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 active:bg-slate-300 transition-colors text-sm sm:text-base">Edit Batch</button>
+              <button onClick={() => navigate(`/propagation/batches/${id}/edit`)} className="min-h-[44px] px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 active:bg-slate-300 transition-colors text-sm sm:text-base">Edit batch</button>
             )}
           </div>
         </div>

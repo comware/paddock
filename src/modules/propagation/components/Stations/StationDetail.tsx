@@ -192,7 +192,7 @@ export function StationDetail() {
                 onClick={() => setShowLogModal(true)}
                 className="btn btn-primary"
               >
-                Log Environment
+                Log environment
               </button>
             )}
             <button

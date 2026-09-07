@@ -181,7 +181,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
             onClick={() => navigate('/propagation/stations')}
             className="text-sm text-primary-500 hover:text-primary-600 font-medium"
           >
-            Manage Stations
+            Manage stations
           </button>
         </div>
         <div className="text-center py-8">
@@ -193,7 +193,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
             onClick={() => navigate('/propagation/stations/new')}
             className="btn btn-primary"
           >
-            Add First Station
+            Add first station
           </button>
         </div>
       </div>
@@ -218,7 +218,7 @@ export function StationOverview({ maxItems = 6 }: StationOverviewProps) {
           onClick={() => navigate('/propagation/stations')}
           className="text-sm text-primary-500 hover:text-primary-600 font-medium"
         >
-          Manage Stations
+          Manage stations
         </button>
       </div>
 

@@ -37,7 +37,7 @@ export function PropaguleStageAdvanceForm({
     <>
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Advance to Stage
+          Advance to stage
         </label>
         <div className="grid grid-cols-2 gap-2">
           {validNextStages.map((stage) => {
@@ -76,7 +76,7 @@ export function PropaguleStageAdvanceForm({
           disabled={isSubmitting || !selectedStage}
           className="btn btn-primary"
         >
-          {isSubmitting ? 'Advancing...' : 'Advance Stage'}
+          {isSubmitting ? 'Advancing...' : 'Advance stage'}
         </button>
       </div>
     </>

@@ -189,7 +189,7 @@ export function BatchCard({
               }}
               className="flex-1 min-h-[44px] btn btn-primary btn-sm"
             >
-              Advance Stage
+              Advance stage
             </button>
           )}
           {canRecordFailure && onRecordFailure && (
@@ -200,7 +200,7 @@ export function BatchCard({
               }}
               className="min-h-[44px] px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500 transition-colors"
             >
-              Record Failure
+              Record failure
             </button>
           )}
         </div>
@@ -216,7 +216,7 @@ export function BatchCard({
             }}
             className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500 transition-colors"
           >
-            View Details
+            View details
           </button>
         </div>
       )}

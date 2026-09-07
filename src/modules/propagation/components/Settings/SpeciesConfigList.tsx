@@ -113,7 +113,7 @@ export function SpeciesConfigList() {
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add Species
+          Add species
         </button>
       </div>
 
@@ -165,7 +165,7 @@ export function SpeciesConfigList() {
                 onClick={handleAdd}
                 className="btn btn-primary"
               >
-                Add Your First Species
+                Add your first species
               </button>
             </>
           ) : (

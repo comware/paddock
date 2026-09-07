@@ -243,7 +243,7 @@ export function DataManagement() {
           className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
         >
           <div className="font-medium text-slate-900 dark:text-white">
-            Export Propagation Data
+            Export propagation data
           </div>
           <div className="text-sm text-slate-500 dark:text-slate-400">
             Download all propagation data as JSON backup
@@ -258,7 +258,7 @@ export function DataManagement() {
           className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
         >
           <div className="font-medium text-slate-900 dark:text-white">
-            Export Batches CSV
+            Export batches CSV
           </div>
           <div className="text-sm text-slate-500 dark:text-slate-400">
             Export batch data as spreadsheet for analysis
@@ -274,7 +274,7 @@ export function DataManagement() {
             className="w-full text-left p-4 rounded-lg bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors disabled:opacity-50"
           >
             <div className="font-medium text-slate-900 dark:text-white">
-              Import Propagation Data
+              Import propagation data
             </div>
             <div className="text-sm text-slate-500 dark:text-slate-400">
               Restore from JSON backup
@@ -319,7 +319,7 @@ export function DataManagement() {
                 onClick={handleProceedImport}
                 className="flex-1 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700"
               >
-                Select File
+                Select file
               </button>
               <button
                 type="button"
@@ -376,7 +376,7 @@ export function DataManagement() {
             onClick={handleClearClick}
             className="w-full p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
           >
-            <div className="font-medium">Clear All Propagation Data</div>
+            <div className="font-medium">Clear all propagation data</div>
             <div className="text-sm opacity-75">
               Permanently delete all batches, stations, mother plants, and related data
             </div>
@@ -399,7 +399,7 @@ export function DataManagement() {
                 disabled={status === 'loading'}
                 className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
               >
-                Yes, I Want to Delete
+                Yes, I want to delete
               </button>
               <button
                 type="button"

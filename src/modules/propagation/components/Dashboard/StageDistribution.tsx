@@ -45,7 +45,7 @@ export function StageDistribution({ stageCounts, onStageClick }: StageDistributi
           onClick={() => navigate('/propagation/batches')}
           className="text-sm text-primary-500 hover:text-primary-600 font-medium"
         >
-          View All Batches
+          View all batches
         </button>
       </div>
 

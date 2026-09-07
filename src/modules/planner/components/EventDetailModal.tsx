@@ -5,6 +5,7 @@
  * Provides status lifecycle actions and navigation to linked entities.
  */
 
+import { EVENT_TYPE_METADATA } from '../types/eventTypes';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -20,22 +21,14 @@ interface EventDetailModalProps {
 
 /**
  * Human-readable labels for event types.
+ *
+ * A second copy of these lived here and had already drifted from the registry in
+ * planner/types/eventTypes.ts - this one said "Sow Seeds" and "Watering" where the registry
+ * said "Sow" and "Water". Reading from the registry means one set of names.
  */
-const EVENT_TYPE_LABELS: Record<PlannerEventType, string> = {
-  sow: 'Sow Seeds',
-  blackout_end: 'End Blackout',
-  harvest: 'Harvest',
-  water: 'Watering',
-  inspection: 'Inspection',
-  take_cuttings: 'Take Cuttings',
-  rooting_check: 'Rooting Check',
-  pot_up: 'Pot Up',
-  harden_off: 'Harden Off',
-  graduation: 'Graduation',
-  maintenance: 'Maintenance',
-  purchase: 'Purchase',
-  other: 'Other',
-};
+const EVENT_TYPE_LABELS: Record<PlannerEventType, string> = Object.fromEntries(
+  Object.entries(EVENT_TYPE_METADATA).map(([type, config]) => [type, config.label])
+) as Record<PlannerEventType, string>;
 
 /**
  * Human-readable labels for statuses.
@@ -237,7 +230,7 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                 >
                   <span>🌱</span>
-                  <span>View Tray</span>
+                  <span>View tray</span>
                 </button>
               )}
               {event.batchId && (
@@ -247,7 +240,7 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
                 >
                   <span>🌿</span>
-                  <span>View Batch</span>
+                  <span>View batch</span>
                 </button>
               )}
             </div>
@@ -292,7 +285,7 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
             disabled={isProcessing}
             className="w-full px-4 py-3 rounded-lg text-red-600 dark:text-red-400 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-colors"
           >
-            Delete Event
+            Delete event
           </button>
         </div>
 

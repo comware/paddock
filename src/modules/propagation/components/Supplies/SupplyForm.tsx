@@ -321,7 +321,7 @@ export function SupplyForm({
               </h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-primary-600 dark:text-primary-400">New Stock</span>
+                  <span className="text-primary-600 dark:text-primary-400">New stock</span>
                   <div className="font-bold text-primary-900 dark:text-primary-100">
                     {editSupply.quantityRemaining + purchaseQuantity} {editSupply.unit}
                   </div>
@@ -448,7 +448,7 @@ export function SupplyForm({
         </div>
 
         <FormError message={submitError} />
-        <FormActions onCancel={handleClose} isSubmitting={isSupplySubmitting} submitLabel={isEditMode ? 'Save Changes' : 'Add Supply'} submittingLabel="Saving..." />
+        <FormActions onCancel={handleClose} isSubmitting={isSupplySubmitting} submitLabel={isEditMode ? 'Save Changes' : 'Add supply'} submittingLabel="Saving..." />
       </form>
     </Modal>
   );

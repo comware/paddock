@@ -306,7 +306,7 @@ export function BatchFilters({
               onClick={onResetFilters}
               className="min-h-[44px] px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors sm:ml-auto"
             >
-              Clear Filters
+              Clear filters
             </button>
           )}
         </div>

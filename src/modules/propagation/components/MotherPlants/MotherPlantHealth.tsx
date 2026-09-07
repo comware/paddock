@@ -122,7 +122,7 @@ export function StatusChangeModalContent({
           disabled={selectedStatus === plant.status}
           className="flex-1 btn btn-primary"
         >
-          Update Status
+          Update status
         </button>
       </div>
     </form>

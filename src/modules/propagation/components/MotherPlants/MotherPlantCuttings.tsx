@@ -33,7 +33,7 @@ export function MotherPlantCuttings({
                 onClick={onTakeCutting}
                 className="btn btn-primary"
               >
-                Take First Cutting
+                Take first cutting
               </button>
             </div>
           )}

@@ -145,7 +145,7 @@ export function StageTransitionModal({
   }, [isSubmitting, onClose]);
 
   // Determine modal title
-  const modalTitle = mode === 'advance' ? 'Advance Stage' : 'Record Failure';
+  const modalTitle = mode === 'advance' ? 'Advance stage' : 'Record failure';
 
   // Early return if batch not found
   if (!batch) {
@@ -191,7 +191,7 @@ export function StageTransitionModal({
             <>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Advance To
+                  Advance to
                 </label>
                 <StageSelector
                   validStages={validNextStages}

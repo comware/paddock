@@ -90,7 +90,7 @@ export function TimeEntryForm() {
       <div className="card p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-            Log Time
+            Log time
           </h2>
           <div className="text-right">
             <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">

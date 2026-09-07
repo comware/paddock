@@ -140,7 +140,7 @@ export function PropaguleUpdateForm({
   if (!propagule) return null;
 
   const stageColors = getStageColors(propagule.stage);
-  const modalTitle = mode === 'advance' ? 'Advance Stage' : mode === 'fail' ? 'Record Failure' : 'Update Propagule';
+  const modalTitle = mode === 'advance' ? 'Advance stage' : mode === 'fail' ? 'Record failure' : 'Update Propagule';
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={modalTitle} size="lg">

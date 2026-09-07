@@ -223,7 +223,7 @@ export function StationList() {
           className="btn btn-primary"
         >
           <span className="text-lg">+</span>
-          New Station
+          New station
         </button>
       </div>
 
@@ -271,7 +271,7 @@ export function StationList() {
             onClick={handleResetFilters}
             className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
-            Reset Filters
+            Reset filters
           </button>
         )}
 

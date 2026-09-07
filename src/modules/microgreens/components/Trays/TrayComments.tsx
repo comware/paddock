@@ -142,7 +142,7 @@ export function TrayComments({ trayId }: TrayCommentsProps) {
                       disabled={isSubmitting}
                       className="px-3 py-1 rounded text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 transition-colors"
                     >
-                      Yes, Delete
+                      Yes, delete
                     </button>
                     <button
                       type="button"

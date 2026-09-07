@@ -68,7 +68,7 @@ describe('BedList', () => {
     await waitFor(() => {
       expect(screen.getByText('No beds yet')).toBeInTheDocument();
     });
-    expect(screen.getByRole('button', { name: 'Add Bed' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add bed' })).toBeInTheDocument();
   });
 
   it('renders a bed that exists in the database', async () => {
@@ -93,7 +93,7 @@ describe('BedList', () => {
     });
 
     // Open the form from the empty state action.
-    await user.click(screen.getByRole('button', { name: 'Add Bed' }));
+    await user.click(screen.getByRole('button', { name: 'Add bed' }));
 
     const dialog = await screen.findByRole('dialog');
     await user.type(within(dialog).getByLabelText(/name/i), 'North Bed');

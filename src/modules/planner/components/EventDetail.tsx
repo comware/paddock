@@ -252,7 +252,7 @@ export function EventDetail() {
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                 >
                   <span>🌱</span>
-                  <span>View Tray</span>
+                  <span>View tray</span>
                 </button>
               )}
               {event.batchId && (
@@ -262,7 +262,7 @@ export function EventDetail() {
                   className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
                 >
                   <span>🌿</span>
-                  <span>View Batch</span>
+                  <span>View batch</span>
                 </button>
               )}
             </div>
@@ -294,7 +294,7 @@ export function EventDetail() {
               disabled={isProcessing}
               className="flex-1 min-w-[120px] px-4 py-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-200 dark:hover:bg-slate-600 disabled:opacity-50 transition-colors"
             >
-              Cancel Event
+              Cancel event
             </button>
           </div>
         )}
@@ -307,7 +307,7 @@ export function EventDetail() {
             disabled={isProcessing}
             className="w-full px-4 py-3 rounded-lg text-red-600 dark:text-red-400 font-medium hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 transition-colors"
           >
-            Delete Event
+            Delete event
           </button>
         </div>
 

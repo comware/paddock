@@ -91,7 +91,7 @@ export const EVENT_TYPE_METADATA: Record<PlannerEventType, EventTypeMetadata> = 
   },
   blackout_end: {
     type: 'blackout_end',
-    label: 'Blackout End',
+    label: 'Blackout end',
     description: 'Move tray to light',
     color: '#eab308',
     module: 'grow',
@@ -125,7 +125,7 @@ export const EVENT_TYPE_METADATA: Record<PlannerEventType, EventTypeMetadata> = 
   // Propagation Module Events
   take_cuttings: {
     type: 'take_cuttings',
-    label: 'Take Cuttings',
+    label: 'Take cuttings',
     description: 'Take new propagules',
     color: '#14b8a6',
     module: 'propagation',
@@ -133,7 +133,7 @@ export const EVENT_TYPE_METADATA: Record<PlannerEventType, EventTypeMetadata> = 
   },
   rooting_check: {
     type: 'rooting_check',
-    label: 'Rooting Check',
+    label: 'Rooting check',
     description: 'Check rooting progress',
     color: '#06b6d4',
     module: 'propagation',
@@ -141,7 +141,7 @@ export const EVENT_TYPE_METADATA: Record<PlannerEventType, EventTypeMetadata> = 
   },
   pot_up: {
     type: 'pot_up',
-    label: 'Pot Up',
+    label: 'Pot up',
     description: 'Move to individual pots',
     color: '#3b82f6',
     module: 'propagation',
@@ -149,7 +149,7 @@ export const EVENT_TYPE_METADATA: Record<PlannerEventType, EventTypeMetadata> = 
   },
   harden_off: {
     type: 'harden_off',
-    label: 'Harden Off',
+    label: 'Harden off',
     description: 'Begin hardening',
     color: '#6366f1',
     module: 'propagation',

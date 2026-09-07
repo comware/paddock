@@ -25,7 +25,7 @@ const DECISION_OPTIONS: { value: DecisionChoice; label: string; emoji: string; d
   },
   {
     value: 'extend',
-    label: 'Extend Trial',
+    label: 'Extend trial',
     emoji: '🔄',
     description: 'Need more data - continue 2-4 more weeks',
   },

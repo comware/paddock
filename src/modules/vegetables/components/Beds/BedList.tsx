@@ -104,7 +104,7 @@ export function BedList() {
           className="btn btn-primary"
         >
           <span className="text-lg">+</span>
-          Add Bed
+          Add bed
         </button>
       </div>
 
@@ -139,7 +139,7 @@ export function BedList() {
           }
           action={
             siteBeds.length === 0
-              ? { label: 'Add Bed', onClick: () => setIsFormOpen(true) }
+              ? { label: 'Add bed', onClick: () => setIsFormOpen(true) }
               : undefined
           }
         />

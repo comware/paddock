@@ -300,7 +300,7 @@ export function StationForm({ isOpen, onClose, onSuccess, editStation }: Station
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={isEditMode ? `Edit Station: ${editStation?.name}` : 'New Station'}
+      title={isEditMode ? `Edit Station: ${editStation?.name}` : 'New station'}
       size="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

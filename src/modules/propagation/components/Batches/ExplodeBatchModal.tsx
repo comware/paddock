@@ -167,7 +167,7 @@ function ConfirmationStep({
       {/* Summary */}
       <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800">
         <div className="text-lg font-semibold text-purple-800 dark:text-purple-200 mb-2">
-          Confirm Batch Explosion
+          Confirm batch explosion
         </div>
 
         <div className="space-y-2 text-sm">

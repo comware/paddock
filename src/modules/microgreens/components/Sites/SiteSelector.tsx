@@ -65,7 +65,7 @@ export function SiteSelector({ compact = false }: SiteSelectorProps) {
       >
         <span>{activeSite?.isIndoor ? '🏠' : '📍'}</span>
         <span className="font-medium text-slate-900 dark:text-white">
-          {activeSite?.name || 'Select Site'}
+          {activeSite?.name || 'Select site'}
         </span>
         {weather && (
           <>
@@ -90,7 +90,7 @@ export function SiteSelector({ compact = false }: SiteSelectorProps) {
         <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg z-50 overflow-hidden">
           <div className="p-2 border-b border-slate-200 dark:border-slate-700">
             <div className="text-xs font-medium text-slate-500 dark:text-slate-400 px-2">
-              Select Site
+              Select site
             </div>
           </div>
           <div className="max-h-64 overflow-y-auto">

@@ -137,10 +137,10 @@ export function PropaguleDetail() {
           <div className="flex flex-wrap gap-2">
             <button onClick={handleOpenUpdateModal} className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">Update</button>
             {canAdvance && (
-              <button onClick={handleOpenAdvanceModal} className="btn btn-primary">Advance Stage</button>
+              <button onClick={handleOpenAdvanceModal} className="btn btn-primary">Advance stage</button>
             )}
             {canRecordFailure && (
-              <button onClick={handleOpenFailureModal} className="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 transition-colors">Record Failure</button>
+              <button onClick={handleOpenFailureModal} className="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50 transition-colors">Record failure</button>
             )}
           </div>
         </div>
@@ -248,7 +248,7 @@ export function PropaguleDetail() {
                 <Link to={`/propagation/mother-plants/${propagule.motherPlantId}`} className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
                   <div>
                     <div className="text-sm font-medium text-green-900 dark:text-green-100">Mother Plant</div>
-                    <div className="text-xs text-green-700 dark:text-green-300">View Source Plant</div>
+                    <div className="text-xs text-green-700 dark:text-green-300">View source plant</div>
                   </div>
                   <span className="text-green-500">&rarr;</span>
                 </Link>

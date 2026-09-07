@@ -105,7 +105,7 @@ export function PropaguleFailureForm({
           disabled={isSubmitting}
           className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {isSubmitting ? 'Recording...' : 'Record Failure'}
+          {isSubmitting ? 'Recording...' : 'Record failure'}
         </button>
       </div>
     </>

@@ -186,7 +186,7 @@ export function BatchList() {
           className="min-h-[44px] btn btn-primary w-full sm:w-auto"
         >
           <span className="text-lg">+</span>
-          New Batch
+          New batch
         </button>
       </div>
 

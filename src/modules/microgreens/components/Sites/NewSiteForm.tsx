@@ -372,7 +372,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
         {!isIndoor && (
           <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700">
             <div>
-              <div className="font-medium text-slate-900 dark:text-white">Enable Weather</div>
+              <div className="font-medium text-slate-900 dark:text-white">Enable weather</div>
               <div className="text-sm text-slate-600 dark:text-slate-400">
                 Auto-fetch temperature and humidity
               </div>
@@ -392,7 +392,7 @@ export function NewSiteForm({ isOpen, onClose }: NewSiteFormProps) {
         {!isFirstSite && (
           <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700">
             <div>
-              <div className="font-medium text-slate-900 dark:text-white">Set as Default</div>
+              <div className="font-medium text-slate-900 dark:text-white">Set as default</div>
               <div className="text-sm text-slate-600 dark:text-slate-400">
                 New trays will be assigned to this site
               </div>

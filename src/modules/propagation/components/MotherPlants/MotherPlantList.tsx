@@ -5,7 +5,7 @@
  * - Grid display of all mother plants via MotherPlantCard
  * - Filter by species, status
  * - Health check modal
- * - "Take Cutting" action that opens NewBatchForm with pre-filled motherPlantId
+ * - "Take cutting" action that opens NewBatchForm with pre-filled motherPlantId
  * - Mobile-responsive card layout
  *
  * Follows the BatchList pattern from the propagation module.
@@ -210,7 +210,7 @@ export function MotherPlantList() {
           className="btn btn-primary"
         >
           <span className="text-lg">+</span>
-          Register Mother Plant
+          Register mother plant
         </button>
       </div>
 

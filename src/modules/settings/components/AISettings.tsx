@@ -311,7 +311,7 @@ function ProviderCard({
                 onClick={onDelete}
                 className="px-3 py-1.5 text-red-500 hover:text-red-600 text-sm ml-auto"
               >
-                Delete Key
+                Delete key
               </button>
             )}
           </div>

@@ -42,7 +42,7 @@ const steps: Step[] = [
     description: 'Access 50+ variety-specific growing guides with detailed cultivation instructions, ideal conditions, and harvest timing.',
     icon: '📚',
     cta: {
-      text: 'Browse Guides',
+      text: 'Browse guides',
       to: '/microgreens/guides',
     },
   },
@@ -51,7 +51,7 @@ const steps: Step[] = [
     description: 'Ready to begin? Add your first tray and start tracking your microgreens from seed to harvest.',
     icon: '🚀',
     cta: {
-      text: 'Add First Tray',
+      text: 'Add first tray',
       to: '/microgreens/trays',
     },
   },

@@ -138,7 +138,7 @@ export function MotherPlantForm({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={editingPlant ? 'Edit Mother Plant' : 'Register Mother Plant'}
+      title={editingPlant ? 'Edit Mother Plant' : 'Register mother plant'}
       size="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

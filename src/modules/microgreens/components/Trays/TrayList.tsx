@@ -244,7 +244,7 @@ export function TrayList() {
           className="btn btn-primary"
         >
           <span className="text-lg">+</span>
-          New Tray
+          New tray
         </button>
       </div>
 
@@ -358,7 +358,7 @@ export function TrayList() {
               onClick={clearAllFilters}
               className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
-              Clear Filters
+              Clear filters
             </button>
           )}
         </div>

@@ -170,7 +170,7 @@ export function MotherPlantDetail() {
                   onClick={() => setShowTakeCuttingModal(true)}
                   className="btn btn-primary"
                 >
-                  Take Cutting
+                  Take cutting
                 </button>
                 <button
                   onClick={() => setShowHealthModal(true)}
@@ -227,13 +227,13 @@ export function MotherPlantDetail() {
                   onClick={() => setShowTakeCuttingModal(true)}
                   className="w-full btn btn-primary btn-lg"
                 >
-                  Take Cutting
+                  Take cutting
                 </button>
                 <button
                   onClick={() => setShowHealthModal(true)}
                   className="w-full px-4 py-3 rounded-lg bg-green-100 text-green-700 font-medium hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 transition-colors"
                 >
-                  Record Health Check
+                  Record health check
                 </button>
               </div>
             </div>

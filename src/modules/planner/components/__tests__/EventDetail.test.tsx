@@ -267,20 +267,20 @@ describe('EventDetail', () => {
     it('shows View Tray button when trayId is set', () => {
       mockEvent = createMockEnrichedEvent({ trayId: 'tray-456' });
       renderDetail();
-      expect(screen.getByText('View Tray')).toBeInTheDocument();
+      expect(screen.getByText('View tray')).toBeInTheDocument();
     });
 
     it('shows View Batch button when batchId is set', () => {
       mockEvent = createMockEnrichedEvent({ batchId: 'batch-789' });
       renderDetail();
-      expect(screen.getByText('View Batch')).toBeInTheDocument();
+      expect(screen.getByText('View batch')).toBeInTheDocument();
     });
 
     it('does not show linked entity section when no links', () => {
       mockEvent = createMockEnrichedEvent({ trayId: undefined, batchId: undefined });
       renderDetail();
-      expect(screen.queryByText('View Tray')).not.toBeInTheDocument();
-      expect(screen.queryByText('View Batch')).not.toBeInTheDocument();
+      expect(screen.queryByText('View tray')).not.toBeInTheDocument();
+      expect(screen.queryByText('View batch')).not.toBeInTheDocument();
     });
   });
 
@@ -307,14 +307,14 @@ describe('EventDetail', () => {
     it('navigates to tray detail on View Tray click', () => {
       mockEvent = createMockEnrichedEvent({ trayId: 'tray-456' });
       renderDetail();
-      fireEvent.click(screen.getByText('View Tray'));
+      fireEvent.click(screen.getByText('View tray'));
       expect(mockNavigate).toHaveBeenCalledWith('/grow/trays/tray-456');
     });
 
     it('navigates to batch detail on View Batch click', () => {
       mockEvent = createMockEnrichedEvent({ batchId: 'batch-789' });
       renderDetail();
-      fireEvent.click(screen.getByText('View Batch'));
+      fireEvent.click(screen.getByText('View batch'));
       expect(mockNavigate).toHaveBeenCalledWith('/propagation/batches/batch-789');
     });
   });
