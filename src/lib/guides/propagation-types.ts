@@ -28,7 +28,9 @@ export interface PropagationGuideCategory {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  // No icon field. Category icons are Lucide components and live in
+  // modules/propagation/components/Guides/categoryIcons.ts - a component cannot be
+  // expressed in JSON, and two sources for one thing is how they drift apart.
 }
 
 export interface PropagationGuideIndex {

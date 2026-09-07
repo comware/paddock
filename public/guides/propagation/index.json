@@ -5,56 +5,47 @@
     {
       "id": "beginner",
       "name": "Beginner-Friendly",
-      "description": "Easy to root, forgiving species - perfect for learning propagation",
-      "icon": "🌱"
+      "description": "Easy to root, forgiving species - perfect for learning propagation"
     },
     {
       "id": "intermediate",
       "name": "Intermediate",
-      "description": "Moderate difficulty requiring some experience and attention",
-      "icon": "🌿"
+      "description": "Moderate difficulty requiring some experience and attention"
     },
     {
       "id": "advanced",
       "name": "Advanced",
-      "description": "Challenging species requiring precise conditions and timing",
-      "icon": "🎯"
+      "description": "Challenging species requiring precise conditions and timing"
     },
     {
       "id": "herbs",
       "name": "Culinary Herbs",
-      "description": "Kitchen garden favorites for cooking and teas",
-      "icon": "🌿"
+      "description": "Kitchen garden favorites for cooking and teas"
     },
     {
       "id": "fruit",
       "name": "Fruit & Berries",
-      "description": "Productive plants for home orchards and berry patches",
-      "icon": "🍎"
+      "description": "Productive plants for home orchards and berry patches"
     },
     {
       "id": "ornamentals",
       "name": "Ornamentals",
-      "description": "Decorative plants for garden beauty and landscaping",
-      "icon": "🌸"
+      "description": "Decorative plants for garden beauty and landscaping"
     },
     {
       "id": "natives-au",
       "name": "Australian Natives",
-      "description": "Endemic species adapted to Australian conditions",
-      "icon": "🦘"
+      "description": "Endemic species adapted to Australian conditions"
     },
     {
       "id": "succulents",
       "name": "Succulents & Cacti",
-      "description": "Drought-tolerant plants with unique propagation methods",
-      "icon": "🌵"
+      "description": "Drought-tolerant plants with unique propagation methods"
     },
     {
       "id": "houseplants",
       "name": "Houseplants",
-      "description": "Indoor favorites that thrive in home environments",
-      "icon": "🪴"
+      "description": "Indoor favorites that thrive in home environments"
     }
   ],
   "methods": [

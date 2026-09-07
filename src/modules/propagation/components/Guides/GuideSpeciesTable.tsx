@@ -4,8 +4,9 @@
  * Extracted from PropagationGuideLibrary to reduce component size.
  */
 
+import { categoryIcon } from './categoryIcons';
 import { clickable } from '@/lib/a11y/clickable';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, createElement } from 'react';
 import type { PropagationGuideMetadata, PropagationGuideIndex } from '@/lib/guides/propagation-types';
 
 type SortField = 'name' | 'difficulty' | 'bestMethod' | 'timeToRoot' | 'successRate' | 'category';
@@ -16,6 +17,21 @@ interface GuideSpeciesTableProps {
   categories: PropagationGuideIndex['categories'];
   onSelectGuide: (guide: PropagationGuideMetadata) => void;
   getDifficultyColor: (difficulty: string) => string;
+}
+
+/**
+ * The category's line icon, sized for a table row.
+ *
+ * createElement rather than `const Icon = categoryIcon(...)` then `<Icon />`: the React
+ * Compiler treats a capitalised binding assigned inside a component body as a component
+ * declared during render, and refuses to optimise the file. Same output, no local binding.
+ */
+function CategoryIcon({ category }: { category: string }) {
+  return createElement(categoryIcon(category), {
+    'aria-hidden': true,
+    className: 'w-4 h-4 shrink-0',
+    strokeWidth: 1.75,
+  });
 }
 
 export function GuideSpeciesTable({
@@ -81,10 +97,6 @@ export function GuideSpeciesTable({
     return <span className="text-primary-500">{sortDirection === 'asc' ? '↑' : '↓'}</span>;
   };
 
-  const getCategoryIcon = (categoryId: string) => {
-    const cat = categories.find(c => c.id === categoryId);
-    return cat?.icon || '🌱';
-  };
 
   return (
     <section>
@@ -106,7 +118,7 @@ export function GuideSpeciesTable({
         >
           <option value="all">All Categories</option>
           {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>{cat.icon} {cat.name}</option>
+            <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
         <select
@@ -157,8 +169,9 @@ export function GuideSpeciesTable({
                     <span className="font-medium text-slate-900 dark:text-white">{guide.name}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm text-slate-600 dark:text-slate-300">
-                      {getCategoryIcon(guide.category)} {guide.category}
+                    <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                      <CategoryIcon category={guide.category} />
+                      {guide.category}
                     </span>
                   </td>
                   <td className="px-4 py-3">

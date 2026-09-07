@@ -15,6 +15,7 @@
  */
 
 import { LoadingState } from '@/components/shared';
+import type { LucideIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Modal } from '@/components/ui';
@@ -24,7 +25,7 @@ interface GettingStartedGuide {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  Icon: LucideIcon;
   file: string;
 }
 
@@ -52,7 +53,7 @@ export function GuideDetailModal({
   if (!selectedGuide && !selectedMethod && !selectedGettingStarted) return null;
 
   const title = selectedGettingStarted
-    ? `${selectedGettingStarted.icon} ${selectedGettingStarted.title}`
+    ? selectedGettingStarted.title
     : (selectedMethod?.name ?? selectedGuide?.name ?? 'Guide');
 
   return (

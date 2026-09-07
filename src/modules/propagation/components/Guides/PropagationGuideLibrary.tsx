@@ -6,6 +6,7 @@
  * Includes Getting Started section for beginners and Method guides.
  */
 
+import { BookOpen, Wrench, GitBranch, LayoutGrid, Sprout, CircleHelp } from 'lucide-react';
 import { Spinner } from '@/components/shared';
 import { useState, useEffect, useMemo } from 'react';
 import type { PropagationGuideIndex, PropagationGuideMetadata, PropagationMethodMetadata } from '@/lib/guides/propagation-types';
@@ -14,12 +15,12 @@ import { GuideDetailModal, type GettingStartedGuide } from './GuideDetailModal';
 
 // Getting Started guide cards for propagation
 const gettingStartedGuides: GettingStartedGuide[] = [
-  { id: 'concepts', title: 'Core Concepts', description: 'Propagation terminology and fundamental principles', icon: '📖', file: 'getting-started/concepts.md' },
-  { id: 'equipment', title: 'Equipment Guide', description: 'Essential tools and supplies for plant propagation', icon: '🛒', file: 'getting-started/equipment.md' },
-  { id: 'choosing-method', title: 'Choosing a Method', description: 'How to select the right propagation technique', icon: '🎯', file: 'getting-started/choosing-method.md' },
-  { id: 'station-setup', title: 'Station Setup', description: 'Creating an efficient propagation workspace', icon: '🏠', file: 'getting-started/station-setup.md' },
-  { id: 'first-batch', title: 'Your First Batch', description: 'Step-by-step guide to your first propagation', icon: '🌱', file: 'getting-started/first-batch.md' },
-  { id: 'troubleshooting', title: 'Troubleshooting', description: 'Common problems and solutions', icon: '🔧', file: 'getting-started/troubleshooting.md' },
+  { id: 'concepts', title: 'Core Concepts', description: 'Propagation terminology and fundamental principles', Icon: BookOpen, file: 'getting-started/concepts.md' },
+  { id: 'equipment', title: 'Equipment Guide', description: 'Essential tools and supplies for plant propagation', Icon: Wrench, file: 'getting-started/equipment.md' },
+  { id: 'choosing-method', title: 'Choosing a Method', description: 'How to select the right propagation technique', Icon: GitBranch, file: 'getting-started/choosing-method.md' },
+  { id: 'station-setup', title: 'Station Setup', description: 'Creating an efficient propagation workspace', Icon: LayoutGrid, file: 'getting-started/station-setup.md' },
+  { id: 'first-batch', title: 'Your First Batch', description: 'Step-by-step guide to your first propagation', Icon: Sprout, file: 'getting-started/first-batch.md' },
+  { id: 'troubleshooting', title: 'Troubleshooting', description: 'Common problems and solutions', Icon: CircleHelp, file: 'getting-started/troubleshooting.md' },
 ];
 
 // Cache for guide index
@@ -145,7 +146,7 @@ export function PropagationGuideLibrary() {
               onClick={() => setSelectedGettingStarted(guide)}
               className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 text-left hover:border-primary-500 hover:shadow-md transition-all group"
             >
-              <div className="text-2xl mb-2">{guide.icon}</div>
+              <guide.Icon aria-hidden="true" className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" strokeWidth={1.75} />
               <h3 className="font-medium text-sm text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">{guide.title}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{guide.description}</p>
             </button>
