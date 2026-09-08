@@ -5,56 +5,47 @@
     {
       "id": "leafy-greens",
       "name": "Leafy Greens",
-      "description": "Fast, forgiving, and mostly cut-and-come-again",
-      "icon": "🥬"
+      "description": "Fast, forgiving, and mostly cut-and-come-again"
     },
     {
       "id": "brassicas",
       "name": "Brassicas",
-      "description": "Slower and hungrier, but the backbone of a cool season",
-      "icon": "🥦"
+      "description": "Slower and hungrier, but the backbone of a cool season"
     },
     {
       "id": "roots",
       "name": "Roots",
-      "description": "Sown where they will grow — they resent being moved",
-      "icon": "🥕"
+      "description": "Sown where they will grow — they resent being moved"
     },
     {
       "id": "alliums",
       "name": "Alliums",
-      "description": "Long in the ground, little trouble once established",
-      "icon": "🧅"
+      "description": "Long in the ground, little trouble once established"
     },
     {
       "id": "legumes",
       "name": "Legumes",
-      "description": "Fix their own nitrogen and leave the bed better than they found it",
-      "icon": "🫛"
+      "description": "Fix their own nitrogen and leave the bed better than they found it"
     },
     {
       "id": "cucurbits",
       "name": "Cucurbits",
-      "description": "Hungry, thirsty, and they will take all the room you give them",
-      "icon": "🎃"
+      "description": "Hungry, thirsty, and they will take all the room you give them"
     },
     {
       "id": "fruiting",
       "name": "Fruiting",
-      "description": "Warm-season crops that need heat and time",
-      "icon": "🍅"
+      "description": "Warm-season crops that need heat and time"
     },
     {
       "id": "herbs",
       "name": "Herbs",
-      "description": "Small, quick, and worth having by the door",
-      "icon": "🌿"
+      "description": "Small, quick, and worth having by the door"
     },
     {
       "id": "perennials",
       "name": "Perennials",
-      "description": "Planted once, cropped for years",
-      "icon": "🌾"
+      "description": "Planted once, cropped for years"
     }
   ],
   "guides": [

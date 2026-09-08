@@ -3,3 +3,4 @@ export { TopNav } from './TopNav';
 export { BottomNav } from './BottomNav';
 export { ModuleNav } from './ModuleNav';
 export type { ModuleNavItem } from './ModuleNav';
+export { RootLayout } from './RootLayout';

@@ -63,7 +63,8 @@ export interface VegetableGuideCategory {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  // No icon field. Category icons are Lucide components and live in
+  // modules/vegetables/components/Guides/categoryIcons.ts.
 }
 
 export interface VegetableGuideIndex {

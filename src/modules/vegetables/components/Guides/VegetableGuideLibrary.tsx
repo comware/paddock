@@ -13,10 +13,20 @@
  * adapted to vegetables' category-grouped index rather than a flat table.
  */
 
+import { categoryIcon } from './categoryIcons';
 import { Spinner } from '@/components/shared';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createElement } from 'react';
 import type { VegetableGuideIndex } from '@/lib/guides/vegetable-types';
 import { GuideDetailModal } from './GuideDetailModal';
+
+/** The category's line icon, sized for a section heading. */
+function CategoryIcon({ category }: { category: string }) {
+  return createElement(categoryIcon(category), {
+    'aria-hidden': true,
+    className: 'w-5 h-5 shrink-0 text-slate-500 dark:text-slate-400',
+    strokeWidth: 1.75,
+  });
+}
 
 export function VegetableGuideLibrary() {
   const [index, setIndex] = useState<VegetableGuideIndex | null>(null);
@@ -115,7 +125,7 @@ export function VegetableGuideLibrary() {
       {categoriesWithMatches.map(({ category, guides }) => (
         <section key={category.id}>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-            <span>{category.icon}</span>
+            <CategoryIcon category={category.id} />
             {category.name}
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{category.description}</p>

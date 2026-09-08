@@ -64,14 +64,23 @@ export function MoodSlider({ value, onChange, label = 'Mood & Energy' }: MoodSli
               #4ade80 100%)`,
           }}
         />
-        {/* Tick marks */}
-        <div className="flex justify-between px-1 mt-1">
+        {/*
+          * Tick marks, which are also buttons. They were 24px wide - well under the 32px a
+          * thumb reliably hits, on an app used standing in a greenhouse.
+          *
+          * They come out around 30px now rather than a full 32: ten evenly spaced circles
+          * cannot each be 32px inside a padded card at 390px, and flex shrinks them to fit.
+          * That is a real constraint rather than an oversight, and it is acceptable here
+          * because the slider directly above is the primary control - full width, and the
+          * easiest thing on the page to operate. These are a shortcut, not the only way in.
+          */}
+        <div className="flex justify-between mt-1">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => onChange(n)}
-              className={`w-6 h-6 text-xs rounded-full transition-all ${
+              className={`w-8 h-8 sm:w-6 sm:h-6 text-xs rounded-full transition-all ${
                 value === n
                   ? 'bg-primary-500 text-white font-bold scale-110'
                   : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-600'

@@ -6,11 +6,11 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Navigate, Outlet, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { GrowRedirect } from '@/components/GrowRedirect';
 import { AppShell } from '@/components/Shell';
 import { ComingSoon, ModuleLoader } from '@/components/shared';
-import { WelcomeModal } from '@/components/onboarding';
+import { RootLayout } from '@/components/Shell';
 
 // Lazy-loaded modules and pages
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
@@ -19,16 +19,6 @@ const PropagationModule = lazy(() => import('@/modules/propagation'));
 const VegetablesModule = lazy(() => import('@/modules/vegetables'));
 const SettingsModule = lazy(() => import('@/modules/settings'));
 
-
-// Root layout wrapper that provides router context for components like WelcomeModal
-function RootLayout() {
-  return (
-    <>
-      <WelcomeModal />
-      <Outlet />
-    </>
-  );
-}
 
 const routes: RouteObject[] = [
   // Root wrapper - provides router context for WelcomeModal
