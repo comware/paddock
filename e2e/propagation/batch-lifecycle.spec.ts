@@ -45,7 +45,9 @@ test.describe('Propagation Batch Lifecycle', () => {
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
     await expect(page).toHaveURL(/\/microgreens/);
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -58,7 +60,7 @@ test.describe('Propagation Batch Lifecycle', () => {
     // ============================================
     // STEP 2: Navigate to Propagation and create station
     // ============================================
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await expect(page).toHaveURL(/\/propagation/);
     await expect(page.getByRole('heading', { name: 'Propagation Dashboard' })).toBeVisible({ timeout: 10000 });
 
@@ -144,7 +146,7 @@ test.describe('Propagation Batch Lifecycle', () => {
     await page.waitForLoadState('networkidle');
 
     // Navigate back to batches
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await page.getByRole('link', { name: /Batches/i }).click();
 
     // Rosemary batch should still exist
@@ -156,7 +158,9 @@ test.describe('Propagation Batch Lifecycle', () => {
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
     await expect(page).toHaveURL(/\/microgreens/);
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -166,7 +170,7 @@ test.describe('Propagation Batch Lifecycle', () => {
     await expect(page.locator('text="Full Form Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to Propagation
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
 
     // Create station first - navigate directly
     await page.goto('/propagation/stations');
@@ -241,7 +245,9 @@ test.describe('Propagation Batch Lifecycle', () => {
     // Setup: Create site, station, and multiple batches
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -306,7 +312,9 @@ test.describe('Propagation Batch Lifecycle', () => {
     // Setup: Create site, station, batch
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 

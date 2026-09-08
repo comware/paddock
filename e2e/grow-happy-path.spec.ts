@@ -64,8 +64,11 @@ test.describe('Grow Module Happy Path', () => {
     // Wait for modal to close and verify site was created (use first() for multiple matches)
     await expect(page.locator(`text="${siteName}"`).first()).toBeVisible({ timeout: 10000 });
 
-    // 3. Click on the site card to navigate to it
-    await page.getByText(siteName).first().click();
+    // 3. Click on the site card to navigate to it.
+    // SiteCard uses a stretched-link: an absolutely positioned button carrying
+    // aria-label="Open {name}" sits beneath the content, so the visible name span is not the
+    // click target and resolves as unstable. Go through the accessible control instead.
+    await page.getByRole('button', { name: `Open ${siteName}` }).dispatchEvent('click');
     await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // 4. Navigate to Trays tab
@@ -73,7 +76,9 @@ test.describe('Grow Module Happy Path', () => {
     await expect(page).toHaveURL(/\/trays/);
 
     // 5. Create a new tray
-    await page.getByRole('button', { name: /New Tray/i }).click();
+    // Two "New tray" controls render once the site has trays - one in the header, one in the
+    // list - so this must not be a strict single-element match.
+    await page.getByRole('button', { name: /New Tray/i }).first().click();
     await page.waitForTimeout(500);
 
     // Fill in tray form - select a variety from the dropdown
@@ -106,8 +111,10 @@ test.describe('Grow Module Happy Path', () => {
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
     await expect(page).toHaveURL(/\/microgreens/);
 
-    // Open new site form
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Open new site form. Same move as the workflow test above: creation lives on the
+    // manage page now, and "Add Site" is only the dialog's submit label.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);

@@ -108,7 +108,7 @@ test.describe.skip('Tray Lifecycle', () => {
     await page.waitForTimeout(500);
 
     // Navigate to Trays tab to see the tray card
-    await page.getByRole('link', { name: '🌱 Trays' }).click();
+    await page.getByRole('link', { name: 'Trays' }).click();
     await page.waitForTimeout(500);
 
     // Verify tray was created - look for it in the list
@@ -126,7 +126,7 @@ test.describe.skip('Tray Lifecycle', () => {
     // ============================================
 
     // Find and click the "Move to Light" button on the tray card (don't click the card itself)
-    const moveToLightButton = page.getByRole('button', { name: '💡 Move to Light' });
+    const moveToLightButton = page.getByRole('button', { name: 'Move to Light' });
 
     if (await moveToLightButton.isVisible()) {
       await moveToLightButton.click();
@@ -155,7 +155,7 @@ test.describe.skip('Tray Lifecycle', () => {
     await page.waitForTimeout(500);
 
     // Look for the harvest button (🌿 Harvest icon)
-    const harvestButton = page.getByRole('button', { name: /🌿.*harvest/i });
+    const harvestButton = page.getByRole('button', { name: /harvest/i });
 
     if (await harvestButton.isVisible({ timeout: 3000 }).catch(() => false)) {
       await harvestButton.click();
