@@ -212,6 +212,7 @@ test.describe('Site Management', () => {
     await page.getByRole('navigation').getByRole('link', { name: /Microgreens/i }).click();
     await page.goto('/microgreens/sites/manage');
     await page.getByRole('button', { name: 'Open Pea Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
 
     // Sunflower tray should NOT be visible in Pea Site

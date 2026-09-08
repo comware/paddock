@@ -114,6 +114,7 @@ test.describe('Analytics Dashboard', () => {
     await expect(page.locator('text="Tab Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     await page.getByRole('button', { name: 'Open Tab Test Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: 'Analytics' }).click();
 
     // By Variety should be selected by default (active styling)
@@ -159,6 +160,7 @@ test.describe('Analytics Dashboard', () => {
     await expect(page.locator('text="Trends Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     await page.getByRole('button', { name: 'Open Trends Test Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: 'Analytics' }).click();
 
     // Switch to Trends view
@@ -225,6 +227,7 @@ test.describe('Analytics Dashboard', () => {
 
     // Enter site and create a tray
     await page.getByRole('button', { name: 'Open Full Analytics Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
     // Land on the trays route before reaching for its controls. Without this the New tray
     // click can fire mid-navigation and be swallowed, and the failure then surfaces much

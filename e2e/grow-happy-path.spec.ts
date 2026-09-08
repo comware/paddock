@@ -79,7 +79,7 @@ test.describe('Grow Module Happy Path', () => {
     // Two "New tray" controls render once the site has trays - one in the header, one in the
     // list - so this must not be a strict single-element match.
     await page.getByRole('button', { name: /New Tray/i }).first().click();
-    await page.waitForTimeout(500);
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
 
     // Fill in tray form - select a variety from the dropdown
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
