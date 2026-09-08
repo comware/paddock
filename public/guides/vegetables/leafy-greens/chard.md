@@ -31,7 +31,7 @@ Sow too early into cold soil below about 10°C and germination is very slow or f
 
 Chard suits either direct sowing or transplanting from punnets — transplants are useful if you want a head start in a shoulder season, while direct sowing is simpler in the main spring and autumn windows. Sow at 15 mm, the deepest of any crop in this batch, reflecting the larger seed cluster.
 
-Space plants 25 cm apart in rows 40 cm apart — chard grows big, with broad leaves and thick stalks, and crowded plants produce noticeably thinner stalks and smaller leaves as they compete for light and root room. This isn't a crop you can pack in tightly and expect full-size results.
+Space plants 25 cm apart in rows 50 cm apart — chard grows big, with broad leaves and thick stalks, and crowded plants produce noticeably thinner stalks and smaller leaves as they compete for light and root room. This isn't a crop you can pack in tightly and expect full-size results.
 
 ## Growing On
 

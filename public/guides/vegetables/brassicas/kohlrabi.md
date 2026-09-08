@@ -31,7 +31,7 @@ Sow too early into cold soil and germination is slow and uneven, giving the crop
 
 Kohlrabi can be direct sown or started in trays and transplanted — both work well, which is unusual among the heading brassicas in this family. Direct sowing suits kohlrabi's fast cycle and avoids any transplant shock that could check its growth right when speed matters most; starting in trays can be useful if you want a head start on the season or need to fit it into a bed that's not free yet. Sow 10 mm deep either way, and keep the soil consistently moist for even, fast germination.
 
-Space plants 20 cm apart with 35 cm between rows — noticeably tighter than the heading brassicas, since kohlrabi's bulb stays compact and doesn't need the wide leaf canopy that broccoli or cauliflower rely on. Crowd it further than this recommended spacing, though, and the bulbs stay smaller and the crop takes longer to size up, working against the whole point of growing a fast crop.
+Space plants 15 cm apart with 35 cm between rows — noticeably tighter than the heading brassicas, since kohlrabi's bulb stays compact and doesn't need the wide leaf canopy that broccoli or cauliflower rely on. Crowd it further than this recommended spacing, though, and the bulbs stay smaller and the crop takes longer to size up, working against the whole point of growing a fast crop.
 
 ## Growing On
 

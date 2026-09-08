@@ -29,9 +29,9 @@ Sow or transplant too early and expose the young plant to a cold snap, and it ca
 
 ## Sowing
 
-Romanesco is grown as a transplant for the same reason as cauliflower — it needs a strong, unchecked start in controlled conditions before the ground is reliably warm enough and stable enough to support it. Sow 10 mm deep and keep the mix evenly moist throughout, since even a brief dry-out at the seedling stage sets up a check that can echo through the whole growing cycle. Seedlings are usually ready to transplant at five to six weeks.
+Romanesco is grown as a transplant for the same reason as cauliflower — it needs a strong, unchecked start in controlled conditions before the ground is reliably warm enough and stable enough to support it. Sow 6 mm deep and keep the mix evenly moist throughout, since even a brief dry-out at the seedling stage sets up a check that can echo through the whole growing cycle. Seedlings are usually ready to transplant at five to six weeks.
 
-Space plants 50 cm apart with 60 cm between rows, matching cauliflower's spacing needs. Romanesco builds a substantial leaf canopy to support and shade its single head, and crowding cuts into both the size of that canopy and the airflow around the lower leaves — airflow that matters even more here than with other brassicas, since a stressed, humid canopy is exactly the kind of check this fussier crop can't easily shake off.
+Space plants 60 cm apart with 75 cm between rows, a little wider than cauliflower. Romanesco builds a substantial leaf canopy to support and shade its single head, and crowding cuts into both the size of that canopy and the airflow around the lower leaves — airflow that matters even more here than with other brassicas, since a stressed, humid canopy is exactly the kind of check this fussier crop can't easily shake off.
 
 ## Growing On
 

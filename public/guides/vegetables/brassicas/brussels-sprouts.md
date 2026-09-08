@@ -31,7 +31,7 @@ This is a crop where getting the timing right matters more than almost any other
 
 Brussels sprouts are grown as a transplant because the long total time in the ground makes it worth giving the plant a strong, controlled start in trays before committing bed space to it for months. Sow 10 mm deep and keep evenly moist; seedlings are usually ready to go out at five to six weeks.
 
-Space plants 60 cm apart with 70 cm between rows — more room than any other brassica here, and for good reason. Brussels sprouts grow tall and need real room to develop a sturdy stem and a full leaf canopy over a long season; crowd them and you get thin, weak stalks, competition for light and nutrients over months rather than weeks, and sprouts that stay small and loose instead of tightening up. Given how long this crop occupies the bed, the spacing cost of getting it wrong compounds for the entire season.
+Space plants 60 cm apart with 100 cm between rows — more room than any other brassica here, and for good reason. Brussels sprouts grow tall and need real room to develop a sturdy stem and a full leaf canopy over a long season; crowd them and you get thin, weak stalks, competition for light and nutrients over months rather than weeks, and sprouts that stay small and loose instead of tightening up. Given how long this crop occupies the bed, the spacing cost of getting it wrong compounds for the entire season.
 
 ## Growing On
 

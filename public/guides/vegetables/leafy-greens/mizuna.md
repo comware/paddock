@@ -29,7 +29,7 @@ Sow too early into cold soil and germination just slows rather than fails. Sow t
 
 Mizuna suits either direct sowing or transplanting — direct sowing is simpler and cheaper for a cut-and-come-again crop, while transplants can be useful for an early head start. Sow shallow at 5 mm.
 
-Space plants 15 cm apart in rows 25 cm apart for full-size plants, though like rocket it's commonly grown denser as a baby-leaf crop for repeated light cutting. Crowding mostly costs you leaf size rather than causing real problems, though very dense, poorly ventilated plantings are more prone to fungal issues in humid weather.
+Space plants 30 cm apart in rows 45 cm apart for full-size plants, though like rocket it's commonly grown denser as a baby-leaf crop for repeated light cutting. Crowding mostly costs you leaf size rather than causing real problems, though very dense, poorly ventilated plantings are more prone to fungal issues in humid weather.
 
 ## Growing On
 

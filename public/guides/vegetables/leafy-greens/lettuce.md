@@ -29,7 +29,7 @@ Sow too early into cold, wet winter soil and germination is slow and patchy, wit
 
 ## Sowing
 
-Lettuce works either direct-sown or transplanted from punnets, and the choice mostly comes down to convenience — transplants give you a head start and let you dodge a slug-heavy establishment period, while direct sowing suits loose-leaf types you'll thin as you go. Sow at 5 mm, barely covering the seed, since lettuce needs some light to germinate well.
+Lettuce works either direct-sown or transplanted from punnets, and the choice mostly comes down to convenience — transplants give you a head start and let you dodge a slug-heavy establishment period, while direct sowing suits loose-leaf types you'll thin as you go. Sow at 3 mm, barely covering the seed, since lettuce needs some light to germinate well.
 
 Space plants 25 cm apart in rows 30 cm apart for full heads; crowding produces smaller, looser heads and holds humidity around the lower leaves, which is where fungal rots tend to start.
 

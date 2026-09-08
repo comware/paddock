@@ -31,7 +31,7 @@ Sow or transplant too early and a cold snap while the plant is small can trigger
 
 Cauliflower is raised as a transplant because it needs a strong, unchecked start before it goes into the ground, and starting in trays lets you control moisture and temperature far more tightly than you can in open soil early in the season. Sow 10 mm deep and keep the mix evenly moist without ever letting it dry out — this is the first point in the crop's life where a check can cost you the final curd. Seedlings are usually ready to transplant at five to six weeks, and should go out before they become root-bound in their cell or punnet.
 
-Space plants 50 cm apart with 60 cm between rows, slightly more room than broccoli, because cauliflower plants build a larger leaf canopy relative to their curd size and need it to protect and feed that single curd properly. Crowded plants produce noticeably smaller curds and are more prone to disease from poor airflow, since the dense canopy holds humidity around the lower leaves.
+Space plants 60 cm apart with 60 cm between rows, more room than broccoli, because cauliflower plants build a larger leaf canopy relative to their curd size and need it to protect and feed that single curd properly. Crowded plants produce noticeably smaller curds and are more prone to disease from poor airflow, since the dense canopy holds humidity around the lower leaves.
 
 ## Growing On
 

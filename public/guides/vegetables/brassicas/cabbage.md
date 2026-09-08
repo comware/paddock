@@ -31,7 +31,7 @@ Sow or transplant too early into cold soil and growth stalls, leaving a small, s
 
 Cabbage is grown as a transplant because it gives the plant a strong head start before the bed is ready, letting you raise seedlings in controlled conditions while the soil outside is still too cold or too occupied by a previous crop. Sow 10 mm deep into trays and keep evenly moist; seedlings are usually ready to transplant at four to six weeks with several true leaves.
 
-Space plants 40 cm apart with 50 cm between rows. Cabbage is more tolerant of tight spacing than cauliflower or brussels sprouts, but crowd it too much and heads come in smaller and looser, with more disease pressure from reduced airflow around the lower leaves — a particular risk in humid weather, when fungal leaf spots and rots take hold fastest in a dense, poorly ventilated planting.
+Space plants 50 cm apart with 50 cm between rows. Cabbage is more tolerant of tight spacing than cauliflower or brussels sprouts, but crowd it too much and heads come in smaller and looser, with more disease pressure from reduced airflow around the lower leaves — a particular risk in humid weather, when fungal leaf spots and rots take hold fastest in a dense, poorly ventilated planting.
 
 ## Growing On
 
