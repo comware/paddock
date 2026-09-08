@@ -29,7 +29,7 @@ export default defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: process.env.CI ? 'http://localhost:4173' : 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -50,11 +50,23 @@ export default defineConfig({
     // },
   ],
 
-  // Start dev server before running tests
+  /**
+   * CI tests the built app; local development tests the dev server.
+   *
+   * On CI this ran against `npm run dev`, and that is most of why the suite was unstable
+   * there. Vite's dev server transforms modules on demand, so the first visit to a route
+   * compiles it - on a cold runner, every run pays that, and it lands inside whichever test
+   * happens to reach the route first. Locally the cache is warm after the first run, which
+   * is exactly why these tests took four seconds here and blew a sixty second budget there.
+   *
+   * `vite preview` serves the production build: no on-demand transform, and it exercises what
+   * actually ships, including the service worker. Dev server is kept locally for the fast
+   * feedback loop and HMR.
+   */
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: process.env.CI ? 'npm run build && npm run preview' : 'npm run dev',
+    url: process.env.CI ? 'http://localhost:4173' : 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: 180 * 1000,
   },
 });
