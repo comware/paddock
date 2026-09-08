@@ -188,6 +188,10 @@ test.describe('Site Management', () => {
     await page.getByRole('button', { name: 'Open Sunflower Site' }).dispatchEvent('click');
     await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
+    // Land on the trays route before reaching for its controls. Without this the New tray
+    // click can fire mid-navigation and be swallowed, and the failure then surfaces much
+    // later as a dialog that never opens - which reads as slowness and is not.
+    await expect(page).toHaveURL(/\/trays/);
     await page.getByRole('button', { name: /New Tray/i }).first().click();
 
     // Wait on the dialog itself rather than a fixed 500ms. The sleep was enough on a dev
