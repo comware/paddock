@@ -45,7 +45,9 @@ test.describe('Station Management', () => {
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
     await expect(page).toHaveURL(/\/microgreens/);
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -58,7 +60,7 @@ test.describe('Station Management', () => {
     // ============================================
     // STEP 2: Navigate to Propagation Stations
     // ============================================
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await expect(page).toHaveURL(/\/propagation/);
 
     await page.goto('/propagation/stations');
@@ -126,7 +128,9 @@ test.describe('Station Management', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -169,7 +173,9 @@ test.describe('Station Management', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -230,7 +236,9 @@ test.describe('Station Management', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -290,7 +298,9 @@ test.describe('Station Management', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -352,7 +362,9 @@ test.describe('Station Management', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 

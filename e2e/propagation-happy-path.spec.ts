@@ -42,7 +42,9 @@ test.describe('Propagation Module Happy Path', () => {
     await expect(page).toHaveURL(/\/microgreens/);
 
     // Create a site
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -53,14 +55,14 @@ test.describe('Propagation Module Happy Path', () => {
     await expect(page.locator('text="Main Site"').first()).toBeVisible({ timeout: 10000 });
 
     // 1. Now navigate to Propagation module
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await expect(page).toHaveURL(/\/propagation/);
 
     // Should see the dashboard heading
     await expect(page.getByRole('heading', { name: 'Propagation Dashboard' })).toBeVisible({ timeout: 10000 });
 
     // 2. Navigate to stations page and create a station
-    await page.getByRole('button', { name: '# Stations' }).click();
+    await page.getByRole('button', { name: 'Stations', exact: true }).click();
     await expect(page).toHaveURL(/\/propagation\/stations/);
 
     await page.getByRole('button', { name: /New Station/i }).click();
@@ -83,7 +85,7 @@ test.describe('Propagation Module Happy Path', () => {
     await expect(page.locator(`text="${stationName}"`).first()).toBeVisible({ timeout: 10000 });
 
     // 3. Navigate to batches page (not dashboard) to create a batch
-    await page.getByRole('link', { name: /📋.*Batches/i }).click();
+    await page.getByRole('link', { name: /Batches/i }).click();
     await expect(page).toHaveURL(/\/propagation\/batches/);
 
     // Click "New Batch" button on the batches page (this opens a modal)
@@ -122,8 +124,8 @@ test.describe('Propagation Module Happy Path', () => {
     await expect(page.locator('text=Lavender').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to stations to verify station persists
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
-    await page.getByRole('button', { name: '# Stations' }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
+    await page.getByRole('button', { name: 'Stations', exact: true }).click();
     await expect(page.locator(`text="${stationName}"`).first()).toBeVisible({ timeout: 10000 });
   });
 
@@ -132,7 +134,9 @@ test.describe('Propagation Module Happy Path', () => {
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
     await expect(page).toHaveURL(/\/microgreens/);
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -142,11 +146,11 @@ test.describe('Propagation Module Happy Path', () => {
     await expect(page.locator('text="Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to Propagation module
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await expect(page).toHaveURL(/\/propagation/);
 
     // Navigate to stations page
-    await page.getByRole('button', { name: '# Stations' }).click();
+    await page.getByRole('button', { name: 'Stations', exact: true }).click();
     await expect(page).toHaveURL(/\/propagation\/stations/);
 
     // Click new station button

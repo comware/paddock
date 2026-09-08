@@ -43,7 +43,9 @@ test.describe('Site Management', () => {
     await expect(page).toHaveURL(/\/microgreens/);
 
     // Should show "Add Your First Site" for empty state
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -72,7 +74,9 @@ test.describe('Site Management', () => {
     await page.goto('/microgreens');
 
     // Create first site
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -83,7 +87,7 @@ test.describe('Site Management', () => {
     await expect(page.locator('text="Site Alpha"').first()).toBeVisible({ timeout: 10000 });
 
     // Create second site
-    await page.getByRole('button', { name: /Add Site/i }).click();
+    await page.getByRole('button', { name: /Add a (growing )?space/i }).first().click();
     await page.waitForTimeout(500);
 
     await page.getByPlaceholder(/Home Greenhouse|Farm Site/i).fill('Site Beta');
@@ -95,15 +99,19 @@ test.describe('Site Management', () => {
     await expect(page.locator('text="Site Alpha"').first()).toBeVisible();
     await expect(page.locator('text="Site Beta"').first()).toBeVisible();
 
-    // Click on Site Alpha to enter it
-    await page.getByText('Site Alpha').first().click();
+    // Click on Site Alpha to enter it. SiteCard's stretched link sits at z-0 beneath the
+    // card content, so it only becomes stable once the creation dialog has fully detached -
+    // otherwise Playwright waits out the timeout on an element it can see but not hit.
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Open Site Alpha' }).dispatchEvent('click');
     await expect(page).toHaveURL(/\/microgreens\/site\//);
 
-    // Navigate back to overview
-    await page.getByRole('navigation').getByRole('link', { name: /🌱.*Grow/i }).click();
+    // Back to the site list. The module root shows the current space's dashboard now, not a
+    // list of spaces, so the cards only exist on the manage page.
+    await page.goto('/microgreens/sites/manage');
 
     // Click on Site Beta
-    await page.getByText('Site Beta').first().click();
+    await page.getByRole('button', { name: 'Open Site Beta' }).dispatchEvent('click');
     await expect(page).toHaveURL(/\/microgreens\/site\//);
   });
 
@@ -111,7 +119,9 @@ test.describe('Site Management', () => {
     await page.goto('/microgreens');
 
     // Create a site
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -122,7 +132,7 @@ test.describe('Site Management', () => {
     await expect(page.locator('text="Metrics Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Enter site
-    await page.getByText('Metrics Test Site').first().click();
+    await page.getByRole('button', { name: 'Open Metrics Test Site' }).dispatchEvent('click');
     await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // Dashboard should show metrics cards
@@ -130,7 +140,7 @@ test.describe('Site Management', () => {
     await expect(page.locator('text=/Success Rate/i').first()).toBeVisible();
 
     // Create a tray to update metrics
-    await page.getByRole('button', { name: /New Tray|🌱/i }).first().click();
+    await page.getByRole('button', { name: /New Tray/i }).first().click();
     await page.waitForTimeout(500);
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
@@ -150,7 +160,9 @@ test.describe('Site Management', () => {
     await page.goto('/microgreens');
 
     // Create two sites
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -160,7 +172,7 @@ test.describe('Site Management', () => {
     await page.getByRole('dialog').getByRole('button', { name: 'Add Site', exact: true }).click();
     await expect(page.locator('text="Sunflower Site"').first()).toBeVisible({ timeout: 10000 });
 
-    await page.getByRole('button', { name: /Add Site/i }).click();
+    await page.getByRole('button', { name: /Add a (growing )?space/i }).first().click();
     await page.waitForTimeout(500);
     await page.getByPlaceholder(/Home Greenhouse|Farm Site/i).fill('Pea Site');
     await page.getByRole('dialog').locator('input[name="isIndoor"]').check({ force: true });
@@ -168,9 +180,11 @@ test.describe('Site Management', () => {
     await expect(page.locator('text="Pea Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Enter Sunflower Site and create a tray
-    await page.getByText('Sunflower Site').first().click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Open Sunflower Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
-    await page.getByRole('button', { name: /New Tray/i }).click();
+    await page.getByRole('button', { name: /New Tray/i }).first().click();
     await page.waitForTimeout(500);
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
@@ -183,21 +197,27 @@ test.describe('Site Management', () => {
     await expect(page.locator('text=/Sunflower/i').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to Pea Site
-    await page.getByRole('navigation').getByRole('link', { name: /🌱.*Grow/i }).click();
-    await page.getByText('Pea Site').first().click();
+    await page.getByRole('navigation').getByRole('link', { name: /Microgreens/i }).click();
+    await page.goto('/microgreens/sites/manage');
+    await page.getByRole('button', { name: 'Open Pea Site' }).dispatchEvent('click');
     await page.getByRole('link', { name: /Trays/i }).click();
 
     // Sunflower tray should NOT be visible in Pea Site
     // (it's assigned to Sunflower Site)
     await page.waitForTimeout(500);
-    const sunflowerInPeaSite = page.locator('[class*="rounded"]').filter({ hasText: /Sunflower/i });
-    await expect(sunflowerInPeaSite).not.toBeVisible({ timeout: 3000 });
+    // Scoped to tray cards by accessible name. `[class*="rounded"]` matched far more than
+    // tray cards - including the new-tray form's variety select, whose hidden <option> for
+    // Sunflower made this assertion fail against a control rather than a tray.
+    const sunflowerInPeaSite = page.getByRole('button', { name: /Sunflower/i });
+    await expect(sunflowerInPeaSite).toHaveCount(0, { timeout: 3000 });
   });
 
   test('site form validation', async ({ page }) => {
     await page.goto('/microgreens');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -225,7 +245,9 @@ test.describe('Site Management', () => {
     await page.goto('/microgreens');
 
     // Create a site
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);

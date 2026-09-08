@@ -45,7 +45,9 @@ test.describe('Mother Plant Cutting Workflow', () => {
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
     await expect(page).toHaveURL(/\/microgreens/);
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -58,7 +60,7 @@ test.describe('Mother Plant Cutting Workflow', () => {
     // ============================================
     // STEP 2: Navigate to Propagation and create station
     // ============================================
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await expect(page).toHaveURL(/\/propagation/);
 
     // Create station first (needed for batches)
@@ -152,7 +154,7 @@ test.describe('Mother Plant Cutting Workflow', () => {
     await page.waitForLoadState('networkidle');
 
     // Navigate back to mother plants
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await page.getByRole('link', { name: /Mother Plants/i }).click();
 
     // Mother plant should still exist
@@ -163,7 +165,9 @@ test.describe('Mother Plant Cutting Workflow', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -173,7 +177,7 @@ test.describe('Mother Plant Cutting Workflow', () => {
     await expect(page.locator('text="Health Check Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to Propagation Mother Plants
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await page.getByRole('link', { name: /Mother Plants/i }).click();
 
     // Register a mother plant
@@ -231,7 +235,9 @@ test.describe('Mother Plant Cutting Workflow', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -241,7 +247,7 @@ test.describe('Mother Plant Cutting Workflow', () => {
     await expect(page.locator('text="Status Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to Propagation Mother Plants
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await page.getByRole('link', { name: /Mother Plants/i }).click();
 
     // Register a mother plant
@@ -292,7 +298,9 @@ test.describe('Mother Plant Cutting Workflow', () => {
     // Create prerequisite site
     await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // Creation moved to the manage page; "Add Site" is only the dialog's submit label now.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page.getByRole('button', { name: /Add a (growing )?space/i }).first();
     await addSiteButton.click();
     await page.waitForTimeout(500);
 
@@ -302,7 +310,7 @@ test.describe('Mother Plant Cutting Workflow', () => {
     await expect(page.locator('text="Filter Mother Test Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate to Mother Plants
-    await page.getByRole('navigation').getByRole('link', { name: /🪴.*Propagation/i }).click();
+    await page.getByRole('navigation').getByRole('link', { name: /Propagation/i }).click();
     await page.getByRole('link', { name: /Mother Plants/i }).click();
 
     // Register first mother plant - Basil
