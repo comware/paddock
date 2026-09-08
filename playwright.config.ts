@@ -15,6 +15,17 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
+
+  /**
+   * Playwright's default is 30s, which is a dev-machine figure. A CI runner is slower at
+   * every step these tests depend on - seeding 23 trays into IndexedDB on boot, loading the
+   * variety list before the new-tray select is enabled - and two tests were exceeding it
+   * there while passing locally every time. They were reported as flaky because they passed
+   * on retry, which is the same slowness wearing a friendlier label.
+   *
+   * Raised on CI only, so a genuine hang still fails fast in local development.
+   */
+  timeout: process.env.CI ? 60_000 : 30_000,
   reporter: 'html',
 
   use: {
