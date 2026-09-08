@@ -72,11 +72,53 @@ describe('vegetable guide index', () => {
     }
   });
 
-  it('leaves no guide on disk out of the index', () => {
+  /**
+   * Prose that is not a crop guide, and so has no index entry to agree with.
+   *
+   * The getting-started track is six pages about growing rather than about a crop - taking a
+   * soil temperature, preparing a bed, what bolting is. They carry none of the fields this
+   * index exists to hold, so they are listed in the library component rather than in
+   * index.json, and the orphan check has to know that. Propagation's equivalent test draws
+   * the same line for the same reason.
+   */
+  function isCropGuide(key: string): boolean {
+    const marker = '/public/guides/vegetables/';
+    const rel = key.slice(key.indexOf(marker) + marker.length);
+    return !rel.startsWith('getting-started/') && !rel.startsWith('_');
+  }
+
+  it('leaves no crop guide on disk out of the index', () => {
     const indexed = new Set(index.guides.map((g) => `/public/guides/vegetables/${g.file}`));
-    const orphans = Object.keys(markdownByPath).filter(
-      (k) => !Array.from(indexed).some((i) => k.endsWith(i))
-    );
-    expect(orphans, 'guides on disk that the index never lists').toEqual([]);
+    const orphans = Object.keys(markdownByPath)
+      .filter(isCropGuide)
+      .filter((k) => !Array.from(indexed).some((i) => k.endsWith(i)));
+    expect(orphans, 'crop guides on disk that the index never lists').toEqual([]);
+  });
+
+  /**
+   * The getting-started track is reachable.
+   *
+   * These six files are referenced only by a hardcoded list in VegetableGuideLibrary, not by
+   * index.json, so nothing else would notice a rename or a deletion until a reader clicked
+   * the card and got a blank modal. The microgreens and propagation tracks have the same
+   * exposure and no such test; this is the one place it is cheap to close.
+   */
+  it('has every getting-started page the library links to', () => {
+    const expected = [
+      'concepts',
+      'first-bed',
+      'beds-and-soil',
+      'equipment',
+      'watering',
+      'troubleshooting',
+    ];
+    const onDisk = Object.keys(markdownByPath).filter((k) => !isCropGuide(k));
+    for (const id of expected) {
+      const suffix = `/public/guides/vegetables/getting-started/${id}.md`;
+      expect(
+        onDisk.some((k) => k.endsWith(suffix)),
+        `missing getting-started page: ${id}.md`
+      ).toBe(true);
+    }
   });
 });
