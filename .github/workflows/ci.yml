@@ -38,6 +38,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The build being green does not mean the service worker is installable. Workbox
+      # fetches every manifest entry at install, and one missing file fails the whole
+      # install - which does not degrade to online-only, it takes the PWA down. The
+      # strip-authoring-notes plugin deletes from dist/ after the manifest is written, so
+      # the two can drift apart without anything else noticing.
+      - name: Verify precache manifest
+        run: npm run verify:precache
+
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
