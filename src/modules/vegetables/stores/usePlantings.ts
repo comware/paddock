@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { db, vegDb, toKey, toId, withId, fkMatch, type VegPlanting } from '@/lib/db';
+import { db, vegDb, toKey, toId, withId, type VegPlanting } from '@/lib/db';
 
 export type PlantingStatus = VegPlanting['status'];
 
@@ -113,7 +113,7 @@ export const usePlantings = create<PlantingsState>((set, get) => ({
       // in a transaction, so a failure part-way through never leaves harvests deleted with
       // their planting still present (or vice versa).
       await db.transaction('rw', vegDb.harvests, vegDb.plantings, async () => {
-        await vegDb.harvests.where('plantingId').anyOf(fkMatch(id)).delete();
+        await vegDb.harvests.where('plantingId').equals(toId(id)).delete();
         await vegDb.plantings.delete(toKey(id));
       });
 

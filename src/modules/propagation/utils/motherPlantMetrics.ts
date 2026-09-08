@@ -7,7 +7,7 @@
  * Following patterns from stageHelpers.ts
  */
 
-import { propDb, fkMatch } from '@/lib/db';
+import { propDb, toId } from '@/lib/db';
 import type { PropBatch, MotherPlantMetrics, PropagationMethod } from '../types';
 
 // ============================================
@@ -46,7 +46,7 @@ export interface MotherPlantSummary {
 export async function getBatchesByMotherPlant(motherPlantId: string): Promise<PropBatch[]> {
   return propDb.batches
     .where('motherPlantId')
-    .anyOf(fkMatch(motherPlantId))
+    .equals(toId(motherPlantId))
     .toArray();
 }
 
@@ -56,7 +56,7 @@ export async function getBatchesByMotherPlant(motherPlantId: string): Promise<Pr
 export async function getTotalBatchesTaken(motherPlantId: string): Promise<number> {
   return propDb.batches
     .where('motherPlantId')
-    .anyOf(fkMatch(motherPlantId))
+    .equals(toId(motherPlantId))
     .count();
 }
 

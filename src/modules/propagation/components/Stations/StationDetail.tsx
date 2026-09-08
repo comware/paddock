@@ -15,7 +15,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useStations } from '../../stores/useStations';
 import { useBatches } from '../../stores/useBatches';
-import { propDb, fkMatch } from '@/lib/db';
+import { propDb, toId } from '@/lib/db';
 import type { PropStationLog } from '../../types';
 import { StationForm } from './StationForm';
 import { EnvironmentLogModal } from './EnvironmentLogModal';
@@ -68,7 +68,7 @@ export function StationDetail() {
       try {
         const logs = await propDb.stationLogs
           .where('stationId')
-          .anyOf(fkMatch(id))
+          .equals(toId(id))
           .reverse()
           .sortBy('date');
         setEnvironmentLogs(logs.slice(0, 20));
@@ -114,7 +114,7 @@ export function StationDetail() {
     if (!id) return;
     const logs = await propDb.stationLogs
       .where('stationId')
-      .anyOf(fkMatch(id))
+      .equals(toId(id))
       .reverse()
       .sortBy('date');
     setEnvironmentLogs(logs.slice(0, 20));

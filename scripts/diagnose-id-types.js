@@ -12,6 +12,11 @@
  *
  * So a string foreign key is CORRECT. What this looks for is a column holding a MIX.
  *
+ * As of schema version 16 the database normalises every foreign key to a string on upgrade,
+ * so a MIXED column should now be impossible. Running this is how you confirm that on a
+ * database this code has never seen - if it ever reports one, that is a bug worth hearing
+ * about rather than a migration worth writing.
+ *
  * Whether that has actually happened in your database is a question about your data, not
  * your code. This answers it. Nothing here writes, deletes, or migrates anything - it opens
  * the database read-only and counts.

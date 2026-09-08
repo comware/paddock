@@ -9,7 +9,7 @@
  */
 
 import { create } from 'zustand';
-import { propDb, fkMatch, toKey, toId, withId } from '@/lib/db';
+import { propDb, toKey, toId, withId } from '@/lib/db';
 import type {
   PropBatchCost,
   PropBatchCostWithSupply,
@@ -179,7 +179,7 @@ export const useBatchCosts = create<BatchCostsState>((set, get) => ({
     try {
       // Ids are strings above the database boundary; see src/lib/db/keys.ts.
       const batchCosts = (
-        await propDb.batchCosts.where('batchId').anyOf(fkMatch(batchId)).toArray()
+        await propDb.batchCosts.where('batchId').equals(toId(batchId)).toArray()
       ).map(withId);
 
       const { rawCosts, costsByBatch: _costsByBatch } = get();

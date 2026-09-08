@@ -8,7 +8,7 @@
  */
 
 import { create } from 'zustand';
-import { db, vegDb, toKey, toId, withId, fkMatch, type VegHarvest } from '@/lib/db';
+import { db, vegDb, toKey, toId, withId, type VegHarvest } from '@/lib/db';
 import { LEGAL_TRANSITIONS, type PlantingStatus } from './usePlantings';
 import { summariseHarvests, type HarvestSummary } from '../utils/harvestTotals';
 
@@ -59,7 +59,7 @@ export const useHarvests = create<HarvestsState>((set, get) => ({
   loadForPlanting: async (plantingId) => {
     set({ isLoading: true, error: null });
     try {
-      const rows = await vegDb.harvests.where('plantingId').anyOf(fkMatch(plantingId)).toArray();
+      const rows = await vegDb.harvests.where('plantingId').equals(toId(plantingId)).toArray();
       // Ids are strings above the database boundary; see src/lib/db/keys.ts.
       const harvests = rows.map(withId).sort((a, b) => a.date.getTime() - b.date.getTime());
       set({ harvests, isLoading: false });

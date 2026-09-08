@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { db, growDb, platformDb, propDb, plannerDb, vegDb } from '../schema';
+import { db, growDb, platformDb, propDb, vegDb } from '../schema';
 import Dexie from 'dexie';
 
 // Also import aiDb from schema (exported there but re-exported via index)
@@ -18,11 +18,11 @@ describe('PaddockDB Schema', () => {
     expect(db.name).toBe('Paddock');
   });
 
-  it('should be at schema version 15', () => {
-    expect(db.verno).toBe(15);
+  it('should be at schema version 18', () => {
+    expect(db.verno).toBe(18);
   });
 
-  it('should have all 28 expected tables', () => {
+  it('should have all 27 expected tables', () => {
     const tableNames = db.tables.map((t) => t.name).sort();
     const expectedTables = [
       // Grow module (11 tables)
@@ -43,7 +43,6 @@ describe('PaddockDB Schema', () => {
       'sites',
       'weatherHistory',
       // Planner (1 table)
-      'plannerEvents',
       // Propagation module (10 tables)
       'propMotherPlants',
       'propStations',
@@ -62,7 +61,7 @@ describe('PaddockDB Schema', () => {
     ].sort();
 
     expect(tableNames).toEqual(expectedTables);
-    expect(tableNames).toHaveLength(28);
+    expect(tableNames).toHaveLength(27);
   });
 
   it('should have compound indexes on propBatches for common query patterns', () => {
@@ -83,19 +82,6 @@ describe('PaddockDB Schema', () => {
     expect(indexKeyPaths).toContainEqual(['motherPlantId', 'stage']);
   });
 
-  it('should have compound indexes on plannerEvents', () => {
-    const eventsTable = db.tables.find((t) => t.name === 'plannerEvents');
-    expect(eventsTable).toBeDefined();
-
-    const indexKeyPaths = eventsTable!.schema.indexes.map((idx) => idx.keyPath);
-
-    // [siteId+scheduledDate] for calendar queries
-    expect(indexKeyPaths).toContainEqual(['siteId', 'scheduledDate']);
-    // [siteId+status] for dashboard pending events
-    expect(indexKeyPaths).toContainEqual(['siteId', 'status']);
-    // [siteId+eventType] for type filtering
-    expect(indexKeyPaths).toContainEqual(['siteId', 'eventType']);
-  });
 
   it('should have unique indexes where required', () => {
     // growVarietyConfigs should have unique name
@@ -168,15 +154,11 @@ describe('Convenience Exports', () => {
     expect(propDb.batchCosts).toBe(db.propBatchCosts);
     expect(propDb.speciesConfigs).toBe(db.propSpeciesConfigs);
   });
-
-  it('should export plannerDb with events table', () => {
-    expect(plannerDb.events).toBe(db.plannerEvents);
-  });
 });
 
 describe('version 11 platform extraction', () => {
-  it('is at schema version 15', () => {
-    expect(db.verno).toBe(15);
+  it('is at schema version 18', () => {
+    expect(db.verno).toBe(18);
   });
 
   it('exposes sites and weatherHistory as tables', () => {
@@ -215,8 +197,8 @@ describe('platform facade', () => {
 });
 
 describe('version 13 vegetables', () => {
-  it('is at schema version 15', () => {
-    expect(db.verno).toBe(15);
+  it('is at schema version 18', () => {
+    expect(db.verno).toBe(18);
   });
 
   it('exposes the three vegetable tables', () => {

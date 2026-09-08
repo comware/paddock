@@ -7,7 +7,7 @@
 
 import { create } from 'zustand';
 import { aiDb, type AIConversation, type AIMessage } from '@/lib/db/schema';
-import { toKey, toId, withId, fkMatch } from '@/lib/db/keys';
+import { toKey, toId, withId } from '@/lib/db/keys';
 import type { ChatMessage } from './types';
 
 interface ConversationsState {
@@ -96,7 +96,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
   deleteConversation: async (id: string) => {
     // Delete all messages first. FK read: conversationId may be stored numeric or
     // string, see src/lib/db/keys.ts.
-    await aiDb.messages.where('conversationId').anyOf(fkMatch(id)).delete();
+    await aiDb.messages.where('conversationId').equals(toId(id)).delete();
     // Then delete the conversation (use numeric key for Dexie)
     await aiDb.conversations.delete(toKey(id));
 
@@ -126,7 +126,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
     // or string, see src/lib/db/keys.ts.
     const messageCount = await aiDb.messages
       .where('conversationId')
-      .anyOf(fkMatch(conversationId))
+      .equals(toId(conversationId))
       .count();
 
     const conversation = await aiDb.conversations.get(toKey(conversationId));
@@ -160,7 +160,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
     const messages = (
       await aiDb.messages
         .where('conversationId')
-        .anyOf(fkMatch(conversationId))
+        .equals(toId(conversationId))
         .reverse()
         .limit(1)
         .toArray()
@@ -177,7 +177,7 @@ export const useConversationsStore = create<ConversationsState>((set, get) => ({
     // FK read: conversationId may be stored numeric or string, see src/lib/db/keys.ts.
     const messages = await aiDb.messages
       .where('conversationId')
-      .anyOf(fkMatch(conversationId))
+      .equals(toId(conversationId))
       .sortBy('createdAt');
 
     return messages.map((m) => ({

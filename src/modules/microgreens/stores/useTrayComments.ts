@@ -6,7 +6,7 @@
  */
 
 import { create } from 'zustand';
-import { growDb, toKey, toId, withId, fkMatch, type GrowTrayComment } from '@/lib/db';
+import { growDb, toKey, toId, withId, type GrowTrayComment } from '@/lib/db';
 
 // ============================================
 // TYPES
@@ -46,7 +46,7 @@ export const useTrayComments = create<TrayCommentsState>((set, get) => ({
       const comments = (
         await growDb.trayComments
           .where('trayId')
-          .anyOf(fkMatch(trayId))
+          .equals(toId(trayId))
           .sortBy('createdAt')
       ).map(withId);
 

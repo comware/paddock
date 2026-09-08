@@ -7,7 +7,7 @@
  */
 
 import { create } from 'zustand';
-import { vegDb, toKey, toId, withId, fkMatch, type VegBed } from '@/lib/db';
+import { vegDb, toKey, toId, withId, type VegBed } from '@/lib/db';
 
 export interface BedsState {
   beds: VegBed[];
@@ -81,7 +81,7 @@ export const useBeds = create<BedsState>((set, get) => ({
       // (useTrays.deleteTray) deleting the parent leaves its children orphaned - a tray's
       // comments outlive the tray. That pattern is not repeated here: a bed with plantings
       // still in it refuses to delete rather than silently detaching them from their bed.
-      const referencing = await vegDb.plantings.where('bedId').anyOf(fkMatch(id)).count();
+      const referencing = await vegDb.plantings.where('bedId').equals(toId(id)).count();
       if (referencing > 0) {
         set({
           error: `Cannot delete this bed: ${referencing} planting${referencing === 1 ? '' : 's'} still reference it.`,

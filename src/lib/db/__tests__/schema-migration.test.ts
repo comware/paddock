@@ -9,7 +9,7 @@
  * test while silently destroying every user's sites on upgrade.
  *
  * This test seeds a real version-10 'Paddock' database (the pre-extraction shape), then
- * imports schema.ts fresh so that opening its `db` singleton runs the actual 11 -> 15
+ * imports schema.ts fresh so that opening its `db` singleton runs the actual 11 -> 18
  * upgrade chain against that data. So this test now asserts the originals are GONE,
  * dropped by versions 14 and 15 once the copy had been verified against real data.
  */
@@ -92,7 +92,7 @@ describe('the real migration chain in schema.ts', () => {
     await Dexie.delete('Paddock');
   });
 
-  it('upgrades a version 10 database and carries its data through the real 11-15 chain', async () => {
+  it('upgrades a version 10 database and carries its data through the real 11-18 chain', async () => {
     // 1. Build a real v10 'Paddock' database with the pre-extraction tables and seed it.
     const seedDb = new Dexie('Paddock');
     declareV10Schema(seedDb);
@@ -168,11 +168,18 @@ describe('the real migration chain in schema.ts', () => {
     expect(site?.id).toBe(42);
     expect(site?.name).toBe('Home Greenhouse');
 
-    // 5b. The weather row survived with its siteId intact.
+    // 5b. The weather row survived, and its siteId is now the STRING '42'.
+    //
+    // It was seeded as the number 42, which is what a pre-boundary write looked like.
+    // Version 16 normalises every foreign key to a string, so the stores can query with a
+    // plain .equals() instead of asking for both forms. This asserts the rewrite happened -
+    // querying for the number now finds nothing, which is the whole point.
     const rawWeatherHistory = db.table<GrowWeatherHistory>('weatherHistory');
-    const weatherRows = await rawWeatherHistory.where('siteId').equals(42).toArray();
+    expect(await rawWeatherHistory.where('siteId').equals(42).count()).toBe(0);
+
+    const weatherRows = await rawWeatherHistory.where('siteId').equals('42').toArray();
     expect(weatherRows).toHaveLength(1);
-    expect(weatherRows[0].siteId).toBe(42);
+    expect(weatherRows[0].siteId).toBe('42');
     expect(weatherRows[0].temperature).toBe(18.5);
 
     // 5c. growSites and growWeatherHistory are GONE.

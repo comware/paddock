@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toKey, toId, withId, fkMatch } from '../keys';
+import { toKey, toId, withId } from '../keys';
 
 describe('toKey', () => {
   it('converts a string id to a numeric key', () => {
@@ -56,13 +56,3 @@ describe('withId', () => {
   });
 });
 
-describe('fkMatch', () => {
-  it('returns both key forms', () => {
-    expect(fkMatch('7')).toEqual([7, '7']);
-    expect(fkMatch(7)).toEqual([7, '7']);
-  });
-
-  it('throws on an id that is not a key, like toKey does', () => {
-    expect(() => fkMatch('abc')).toThrow(/Not a database key/);
-  });
-});

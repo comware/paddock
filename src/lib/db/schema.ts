@@ -9,7 +9,7 @@
 
 import Dexie, { type Table } from 'dexie';
 
-import { copyTableRows, assertRowsCopied } from './migrations';
+import { copyTableRows, assertRowsCopied, normaliseForeignKeys } from './migrations';
 
 // Import propagation types
 import type {
@@ -410,7 +410,6 @@ class PaddockDB extends Dexie {
   // now - but the accessors go, so nothing can reach for a store that is not there.
 
   // Planner module tables
-  plannerEvents!: Table<PlannerEvent>;
 
   // Propagation module tables
   propMotherPlants!: Table<PropMotherPlant>;
@@ -604,6 +603,46 @@ class PaddockDB extends Dexie {
       growSites: null,
       growWeatherHistory: null,
     });
+
+    /*
+     * Normalise foreign keys, so the stores can stop querying for two forms.
+     *
+     * Every foreign key is meant to be a string. Rows written before that boundary existed
+     * could hold a number instead, so the stores queried with `fkMatch` - `.anyOf([number,
+     * string])` - to catch either. That tolerance was insurance against data nobody had
+     * measured. It has now been measured, and this removes the reason to carry it: rewrite
+     * anything numeric once, and `.equals()` is correct from here on.
+     *
+     * On a database that was already consistent - which is what the diagnostic reported -
+     * this rewrites nothing and costs one pass.
+     */
+    this.version(16).upgrade(async (tx) => {
+      await normaliseForeignKeys(tx);
+    });
+
+    /*
+     * Retiring the planner's table, in the same two steps as growSites.
+     *
+     * The module is gone; nothing has written to plannerEvents since. The check and the drop
+     * cannot share a version, because Dexie applies a version's schema changes before running
+     * its upgrade() - so version 18's table would already be gone by the time version 18's
+     * upgrade() could count it.
+     *
+     * If the table turns out to hold rows, this throws and the whole upgrade aborts, leaving
+     * the table and its data in place. Somebody would then have data from a feature that no
+     * longer exists, which is worth finding out about rather than deleting quietly.
+     */
+    this.version(17).upgrade(async (tx) => {
+      const rows = await tx.table('plannerEvents').count();
+      if (rows > 0) {
+        throw new Error(
+          `Migration aborted: plannerEvents holds ${rows} row(s). The planner module was ` +
+            `removed, so this table was expected to be empty. It has been left in place.`
+        );
+      }
+    });
+
+    this.version(18).stores({ plannerEvents: null });
   }
 }
 
@@ -647,10 +686,6 @@ export const propDb = {
   supplies: db.propSupplies,
   batchCosts: db.propBatchCosts,
   speciesConfigs: db.propSpeciesConfigs,
-};
-
-export const plannerDb = {
-  events: db.plannerEvents,
 };
 
 export const vegDb = {

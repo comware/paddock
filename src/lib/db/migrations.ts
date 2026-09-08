@@ -75,3 +75,69 @@ export async function assertRowsCopied(
     );
   }
 }
+
+/**
+ * Every foreign-key column in the database, by table.
+ *
+ * Kept explicit rather than inferred from names, so a field that merely ends in "Id" without
+ * being a foreign key is not swept in. Mirrors the list in scripts/diagnose-id-types.js;
+ * the two are read together when this area changes.
+ */
+export const FOREIGN_KEY_COLUMNS: Record<string, string[]> = {
+  weatherHistory: ['siteId'],
+  growTrays: ['siteId'],
+  growObservations: ['siteId'],
+  growTimeEntries: ['siteId'],
+  growPlannedPlantings: ['siteId', 'convertedTrayId'],
+  growTrayComments: ['trayId'],
+  aiMessages: ['conversationId'],
+  vegBeds: ['siteId'],
+  vegPlantings: ['siteId', 'bedId'],
+  vegHarvests: ['plantingId'],
+  propMotherPlants: ['siteId'],
+  propStations: ['siteId'],
+  propStationLogs: ['stationId'],
+  propBatches: ['siteId', 'stationId', 'motherPlantId'],
+  propPropagules: ['batchId', 'siteId', 'stationId'],
+  propStageTransitions: ['batchId', 'propaguleId'],
+  propGraduations: ['batchId', 'propaguleId'],
+  propBatchCosts: ['batchId', 'supplyId'],
+};
+
+/**
+ * Rewrite any numeric foreign key as a string.
+ *
+ * Paddock's convention is that primary keys are numbers and foreign keys are strings,
+ * because foreign keys are compared in memory against state ids, which are strings. Before
+ * that boundary existed, a foreign key was written as whatever the caller happened to hold -
+ * a number for a row loaded from the database, a string for one added in the same session.
+ * So a column could hold both, and a plain `.equals()` would silently miss whichever form it
+ * was not given.
+ *
+ * The stores worked around that by querying for both forms. This removes the reason to:
+ * normalise once here, and `.equals()` is correct by construction from then on.
+ *
+ * Returns the number of values rewritten, which is zero for a database that was already
+ * consistent - the expected case, and the one the diagnostic reported.
+ */
+export async function normaliseForeignKeys(tx: Transaction): Promise<number> {
+  let rewritten = 0;
+
+  for (const [table, columns] of Object.entries(FOREIGN_KEY_COLUMNS)) {
+    if (!tx.db.tables.some((t) => t.name === table)) continue;
+
+    await tx
+      .table(table)
+      .toCollection()
+      .modify((row: Record<string, unknown>) => {
+        for (const column of columns) {
+          if (typeof row[column] === 'number') {
+            row[column] = String(row[column]);
+            rewritten += 1;
+          }
+        }
+      });
+  }
+
+  return rewritten;
+}
