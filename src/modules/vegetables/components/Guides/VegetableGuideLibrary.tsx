@@ -13,11 +13,72 @@
  * adapted to vegetables' category-grouped index rather than a flat table.
  */
 
+import { BookOpen, CalendarDays, Shovel, Wrench, Droplets, CircleHelp } from 'lucide-react';
 import { categoryIcon } from './categoryIcons';
 import { Spinner } from '@/components/shared';
 import { useState, useEffect, createElement } from 'react';
+import type { LucideIcon } from 'lucide-react';
 import type { VegetableGuideIndex } from '@/lib/guides/vegetable-types';
 import { GuideDetailModal } from './GuideDetailModal';
+import { GettingStartedModal, type GettingStartedGuide } from './GettingStartedModal';
+
+/**
+ * The beginner track, ahead of the crop list.
+ *
+ * These six are not in index.json and deliberately so. That index is a catalogue of crops -
+ * every entry carries days to maturity, spacing, a sowing depth - and a page about how to
+ * take a soil temperature has none of those. Putting them in would mean six rows of nulls
+ * and a `kind` discriminator on every consumer of the index, to describe six files whose
+ * paths never change. Both sibling modules hardcode their equivalent list for the same
+ * reason.
+ *
+ * Order is the reading order, not alphabetical: vocabulary, then the seasonal decision, then
+ * the bed, then the ongoing habits, then what to do when it has gone wrong.
+ */
+const GETTING_STARTED: (GettingStartedGuide & { Icon: LucideIcon })[] = [
+  {
+    id: 'concepts',
+    title: 'Core Concepts',
+    description: 'Bolting, succession, thinning - the vocabulary the crop guides assume',
+    Icon: BookOpen,
+    file: 'getting-started/concepts.md',
+  },
+  {
+    id: 'first-bed',
+    title: 'Your First Bed',
+    description: 'What to sow this month, and the weekend of work it takes',
+    Icon: CalendarDays,
+    file: 'getting-started/first-bed.md',
+  },
+  {
+    id: 'beds-and-soil',
+    title: 'Beds and Soil',
+    description: 'Siting, drainage, and preparing ground that will not fight you',
+    Icon: Shovel,
+    file: 'getting-started/beds-and-soil.md',
+  },
+  {
+    id: 'equipment',
+    title: 'Equipment',
+    description: 'The nine things you need, and what to ignore',
+    Icon: Wrench,
+    file: 'getting-started/equipment.md',
+  },
+  {
+    id: 'watering',
+    title: 'Watering',
+    description: 'Deep and infrequent - and the one time that rule inverts',
+    Icon: Droplets,
+    file: 'getting-started/watering.md',
+  },
+  {
+    id: 'troubleshooting',
+    title: 'Troubleshooting',
+    description: 'The failures that recur across the library, most common first',
+    Icon: CircleHelp,
+    file: 'getting-started/troubleshooting.md',
+  },
+];
 
 /** The category's line icon, sized for a section heading. */
 function CategoryIcon({ category }: { category: string }) {
@@ -34,6 +95,7 @@ export function VegetableGuideLibrary() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
+  const [selectedIntro, setSelectedIntro] = useState<GettingStartedGuide | null>(null);
 
   useEffect(() => {
     let isCancelled = false;
@@ -106,6 +168,46 @@ export function VegetableGuideLibrary() {
         </p>
       </div>
 
+      {/* Getting Started - ahead of the crop list, because a beginner opening this page
+          needs the season before they need the catalogue. */}
+      <section aria-labelledby="veg-getting-started-heading">
+        <h2
+          id="veg-getting-started-heading"
+          className="text-lg font-semibold text-slate-900 dark:text-white"
+        >
+          New to growing vegetables?
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+          Start here. Which crop is right depends on the month you are in, so read
+          Your First Bed before picking anything from the library below.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {GETTING_STARTED.map(({ Icon, ...guide }) => (
+            <button
+              key={guide.id}
+              onClick={() => setSelectedIntro(guide)}
+              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 text-left hover:border-primary-500 hover:shadow-md transition-all group"
+            >
+              <div className="flex items-start gap-3">
+                <Icon
+                  aria-hidden
+                  strokeWidth={1.75}
+                  className="w-5 h-5 shrink-0 mt-0.5 text-slate-500 dark:text-slate-400"
+                />
+                <div>
+                  <h3 className="font-medium text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                    {guide.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {guide.description}
+                  </p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* Search */}
       <div>
         <input
@@ -162,6 +264,7 @@ export function VegetableGuideLibrary() {
       ))}
 
       <GuideDetailModal cropName={selectedCrop} onClose={() => setSelectedCrop(null)} />
+      <GettingStartedModal guide={selectedIntro} onClose={() => setSelectedIntro(null)} />
     </div>
   );
 }

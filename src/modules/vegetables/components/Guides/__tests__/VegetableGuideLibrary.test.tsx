@@ -61,6 +61,12 @@ function mockFetch() {
     if (url.endsWith('alliums/garlic.md')) {
       return { ok: true, text: async () => '' } as Response;
     }
+    if (url.endsWith('getting-started/first-bed.md')) {
+      return {
+        ok: true,
+        text: async () => '# Your First Bed\n\nFind your season below and follow that path only.',
+      } as Response;
+    }
     return { ok: false, json: async () => ({}), text: async () => '' } as Response;
   });
 }
@@ -146,6 +152,34 @@ describe('VegetableGuideLibrary', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/hasn't been written yet/i)).toBeInTheDocument();
+    });
+  });
+
+  it('puts the beginner track ahead of the crop list', async () => {
+    render(<VegetableGuideLibrary />);
+    await screen.findByText('Leafy Greens');
+
+    // The heading a novice is meant to land on, and the seasonal page it points at.
+    expect(screen.getByRole('heading', { name: /new to growing vegetables/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Your First Bed/ })).toBeInTheDocument();
+
+    // Order matters here, not just presence: the section is above the catalogue because the
+    // season decides the crop, not the other way round. compareDocumentPosition returns
+    // DOCUMENT_POSITION_FOLLOWING (4) when the argument comes after the node.
+    const intro = screen.getByRole('heading', { name: /new to growing vegetables/i });
+    const crops = screen.getByRole('heading', { name: 'Leafy Greens' });
+    expect(intro.compareDocumentPosition(crops) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('clicking a getting-started card opens it', async () => {
+    const user = userEvent.setup();
+    render(<VegetableGuideLibrary />);
+    await screen.findByText('Leafy Greens');
+
+    await user.click(screen.getByRole('button', { name: /Your First Bed/ }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/find your season below/i)).toBeInTheDocument();
     });
   });
 });
