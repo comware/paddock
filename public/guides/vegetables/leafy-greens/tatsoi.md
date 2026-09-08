@@ -27,9 +27,9 @@ Sow too early into warm autumn soil or too late into a warming spring and it bol
 
 ## Sowing
 
-Tatsoi suits either direct sowing or transplanting; direct sowing is straightforward for a crop grown at close spacing, while transplants suit an early start ahead of a cold snap. Sow shallow at 5 mm.
+Tatsoi suits either direct sowing or transplanting; direct sowing is straightforward for a crop grown at close spacing, while transplants suit an early start ahead of a cold snap. Sow shallow at 6 mm.
 
-Space plants 15 cm apart in rows 25 cm apart for full rosettes at harvest, though tatsoi is also grown closer together for a baby-leaf style crop. Its flat, spreading growth habit means crowded plants compete directly for the light hitting the rosette, producing smaller, more upright plants rather than the classic flat form — mostly a cosmetic and yield issue rather than a disease one, though very tight spacing in humid weather can encourage rot where leaves overlap and stay damp.
+Space plants 25 cm apart in rows 40 cm apart for full rosettes at harvest, though tatsoi is also grown closer together for a baby-leaf style crop. Its flat, spreading growth habit means crowded plants compete directly for the light hitting the rosette, producing smaller, more upright plants rather than the classic flat form — mostly a cosmetic and yield issue rather than a disease one, though very tight spacing in humid weather can encourage rot where leaves overlap and stay damp.
 
 ## Growing On
 

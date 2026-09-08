@@ -29,7 +29,7 @@ Sow too early in spring and cold nights while the transplant is still small can 
 
 ## Sowing
 
-Broccoli is grown as a transplant almost everywhere it's grown commercially and at home, because starting it in trays gives you a strong, uniform seedling before the ground has properly warmed and lets you dodge the worst of a cold snap that would otherwise stall or bolt a direct-sown seedling. Sow seed 10 mm deep into trays or punnets and keep evenly moist; seedlings are usually ready to go out at four to six weeks, once they have two or three true leaves.
+Broccoli is grown as a transplant almost everywhere it's grown commercially and at home, because starting it in trays gives you a strong, uniform seedling before the ground has properly warmed and lets you dodge the worst of a cold snap that would otherwise stall or bolt a direct-sown seedling. Sow seed 6 mm deep into trays or punnets and keep evenly moist; seedlings are usually ready to go out at four to six weeks, once they have two or three true leaves.
 
 Space plants 45 cm apart with 60 cm between rows. Broccoli genuinely needs this room — crowd it and the heads come in noticeably smaller because the plant can't build the leaf canopy it needs to feed a full-sized crown, and tight spacing also cuts airflow around the lower leaves, which is where fungal problems like downy mildew tend to start in a wet season.
 

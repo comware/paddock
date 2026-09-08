@@ -29,7 +29,7 @@ Sow too early into cold spring soil below about 10°C and germination is slow an
 
 Mustard greens are direct-sown; they establish quickly from seed and there's little to gain from the extra handling of a transplant. Sow shallow at 5 mm.
 
-Space plants 15 cm apart in rows 25 cm apart. Crowding produces smaller leaves and, in humid weather, increases the risk of fungal problems at the base — not dramatically different from the other brassica greens here, though mustard's tolerance of warmer, drier conditions makes crowding-related disease somewhat less of an issue than it is for a crop like pak choi.
+Space plants 30 cm apart in rows 25 cm apart. Crowding produces smaller leaves and, in humid weather, increases the risk of fungal problems at the base — not dramatically different from the other brassica greens here, though mustard's tolerance of warmer, drier conditions makes crowding-related disease somewhat less of an issue than it is for a crop like pak choi.
 
 ## Growing On
 

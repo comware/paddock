@@ -29,9 +29,9 @@ Sowing too early into cold, wet soil can lead to slow, patchy germination, but t
 
 ## Sowing
 
-Collards can be direct sown or started in trays and transplanted — both approaches work well. Direct sowing is simple and collards don't sulk much from the disturbance of transplanting either, so the choice mostly comes down to convenience: transplants let you get a head start on the season or slot the crop into a bed that isn't free yet, while direct sowing saves a step. Sow 10 mm deep and keep moist until germination.
+Collards can be direct sown or started in trays and transplanted — both approaches work well. Direct sowing is simple and collards don't sulk much from the disturbance of transplanting either, so the choice mostly comes down to convenience: transplants let you get a head start on the season or slot the crop into a bed that isn't free yet, while direct sowing saves a step. Sow 6 mm deep and keep moist until germination.
 
-Space plants 45 cm apart with 60 cm between rows. Collards build a fairly wide rosette of leaves over their long harvest life, and crowding them cuts down on airflow, which raises the risk of fungal leaf problems in humid weather — a real consideration for a crop that's often in the ground for months of repeated picking.
+Space plants 30 cm apart with 60 cm between rows. Collards build a fairly wide rosette of leaves over their long harvest life, and crowding them cuts down on airflow, which raises the risk of fungal leaf problems in humid weather — a real consideration for a crop that's often in the ground for months of repeated picking.
 
 ## Growing On
 

@@ -31,7 +31,7 @@ Sow too early into warm soil (over about 20°C) and germination is patchy and sl
 
 Spinach is direct-sown — it dislikes root disturbance and transplants poorly, so starting it in situ avoids the setback a transplant shock would cause. Sow at 10 mm, a touch deeper than most leafy greens in this batch, which suits its larger seed and helps keep it in cooler, more consistently moist soil.
 
-Space plants 10 cm apart in rows 30 cm apart. Crowding matters here mostly for airflow — dense spinach holds humidity at leaf level and is more prone to downy mildew, though thinning is also just a way to get a first light harvest for free.
+Space plants 15 cm apart in rows 30 cm apart. Crowding matters here mostly for airflow — dense spinach holds humidity at leaf level and is more prone to downy mildew, though thinning is also just a way to get a first light harvest for free.
 
 ## Growing On
 

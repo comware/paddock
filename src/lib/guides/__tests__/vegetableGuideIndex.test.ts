@@ -73,6 +73,61 @@ describe('vegetable guide index', () => {
   });
 
   /**
+   * The prose must agree with the table above it.
+   *
+   * The existing check compares Quick Facts against index.json, and those two have been kept
+   * honest ever since. Nothing compared the *prose* against either, and that is where the
+   * drift went: `fix(guides): correct 25 vegetable guides against Australian sources`
+   * (d77d3aa) rewrote every Quick Facts table and left the sentences underneath them
+   * untouched. Thirteen guides then stated one spacing in the table and a different one three
+   * paragraphs down - chard said 50 cm in the table and "rows 40 cm apart" in the text.
+   *
+   * A grower reads the sentence, not the table, so the stale figure was the one being acted
+   * on. Eighteen figures across thirteen guides were wrong for as long as the guides existed.
+   *
+   * Deliberately narrow: only sowing depth and the spacing sentence, which are the figures
+   * written in both places and phrased consistently enough to extract. Days to maturity and
+   * soil temperature are discussed in prose too loosely to match on without false positives -
+   * "usually ready from about eight weeks" is not a figure to compare.
+   */
+  describe('prose agrees with the index', () => {
+    /** The guide without its Quick Facts table, so table rows are not matched as prose. */
+    function proseOf(markdown: string): string {
+      return markdown
+        .split('\n')
+        .filter((line) => !line.startsWith('|'))
+        .join('\n');
+    }
+
+    it.each(index.guides.map((g) => [g.id, g] as const))('%s: sowing depth', (_id, guide) => {
+      const prose = proseOf(markdownFor(guide.file)!);
+      const stated = [...prose.matchAll(/(\d+)\s*mm/g)].map((m) => Number(m[1]));
+      for (const value of stated) {
+        expect(
+          value,
+          `${guide.file}: prose says ${value} mm, index says ${guide.sowingDepthMm} mm`
+        ).toBe(guide.sowingDepthMm);
+      }
+    });
+
+    it.each(index.guides.map((g) => [g.id, g] as const))('%s: spacing', (_id, guide) => {
+      const prose = proseOf(markdownFor(guide.file)!);
+      // The sentence that states spacing, however it is phrased - "Space plants X cm apart
+      // with Y cm between rows" and "... in rows Y cm apart" are both used across the library.
+      const sentences = prose.match(/[^.]*?(?:Space plants|spaced?)[^.]*?\./g) ?? [];
+      const allowed = [guide.spacingCm, guide.rowSpacingCm];
+      for (const sentence of sentences) {
+        for (const m of sentence.matchAll(/(\d+)\s*cm/g)) {
+          expect(
+            allowed,
+            `${guide.file}: prose says ${m[1]} cm; index has ${allowed.join(' and ')} cm\n  ${sentence.trim()}`
+          ).toContain(Number(m[1]));
+        }
+      }
+    });
+  });
+
+  /**
    * Prose that is not a crop guide, and so has no index entry to agree with.
    *
    * The getting-started track is six pages about growing rather than about a crop - taking a
