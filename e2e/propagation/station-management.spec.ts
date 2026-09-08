@@ -42,8 +42,8 @@ test.describe('Station Management', () => {
     // ============================================
     // STEP 1: Create prerequisite site
     // ============================================
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -124,7 +124,7 @@ test.describe('Station Management', () => {
 
   test('station form validation', async ({ page }) => {
     // Create prerequisite site
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
@@ -167,7 +167,7 @@ test.describe('Station Management', () => {
 
   test('station occupancy tracking with batches', async ({ page }) => {
     // Create prerequisite site
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
@@ -228,7 +228,7 @@ test.describe('Station Management', () => {
 
   test('station detail view and editing', async ({ page }) => {
     // Create prerequisite site
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
@@ -288,7 +288,7 @@ test.describe('Station Management', () => {
 
   test('station activation and deactivation', async ({ page }) => {
     // Create prerequisite site
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
@@ -350,7 +350,7 @@ test.describe('Station Management', () => {
 
   test('station environmental log recording', async ({ page }) => {
     // Create prerequisite site
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();

@@ -38,8 +38,8 @@ test.describe('Propagation Module Happy Path', () => {
 
   test('complete workflow: create site -> create station -> create batch -> verify persistence', async ({ page }) => {
     // 0. First, create a site (prerequisite for propagation module)
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     // Create a site
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -129,8 +129,8 @@ test.describe('Propagation Module Happy Path', () => {
 
   test('station creation with form validation', async ({ page }) => {
     // First, create a site (prerequisite)
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();

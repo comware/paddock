@@ -37,11 +37,16 @@ test.describe('Grow Module Happy Path', () => {
 
   test('complete workflow: create site -> create tray -> verify persistence', async ({ page }) => {
     // 1. Navigate to Grow module from landing page
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
-    // 2. Create a new site
-    const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
+    // 2. Create a new site.
+    // Site creation lives on the manage page now, not the module root - the root shows the
+    // current space's dashboard, and "Add Site" survives only as the form's submit button.
+    await page.goto('/microgreens/sites/manage');
+    const addSiteButton = page
+      .getByRole('button', { name: /Add a (growing )?space/i })
+      .first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
     await addSiteButton.click();
     await page.waitForTimeout(500);
@@ -61,14 +66,14 @@ test.describe('Grow Module Happy Path', () => {
 
     // 3. Click on the site card to navigate to it
     await page.getByText(siteName).first().click();
-    await expect(page).toHaveURL(/\/grow\/site\//);
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // 4. Navigate to Trays tab
-    await page.getByRole('link', { name: /Trays/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
     await expect(page).toHaveURL(/\/trays/);
 
     // 5. Create a new tray
-    await page.getByRole('button', { name: /New Tray/ }).click();
+    await page.getByRole('button', { name: /New Tray/i }).click();
     await page.waitForTimeout(500);
 
     // Fill in tray form - select a variety from the dropdown
@@ -77,7 +82,7 @@ test.describe('Grow Module Happy Path', () => {
     await varietySelect.selectOption({ index: 1 }); // Select first available variety
 
     // Submit the form
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
 
     // Wait for modal to close
     await page.waitForTimeout(1000);
@@ -89,15 +94,17 @@ test.describe('Grow Module Happy Path', () => {
     await page.reload();
     await page.waitForLoadState('networkidle');
 
-    // Navigate back to Grow overview using top nav
-    await page.getByRole('navigation').getByRole('link', { name: /🌱.*Grow/i }).click();
+    // Navigate back to the module overview using top nav. The link is "Microgreens" and its
+    // icon is a Lucide component, so the old /🌱.*Grow/ never matches.
+    await page.getByRole('navigation').first().getByRole('link', { name: 'Microgreens' }).click();
+    await page.goto('/microgreens/sites/manage');
     await expect(page.locator(`text="${siteName}"`).first()).toBeVisible({ timeout: 10000 });
   });
 
   test('site creation with form validation', async ({ page }) => {
     // Navigate to Grow module
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     // Open new site form
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();

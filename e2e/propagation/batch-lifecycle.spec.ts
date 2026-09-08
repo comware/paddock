@@ -42,8 +42,8 @@ test.describe('Propagation Batch Lifecycle', () => {
     // ============================================
     // STEP 1: Create prerequisite site
     // ============================================
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -153,8 +153,8 @@ test.describe('Propagation Batch Lifecycle', () => {
 
   test('batch creation with all fields populated', async ({ page }) => {
     // Create prerequisite site
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
@@ -239,7 +239,7 @@ test.describe('Propagation Batch Lifecycle', () => {
 
   test('batch filtering by stage and species', async ({ page }) => {
     // Setup: Create site, station, and multiple batches
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
@@ -304,7 +304,7 @@ test.describe('Propagation Batch Lifecycle', () => {
 
   test('batch quantity update on stage transition', async ({ page }) => {
     // Setup: Create site, station, batch
-    await page.click('a[href="/grow"]:has-text("Start Learning"), a[href="/grow"]:has-text("Begin Your Growing Journey")');
+    await page.click('a[href="/microgreens"]:has-text("Start Learning"), a[href="/microgreens"]:has-text("Begin Your Growing Journey")');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await addSiteButton.click();
