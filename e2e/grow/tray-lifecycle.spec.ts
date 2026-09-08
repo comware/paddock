@@ -75,7 +75,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
     // Click "New Tray" button
     await page.getByRole('button', { name: /New Tray/i }).first().click();
-    await page.waitForTimeout(500);
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
 
     // Fill in tray form
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
@@ -138,6 +138,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
     // Enter site and create tray
     await page.getByRole('button', { name: 'Open Persistence Test Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
     // Land on the trays route before reaching for its controls. Without this the New tray
     // click can fire mid-navigation and be swallowed, and the failure then surfaces much
@@ -197,13 +198,14 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
     // Enter site and open new tray form
     await page.getByRole('button', { name: 'Open Validation Test Site' }).dispatchEvent('click');
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
     // Land on the trays route before reaching for its controls. Without this the New tray
     // click can fire mid-navigation and be swallowed, and the failure then surfaces much
     // later as a dialog that never opens - which reads as slowness and is not.
     await expect(page).toHaveURL(/\/trays/);
     await page.getByRole('button', { name: /New Tray/i }).first().click();
-    await page.waitForTimeout(500);
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
 
     // Try to submit without selecting a variety
     await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
