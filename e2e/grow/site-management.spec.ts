@@ -141,7 +141,11 @@ test.describe('Site Management', () => {
 
     // Create a tray to update metrics
     await page.getByRole('button', { name: /New Tray/i }).first().click();
-    await page.waitForTimeout(500);
+
+    // Wait on the dialog itself rather than a fixed 500ms. The sleep was enough on a dev
+    // machine and not on a CI runner, which is what made this fail there and pass here -
+    // "element(s) not found" for the combobox meant the dialog had not rendered yet.
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await expect(varietySelect).toBeEnabled({ timeout: 10000 });
@@ -185,7 +189,11 @@ test.describe('Site Management', () => {
     await expect(page).toHaveURL(/\/microgreens\/site\//);
     await page.getByRole('link', { name: /Trays/i }).click();
     await page.getByRole('button', { name: /New Tray/i }).first().click();
-    await page.waitForTimeout(500);
+
+    // Wait on the dialog itself rather than a fixed 500ms. The sleep was enough on a dev
+    // machine and not on a CI runner, which is what made this fail there and pass here -
+    // "element(s) not found" for the combobox meant the dialog had not rendered yet.
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10000 });
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await expect(varietySelect).toBeEnabled({ timeout: 10000 });
