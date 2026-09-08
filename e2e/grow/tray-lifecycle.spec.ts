@@ -43,8 +43,8 @@ test.describe('Tray Lifecycle - Microgreens', () => {
     // ============================================
     // STEP 1: Navigate to Grow module and create a site
     // ============================================
-    await page.goto('/grow');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.goto('/microgreens');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     // Create a site first (required for trays)
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -65,14 +65,14 @@ test.describe('Tray Lifecycle - Microgreens', () => {
     // STEP 2: Enter site and create a new tray
     // ============================================
     await page.getByText(siteName).first().click();
-    await expect(page).toHaveURL(/\/grow\/site\//);
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // Navigate to Trays tab
-    await page.getByRole('link', { name: /Trays/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
     await expect(page).toHaveURL(/\/trays/);
 
     // Click "New Tray" button
-    await page.getByRole('button', { name: /New Tray/ }).click();
+    await page.getByRole('button', { name: /New Tray/i }).click();
     await page.waitForTimeout(500);
 
     // Fill in tray form
@@ -86,7 +86,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
     await page.getByRole('dialog').getByRole('button', { name: '80g' }).click();
 
     // Submit the form
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
     await page.waitForTimeout(1000);
 
     // ============================================
@@ -120,7 +120,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
   test('tray data persists after page refresh', async ({ page }) => {
     // Create site and tray
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -134,14 +134,14 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
     // Enter site and create tray
     await page.getByText('Persistence Test Site').first().click();
-    await page.getByRole('link', { name: /Trays/ }).click();
-    await page.getByRole('button', { name: /New Tray/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
+    await page.getByRole('button', { name: /New Tray/i }).click();
     await page.waitForTimeout(500);
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await expect(varietySelect).toBeEnabled({ timeout: 10000 });
     await varietySelect.selectOption({ label: 'Pea Shoots' });
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
     await page.waitForTimeout(1000);
 
     // Verify tray exists
@@ -158,7 +158,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
     }
 
     // Navigate back to trays
-    await page.getByRole('link', { name: /Trays/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
 
     // Verify tray still exists (IndexedDB persistence)
     await expect(page.locator('text=/Pea Shoot/i').first()).toBeVisible({ timeout: 10000 });
@@ -166,7 +166,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
   test('tray form validates required fields', async ({ page }) => {
     // Create site first
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -180,12 +180,12 @@ test.describe('Tray Lifecycle - Microgreens', () => {
 
     // Enter site and open new tray form
     await page.getByText('Validation Test Site').first().click();
-    await page.getByRole('link', { name: /Trays/ }).click();
-    await page.getByRole('button', { name: /New Tray/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
+    await page.getByRole('button', { name: /New Tray/i }).click();
     await page.waitForTimeout(500);
 
     // Try to submit without selecting a variety
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
 
     // Should show validation error
     await expect(page.getByText(/Please select a variety|variety/i).first()).toBeVisible({ timeout: 5000 });
@@ -193,7 +193,7 @@ test.describe('Tray Lifecycle - Microgreens', () => {
     // Now select a variety and submit successfully
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await varietySelect.selectOption({ index: 1 });
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
 
     // Modal should close
     await page.waitForTimeout(1000);

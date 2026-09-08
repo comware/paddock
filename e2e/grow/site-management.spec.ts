@@ -39,8 +39,8 @@ test.describe('Site Management', () => {
   });
 
   test('create new site and verify it appears in list', async ({ page }) => {
-    await page.goto('/grow');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.goto('/microgreens');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     // Should show "Add Your First Site" for empty state
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -69,7 +69,7 @@ test.describe('Site Management', () => {
   });
 
   test('create multiple sites and switch between them', async ({ page }) => {
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     // Create first site
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -97,18 +97,18 @@ test.describe('Site Management', () => {
 
     // Click on Site Alpha to enter it
     await page.getByText('Site Alpha').first().click();
-    await expect(page).toHaveURL(/\/grow\/site\//);
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // Navigate back to overview
     await page.getByRole('navigation').getByRole('link', { name: /🌱.*Grow/i }).click();
 
     // Click on Site Beta
     await page.getByText('Site Beta').first().click();
-    await expect(page).toHaveURL(/\/grow\/site\//);
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
   });
 
   test('site dashboard shows tray metrics', async ({ page }) => {
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     // Create a site
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -123,7 +123,7 @@ test.describe('Site Management', () => {
 
     // Enter site
     await page.getByText('Metrics Test Site').first().click();
-    await expect(page).toHaveURL(/\/grow\/site\//);
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // Dashboard should show metrics cards
     await expect(page.locator('text=/Active Trays/i').first()).toBeVisible({ timeout: 5000 });
@@ -136,7 +136,7 @@ test.describe('Site Management', () => {
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await expect(varietySelect).toBeEnabled({ timeout: 10000 });
     await varietySelect.selectOption({ index: 1 });
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
     await page.waitForTimeout(1000);
 
     // Navigate to dashboard (index route of site)
@@ -147,7 +147,7 @@ test.describe('Site Management', () => {
   });
 
   test('trays are assigned to correct site', async ({ page }) => {
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     // Create two sites
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -169,14 +169,14 @@ test.describe('Site Management', () => {
 
     // Enter Sunflower Site and create a tray
     await page.getByText('Sunflower Site').first().click();
-    await page.getByRole('link', { name: /Trays/ }).click();
-    await page.getByRole('button', { name: /New Tray/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
+    await page.getByRole('button', { name: /New Tray/i }).click();
     await page.waitForTimeout(500);
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await expect(varietySelect).toBeEnabled({ timeout: 10000 });
     await varietySelect.selectOption({ label: 'Sunflower' });
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
     await page.waitForTimeout(1000);
 
     // Verify Sunflower tray is visible in this site
@@ -185,7 +185,7 @@ test.describe('Site Management', () => {
     // Navigate to Pea Site
     await page.getByRole('navigation').getByRole('link', { name: /🌱.*Grow/i }).click();
     await page.getByText('Pea Site').first().click();
-    await page.getByRole('link', { name: /Trays/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
 
     // Sunflower tray should NOT be visible in Pea Site
     // (it's assigned to Sunflower Site)
@@ -195,7 +195,7 @@ test.describe('Site Management', () => {
   });
 
   test('site form validation', async ({ page }) => {
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -222,7 +222,7 @@ test.describe('Site Management', () => {
   });
 
   test('site data persists after refresh', async ({ page }) => {
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     // Create a site
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -240,7 +240,7 @@ test.describe('Site Management', () => {
     await page.waitForLoadState('networkidle');
 
     // Navigate back to Grow
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     // Site should still be visible (IndexedDB persistence)
     await expect(page.locator('text="Persistence Test"').first()).toBeVisible({ timeout: 10000 });

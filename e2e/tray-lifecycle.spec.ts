@@ -33,8 +33,8 @@ test.describe.skip('Tray Lifecycle', () => {
     await page.waitForLoadState('networkidle');
 
     // Navigate to the Grow module
-    await page.goto('/grow');
-    await expect(page).toHaveURL(/\/grow/);
+    await page.goto('/microgreens');
+    await expect(page).toHaveURL(/\/microgreens/);
 
     // ============================================
     // STEP 1: Ensure we have a site to work with
@@ -79,7 +79,7 @@ test.describe.skip('Tray Lifecycle', () => {
     const addTrayButton = page.getByRole('button', { name: /add.*tray|new.*tray|\+ tray/i }).or(
       page.locator('[data-testid="add-tray"]')
     ).or(
-      page.getByRole('button', { name: /\+/ })
+      page.getByRole('button', { name: /\+/i })
     );
 
     await expect(addTrayButton.first()).toBeVisible({ timeout: 5000 });
@@ -203,7 +203,7 @@ test.describe.skip('Tray Lifecycle', () => {
 
   test('should show correct tray counts in dashboard', async ({ page }) => {
     // Navigate to Grow module
-    await page.goto('/grow');
+    await page.goto('/microgreens');
     await page.waitForLoadState('networkidle');
 
     // At minimum, verify the page loads without errors
@@ -215,7 +215,7 @@ test.describe.skip('Tray Lifecycle', () => {
     // Add a tray with a unique identifier
     const uniqueVariety = `Test-${Date.now()}`;
 
-    await page.goto('/grow');
+    await page.goto('/microgreens');
     await page.waitForLoadState('networkidle');
 
     // Navigate and add tray (simplified version)

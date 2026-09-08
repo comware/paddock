@@ -40,7 +40,7 @@ test.describe('Analytics Dashboard', () => {
 
   test('analytics page loads and shows empty state', async ({ page }) => {
     // First create a site (required to access site-specific analytics)
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -54,7 +54,7 @@ test.describe('Analytics Dashboard', () => {
 
     // Enter site and navigate to analytics
     await page.getByText('Analytics Test Site').first().click();
-    await expect(page).toHaveURL(/\/grow\/site\//);
+    await expect(page).toHaveURL(/\/microgreens\/site\//);
 
     // Navigate to Analytics tab (use specific site analytics link)
     await page.getByRole('link', { name: '📈 Analytics' }).click();
@@ -74,7 +74,7 @@ test.describe('Analytics Dashboard', () => {
 
   test('tab switching between Variety and Trends views', async ({ page }) => {
     // Create site and navigate to analytics
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -113,7 +113,7 @@ test.describe('Analytics Dashboard', () => {
 
   test('trends view shows experiment progress metrics', async ({ page }) => {
     // Create site and navigate to analytics
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
     await expect(addSiteButton).toBeVisible({ timeout: 10000 });
@@ -145,8 +145,8 @@ test.describe('Analytics Dashboard', () => {
   });
 
   test('global analytics route accessible', async ({ page }) => {
-    // Global analytics at /grow/analytics (cross-site view)
-    await page.goto('/grow');
+    // Global analytics at /microgreens/analytics (cross-site view)
+    await page.goto('/microgreens');
 
     // Create a site first
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -160,7 +160,7 @@ test.describe('Analytics Dashboard', () => {
     await expect(page.locator('text="Global Analytics Site"').first()).toBeVisible({ timeout: 10000 });
 
     // Navigate directly to global analytics
-    await page.goto('/grow/analytics');
+    await page.goto('/microgreens/analytics');
     await page.waitForLoadState('networkidle');
 
     // Should load analytics page
@@ -173,7 +173,7 @@ test.describe('Analytics Dashboard', () => {
 
   test('analytics page renders after creating tray', async ({ page }) => {
     // This test creates a tray and verifies analytics page still works
-    await page.goto('/grow');
+    await page.goto('/microgreens');
 
     // Create site
     const addSiteButton = page.locator('button:has-text("Add Site"), button:has-text("Add Your First Site")').first();
@@ -188,14 +188,14 @@ test.describe('Analytics Dashboard', () => {
 
     // Enter site and create a tray
     await page.getByText('Full Analytics Site').first().click();
-    await page.getByRole('link', { name: /Trays/ }).click();
-    await page.getByRole('button', { name: /New Tray/ }).click();
+    await page.getByRole('link', { name: /Trays/i }).click();
+    await page.getByRole('button', { name: /New Tray/i }).click();
     await page.waitForTimeout(500);
 
     const varietySelect = page.getByRole('dialog').getByRole('combobox').first();
     await expect(varietySelect).toBeEnabled({ timeout: 10000 });
     await varietySelect.selectOption({ label: 'Sunflower' });
-    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/ }).click();
+    await page.getByRole('dialog').getByRole('button', { name: /Save Tray/i }).click();
     await page.waitForTimeout(1000);
 
     // Verify tray was created
