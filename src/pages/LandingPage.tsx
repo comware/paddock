@@ -114,6 +114,23 @@ const steps = [
   },
 ];
 
+/*
+ * Two button treatments, not three.
+ *
+ * The page had a filled hero button, an outlined one beside it, and a third filled one at
+ * the bottom with different hover behaviour - the same call to action styled three ways on
+ * one screen. Two also had an emoji hanging off the end where the third had an arrow, which
+ * reads as decoration stuck to a control rather than part of it.
+ *
+ * The page keeps its own voice - the hero, the section emoji, the marketing headings. What
+ * it does not keep is three answers to "what does a button look like here".
+ */
+const CTA_PRIMARY =
+  'inline-flex items-center justify-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:scale-105 hover:shadow-xl';
+
+const CTA_SECONDARY =
+  'inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-primary-300 dark:hover:border-primary-600 transition-all';
+
 export function LandingPage() {
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -192,17 +209,16 @@ export function LandingPage() {
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link
                 to="/microgreens"
-                className="inline-flex items-center justify-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:scale-105 hover:shadow-xl"
+                className={CTA_PRIMARY}
               >
                 Start learning
-                <span className="ml-2">→</span>
+                <span aria-hidden="true" className="ml-2">→</span>
               </Link>
               <Link
                 to="/vegetables"
-                className="inline-flex items-center justify-center px-8 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-600 hover:border-primary-300 dark:hover:border-primary-600 transition-all"
+                className={CTA_SECONDARY}
               >
                 Plan a bed
-                <span className="ml-2">🥕</span>
               </Link>
             </div>
           </div>
@@ -342,10 +358,10 @@ export function LandingPage() {
           <div className="mt-12 text-center">
             <Link
               to="/microgreens"
-              className="inline-flex items-center justify-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 transition-all hover:scale-105"
+              className={CTA_PRIMARY}
             >
-              Begin Your Growing Journey
-              <span className="ml-2">🌱</span>
+              Start growing
+              <span aria-hidden="true" className="ml-2">→</span>
             </Link>
           </div>
         </div>
