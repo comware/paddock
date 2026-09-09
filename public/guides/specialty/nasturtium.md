@@ -134,6 +134,9 @@ Sturdy leaves handle well. Refrigerate, 7-10 days shelf life.
 - A long blackout - this crop sits covered for 4-5 days - gives mould more time to establish
 
 **Solution:**
+
+![Root hairs, fine and even on every stem, beside patchy cobwebby mould](/guides/diagrams/root-hairs-vs-mould.svg)
+
 - **First, check whether it is actually mould.** Root hairs are extremely common on microgreens and are routinely mistaken for it. Root hairs are fine, even, radiate from the root, and vanish when misted with water. Mould is patchy, cobwebby, has a musty smell, and does not wash away.
 - If it is root hairs, do nothing. They are a sign of a healthy root.
 - If it is mould: get air moving immediately with a fan on low, stop bottom-watering until the surface dries, and remove affected patches.

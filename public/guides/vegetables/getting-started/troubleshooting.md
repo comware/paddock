@@ -227,6 +227,9 @@ specifically prone to this and its guide says to improve drainage before sowing.
 
 ## 11. Tall, pale, floppy seedlings
 
+![Short thick even seedlings beside tall thin pale uneven ones](/guides/diagrams/leggy-vs-healthy.svg)
+
+
 Leggy growth. The seedling has stretched toward insufficient light.
 
 **On a windowsill.** Almost always the cause. A windowsill is far darker than open sky, and

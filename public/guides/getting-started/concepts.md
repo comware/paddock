@@ -136,6 +136,10 @@ Understanding these fundamental terms will help you succeed with microgreens.
 
 ## Cotyledons vs True Leaves
 
+![A pair of smooth rounded seed leaves beside a seedling with a jagged true leaf emerging](/guides/diagrams/cotyledons-vs-true-leaves.svg)
+
+
+
 **Cotyledons (seed leaves):**
 - First leaves to emerge
 - Contain stored nutrients from seed
