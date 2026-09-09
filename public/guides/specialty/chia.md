@@ -136,6 +136,9 @@ Rinse if needed. Refrigerate, 5-7 days.
 - A long blackout - this crop sits covered for 3-4 days - gives mould more time to establish
 
 **Solution:**
+
+![Root hairs, fine and even on every stem, beside patchy cobwebby mould](/guides/diagrams/root-hairs-vs-mould.svg)
+
 - **First, check whether it is actually mould.** Root hairs are extremely common on microgreens and are routinely mistaken for it. Root hairs are fine, even, radiate from the root, and vanish when misted with water. Mould is patchy, cobwebby, has a musty smell, and does not wash away.
 - If it is root hairs, do nothing. They are a sign of a healthy root.
 - If it is mould: get air moving immediately with a fan on low, stop bottom-watering until the surface dries, and remove affected patches.
@@ -169,6 +172,9 @@ Rinse if needed. Refrigerate, 5-7 days.
 - This is mucilage, and it is what chia seed does when wet - it is not a fault and not mould
 
 **Solution:**
+
+![Chia mucilage as a clear even halo around each seed, beside grey patchy mould](/guides/diagrams/mucilage-vs-mould.svg)
+
 - Leave it alone. The gel holds moisture against the seed and is how chia germinates.
 - **Never pre-soak chia.** Soaked chia becomes a solid gel mass that cannot be spread or drained.
 - Sow dry onto a damp medium and mist from above - do not bottom-water into the gel

@@ -103,6 +103,10 @@ Common problems and how to fix them. Don't worry - even experienced growers enco
 
 ### Root Hairs vs. Mold
 
+![Root hairs, fine and even on every stem, beside patchy cobwebby mould](/guides/diagrams/root-hairs-vs-mould.svg)
+
+
+
 **Don't confuse them!**
 
 | Root Hairs | Mold |
@@ -116,6 +120,10 @@ Common problems and how to fix them. Don't worry - even experienced growers enco
 ---
 
 ## Problem 3: Leggy, Weak Stems
+
+![Short thick even stems beside tall thin pale uneven ones](/guides/diagrams/leggy-vs-healthy.svg)
+
+
 
 **What you see:** Tall, thin, pale stems that fall over
 
